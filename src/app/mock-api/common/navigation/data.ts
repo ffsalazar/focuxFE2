@@ -5,7 +5,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     {
         id      : 'dashboards',
         title   : 'Tablero',
-        subtitle: 'Portafolio de solicitudes',
+        subtitle: 'portafolio de solicitudes',
         type    : 'group',
         icon    : 'heroicons_outline:home',
         children: [
@@ -77,7 +77,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             */{
                 id      : 'teachers.portafolio',
-                title   : 'Portafolio',
+                title   : 'portafolio',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:archive',
                 children: [
@@ -86,6 +86,12 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         title: 'Estados',
                         type : 'basic',
                         link : '/apps/ecommerce/inventory'
+                    },
+                    {
+                        id   : 'teachers.portafolio.request',
+                        title: 'Solicitudes',
+                        type : 'basic',
+                        link : '/apps/portafolio/request'
                     },
                     {
                         id   : 'teachers.portafolio.typeStatus',
