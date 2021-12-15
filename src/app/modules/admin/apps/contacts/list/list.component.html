@@ -25,17 +25,28 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Contacts</div>
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Colaboradores
+                            <button
+                                class="ml-4"
+                                mat-flat-button
+                                [color]="'primary'"
+                                (click)="createContact()">
+                                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                <span class="ml-2 mr-1">Agregar</span>
+                            </button></div>
+
                         <div class="ml-0.5 font-medium text-secondary">
                             <ng-container *ngIf="contactsCount > 0">
                                 {{contactsCount}}
                             </ng-container>
                             {{contactsCount | i18nPlural: {
-                            '=0'   : 'No contacts',
-                            '=1'   : 'contact',
-                            'other': 'contacts'
+                            '=0'   : 'No hay colaboradores',
+                            '=1'   : 'colaborador',
+                            'other': 'colaboradores'
                         } }}
+
                         </div>
+
                     </div>
 
                     <!-- Main actions -->
@@ -51,18 +62,45 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Search contacts'">
+                                    [placeholder]="'buscar colaborador'">
+
                             </mat-form-field>
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
+                                <mat-label>Sede</mat-label>
+                                <mat-select >
+                                    <ng-container >
+                                        <mat-option >
+
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
+                                <mat-label>Estado</mat-label>
+                                <mat-select >
+                                    <ng-container >
+                                        <mat-option >
+
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
+                                <mat-label>Cliente</mat-label>
+                                <mat-select >
+                                    <ng-container >
+                                        <mat-option >
+
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+
                         </div>
                         <!-- Add contact button -->
-                        <button
-                            class="ml-4"
-                            mat-flat-button
-                            [color]="'primary'"
-                            (click)="createContact()">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Add</span>
-                        </button>
+
                     </div>
                 </div>
 
@@ -107,7 +145,7 @@
 
                     <!-- No contacts -->
                     <ng-template #noContacts>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no contacts!</div>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay colaboradores!</div>
                     </ng-template>
 
                 </div>

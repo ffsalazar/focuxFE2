@@ -21,30 +21,30 @@ export const project = {
                 'needs-triage' : 5
             }
         },
-        labels  : ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
+        labels  : ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
         series  : {
             'this-week': [
                 {
-                    name: 'Solicitudes nuevos',
+                    name: 'Solicitudes activas',
                     type: 'line',
-                    data: [42, 28, 43, 34, 20, 25, 22]
+                    data: [42, 28, 43, 34, 20, 25, 22,26,39,48,23,18]
                 },
                 {
-                    name: 'solicitudes cerrados',
+                    name: 'solicitudes inactivas',
                     type: 'column',
-                    data: [11, 10, 8, 11, 8, 10, 17]
+                    data: [11, 10, 8, 11, 8, 10, 17,14,16,11,9,13]
                 }
             ],
             'last-week': [
                 {
-                    name: 'Solicitudes nuevos',
+                    name: 'Solicitudes activas',
                     type: 'line',
-                    data: [37, 32, 39, 27, 18, 24, 20]
+                    data: [37, 32, 39, 27, 18, 24, 20,29,33,36,34,41]
                 },
                 {
-                    name: 'solicitudes cerrados',
+                    name: 'solicitudes inactivas',
                     type: 'column',
-                    data: [9, 8, 10, 12, 7, 11, 15]
+                    data: [9, 8, 10, 12, 7, 11, 15,14,6,13,16,19]
                 }
             ]
         }
@@ -60,7 +60,7 @@ export const project = {
                 'completedos': 260
             }
         },
-        labels  : ['Colaboradores', 'Matriz de conocimiento', 'Clientes', 'solicitudes'],
+        labels  : ['EPA', 'MODA', 'BECO', 'INMOBILIARIA'],
         series  : {
             'this-week': [15, 20, 38, 27],
             'last-week': [19, 16, 42, 23]

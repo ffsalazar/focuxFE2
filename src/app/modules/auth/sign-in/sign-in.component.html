@@ -2,19 +2,13 @@
     <div class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-full md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
         <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
             <!-- Logo -->
-            <div class="w-12">
-                <img src="assets/images/logo/logo_home.png">
+            <div class="w-50">
+                <img src="assets/images/logo/Home_0007_logo_color.png">
             </div>
 
             <!-- Title -->
-            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign in</div>
-            <div class="flex items-baseline mt-0.5 font-medium">
-                <div>Don't have an account?</div>
-                <a
-                    class="ml-1 text-primary-500 hover:underline"
-                    [routerLink]="['/sign-up']">Sign up
-                </a>
-            </div>
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Ingresar</div>
+
 
             <!-- Alert -->
             <fuse-alert
@@ -35,22 +29,22 @@
 
                 <!-- Email field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Email address</mat-label>
+                    <mat-label>Usuario</mat-label>
                     <input
                         id="email"
                         matInput
                         [formControlName]="'email'">
                     <mat-error *ngIf="signInForm.get('email').hasError('required')">
-                        Email address is required
+                        Usuario requerido
                     </mat-error>
                     <mat-error *ngIf="signInForm.get('email').hasError('email')">
-                        Please enter a valid email address
+                        Por favor ingrese un usuario v&aacute;lido
                     </mat-error>
                 </mat-form-field>
 
                 <!-- Password field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Password</mat-label>
+                    <mat-label>Contraseña</mat-label>
                     <input
                         id="password"
                         matInput
@@ -72,7 +66,7 @@
                             [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
                     </button>
                     <mat-error>
-                        Password is required
+                        contraseña requerida
                     </mat-error>
                 </mat-form-field>
 
@@ -81,11 +75,11 @@
                     <mat-checkbox
                         [color]="'primary'"
                         [formControlName]="'rememberMe'">
-                        Remember me
+                        Recordar
                     </mat-checkbox>
                     <a
                         class="text-md font-medium text-primary-500 hover:underline"
-                        [routerLink]="['/forgot-password']">Forgot password?
+                        [routerLink]="['/forgot-password']">Recuperar contraseña
                     </a>
                 </div>
 
@@ -97,7 +91,7 @@
                     [disabled]="signInForm.disabled"
                     (click)="signIn()">
                     <span *ngIf="!signInForm.disabled">
-                        Sign in
+                        Ingresar
                     </span>
                     <mat-progress-spinner
                         *ngIf="signInForm.disabled"
@@ -108,7 +102,7 @@
                 <!-- Separator -->
                 <div class="flex items-center mt-8">
                     <div class="flex-auto mt-px border-t"></div>
-                    <div class="mx-2 text-secondary">Or continue with</div>
+                    <div class="mx-2 text-secondary">Ingresar con</div>
                     <div class="flex-auto mt-px border-t"></div>
                 </div>
 
@@ -166,12 +160,12 @@
         <!-- Content -->
         <div class="z-10 relative w-full max-w-2xl">
             <div class="text-7xl font-bold leading-none text-gray-100">
-                <div>Welcome to</div>
-                <div>our community</div>
+                <div>Bienvenido a</div>
+                <div>nuestra comunidad</div>
             </div>
             <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
-                Fuse helps developers to build organized and well coded dashboards full of beautiful and rich modules.
-                Join us and start building your application today.
+                orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                has been the industry's standard dummy text ever since the 1500s, when an unknown printer.
             </div>
             <div class="flex items-center mt-8">
                 <div class="flex flex-0 items-center -space-x-1.5">
@@ -188,7 +182,7 @@
                         class="flex-0 w-10 h-10 rounded-full ring-4 ring-offset-1 ring-gray-800 ring-offset-gray-800 object-cover"
                         src="assets/images/avatars/male-16.jpg">
                 </div>
-                <div class="ml-4 font-medium tracking-tight text-gray-400">More than 17k people joined us, it's your turn</div>
+                <div class="ml-4 font-medium tracking-tight text-gray-400"></div>
             </div>
         </div>
     </div>

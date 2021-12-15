@@ -19,7 +19,7 @@
                             <mat-icon
                                 class="icon-size-5"
                                 [svgIcon]="'heroicons_solid:bell'"></mat-icon>
-                            <div class="ml-1.5 leading-6 truncate text-secondary">tienes 2 mensajes y 12 tareas nuevas</div>
+                            <div class="ml-1.5 leading-6 truncate text-secondary">tienes 2 mensajes y 12 solicitudes nuevas</div>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="flex flex-col items-center mt-2">
                                     <div class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">21</div>
-                                    <div class="text-lg font-medium text-blue-600 dark:text-blue-500">tareas pendientes</div>
+                                    <div class="text-lg font-medium text-blue-600 dark:text-blue-500">Solicitudes pendientes</div>
                                     <div class="flex items-baseline justify-center w-full mt-5 text-secondary">
                                         <div class="text-md font-medium truncate">Completadas:</div>
                                         <div class="ml-1.5 text-lg font-semibold">13</div>
@@ -127,7 +127,7 @@
                             <!-- Overdue -->
                             <div class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Fuera de fecha</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Desviaci&oacute;n</div>
                                     <div class="ml-2 -mt-2 -mr-3">
                                         <button
                                             mat-icon-button
@@ -145,7 +145,7 @@
                                 </div>
                                 <div class="flex flex-col items-center mt-2">
                                     <div class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">17</div>
-                                    <div class="text-lg font-medium text-red-600 dark:text-red-500">Tareas</div>
+                                    <div class="text-lg font-medium text-red-600 dark:text-red-500">Solicitudes</div>
                                     <div class="flex items-baseline justify-center w-full mt-5 text-secondary">
                                         <div class="text-md font-medium truncate">Desde ayer:</div>
                                         <div class="ml-1.5 text-lg font-semibold">9</div>
@@ -183,7 +183,7 @@
                             <!-- Features -->
                             <div class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Apoyadas</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Completadas</div>
                                     <div class="ml-2 -mt-2 -mr-3">
                                         <button
                                             mat-icon-button
@@ -211,20 +211,20 @@
                             <!-- Github issues summary -->
                             <div class="sm:col-span-2 md:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Resumen de problemas de Gitlab</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Activas y finalizadas por mes</div>
                                     <div class="mt-3 sm:mt-0 sm:ml-2">
                                         <mat-button-toggle-group
                                             value="this-week"
                                             #githubIssuesWeekSelector="matButtonToggleGroup">
-                                            <mat-button-toggle value="last-week">Semanada pasada</mat-button-toggle>
-                                            <mat-button-toggle value="this-week">Esta semana</mat-button-toggle>
+                                            <mat-button-toggle value="last-week">Año pasado</mat-button-toggle>
+                                            <mat-button-toggle value="this-week">Este año</mat-button-toggle>
                                         </mat-button-toggle-group>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-6 w-full mt-8 sm:mt-4">
                                     <!-- New vs. Closed -->
                                     <div class="flex flex-col flex-auto">
-                                        <div class="font-medium text-secondary">Nuevas vs. Cerradas</div>
+                                        <div class="font-medium text-secondary">Activas vs. Inactivas</div>
                                         <div class="flex flex-col flex-auto">
                                             <apx-chart
                                                 class="flex-auto w-full h-80"
@@ -252,42 +252,42 @@
                                                 <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['new-issues']}}
                                                 </div>
-                                                <div class="mt-1 text-sm sm:text-lg font-medium">Nuevos Casos</div>
+                                                <div class="mt-1 text-sm sm:text-lg font-medium">Promedio de d&iacute;s de entrega</div>
                                             </div>
                                             <!-- Closed -->
                                             <div class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-green-50 text-green-800 dark:bg-white dark:bg-opacity-5 dark:text-green-500">
                                                 <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['closed-issues']}}
                                                 </div>
-                                                <div class="mt-1 text-sm sm:text-lg font-medium">Cerrados</div>
+                                                <div class="mt-1 text-sm sm:text-lg font-medium">Promedio de d&iacute;s de inicio</div>
                                             </div>
                                             <!-- Fixed -->
                                             <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['fixed']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">Reparado</div>
+                                                <div class="mt-1 text-sm font-medium text-center">EPA</div>
                                             </div>
                                             <!-- Won't fix -->
                                             <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['wont-fix']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">Sin reparar</div>
+                                                <div class="mt-1 text-sm font-medium text-center">MODA</div>
                                             </div>
                                             <!-- Re-opened -->
                                             <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['re-opened']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">Re-abierto</div>
+                                                <div class="mt-1 text-sm font-medium text-center">BECO</div>
                                             </div>
                                             <!-- Needs triage -->
                                             <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">Necesita clasificaci&oacute;n</div>
+                                                <div class="mt-1 text-sm font-medium text-center">INMOBILIARIA</div>
                                             </div>
                                         </div>
                                     </div>
@@ -296,7 +296,7 @@
                             <!-- Task distribution -->
                             <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Distribuci&oacute;n de tareas</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Distribuci&oacute;n de colaboradores</div>
                                     <div class="mt-3 sm:mt-0 sm:ml-2">
                                         <mat-button-toggle-group
                                             value="this-week"
@@ -325,20 +325,20 @@
                                         <div class="text-5xl font-semibold leading-none tracking-tighter">
                                             {{data.taskDistribution.overview[taskDistributionWeekSelector.value]['new']}}
                                         </div>
-                                        <div class="mt-1 text-center text-secondary">Nuevas tareas</div>
+                                        <div class="mt-1 text-center text-secondary">Nuevas Solicitudes</div>
                                     </div>
                                     <div class="flex flex-col items-center justify-center p-6 sm:p-8">
                                         <div class="text-5xl font-semibold leading-none tracking-tighter">
                                             {{data.taskDistribution.overview[taskDistributionWeekSelector.value]['completed']}}
                                         </div>
-                                        <div class="mt-1 text-center text-secondary">Tareas completadas</div>
+                                        <div class="mt-1 text-center text-secondary">Solicitudes completadas</div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Schedule -->
                             <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Agendadas</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Prioridad</div>
                                     <div class="mt-3 sm:mt-0 sm:ml-2">
                                         <mat-button-toggle-group
                                             value="today"

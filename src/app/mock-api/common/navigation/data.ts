@@ -4,28 +4,28 @@ import { FuseNavigationItem } from '@fuse/components/navigation';
 export const defaultNavigation: FuseNavigationItem[] = [
     {
         id      : 'dashboards',
-        title   : 'Tablero',
-        subtitle: 'portafolio de solicitudes',
+        title   : 'Dashboards',
+        subtitle: '',
         type    : 'group',
         icon    : 'heroicons_outline:home',
         children: [
             {
                 id   : 'dashboards.project',
-                title: 'Proyecto',
+                title: 'Panel de solicitudes',
                 type : 'basic',
-                icon : 'heroicons_outline:clipboard-check',
+                icon : 'heroicons_outline:chart-pie',
                 link : '/dashboards/project'
             },
             {
                 id   : 'dashboards.analytics',
-                title: 'Análisis',
+                title: 'Gestión de colaboradores',
                 type : 'basic',
-                icon : 'heroicons_outline:chart-pie',
-                link : '/dashboards/analytics'
+                icon : 'heroicons_outline:clipboard-check',
+                link : '/apps/contacts'
             },
             {
                 id   : 'dashboards.finance',
-                title: 'Finanzas',
+                title: 'Matriz de conocimiento',
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/finance'
@@ -77,7 +77,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             */{
                 id      : 'teachers.portafolio',
-                title   : 'portafolio',
+                title   : 'Portafolio',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:archive',
                 children: [
@@ -129,7 +129,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'teacher.collaborator.collaborator',
                         title: 'Colaborador',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : '/apps/collaborators/collaborator'
                     },
                     {
                         id   : 'teacher.collaborator.employeePosition',

@@ -50,7 +50,7 @@
                             <mat-icon
                                 class="icon-size-5"
                                 [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                            <span class="ml-2">Edit</span>
+                            <span class="ml-2">Editar</span>
                         </button>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                     <!-- Company -->
                     <ng-container *ngIf="contact.company">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
                             <div class="ml-6 leading-6">{{contact.company}}</div>
                         </div>
                     </ng-container>
@@ -150,12 +150,12 @@
                     <!-- Birthday -->
                     <ng-container *ngIf="contact.birthday">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:cake'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                             <div class="ml-6 leading-6">{{contact.birthday | date:'longDate'}}</div>
                         </div>
                     </ng-container>
 
-                    <!-- Notes -->
+                    <!-- Notes
                     <ng-container *ngIf="contact.notes">
                         <div class="flex">
                             <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
@@ -163,7 +163,7 @@
                                 class="max-w-none ml-6 prose prose-sm"
                                 [innerHTML]="contact.notes"></div>
                         </div>
-                    </ng-container>
+                    </ng-container>-->
                 </div>
 
             </div>
@@ -249,7 +249,7 @@
                     <!-- Name -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Name</mat-label>
+                            <mat-label>Nombre</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
@@ -257,14 +257,18 @@
                             <input
                                 matInput
                                 [formControlName]="'name'"
-                                [placeholder]="'Name'"
+                                [placeholder]="'Nombre'"
                                 [spellcheck]="false">
                         </mat-form-field>
+
                     </div>
+
 
                     <!-- Tags -->
                     <div class="flex flex-wrap items-center -m-1.5 mt-6">
+                        <mat-label class="w-full">Habilidades</mat-label>
                         <!-- Tags -->
+
                         <ng-container *ngIf="contact.tags.length">
                             <ng-container *ngFor="let tag of (contact.tags | fuseFindByKey:'id':tags); trackBy: trackByFn">
                                 <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
@@ -282,14 +286,14 @@
                                 <mat-icon
                                     class="icon-size-5"
                                     [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Edit</span>
+                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
                             </ng-container>
 
                             <ng-container *ngIf="!contact.tags.length">
                                 <mat-icon
                                     class="icon-size-5"
                                     [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Add</span>
+                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
                             </ng-container>
 
                             <!-- Tags panel -->
@@ -305,7 +309,7 @@
                                                 <input
                                                     class="w-full min-w-0 py-1 border-0"
                                                     type="text"
-                                                    placeholder="Enter tag name"
+                                                    placeholder="Ingrese habilidad"
                                                     (input)="filterTags($event)"
                                                     (keydown)="filterTagsInputKeyDown($event)"
                                                     [maxLength]="30"
@@ -388,7 +392,7 @@
                     <!-- Title -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Title</mat-label>
+                            <mat-label>Departamento</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
@@ -403,11 +407,11 @@
                     <!-- Company -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Company</mat-label>
+                            <mat-label>Cargo</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:clipboard-check'"></mat-icon>
                             <input
                                 matInput
                                 [formControlName]="'company'"
@@ -468,7 +472,7 @@
                             <mat-icon
                                 class="icon-size-5"
                                 [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                            <span class="ml-2 font-medium text-secondary group-hover:underline">Add an email address</span>
+                            <span class="ml-2 font-medium text-secondary group-hover:underline">Agregar email</span>
                         </div>
                     </div>
 
@@ -478,7 +482,7 @@
                             <ng-container *ngFor="let phoneNumber of contactForm.get('phoneNumbers')['controls']; let i = index; let first = first; let last = last; trackBy: trackByFn">
                                 <div class="relative flex">
                                     <mat-form-field class="fuse-mat-no-subscript flex-auto">
-                                        <mat-label *ngIf="first">Phone</mat-label>
+                                        <mat-label *ngIf="first">tel&eacute;fono</mat-label>
                                         <input
                                             matInput
                                             [formControl]="phoneNumber.get('phoneNumber')"
@@ -548,14 +552,14 @@
                             <mat-icon
                                 class="icon-size-5"
                                 [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                            <span class="ml-2 font-medium text-secondary group-hover:underline">Add a phone number</span>
+                            <span class="ml-2 font-medium text-secondary group-hover:underline">Agregar tel&eacute;fono</span>
                         </div>
                     </div>
 
                     <!-- Address -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Address</mat-label>
+                            <mat-label>Direcci&oacute;n de sede</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
@@ -570,11 +574,11 @@
                     <!-- Birthday -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Birthday</mat-label>
+                            <mat-label>Fecha de Ingreso</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
                             <input
                                 matInput
                                 [matDatepicker]="birthdayDatepicker"
@@ -588,7 +592,7 @@
                         </mat-form-field>
                     </div>
 
-                    <!-- Notes -->
+                    <!-- Notes
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
                             <mat-label>Notes</mat-label>
@@ -604,7 +608,7 @@
                                 [spellcheck]="false"
                                 matTextareaAutosize></textarea>
                         </mat-form-field>
-                    </div>
+                    </div> -->
 
                     <!-- Actions -->
                     <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
@@ -612,17 +616,17 @@
                         <button
                             mat-button
                             [color]="'warn'"
-                            [matTooltip]="'Delete'"
+                            [matTooltip]="'Borrar'"
                             (click)="deleteContact()">
-                            Delete
+                            Borrar
                         </button>
                         <!-- Cancel -->
                         <button
                             class="ml-auto"
                             mat-button
-                            [matTooltip]="'Cancel'"
+                            [matTooltip]="'Cancelar'"
                             (click)="toggleEditMode(false)">
-                            Cancel
+                            Cancelar
                         </button>
                         <!-- Save -->
                         <button
@@ -630,9 +634,9 @@
                             mat-flat-button
                             [color]="'primary'"
                             [disabled]="contactForm.invalid"
-                            [matTooltip]="'Save'"
+                            [matTooltip]="'Guardar'"
                             (click)="updateContact()">
-                            Save
+                            Guardar
                         </button>
                     </div>
 
