@@ -129,19 +129,19 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'teacher.collaborator.collaborator',
                         title: 'Colaborador',
                         type : 'basic',
-                        link : '/apps/collaborators/collaborator'
+                        link : ''
                     },
                     {
                         id   : 'teacher.collaborator.employeePosition',
                         title: 'Posición empleado',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     },
                     {
                         id   : 'teacher.collaborator.departament',
                         title: 'Departamento',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     }
                 ]
             }/*
@@ -1207,6 +1207,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             }*/
         ]
     }
+
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
