@@ -496,7 +496,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             this.selectedProduct = newProduct;
 
             // Fill the form
-            this.selectedProductForm.patchValue(newProduct);
+            //this.selectedProductForm.patchValue(newProduct);
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
@@ -529,11 +529,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Eliminar maestro',
-            message: 'Seguro que quiere eliminar el maestro?',
+            title  : 'Eliminar solicitud',
+            message: '¿Seguro que quiere eliminar la solicitud?',
             actions: {
                 confirm: {
-                    label: 'Eliminar maestro'
+                    label: 'Eliminar solicitud'
                 }
             }
         });
@@ -542,7 +542,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         confirmation.afterClosed().subscribe((result) => {
 
             // If the confirm button pressed...
-            if ( result === 'confirmado' )
+            if ( result === 'confirmed' )
             {
 
                 // Get the product object

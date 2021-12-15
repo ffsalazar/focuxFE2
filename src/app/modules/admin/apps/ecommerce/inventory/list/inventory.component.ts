@@ -496,7 +496,7 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
             this.selectedProduct = newProduct;
 
             // Fill the form
-            this.selectedProductForm.patchValue(newProduct);
+            //this.selectedProductForm.patchValue(newProduct);
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
@@ -542,7 +542,7 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
         confirmation.afterClosed().subscribe((result) => {
 
             // If the confirm button pressed...
-            if ( result === 'confirmado' )
+            if ( result === 'confirmed' )
             {
 
                 // Get the product object
