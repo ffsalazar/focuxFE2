@@ -60,10 +60,10 @@ export const project = {
                 'completedos': 260
             }
         },
-        labels  : ['EPA', 'MODA', 'BECO', 'INMOBILIARIA'],
+        labels  : ['EPA', 'MAYOREO', 'MODA', 'LOGISTICO', 'INMOBILIARIO', 'BECONSULT', 'CREDIX', 'AUTOMUNDIAL', 'CDC'],
         series  : {
-            'this-week': [15, 20, 38, 27],
-            'last-week': [19, 16, 42, 23]
+            'this-week': [30, 17, 10, 7, 11, 10, 21, 2, 1],
+            'last-week': [27, 20, 10, 7, 11, 10, 21, 2, 1]
         }
     },
     schedule          : {
@@ -74,7 +74,7 @@ export const project = {
                 location: 'sala de conferencia 1B'
             },
             {
-                title: 'Coffee Break',
+                title: 'Desplegar V-1.2.1 Interfaces CAIN',
                 time : '10:30 AM'
             },
             {
@@ -86,17 +86,17 @@ export const project = {
                 time : '12:10 PM'
             },
             {
-                title   : 'Cena con David',
+                title   : 'Revisión Distribución de Colaboradores',
                 time    : '05:30 PM',
                 location: 'Costa Rica'
             },
             {
-                title   : 'Cumpleanos Angela',
+                title   : 'Revisión SLA',
                 time    : '07:30 PM',
                 location: 'Casa'
             },
             {
-                title   : 'Fiesta de jubilación del supervisor',
+                title   : 'Seguimiento Clockify',
                 time    : '09:30 PM',
                 location: 'Salon de fiesta'
             }

@@ -13,13 +13,18 @@
                     </div>
                     <div class="flex flex-col min-w-0 ml-4">
                         <ng-container *transloco="let t">
-                            <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">{{t('Bienvenido')}}, Brian!</div>
+                            <div
+                                class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">{{t('Bienvenido')}}
+                                , Brian!
+                            </div>
                         </ng-container>
                         <div class="flex items-center">
                             <mat-icon
                                 class="icon-size-5"
                                 [svgIcon]="'heroicons_solid:bell'"></mat-icon>
-                            <div class="ml-1.5 leading-6 truncate text-secondary">tienes 2 mensajes y 12 solicitudes nuevas</div>
+                            <div class="ml-1.5 leading-6 truncate text-secondary">tienes 2 mensajes y 12 solicitudes
+                                nuevas
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -65,7 +70,7 @@
                     [xPosition]="'before'">
                     <button
                         mat-menu-item
-                        (click)="selectedProject='Proyecto. Backend App'">Proyecto. Backend App
+                        (click)="selectedProject='Portafolio'">Portafolio
                     </button>
                     <button
                         mat-menu-item
@@ -110,14 +115,19 @@
                                         </button>
                                         <mat-menu #summaryMenu="matMenu">
                                             <button mat-menu-item>Ayer</button>
-                                            <button mat-menu-item> Hace 2 d&iacute;s </button>
+                                            <button mat-menu-item> Hace 2 d&iacute;s</button>
                                             <button mat-menu-item>Hace 3 d&iacute;s</button>
                                         </mat-menu>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-center mt-2">
-                                    <div class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">21</div>
-                                    <div class="text-lg font-medium text-blue-600 dark:text-blue-500">Solicitudes pendientes</div>
+                                    <div
+                                        class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
+                                        21
+                                    </div>
+                                    <div class="text-lg font-medium text-blue-600 dark:text-blue-500">Solicitudes
+                                        pendientes
+                                    </div>
                                     <div class="flex items-baseline justify-center w-full mt-5 text-secondary">
                                         <div class="text-md font-medium truncate">Completadas:</div>
                                         <div class="ml-1.5 text-lg font-semibold">13</div>
@@ -127,7 +137,9 @@
                             <!-- Overdue -->
                             <div class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Desviaci&oacute;n</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">
+                                        Desviaci&oacute;n
+                                    </div>
                                     <div class="ml-2 -mt-2 -mr-3">
                                         <button
                                             mat-icon-button
@@ -138,13 +150,16 @@
                                         </button>
                                         <mat-menu #overdueMenu="matMenu">
                                             <button mat-menu-item>Ayer</button>
-                                            <button mat-menu-item> Hace 2 d&iacute;s </button>
+                                            <button mat-menu-item> Hace 2 d&iacute;s</button>
                                             <button mat-menu-item>Hace 3 d&iacute;s</button>
                                         </mat-menu>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-center mt-2">
-                                    <div class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">17</div>
+                                    <div
+                                        class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
+                                        17
+                                    </div>
                                     <div class="text-lg font-medium text-red-600 dark:text-red-500">Solicitudes</div>
                                     <div class="flex items-baseline justify-center w-full mt-5 text-secondary">
                                         <div class="text-md font-medium truncate">Desde ayer:</div>
@@ -166,13 +181,16 @@
                                         </button>
                                         <mat-menu #issuesMenu="matMenu">
                                             <button mat-menu-item>Ayer</button>
-                                            <button mat-menu-item> Hace 2 d&iacute;s </button>
+                                            <button mat-menu-item> Hace 2 d&iacute;s</button>
                                             <button mat-menu-item>Hace 3 d&iacute;s</button>
                                         </mat-menu>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-center mt-2">
-                                    <div class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">24</div>
+                                    <div
+                                        class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">
+                                        24
+                                    </div>
                                     <div class="text-lg font-medium text-amber-600 dark:text-amber-500">Abiertas</div>
                                     <div class="flex items-baseline justify-center w-full mt-5 text-secondary">
                                         <div class="text-md font-medium truncate">Creradas hoy:</div>
@@ -194,13 +212,16 @@
                                         </button>
                                         <mat-menu #featuresMenu="matMenu">
                                             <button mat-menu-item>Ayer</button>
-                                            <button mat-menu-item> Hace 2 d&iacute;s </button>
+                                            <button mat-menu-item> Hace 2 d&iacute;s</button>
                                             <button mat-menu-item>Hace 3 d&iacute;s</button>
                                         </mat-menu>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-center mt-2">
-                                    <div class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">38</div>
+                                    <div
+                                        class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
+                                        38
+                                    </div>
                                     <div class="text-lg font-medium text-green-600 dark:text-green-500">Propuestas</div>
                                     <div class="flex items-baseline justify-center w-full mt-5 text-secondary">
                                         <div class="text-md font-medium truncate">Implementadas:</div>
@@ -209,9 +230,12 @@
                                 </div>
                             </div>
                             <!-- Github issues summary -->
-                            <div class="sm:col-span-2 md:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                            <div
+                                class="sm:col-span-2 md:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Activas y finalizadas por mes</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Activas y
+                                        Finalizadas por Mes
+                                    </div>
                                     <div class="mt-3 sm:mt-0 sm:ml-2">
                                         <mat-button-toggle-group
                                             value="this-week"
@@ -248,55 +272,97 @@
                                         <div class="font-medium text-secondary">Visi&oacute;n general</div>
                                         <div class="flex-auto grid grid-cols-4 gap-4 mt-6">
                                             <!-- New issues -->
-                                            <div class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-indigo-50 text-indigo-800 dark:bg-white dark:bg-opacity-5 dark:text-indigo-400">
-                                                <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
+                                            <div
+                                                class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-indigo-50 text-indigo-800 dark:bg-white dark:bg-opacity-5 dark:text-indigo-400">
+                                                <div
+                                                    class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['new-issues']}}
                                                 </div>
-                                                <div class="mt-1 text-sm sm:text-lg font-medium">Promedio de d&iacute;s de entrega</div>
+                                                <div class="mt-1 text-sm sm:text-lg font-medium">Promedio de d&iacute;as
+                                                    de entrega
+                                                </div>
                                             </div>
                                             <!-- Closed -->
-                                            <div class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-green-50 text-green-800 dark:bg-white dark:bg-opacity-5 dark:text-green-500">
-                                                <div class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
+                                            <div
+                                                class="col-span-2 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-green-50 text-green-800 dark:bg-white dark:bg-opacity-5 dark:text-green-500">
+                                                <div
+                                                    class="text-5xl sm:text-7xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['closed-issues']}}
                                                 </div>
-                                                <div class="mt-1 text-sm sm:text-lg font-medium">Promedio de d&iacute;s de inicio</div>
+                                                <div class="mt-1 text-sm sm:text-lg font-medium">Promedio de d&iacute;as
+                                                    de inicio
+                                                </div>
                                             </div>
                                             <!-- Fixed -->
-                                            <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                            <div
+                                                class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['fixed']}}
                                                 </div>
                                                 <div class="mt-1 text-sm font-medium text-center">EPA</div>
                                             </div>
                                             <!-- Won't fix -->
-                                            <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                            <div
+                                                class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['wont-fix']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">MODA</div>
+                                                <div class="mt-1 text-sm font-medium text-center">MAYOREO</div>
                                             </div>
                                             <!-- Re-opened -->
-                                            <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                            <div
+                                                class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['re-opened']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">BECO</div>
+                                                <div class="mt-1 text-sm font-medium text-center">MODA</div>
                                             </div>
                                             <!-- Needs triage -->
+                                            <div
+                                                class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                                <div class="text-5xl font-semibold leading-none tracking-tight">
+                                                    {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
+                                                </div>
+                                                <div class="mt-1 text-sm font-medium text-center">LOGISTICO</div>
+                                            </div>
+
+                                            <div
+                                                class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                                <div class="text-5xl font-semibold leading-none tracking-tight">
+                                                    {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
+                                                </div>
+                                                <div class="mt-1 text-sm font-medium text-center">INMOBILIARIO</div>
+                                            </div>
+                                            <div
+                                                class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                                <div class="text-5xl font-semibold leading-none tracking-tight">
+                                                    {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
+                                                </div>
+                                                <div class="mt-1 text-sm font-medium text-center">BECO</div>
+                                            </div>
                                             <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
                                                 <div class="text-5xl font-semibold leading-none tracking-tight">
                                                     {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
                                                 </div>
-                                                <div class="mt-1 text-sm font-medium text-center">INMOBILIARIA</div>
+                                                <div class="mt-1 text-sm font-medium text-center">AUTOMUNDIAL</div>
+                                            </div>
+                                            <div class="col-span-2 sm:col-span-1 flex flex-col items-center justify-center py-8 px-1 rounded-2xl bg-gray-100 text-secondary dark:bg-white dark:bg-opacity-5">
+                                                <div class="text-5xl font-semibold leading-none tracking-tight">
+                                                    {{data.githubIssues.overview[githubIssuesWeekSelector.value]['needs-triage']}}
+                                                </div>
+                                                <div class="mt-1 text-sm font-medium text-center">CDC</div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Task distribution -->
-                            <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                            <div
+                                class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Distribuci&oacute;n de colaboradores</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Distribuci&oacute;n
+                                        de colaboradores
+                                    </div>
                                     <div class="mt-3 sm:mt-0 sm:ml-2">
                                         <mat-button-toggle-group
                                             value="this-week"
@@ -320,7 +386,8 @@
                                         [tooltip]="chartTaskDistribution.tooltip"
                                         [yaxis]="chartTaskDistribution.yaxis"></apx-chart>
                                 </div>
-                                <div class="grid grid-cols-2 border-t divide-x -m-6 mt-4 bg-gray-50 dark:bg-transparent">
+                                <div
+                                    class="grid grid-cols-2 border-t divide-x -m-6 mt-4 bg-gray-50 dark:bg-transparent">
                                     <div class="flex flex-col items-center justify-center p-6 sm:p-8">
                                         <div class="text-5xl font-semibold leading-none tracking-tighter">
                                             {{data.taskDistribution.overview[taskDistributionWeekSelector.value]['new']}}
@@ -336,30 +403,36 @@
                                 </div>
                             </div>
                             <!-- Schedule -->
-                            <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                            <div
+                                class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Prioridad</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Casos
+                                        prioritarios
+                                    </div>
                                     <div class="mt-3 sm:mt-0 sm:ml-2">
                                         <mat-button-toggle-group
                                             value="today"
                                             #scheduleDaySelector="matButtonToggleGroup">
                                             <mat-button-toggle value="today">Hoy</mat-button-toggle>
-                                            <mat-button-toggle value="tomorrow">Manana</mat-button-toggle>
+                                            <mat-button-toggle value="tomorrow">Mañana</mat-button-toggle>
                                         </mat-button-toggle-group>
                                     </div>
                                 </div>
                                 <div class="flex flex-col mt-2 divide-y">
-                                    <ng-container *ngFor="let scheduleItem of data.schedule[scheduleDaySelector.value]; trackBy: trackByFn">
+                                    <ng-container
+                                        *ngFor="let scheduleItem of data.schedule[scheduleDaySelector.value]; trackBy: trackByFn">
                                         <div class="flex flex-row items-center justify-between py-4 px-0.5">
                                             <div class="flex flex-col">
                                                 <div class="font-medium">{{scheduleItem.title}}</div>
-                                                <div class="flex flex-col sm:flex-row sm:items-center -ml-0.5 mt-2 sm:mt-1 space-y-1 sm:space-y-0 sm:space-x-3">
+                                                <div
+                                                    class="flex flex-col sm:flex-row sm:items-center -ml-0.5 mt-2 sm:mt-1 space-y-1 sm:space-y-0 sm:space-x-3">
                                                     <ng-container *ngIf="scheduleItem.time">
                                                         <div class="flex items-center">
                                                             <mat-icon
                                                                 class="icon-size-5 text-hint"
                                                                 [svgIcon]="'heroicons_solid:clock'"></mat-icon>
-                                                            <div class="ml-1.5 text-md text-secondary">{{scheduleItem.time}}</div>
+                                                            <div
+                                                                class="ml-1.5 text-md text-secondary">{{scheduleItem.time}}</div>
                                                         </div>
                                                     </ng-container>
                                                     <ng-container *ngIf="scheduleItem.location">
@@ -367,7 +440,8 @@
                                                             <mat-icon
                                                                 class="icon-size-5 text-hint"
                                                                 [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
-                                                            <div class="ml-1.5 text-md text-secondary">{{scheduleItem.location}}</div>
+                                                            <div
+                                                                class="ml-1.5 text-md text-secondary">{{scheduleItem.location}}</div>
                                                         </div>
                                                     </ng-container>
                                                 </div>
@@ -388,8 +462,11 @@
                     <ng-template matTabContent>
                         <div class="grid grid-cols-1 sm:grid-cols-6 gap-6 w-full min-w-0">
                             <!-- Budget distribution -->
-                            <div class="sm:col-span-3 lg:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
-                                <div class="text-lg font-medium tracking-tight leading-6 truncate">Distribuci&oacute;n presupuestaria</div>
+                            <div
+                                class="sm:col-span-3 lg:col-span-4 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                                <div class="text-lg font-medium tracking-tight leading-6 truncate">Distribuci&oacute;n
+                                    presupuestaria
+                                </div>
                                 <div class="flex flex-col flex-auto">
                                     <apx-chart
                                         class="flex-auto w-full h-80"
@@ -408,10 +485,12 @@
                             <!-- Expense -->
                             <div class="sm:col-span-3 lg:col-span-2 grid grid-cols-1 gap-y-6">
                                 <!-- Weekly expenses -->
-                                <div class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                                <div
+                                    class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                     <div class="flex items-start justify-between">
                                         <div class="text-lg font-medium tracking-tight leading-6 truncate">
-                                            Gastos semanales</div>
+                                            Gastos semanales
+                                        </div>
                                         <div class="ml-2 -mt-2 -mr-3">
                                             <button
                                                 mat-icon-button
@@ -436,7 +515,8 @@
                                                 <mat-icon
                                                     class="mr-1 icon-size-5 text-green-500"
                                                     [svgIcon]="'heroicons_solid:trending-down'"></mat-icon>
-                                                <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                                                <div
+                                                    class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
                                                     <span class="text-green-500">2%</span>
                                                     debajo de la proyecci&oacute;n
                                                 </div>
@@ -456,9 +536,12 @@
                                     </div>
                                 </div>
                                 <!-- Monthly expenses -->
-                                <div class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                                <div
+                                    class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                     <div class="flex items-start justify-between">
-                                        <div class="text-lg font-medium tracking-tight leading-6 truncate">Gastos mensuales</div>
+                                        <div class="text-lg font-medium tracking-tight leading-6 truncate">Gastos
+                                            mensuales
+                                        </div>
                                         <div class="ml-2 -mt-2 -mr-3">
                                             <button
                                                 mat-icon-button
@@ -483,7 +566,8 @@
                                                 <mat-icon
                                                     class="mr-1 icon-size-5 text-red-500"
                                                     [svgIcon]="'heroicons_solid:trending-up'"></mat-icon>
-                                                <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                                                <div
+                                                    class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
                                                     <span class="text-red-500">4%</span>
                                                     Encima de la proyecci&oacute;n
                                                 </div>
@@ -503,9 +587,12 @@
                                     </div>
                                 </div>
                                 <!-- Yearly expenses -->
-                                <div class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                                <div
+                                    class="sm:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                                     <div class="flex items-start justify-between">
-                                        <div class="text-lg font-medium tracking-tight leading-6 truncate">Gastos mensuales</div>
+                                        <div class="text-lg font-medium tracking-tight leading-6 truncate">Gastos
+                                            mensuales
+                                        </div>
                                         <div class="ml-2 -mt-2 -mr-3">
                                             <button
                                                 mat-icon-button
@@ -530,7 +617,8 @@
                                                 <mat-icon
                                                     class="mr-1 icon-size-5 text-red-500"
                                                     [svgIcon]="'heroicons_solid:trending-up'"></mat-icon>
-                                                <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                                                <div
+                                                    class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
                                                     <span class="text-red-500">3%</span>
                                                     Encima de la proyecci&oacute;n
                                                 </div>
@@ -551,8 +639,11 @@
                                 </div>
                             </div>
                             <!-- Budget details -->
-                            <div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
-                                <div class="text-lg font-medium tracking-tight leading-6 truncate">Detalles del presupuesto</div>
+                            <div
+                                class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                                <div class="text-lg font-medium tracking-tight leading-6 truncate">Detalles del
+                                    presupuesto
+                                </div>
                                 <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
                                     <table
                                         class="min-w-240 overflow-y-visible"
@@ -696,7 +787,8 @@
                     <ng-template matTabContent>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
                             <ng-container *ngFor="let member of data.teamMembers">
-                                <div class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden">
+                                <div
+                                    class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden">
                                     <!-- Avatar & Info -->
                                     <div class="flex flex-col flex-auto w-full p-8 text-center">
                                         <div class="w-32 h-32 mx-auto rounded-full overflow-hidden">

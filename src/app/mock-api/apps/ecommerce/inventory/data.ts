@@ -44,11 +44,11 @@ export const tags = [
     },
     {
         id   : '3baea410-a7d6-4916-b79a-bdce50c37f95',
-        title: 'Adriana'
+        title: 'Adriana Duran'
     },
     {
         id   : '8ec8f60d-552f-4216-9f11-462b95b1d306',
-        title: 'Freddy'
+        title: 'Freddy Salazar'
     },
     {
         id   : '8837b93f-388b-43cc-851d-4ca8f23f3a61',
@@ -67,21 +67,21 @@ export const vendors = [
     },
     {
         id  : '998b0c07-abfd-4ba3-8de1-7563ef3c4d57',
-        name: 'Freddy',
-        slug: 'Freddy'
+        name: 'Freddy Salazar',
+        slug: 'Freddy Salazar'
     },
     {
         id  : '05ebb527-d733-46a9-acfb-a4e4ec960024',
-        name: 'Adriana',
-        slug: 'Adriana'
+        name: 'Adriana Duran',
+        slug: 'Adriana Duran'
     }
 ];
 export const products = [
     {
         id         : '7eb7c859-1347-4317-96b6-9476a7e2ba3c',
         category   : 'b899ec30-b85a-40ab-bb1f-18a596d5c6de',
-        name       : 'Solicitud 1',
-        description: 'Consequat esse in culpa commodo anim. Et ullamco anim amet est.',
+        name       : 'Mejora a Modulo de Interfaces CAIN',
+        description: 'Se requiere: Factibilidad de la opción, Impacto de su utilización con el procesamiento del sistema',
         tags       : [
             '167190fa-51b4-45fc-a742-8ce1b33d24ea',
             '7d6dd47e-7472-4f8b-93d4-46c114c44533',
@@ -89,7 +89,7 @@ export const products = [
             '2300ac48-f268-466a-b765-8b878b6e14a7',
             'b1286f3a-e2d0-4237-882b-f0efc0819ec3'
         ],
-        sku        : 'Credix',
+        sku        : 'Inmobiliario',
         barcode    : '8346',
         brand      : '61d52c2a-8947-4a2c-8c35-f36baef45b96',
         vendor     : '998b0c07-abfd-4ba3-8de1-7563ef3c4d57',

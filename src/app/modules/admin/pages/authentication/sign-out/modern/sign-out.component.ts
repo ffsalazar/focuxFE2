@@ -13,8 +13,8 @@ export class SignOutModernComponent
 {
     countdown: number = 5;
     countdownMapping: any = {
-        '=1'   : '# second',
-        'other': '# seconds'
+        '=1'   : '# segundo',
+        'other': '# segundos'
     };
 
     /**

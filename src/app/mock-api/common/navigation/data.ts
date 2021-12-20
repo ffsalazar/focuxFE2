@@ -83,7 +83,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 children: [
                     {
                         id   : 'teachers.portafolio.status',
-                        title: 'Estados',
+                        title: 'Estatus',
                         type : 'basic',
                         link : '/apps/ecommerce/inventory'
                     },
@@ -95,7 +95,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                     },
                     {
                         id   : 'teachers.portafolio.typeStatus',
-                        title: 'tipo de estados',
+                        title: 'Tipo de Estatus',
                         type : 'basic',
                         link : '/apps/ecommerce/inventory'
                     },
@@ -113,7 +113,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                     },
                     {
                         id   : 'teachers.portafolio.technicalArea',
-                        title: 'Area Téncnica',
+                        title: 'Area Técnica',
                         type : 'basic',
                         link : '/apps/ecommerce/inventory'
                     }
@@ -133,7 +133,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                     },
                     {
                         id   : 'teacher.collaborator.employeePosition',
-                        title: 'Posición empleado',
+                        title: 'Cargos',
                         type : 'basic',
                         link : ''
                     },
