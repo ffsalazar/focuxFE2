@@ -6,6 +6,7 @@ import { CalendarMockApi } from 'app/mock-api/apps/calendar/api';
 import { ChatMockApi } from 'app/mock-api/apps/chat/api';
 import { ContactsMockApi } from 'app/mock-api/apps/contacts/api';
 import { CryptoMockApi } from 'app/mock-api/dashboards/crypto/api';
+import { CollaboratorsMockApi } from 'app/mock-api/dashboards/collaborators/api';
 import { ECommerceInventoryMockApi } from 'app/mock-api/apps/ecommerce/inventory/api';
 import { FileManagerMockApi } from 'app/mock-api/apps/file-manager/api';
 import { FinanceMockApi } from 'app/mock-api/dashboards/finance/api';
@@ -47,5 +48,6 @@ export const mockApiServices = [
     ScrumboardMockApi,
     ShortcutsMockApi,
     TasksMockApi,
-    UserMockApi
+    UserMockApi,
+    CollaboratorsMockApi
 ];

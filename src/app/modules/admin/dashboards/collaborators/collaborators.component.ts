@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    selector       : 'request',
-    templateUrl    : './collaborator.component.html',
+    selector       : 'contacts',
+    templateUrl    : './collaborators.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollaboratorComponent
+export class CollaboratorsComponent
 {
     /**
      * Constructor

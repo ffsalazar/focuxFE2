@@ -14,21 +14,21 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Panel de solicitudes',
                 type : 'basic',
                 icon : 'heroicons_outline:chart-pie',
-                link : '/dashboards/project'
+                link : '/dashboards/requestPanel'
             },
             {
                 id   : 'dashboards.analytics',
                 title: 'Gestión de colaboradores',
                 type : 'basic',
                 icon : 'heroicons_outline:clipboard-check',
-                link : '/apps/contacts'
+                link : '/dashboards/collaborators'
             },
             {
                 id   : 'dashboards.finance',
                 title: 'Matriz de conocimiento',
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
-                link : '/dashboards/finance'
+                link : ''
             },
             /*{
                 id   : 'dashboards.crypto',
@@ -85,7 +85,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'teachers.portafolio.status',
                         title: 'Estatus',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     },
                     {
                         id   : 'teachers.portafolio.request',
@@ -97,25 +97,25 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'teachers.portafolio.typeStatus',
                         title: 'Tipo de Estatus',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     },
                     {
                         id   : 'teachers.portafolio.client',
                         title: 'Clientes',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     },
                     {
                         id   : 'teachers.portafolio.commercialArea',
                         title: 'Area Comercial',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     },
                     {
                         id   : 'teachers.portafolio.technicalArea',
                         title: 'Area Técnica',
                         type : 'basic',
-                        link : '/apps/ecommerce/inventory'
+                        link : ''
                     }
                 ]
             },
