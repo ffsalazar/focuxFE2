@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Collaborator, Country, Tag } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +13,7 @@ export class CollaboratorsService
     private _collaborator: BehaviorSubject<Collaborator | null> = new BehaviorSubject(null);
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
-    private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
+    private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ export class CollaboratorsService
      * Getter for collaborators
      */
     get collaborators$(): Observable<Collaborator[]>
-    {
+    {        
         return this._collaborators.asObservable();
     }
 
@@ -53,9 +53,9 @@ export class CollaboratorsService
     /**
      * Getter for tags
      */
-    get tags$(): Observable<Tag[]>
+    get knowledges$(): Observable<Knowledge[]>
     {
-        return this._tags.asObservable();
+        return this._knowledges.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -66,9 +66,10 @@ export class CollaboratorsService
      * Get collaborators
      */
     getCollaborators(): Observable<Collaborator[]>
-    {
-        return this._httpClient.get<Collaborator[]>('api/dashboards/collaborators/all').pipe(
+    {        
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
             tap((collaborators) => {
+                console.log(collaborators);
                 this._collaborators.next(collaborators);
             })
         );
@@ -80,7 +81,7 @@ export class CollaboratorsService
      * @param query
      */
     searchCollaborator(query: string): Observable<Collaborator[]>
-    {
+    {        
         return this._httpClient.get<Collaborator[]>('api/dashboards/collaborators/search', {
             params: {query}
         }).pipe(
@@ -93,15 +94,19 @@ export class CollaboratorsService
     /**
      * Get collaborator by id
      */
-    getCollaboratorById(id: string): Observable<Collaborator>
+    getCollaboratorById(id: number): Observable<Collaborator>
     {
         return this._collaborators.pipe(
             take(1),
             map((collaborators) => {
 
-                // Find the collaborator
+                // Find the collaborator¿
+                console.log(collaborators)
+                console.log(collaborators[0].id === id) ;
                 const collaborator = collaborators.find(item => item.id === id) || null;
-
+                const collaborator_test = collaborators.find(item => item.id === id);
+      
+                console.log(collaborator_test);
                 // Update the collaborator
                 this._collaborator.next(collaborator);
 
@@ -147,7 +152,7 @@ export class CollaboratorsService
      * @param id
      * @param collaborator
      */
-    updateCollaborator(id: string, collaborator: Collaborator): Observable<Collaborator>
+    updateCollaborator(id: number, collaborator: Collaborator): Observable<Collaborator>
     {
         return this.collaborators$.pipe(
             take(1),
@@ -190,7 +195,7 @@ export class CollaboratorsService
      *
      * @param id
      */
-    deleteCollaborator(id: string): Observable<boolean>
+    deleteCollaborator(id: number): Observable<boolean>
     {
         return this.collaborators$.pipe(
             take(1),
@@ -228,11 +233,11 @@ export class CollaboratorsService
     /**
      * Get tags
      */
-    getTags(): Observable<Tag[]>
+    getTags(): Observable<Knowledge[]>
     {
-        return this._httpClient.get<Tag[]>('api/dashboards/collaborators/tags').pipe(
-            tap((tags) => {
-                this._tags.next(tags);
+        return this._httpClient.get<Knowledge[]>('api/dashboards/collaborators/tags').pipe(
+            tap((knowledges) => {
+                this._knowledges.next(knowledges);
             })
         );
     }
@@ -242,15 +247,15 @@ export class CollaboratorsService
      *
      * @param tag
      */
-    createTag(tag: Tag): Observable<Tag>
+    createTag(knowledge: Knowledge): Observable<Knowledge>
     {
-        return this.tags$.pipe(
+        return this.knowledges$.pipe(
             take(1),
-            switchMap(tags => this._httpClient.post<Tag>('api/dashboards/collaborators/tag', {tag}).pipe(
+            switchMap(knowledges => this._httpClient.post<Knowledge>('api/dashboards/collaborators/tag', {knowledge}).pipe(
                 map((newTag) => {
 
                     // Update the tags with the new tag
-                    this._tags.next([...tags, newTag]);
+                    this._knowledges.next([...knowledges, newTag]);
 
                     // Return new tag from observable
                     return newTag;
@@ -265,24 +270,24 @@ export class CollaboratorsService
      * @param id
      * @param tag
      */
-    updateTag(id: string, tag: Tag): Observable<Tag>
+    updateTag(id: number, knowledge: Knowledge): Observable<Knowledge>
     {
-        return this.tags$.pipe(
+        return this.knowledges$.pipe(
             take(1),
-            switchMap(tags => this._httpClient.patch<Tag>('api/dashboards/collaborators/tag', {
+            switchMap(knowledges => this._httpClient.patch<Knowledge>('api/dashboards/collaborators/tag', {
                 id,
-                tag
+                knowledge
             }).pipe(
                 map((updatedTag) => {
 
                     // Find the index of the updated tag
-                    const index = tags.findIndex(item => item.id === id);
+                    const index = knowledges.findIndex(item => item.id === id);
 
                     // Update the tag
-                    tags[index] = updatedTag;
+                    knowledges[index] = updatedTag;
 
                     // Update the tags
-                    this._tags.next(tags);
+                    this._knowledges.next(knowledges);
 
                     // Return the updated tag
                     return updatedTag;
@@ -296,9 +301,9 @@ export class CollaboratorsService
      *
      * @param id
      */
-    deleteTag(id: string): Observable<boolean>
+    deleteTag(id: number): Observable<boolean>
     {
-        return this.tags$.pipe(
+        return this.knowledges$.pipe(
             take(1),
             switchMap(tags => this._httpClient.delete('api/dashboards/collaborators/tag', {params: {id}}).pipe(
                 map((isDeleted: boolean) => {
@@ -310,7 +315,7 @@ export class CollaboratorsService
                     tags.splice(index, 1);
 
                     // Update the tags
-                    this._tags.next(tags);
+                    this._knowledges.next(tags);
 
                     // Return the deleted status
                     return isDeleted;
@@ -323,12 +328,12 @@ export class CollaboratorsService
                         // Iterate through the collaborators
                         collaborators.forEach((collaborator) => {
 
-                            const tagIndex = collaborator.tags.findIndex(tag => tag === id);
+                            const tagIndex = collaborator.knowledges.findIndex(knowledge => knowledge.id === id);
 
                             // If the collaborator has the tag, remove it
                             if ( tagIndex > -1 )
                             {
-                                collaborator.tags.splice(tagIndex, 1);
+                                collaborator.knowledges.splice(tagIndex, 1);
                             }
                         });
 
@@ -346,7 +351,7 @@ export class CollaboratorsService
      * @param id
      * @param avatar
      */
-    uploadAvatar(id: string, avatar: File): Observable<Collaborator>
+    uploadAvatar(id: number, avatar: File): Observable<Collaborator>
     {
         return this.collaborators$.pipe(
             take(1),

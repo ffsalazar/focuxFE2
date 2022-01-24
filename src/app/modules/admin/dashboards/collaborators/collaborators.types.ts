@@ -1,6 +1,6 @@
 export interface Collaborator
 {
-    id: string;
+    id: number;
     avatar?: string | null;
     background?: string | null;
     name: string;
@@ -14,7 +14,7 @@ export interface Collaborator
     gender:string;
     bornDate:string;
     address?: string | null;
-    tags: string[];
+    knowledges: CollaboratorKnowledge[];
     file?:string | null;
 }
 
@@ -27,8 +27,17 @@ export interface Country
     flagImagePos: string;
 }
 
-export interface Tag
+export interface Knowledge
 {
-    id?: string;
-    title?: string;
+    id: number;
+    type: string;
+    description: string;
+    name: string;
+}
+
+export interface CollaboratorKnowledge 
+{
+    id: number;
+    level: number;
+    knowledge: Knowledge;
 }

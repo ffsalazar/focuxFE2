@@ -66,7 +66,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
 
         // Create the contact form
         this.contactForm = this._formBuilder.group({
-            id          : [''],
+            id          : [-1],
             avatar      : [null],
             name        : ['', [Validators.required]],
             emails      : this._formBuilder.array([]),

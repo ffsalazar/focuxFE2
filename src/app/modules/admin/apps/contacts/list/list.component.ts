@@ -53,7 +53,7 @@ export class ContactsListComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {
         // Get the contacts
-        this.contacts$ = this._contactsService.contacts$;
+        this.contacts$ = this._contactsService.getContacts();
         this._contactsService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((contacts: Contact[]) => {

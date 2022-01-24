@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Collaborator, Country, Tag } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "./collaborators.service";
 
 
@@ -61,7 +61,7 @@ export class CollaboratorsCollaboratorResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Collaborator>
     {
-        return this._collaboratorsService.getCollaboratorById(route.paramMap.get('id'))
+        return this._collaboratorsService.getCollaboratorById(parseInt(route.paramMap.get('id')))
                    .pipe(
                        // Error here means the requested collaborator is not available
                        catchError((error) => {
@@ -132,7 +132,7 @@ export class CollaboratorsTagsResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Tag[]>
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Knowledge[]>
     {
         return this._collaboratorsService.getTags();
     }

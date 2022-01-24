@@ -7,7 +7,7 @@ import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Collaborator, Country, Tag } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, CollaboratorKnowledge, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
@@ -24,9 +24,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
 
     editMode: boolean = false;
-    tags: Tag[];
+    knowledges: Knowledge[];
     tagsEditMode: boolean = false;
-    filteredTags: Tag[];
+    filteredTags: Knowledge[];
     collaborator: Collaborator;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
@@ -79,7 +79,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             gender       : [''],
             bornDate     : [''],
             address      : [''],
-            tags         : [[]]
+            knowledges         : [[]]
         });
 
         // Get the collaborators
@@ -133,12 +133,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the tags
-        this._collaboratorsService.tags$
+        // Get the knowledges
+        this._collaboratorsService.knowledges$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tags: Tag[]) => {
-                this.tags = tags;
-                this.filteredTags = tags;
+            .subscribe((knowledges: Knowledge[]) => {
+                this.knowledges = knowledges;
+                this.filteredTags = knowledges;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -317,7 +317,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Open tags panel
+     * Open knowledges panel
      */
     openTagsPanel(): void
     {
@@ -370,7 +370,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._tagsPanelOverlayRef.detach();
 
                 // Reset the tag filter
-                this.filteredTags = this.tags;
+                this.filteredTags = this.knowledges;
 
                 // Toggle the edit mode off
                 this.tagsEditMode = false;
@@ -386,7 +386,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Toggle the tags edit mode
+     * Toggle the knowledges edit mode
      */
     toggleTagsEditMode(): void
     {
@@ -394,7 +394,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Filter tags
+     * Filter knowledges
      *
      * @param event
      */
@@ -403,12 +403,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Get the value
         const value = event.target.value.toLowerCase();
 
-        // Filter the tags
-        this.filteredTags = this.tags.filter(tag => tag.title.toLowerCase().includes(value));
+        // Filter the knowledges
+        this.filteredTags = this.knowledges.filter(tag => tag.name.toLowerCase().includes(value));
     }
 
     /**
-     * Filter tags input key down event
+     * Filter knowledges input key down event
      *
      * @param event
      */
@@ -423,30 +423,31 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // If there is no tag available...
         if ( this.filteredTags.length === 0 )
         {
-            // Create the tag
-            this.createTag(event.target.value);
+           /*  TODO: this operation is not supported yet. jpelay  24/01*/
+            // // Create the tag
+            // this.createTag(event.target.value);
 
-            // Clear the input
-            event.target.value = '';
+            // // Clear the input
+            // event.target.value = '';
 
-            // Return
+            // // Return
             return;
         }
 
         // If there is a tag...
         const tag = this.filteredTags[0];
-        const isTagApplied = this.collaborator.tags.find(id => id === tag.id);
+        const isTagApplied = this.collaborator.knowledges.find(knowledge => knowledge.id === tag.id);
 
         // If the found tag is already applied to the collaborator...
         if ( isTagApplied )
         {
             // Remove the tag from the collaborator
-            this.removeTagFromCollaborator(tag);
+            this.removeTagFromCollaborator(null);
         }
         else
         {
             // Otherwise add the tag to the collaborator
-            this.addTagToCollaborator(tag);
+            this.addTagToCollaborator(null);
         }
     }
 
@@ -455,18 +456,26 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param title
      */
-    createTag(title: string): void
+    createTag(title: string, level: number): void
     {
         const tag = {
-            title
+            title,
+            level,
+            knowledge: {
+                id: 1,
+                name: "Java",
+                description: "programming language",
+                type: "backend"
+
+            }
         };
 
         // Create tag on the server
-        this._collaboratorsService.createTag(tag)
+        this._collaboratorsService.createTag(tag.knowledge)
             .subscribe((response) => {
 
                 // Add the tag to the collaborator
-                this.addTagToCollaborator(response);
+                this.addTagToCollaborator(null);
             });
     }
 
@@ -476,10 +485,10 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      * @param tag
      * @param event
      */
-    updateTagTitle(tag: Tag, event): void
+    updateTagTitle(tag: Knowledge, event): void
     {
         // Update the title on the tag
-        tag.title = event.target.value;
+        tag.name = event.target.value;
 
         // Update the tag on the server
         this._collaboratorsService.updateTag(tag.id, tag)
@@ -495,7 +504,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param tag
      */
-    deleteTag(tag: Tag): void
+    deleteTag(tag: Knowledge): void
     {
         // Delete the tag from the server
         this._collaboratorsService.deleteTag(tag.id).subscribe();
@@ -509,13 +518,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param tag
      */
-    addTagToCollaborator(tag: Tag): void
+    addTagToCollaborator(tag: CollaboratorKnowledge): void
     {
         // Add the tag
-        this.collaborator.tags.unshift(tag.id);
+        this.collaborator.knowledges.unshift(tag);
 
         // Update the collaborator form
-        this.collaboratorForm.get('tags').patchValue(this.collaborator.tags);
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -526,13 +535,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param tag
      */
-    removeTagFromCollaborator(tag: Tag): void
+    removeTagFromCollaborator(tag: CollaboratorKnowledge): void
     {
         // Remove the tag
-        this.collaborator.tags.splice(this.collaborator.tags.findIndex(item => item === tag.id), 1);
+        this.collaborator.knowledges.splice(this.collaborator.knowledges.findIndex(item => item.id === tag.id), 1);
 
         // Update the collaborator form
-        this.collaboratorForm.get('tags').patchValue(this.collaborator.tags);
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -543,9 +552,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param tag
      */
-    toggleCollaboratorTag(tag: Tag): void
+    toggleCollaboratorTag(tag: CollaboratorKnowledge): void
     {
-        if ( this.collaborator.tags.includes(tag.id) )
+        if ( this.collaborator.knowledges.includes(tag) )
         {
             this.removeTagFromCollaborator(tag);
         }
@@ -562,7 +571,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     shouldShowCreateTagButton(inputValue: string): boolean
     {
-        return !!!(inputValue === '' || this.tags.findIndex(tag => tag.title.toLowerCase() === inputValue.toLowerCase()) > -1);
+        return !!!(inputValue === '' || this.knowledges.findIndex(tag => tag.type.toLowerCase() === inputValue.toLowerCase()) > -1);
     }
 
     /**
