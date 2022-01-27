@@ -7,14 +7,14 @@ export interface Collaborator
     mail: string;
     nationality: string;
     lastName: string;
-    departament: string;
-    employeePosition: string | null;
+    employeePosition: EmployeePosition | null;
     companyEntryDate:string;
     organizationEntryDate:string;
     gender:string;
     bornDate:string;
-    address?: string | null;
+    assignedLocation?: string | null;
     knowledges: CollaboratorKnowledge[];
+    phones: Phone[];
     file?:string | null;
 }
 
@@ -40,4 +40,33 @@ export interface CollaboratorKnowledge
     id: number;
     level: number;
     knowledge: Knowledge;
+}
+
+export interface Department
+{
+    id: number;
+    code: string;
+    isActive: boolean;
+    name: string;
+    description: string;
+}
+export interface Position 
+{
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
+}
+export interface EmployeePosition 
+{
+    id: number;
+    position: Position
+    isActive: boolean;
+    department: Department;
+}
+
+export interface Phone
+{
+    id: number;
+    number: string;
 }

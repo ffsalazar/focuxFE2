@@ -75,15 +75,15 @@
                     <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
-                            <div class="ml-6 leading-6">{{collaborator.employeePosition}}</div>
+                            <div class="ml-6 leading-6">{{collaborator.employeePosition.position.name}}</div>
                         </div>
                     </ng-container>
 
                     <!-- Company -->
-                    <ng-container *ngIf="collaborator.departament">
+                    <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
-                            <div class="ml-6 leading-6">{{collaborator.departament}}</div>
+                            <div class="ml-6 leading-6">{{collaborator.employeePosition.department.name}}</div>
                         </div>
                     </ng-container>
 
@@ -112,38 +112,38 @@
                         </div>
                     </ng-container>
 
-                    <!-- Phone
-                    <ng-container *ngIf="collaborator.phoneNumbers.length">
+                    <!-- Phone -->
+                    <ng-container *ngIf="collaborator.phones">
                         <div class="flex">
                             <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                             <div class="min-w-0 ml-6 space-y-1">
-                                <ng-container *ngFor="let phoneNumber of collaborator.phoneNumbers; trackBy: trackByFn">
+                                <ng-container *ngFor="let phoneNumber of collaborator.phones">
                                     <div class="flex items-center leading-6">
-                                        <div
+                                        <!-- <div
                                             class="hidden sm:flex w-6 h-4 overflow-hidden"
                                             [matTooltip]="getCountryByIso(phoneNumber.country).name"
                                             [style.background]="'url(\'/assets/images/apps/collaborators/flags.png\') no-repeat 0 0'"
                                             [style.backgroundSize]="'24px 3876px'"
-                                            [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div>
-                                        <div class="sm:ml-3 font-mono">{{getCountryByIso(phoneNumber.country).code}}</div>
-                                        <div class="ml-2.5 font-mono">{{phoneNumber.phoneNumber}}</div>
+                                            [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div> 
+                                        <div class="sm:ml-3 font-mono">{{getCountryByIso(phoneNumber.country).code}}</div>-->
+                                        <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
                                         <div
                                             class="text-md truncate text-secondary"
-                                            *ngIf="phoneNumber.label">
+                                            *ngIf="phoneNumber.type">
                                             <span class="mx-2">&bull;</span>
-                                            <span class="font-medium">{{phoneNumber.label}}</span>
+                                            <span class="font-medium">{{phoneNumber.type}}</span>
                                         </div>
                                     </div>
                                 </ng-container>
                             </div>
                         </div>
-                    </ng-container>-->
+                    </ng-container>
 
                     <!-- Address -->
-                    <ng-container *ngIf="collaborator.address">
+                    <ng-container *ngIf="collaborator.assignedLocation">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
-                            <div class="ml-6 leading-6">{{collaborator.address}}</div>
+                            <div class="ml-6 leading-6">{{collaborator.assignedLocation}}</div>
                         </div>
                     </ng-container>
 
@@ -263,32 +263,47 @@
                     </div>
 
                     <!-- Name -->
-                    <div class="mt-8">
-                        <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Nombre</mat-label>
-                            <mat-icon
-                                matPrefix
-                                class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
-                            <input
-                                matInput
-                                [formControlName]="'name'"
-                                [placeholder]="'Nombre'"
-                                [spellcheck]="false">
-                        </mat-form-field>
-
-                    </div>
-
+                    <div class="row">
+                        <div class="mt-8">
+                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                                <mat-label>Nombres</mat-label>
+                                <mat-icon
+                                    matPrefix
+                                    class="hidden sm:flex icon-size-5"
+                                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                                <input
+                                    matInput
+                                    [formControlName]="'name'"
+                                    [placeholder]="'Nombres'"
+                                    [spellcheck]="false">
+                            </mat-form-field>
+                        </div>
+                        <!-- Last Name -->
+                        <div class="mt-4">
+                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                                <mat-label>Apellidos</mat-label>
+                                <mat-icon
+                                    matPrefix
+                                    class="hidden sm:flex icon-size-5"
+                                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                                <input
+                                    matInput
+                                    [formControlName]="'lastName'"
+                                    [placeholder]="'Apellidos'"
+                                    [spellcheck]="false">
+                            </mat-form-field>
+                        </div>
+                    </div>                    
 
                     <!-- Tags -->
                     <div class="flex flex-wrap items-center -m-1.5 mt-6">
                         <mat-label class="w-full">Habilidades</mat-label>
                         <!-- Tags -->
 
-                        <ng-container *ngIf="collaborator.tags.length">
-                            <ng-container *ngFor="let tag of (collaborator.tags | fuseFindByKey:'id':tags); trackBy: trackByFn">
+                        <ng-container *ngIf="collaborator.knowledges.length">
+                            <ng-container *ngFor="let collaboratorKnowledge of knowledges">
                                 <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                    <span class="text-md font-medium whitespace-nowrap">{{tag.title}}</span>
+                                    <span class="text-md font-medium whitespace-nowrap">{{collaboratorKnowledge.knowledge.name}}</span>
                                 </div>
                             </ng-container>
                         </ng-container>
@@ -298,14 +313,14 @@
                             (click)="openTagsPanel()"
                             #tagsPanelOrigin>
 
-                            <ng-container *ngIf="collaborator.tags.length">
+                            <ng-container *ngIf="collaborator.knowledges.length">
                                 <mat-icon
                                     class="icon-size-5"
                                     [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
                                 <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
                             </ng-container>
 
-                            <ng-container *ngIf="!collaborator.tags.length">
+                            <ng-container *ngIf="!collaborator.knowledges.length">
                                 <mat-icon
                                     class="icon-size-5"
                                     [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
@@ -348,7 +363,7 @@
                                     </div>
                                     <div
                                         class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
-                                        <!-- Tags -->
+                                        <!-- Tags 
                                         <ng-container *ngIf="!tagsEditMode">
                                             <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
                                                 <div
@@ -364,8 +379,8 @@
                                                     <div class="ml-1">{{tag.title}}</div>
                                                 </div>
                                             </ng-container>
-                                        </ng-container>
-                                        <!-- Tags editing -->
+                                        </ng-container>-->
+                                        <!-- Tags editing 
                                         <ng-container *ngIf="tagsEditMode">
                                             <div class="py-2 space-y-2">
                                                 <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
@@ -387,8 +402,8 @@
                                                     </div>
                                                 </ng-container>
                                             </div>
-                                        </ng-container>
-                                        <!-- Create tag -->
+                                        </ng-container>-->
+                                        <!-- Create tag
                                         <div
                                             class="flex items-center h-10 min-h-10 -ml-0.5 pl-4 pr-3 leading-none cursor-pointer hover:bg-hover"
                                             *ngIf="shouldShowCreateTagButton(newTagInput.value)"
@@ -398,7 +413,7 @@
                                                 class="mr-2 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
                                             <div class="break-all">Create "<b>{{newTagInput.value}}</b>"</div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </ng-template>
@@ -438,7 +453,7 @@
                     <!-- Mail -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Cargo</mat-label>
+                            <mat-label>Correo</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
@@ -462,7 +477,7 @@
                                 [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
                             <input
                                 matInput
-                                [formControlName]="'address'"
+                                [formControlName]="'assignedLocation'"
                                 [placeholder]="'Direcci&oacute;n de sede'">
                         </mat-form-field>
                     </div>

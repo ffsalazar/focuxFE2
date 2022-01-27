@@ -78,7 +78,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             organizationEntryDate : [''],
             gender       : [''],
             bornDate     : [''],
-            address      : [''],
+            assignedLocation : [''],
             knowledges         : [[]]
         });
 

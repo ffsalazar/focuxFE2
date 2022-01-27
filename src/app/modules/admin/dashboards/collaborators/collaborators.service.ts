@@ -156,8 +156,7 @@ export class CollaboratorsService
     {
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.patch<Collaborator>('api/dashboards/collaborators/collaborator', {
-                id,
+            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', {                
                 collaborator
             }).pipe(
                 map((updatedCollaborator) => {
