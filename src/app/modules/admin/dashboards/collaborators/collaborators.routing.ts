@@ -7,7 +7,7 @@ import {
     CollaboratorsCollaboratorResolver,
     CollaboratorsCountriesResolver,
     CollaboratorsResolver,
-    CollaboratorsTagsResolver
+    CollaboratorsKnowledgesResolver
 } from "./collaborators.resolvers";
 
 
@@ -16,7 +16,7 @@ export const collaboratorsRoutes: Route[] = [
         path     : '',
         component: CollaboratorsComponent,
         resolve  : {
-            tags: CollaboratorsTagsResolver
+            knowledges: CollaboratorsKnowledgesResolver
         },
         children : [
             {

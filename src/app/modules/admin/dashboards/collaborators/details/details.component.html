@@ -58,13 +58,13 @@
                 <!-- Name -->
                 <div class="mt-3 text-4xl font-bold truncate">{{collaborator.name}} {{collaborator.lastName}}</div>
 
-                <!-- Tags -->
+                <!-- Knowledges -->
                 <ng-container *ngIf="collaborator.knowledges.length">
                     <div class="flex flex-wrap items-center mt-2">
-                        <!-- Tag -->
-                        <ng-container *ngFor="let tag of collaborator.knowledges">
+                        <!-- Knowledge -->
+                        <ng-container *ngFor="let knowledge of collaborator.knowledges">
                             <div class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                <span class="text-sm font-medium whitespace-nowrap">{{tag.knowledge.name}} - nvl {{tag.level}}</span>
+                                <span class="text-sm font-medium whitespace-nowrap">{{knowledge.knowledge.name}} - nvl {{knowledge.level}}</span>
                             </div>
                         </ng-container>
                     </div>
@@ -124,14 +124,14 @@
                                             [matTooltip]="getCountryByIso(phoneNumber.country).name"
                                             [style.background]="'url(\'/assets/images/apps/collaborators/flags.png\') no-repeat 0 0'"
                                             [style.backgroundSize]="'24px 3876px'"
-                                            [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div> 
+                                            [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div>
                                         <div class="sm:ml-3 font-mono">{{getCountryByIso(phoneNumber.country).code}}</div>-->
                                         <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
                                         <div
                                             class="text-md truncate text-secondary"
-                                            *ngIf="phoneNumber.type">
+                                            *ngIf="phoneNumber">
                                             <span class="mx-2">&bull;</span>
-                                            <span class="font-medium">{{phoneNumber.type}}</span>
+                                            <span class="font-medium">{{phoneNumber}}</span>
                                         </div>
                                     </div>
                                 </ng-container>
@@ -293,25 +293,25 @@
                                     [spellcheck]="false">
                             </mat-form-field>
                         </div>
-                    </div>                    
+                    </div>
 
-                    <!-- Tags -->
+                    <!-- Knowledges -->
                     <div class="flex flex-wrap items-center -m-1.5 mt-6">
                         <mat-label class="w-full">Habilidades</mat-label>
-                        <!-- Tags -->
+                        <!-- Knowledges -->
 
                         <ng-container *ngIf="collaborator.knowledges.length">
-                            <ng-container *ngFor="let collaboratorKnowledge of knowledges">
+                            <ng-container *ngFor="let collaboratorKnowledge of collaborator.knowledges">
                                 <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
                                     <span class="text-md font-medium whitespace-nowrap">{{collaboratorKnowledge.knowledge.name}}</span>
                                 </div>
                             </ng-container>
                         </ng-container>
-                        <!-- Tags panel and its button -->
+                        <!-- Knowledges panel and its button -->
                         <div
                             class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 cursor-pointer text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                            (click)="openTagsPanel()"
-                            #tagsPanelOrigin>
+                            (click)="openKnowledgesPanel()"
+                            #knowledgesPanelOrigin>
 
                             <ng-container *ngIf="collaborator.knowledges.length">
                                 <mat-icon
@@ -327,10 +327,10 @@
                                 <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
                             </ng-container>
 
-                            <!-- Tags panel -->
-                            <ng-template #tagsPanel>
+                            <!-- Knowledges panel -->
+                            <ng-template #knowledgesPanel>
                                 <div class="w-60 rounded border shadow-md bg-card">
-                                    <!-- Tags panel header -->
+                                    <!-- Knowledges panel header -->
                                     <div class="flex items-center m-3 mr-2">
                                         <div class="flex items-center">
                                             <mat-icon
@@ -341,58 +341,58 @@
                                                     class="w-full min-w-0 py-1 border-0"
                                                     type="text"
                                                     placeholder="Ingrese habilidad"
-                                                    (input)="filterTags($event)"
-                                                    (keydown)="filterTagsInputKeyDown($event)"
+                                                    (input)="filterKnowledges($event)"
+                                                    (keydown)="filterKnowledgesInputKeyDown($event)"
                                                     [maxLength]="30"
-                                                    #newTagInput>
+                                                    #newKnowledgeInput>
                                             </div>
                                         </div>
                                         <button
                                             class="ml-1"
                                             mat-icon-button
-                                            (click)="toggleTagsEditMode()">
+                                            (click)="toggleKnowledgesEditMode()">
                                             <mat-icon
-                                                *ngIf="!tagsEditMode"
+                                                *ngIf="!knowledgesEditMode"
                                                 class="icon-size-5"
                                                 [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
                                             <mat-icon
-                                                *ngIf="tagsEditMode"
+                                                *ngIf="knowledgesEditMode"
                                                 class="icon-size-5"
                                                 [svgIcon]="'heroicons_solid:check'"></mat-icon>
                                         </button>
                                     </div>
                                     <div
                                         class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
-                                        <!-- Tags 
-                                        <ng-container *ngIf="!tagsEditMode">
-                                            <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
+                                        <!-- Knowledges-->
+                                        <ng-container *ngIf="!knowledgesEditMode">
+                                            <ng-container *ngFor="let knowledge of filteredKnowledges; trackBy: trackByFn">
                                                 <div
                                                     class="flex items-center h-10 min-h-10 px-4 cursor-pointer hover:bg-hover"
-                                                    (click)="toggleCollaboratorTag(tag)"
+                                                    (click)="toggleCollaboratorKnowledge(knowledge)"
                                                     matRipple>
                                                     <mat-checkbox
                                                         class="flex items-center h-10 min-h-10 pointer-events-none"
-                                                        [checked]="collaborator.tags.includes(tag.id)"
+                                                        [checked]="collaborator.knowledges.includes(knowledge)"
                                                         [color]="'primary'"
                                                         [disableRipple]="true">
                                                     </mat-checkbox>
-                                                    <div class="ml-1">{{tag.title}}</div>
+                                                    <div class="ml-1">{{knowledge.knowledge.name}}</div>
                                                 </div>
                                             </ng-container>
-                                        </ng-container>-->
-                                        <!-- Tags editing 
-                                        <ng-container *ngIf="tagsEditMode">
+                                        </ng-container>
+                                        <!-- Knowledges editing
+                                        <ng-container *ngIf="knowledgesEditMode">
                                             <div class="py-2 space-y-2">
-                                                <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
+                                                <ng-container *ngFor="let knowledge of filteredKnowledges; trackBy: trackByFn">
                                                     <div class="flex items-center">
                                                         <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript w-full mx-4">
                                                             <input
                                                                 matInput
-                                                                [value]="tag.title"
-                                                                (input)="updateTagTitle(tag, $event)">
+                                                                [value]="knowledge.title"
+                                                                (input)="updateKnowledgeTitle(knowledge, $event)">
                                                             <button
                                                                 mat-icon-button
-                                                                (click)="deleteTag(tag)"
+                                                                (click)="deleteKnowledge(knowledge)"
                                                                 matSuffix>
                                                                 <mat-icon
                                                                     class="icon-size-5 ml-2"
@@ -403,16 +403,16 @@
                                                 </ng-container>
                                             </div>
                                         </ng-container>-->
-                                        <!-- Create tag
+                                        <!-- Create knowledge
                                         <div
                                             class="flex items-center h-10 min-h-10 -ml-0.5 pl-4 pr-3 leading-none cursor-pointer hover:bg-hover"
-                                            *ngIf="shouldShowCreateTagButton(newTagInput.value)"
-                                            (click)="createTag(newTagInput.value); newTagInput.value = ''"
+                                            *ngIf="shouldShowCreateKnowledgeButton(newKnowledgeInput.value)"
+                                            (click)="createKnowledge(newKnowledgeInput.value); newKnowledgeInput.value = ''"
                                             matRipple>
                                             <mat-icon
                                                 class="mr-2 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                            <div class="break-all">Create "<b>{{newTagInput.value}}</b>"</div>
+                                            <div class="break-all">Create "<b>{{newKnowledgeInput.value}}</b>"</div>
                                         </div> -->
                                     </div>
                                 </div>

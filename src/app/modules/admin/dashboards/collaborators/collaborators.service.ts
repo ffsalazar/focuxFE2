@@ -38,7 +38,7 @@ export class CollaboratorsService
      * Getter for collaborators
      */
     get collaborators$(): Observable<Collaborator[]>
-    {        
+    {
         return this._collaborators.asObservable();
     }
 
@@ -51,7 +51,7 @@ export class CollaboratorsService
     }
 
     /**
-     * Getter for tags
+     * Getter for knowledges
      */
     get knowledges$(): Observable<Knowledge[]>
     {
@@ -66,7 +66,7 @@ export class CollaboratorsService
      * Get collaborators
      */
     getCollaborators(): Observable<Collaborator[]>
-    {        
+    {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
             tap((collaborators) => {
                 console.log(collaborators);
@@ -81,7 +81,7 @@ export class CollaboratorsService
      * @param query
      */
     searchCollaborator(query: string): Observable<Collaborator[]>
-    {        
+    {
         return this._httpClient.get<Collaborator[]>('api/dashboards/collaborators/search', {
             params: {query}
         }).pipe(
@@ -105,7 +105,7 @@ export class CollaboratorsService
                 console.log(collaborators[0].id === id) ;
                 const collaborator = collaborators.find(item => item.id === id) || null;
                 const collaborator_test = collaborators.find(item => item.id === id);
-      
+
                 console.log(collaborator_test);
                 // Update the collaborator
                 this._collaborator.next(collaborator);
@@ -156,7 +156,7 @@ export class CollaboratorsService
     {
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', {                
+            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', {
                 collaborator
             }).pipe(
                 map((updatedCollaborator) => {
@@ -230,11 +230,11 @@ export class CollaboratorsService
     }
 
     /**
-     * Get tags
+     * Get knowledges
      */
-    getTags(): Observable<Knowledge[]>
+    getKnowledges(): Observable<Knowledge[]>
     {
-        return this._httpClient.get<Knowledge[]>('api/dashboards/collaborators/tags').pipe(
+        return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
             tap((knowledges) => {
                 this._knowledges.next(knowledges);
             })
@@ -242,79 +242,79 @@ export class CollaboratorsService
     }
 
     /**
-     * Create tag
+     * Create knowledge
      *
-     * @param tag
+     * @param knowledge
      */
-    createTag(knowledge: Knowledge): Observable<Knowledge>
+   /* createKnowledge(knowledge: Knowledge): Observable<Knowledge>
     {
         return this.knowledges$.pipe(
             take(1),
-            switchMap(knowledges => this._httpClient.post<Knowledge>('api/dashboards/collaborators/tag', {knowledge}).pipe(
-                map((newTag) => {
+            switchMap(knowledges => this._httpClient.post<Knowledge>('api/dashboards/collaborators/knowledge', {knowledge}).pipe(
+                map((newKnowledge) => {
 
-                    // Update the tags with the new tag
-                    this._knowledges.next([...knowledges, newTag]);
+                    // Update the knowledges with the new knowledge
+                    this._knowledges.next([...knowledges, newKnowledge]);
 
-                    // Return new tag from observable
-                    return newTag;
+                    // Return new knowledge from observable
+                    return newKnowledge;
                 })
             ))
         );
     }
 
     /**
-     * Update the tag
+     * Update the knowledge
      *
      * @param id
-     * @param tag
+     * @param knowledge
      */
-    updateTag(id: number, knowledge: Knowledge): Observable<Knowledge>
+   /* updateKnowledge(id: number, knowledge: Knowledge): Observable<Knowledge>
     {
         return this.knowledges$.pipe(
             take(1),
-            switchMap(knowledges => this._httpClient.patch<Knowledge>('api/dashboards/collaborators/tag', {
+            switchMap(knowledges => this._httpClient.patch<Knowledge>('api/dashboards/collaborators/knowledge', {
                 id,
                 knowledge
             }).pipe(
-                map((updatedTag) => {
+                map((updatedKnowledge) => {
 
-                    // Find the index of the updated tag
+                    // Find the index of the updated knowledge
                     const index = knowledges.findIndex(item => item.id === id);
 
-                    // Update the tag
-                    knowledges[index] = updatedTag;
+                    // Update the knowledge
+                    knowledges[index] = updatedKnowledge;
 
-                    // Update the tags
+                    // Update the knowledges
                     this._knowledges.next(knowledges);
 
-                    // Return the updated tag
-                    return updatedTag;
+                    // Return the updated knowledge
+                    return updatedKnowledge;
                 })
             ))
         );
     }
 
     /**
-     * Delete the tag
+     * Delete the knowledge
      *
      * @param id
      */
-    deleteTag(id: number): Observable<boolean>
+    /*deleteKnowledge(id: number): Observable<boolean>
     {
         return this.knowledges$.pipe(
             take(1),
-            switchMap(tags => this._httpClient.delete('api/dashboards/collaborators/tag', {params: {id}}).pipe(
+            switchMap(knowledges => this._httpClient.delete('api/dashboards/collaborators/knowledge', {params: {id}}).pipe(
                 map((isDeleted: boolean) => {
 
-                    // Find the index of the deleted tag
-                    const index = tags.findIndex(item => item.id === id);
+                    // Find the index of the deleted knowledge
+                    const index = knowledges.findIndex(item => item.id === id);
 
-                    // Delete the tag
-                    tags.splice(index, 1);
+                    // Delete the knowledge
+                    knowledges.splice(index, 1);
 
-                    // Update the tags
-                    this._knowledges.next(tags);
+                    // Update the knowledges
+                    this._knowledges.next(knowledges);
 
                     // Return the deleted status
                     return isDeleted;
@@ -327,12 +327,12 @@ export class CollaboratorsService
                         // Iterate through the collaborators
                         collaborators.forEach((collaborator) => {
 
-                            const tagIndex = collaborator.knowledges.findIndex(knowledge => knowledge.id === id);
+                            const knowledgeIndex = collaborator.knowledges.findIndex(knowledge => knowledge.id === id);
 
-                            // If the collaborator has the tag, remove it
-                            if ( tagIndex > -1 )
+                            // If the collaborator has the knowledge, remove it
+                            if ( knowledgeIndex > -1 )
                             {
-                                collaborator.knowledges.splice(tagIndex, 1);
+                                collaborator.knowledges.splice(knowledgeIndex, 1);
                             }
                         });
 
