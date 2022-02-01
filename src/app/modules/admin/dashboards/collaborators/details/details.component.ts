@@ -20,13 +20,13 @@ import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators
 export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 {
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
-    @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
-    @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
+    @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
+    @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
 
     editMode: boolean = false;
     knowledges: Knowledge[];
-    tagsEditMode: boolean = false;
-    filteredTags: Knowledge[];
+    knowledgesEditMode: boolean = false;
+    filteredKnowledges: CollaboratorKnowledge[]=[];
     collaborator: Collaborator;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
@@ -36,6 +36,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
     private _tagsPanelOverlayRef: OverlayRef;
+    private _knowledgesPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     /**
      * Constructor
@@ -167,11 +168,31 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((knowledges: Knowledge[]) => {
                 this.knowledges = knowledges;
-                this.filteredTags = knowledges;
-                console.log(knowledges)
+
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            });                
+            });
+
+
+        this.knowledges.forEach(filteredKnowledges => {
+
+            let filteredKnowledge = {
+                id : filteredKnowledges.id,
+                level: 0,
+                knowledge: filteredKnowledges
+            };
+            this.filteredKnowledges.push(filteredKnowledge);
+
+        });
+
+        console.log(this.filteredKnowledges)
+
+
+
+
+
+
     }
 
     /**
@@ -184,9 +205,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         this._unsubscribeAll.complete();
 
         // Dispose the overlays if they are still on the DOM
-        if ( this._tagsPanelOverlayRef )
+        if ( this._knowledgesPanelOverlayRef )
         {
-            this._tagsPanelOverlayRef.dispose();
+            this._knowledgesPanelOverlayRef.dispose();
         }
     }
 
@@ -358,15 +379,15 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     /**
      * Open knowledges panel
      */
-    openTagsPanel(): void
+    openKnowledgesPanel(): void
     {
         // Create the overlay
-        this._tagsPanelOverlayRef = this._overlay.create({
+        this._knowledgesPanelOverlayRef = this._overlay.create({
             backdropClass   : '',
             hasBackdrop     : true,
             scrollStrategy  : this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._tagsPanelOrigin.nativeElement)
+                .flexibleConnectedTo(this._knowledgesPanelOrigin.nativeElement)
                 .withFlexibleDimensions(true)
                 .withViewportMargin(64)
                 .withLockedPosition(true)
@@ -381,38 +402,38 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         });
 
         // Subscribe to the attachments observable
-        this._tagsPanelOverlayRef.attachments().subscribe(() => {
+        this._knowledgesPanelOverlayRef.attachments().subscribe(() => {
 
             // Add a class to the origin
-            this._renderer2.addClass(this._tagsPanelOrigin.nativeElement, 'panel-opened');
+            this._renderer2.addClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
 
             // Focus to the search input once the overlay has been attached
-            this._tagsPanelOverlayRef.overlayElement.querySelector('input').focus();
+            this._knowledgesPanelOverlayRef.overlayElement.querySelector('input').focus();
         });
 
         // Create a portal from the template
-        const templatePortal = new TemplatePortal(this._tagsPanel, this._viewContainerRef);
+        const templatePortal = new TemplatePortal(this._knowledgesPanel, this._viewContainerRef);
 
         // Attach the portal to the overlay
-        this._tagsPanelOverlayRef.attach(templatePortal);
+        this._knowledgesPanelOverlayRef.attach(templatePortal);
 
         // Subscribe to the backdrop click
-        this._tagsPanelOverlayRef.backdropClick().subscribe(() => {
+        this._knowledgesPanelOverlayRef.backdropClick().subscribe(() => {
 
             // Remove the class from the origin
-            this._renderer2.removeClass(this._tagsPanelOrigin.nativeElement, 'panel-opened');
+            this._renderer2.removeClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
 
             // If overlay exists and attached...
-            if ( this._tagsPanelOverlayRef && this._tagsPanelOverlayRef.hasAttached() )
+            if ( this._knowledgesPanelOverlayRef && this._knowledgesPanelOverlayRef.hasAttached() )
             {
                 // Detach it
-                this._tagsPanelOverlayRef.detach();
+                this._knowledgesPanelOverlayRef.detach();
 
-                // Reset the tag filter
-                this.filteredTags = this.knowledges;
+                // Reset the knowledge filter
+
 
                 // Toggle the edit mode off
-                this.tagsEditMode = false;
+                this.knowledgesEditMode = false;
             }
 
             // If template portal exists and attached...
@@ -427,9 +448,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     /**
      * Toggle the knowledges edit mode
      */
-    toggleTagsEditMode(): void
+    toggleKnowledgesEditMode(): void
     {
-        this.tagsEditMode = !this.tagsEditMode;
+        this.knowledgesEditMode = !this.knowledgesEditMode;
     }
 
     /**
@@ -437,13 +458,14 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param event
      */
-    filterTags(event): void
+    filterKnowledges(event): void
     {
         // Get the value
         const value = event.target.value.toLowerCase();
 
         // Filter the knowledges
-        this.filteredTags = this.knowledges.filter(tag => tag.name.toLowerCase().includes(value));
+        //this.filteredKnowledges = this.knowledges.filter(knowledge => knowledge.name.toLowerCase().includes(value));
+
     }
 
     /**
@@ -451,7 +473,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param event
      */
-    filterTagsInputKeyDown(event): void
+    filterKnowledgesInputKeyDown(event): void
     {
         // Return if the pressed key is not 'Enter'
         if ( event.key !== 'Enter' )
@@ -459,12 +481,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             return;
         }
 
-        // If there is no tag available...
-        if ( this.filteredTags.length === 0 )
+        // If there is no knowledge available...
+        if ( this.filteredKnowledges.length === 0 )
         {
            /*  TODO: this operation is not supported yet. jpelay  24/01*/
-            // // Create the tag
-            // this.createTag(event.target.value);
+            // // Create the knowledge
+            // this.createKnowledge(event.target.value);
 
             // // Clear the input
             // event.target.value = '';
@@ -473,31 +495,32 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             return;
         }
 
-        // If there is a tag...
-        const tag = this.filteredTags[0];
-        const isTagApplied = this.collaborator.knowledges.find(knowledge => knowledge.id === tag.id);
+        // If there is a knowledge...
+        const Knowledge = this.filteredKnowledges[0];
+        const isKnowledgeApplied = this.collaborator.knowledges.find(knowledge => knowledge.knowledge.id === Knowledge.id);
 
-        // If the found tag is already applied to the collaborator...
-        if ( isTagApplied )
+        // If the found knowledge is already applied to the collaborator...
+        if ( isKnowledgeApplied )
         {
-            // Remove the tag from the collaborator
-            this.removeTagFromCollaborator(null);
+            // Remove the knowledge from the collaborator
+            this.removeKnowledgeFromCollaborator(null);
         }
         else
         {
-            // Otherwise add the tag to the collaborator
-            this.addTagToCollaborator(null);
+            // Otherwise add the knowledge to the collaborator
+            this.addKnowledgeToCollaborator(null);
         }
+
     }
 
     /**
-     * Create a new tag
+     * Create a new knowledge
      *
      * @param title
      */
-    createTag(title: string, level: number): void
+    createKnowledge(title: string, level: number): void
     {
-        const tag = {
+        const knowledge = {
             title,
             level,
             knowledge: {
@@ -509,28 +532,28 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             }
         };
 
-        // Create tag on the server
-        this._collaboratorsService.createTag(tag.knowledge)
+        // Create knowledge on the server
+     /*   this._collaboratorsService.createKnowledge(knowledge.knowledge)
             .subscribe((response) => {
 
-                // Add the tag to the collaborator
-                this.addTagToCollaborator(null);
-            });
+                // Add the knowledge to the collaborator
+                this.addKnowledgeToCollaborator(null);
+            });*/
     }
 
     /**
-     * Update the tag title
+     * Update the knowledge title
      *
-     * @param tag
+     * @param knowledge
      * @param event
      */
-    updateTagTitle(tag: Knowledge, event): void
+   /* updateKnowledgeTitle(knowledge: Knowledge, event): void
     {
-        // Update the title on the tag
-        tag.name = event.target.value;
+        // Update the title on the knowledge
+        knowledge.name = event.target.value;
 
-        // Update the tag on the server
-        this._collaboratorsService.updateTag(tag.id, tag)
+        // Update the knowledge on the server
+        this._collaboratorsService.updateKnowledge(knowledge.id, knowledge)
             .pipe(debounceTime(300))
             .subscribe();
 
@@ -539,28 +562,48 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Delete the tag
+     * Delete the knowledge
      *
-     * @param tag
+     * @param knowledge
      */
-    deleteTag(tag: Knowledge): void
+   /* deleteKnowledge(knowledge: Knowledge): void
     {
-        // Delete the tag from the server
-        this._collaboratorsService.deleteTag(tag.id).subscribe();
+        // Delete the knowledge from the server
+        this._collaboratorsService.deleteKnowledge(knowledge.id).subscribe();
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
 
     /**
-     * Add tag to the collaborator
+     * Add knowledge to the collaborator
      *
-     * @param tag
+     * @param knowledge
      */
-    addTagToCollaborator(tag: CollaboratorKnowledge): void
+    addKnowledgeToCollaborator(knowledge: any): void
     {
-        // Add the tag
-        this.collaborator.knowledges.unshift(tag);
+        // Update the collaborator form
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
+
+
+        // Add the knowledge
+        this.collaborator.knowledges.unshift(knowledge);
+
+
+        // Mark for check
+        this._changeDetectorRef.detectChanges();
+
+    }
+
+    /**
+     * Remove knowledge from the collaborator
+     *
+     * @param knowledge
+     */
+    removeKnowledgeFromCollaborator(knowledge: any): void
+    {
+        // Remove the knowledge
+        this.collaborator.knowledges.splice(this.collaborator.knowledges.findIndex(item => item.id === knowledge.id), 1);
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
@@ -570,47 +613,36 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Remove tag from the collaborator
+     * Toggle collaborator knowledge
      *
-     * @param tag
+     * @param knowledge
      */
-    removeTagFromCollaborator(tag: CollaboratorKnowledge): void
+    toggleCollaboratorKnowledge(knowledge: any): void
     {
-        // Remove the tag
-        this.collaborator.knowledges.splice(this.collaborator.knowledges.findIndex(item => item.id === tag.id), 1);
-
-        // Update the collaborator form
-        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Toggle collaborator tag
-     *
-     * @param tag
-     */
-    toggleCollaboratorTag(tag: CollaboratorKnowledge): void
-    {
-        if ( this.collaborator.knowledges.includes(tag) )
+        /*let collaboratorKnowledge : CollaboratorKnowledge = {
+            id: knowledge.id,
+            level : 0,
+            knowledge : knowledge
+        }*/
+        if ( this.collaborator.knowledges.includes(knowledge) )
         {
-            this.removeTagFromCollaborator(tag);
+            this.removeKnowledgeFromCollaborator(knowledge);
         }
         else
         {
-            this.addTagToCollaborator(tag);
+
+            this.addKnowledgeToCollaborator(knowledge);
         }
     }
 
     /**
-     * Should the create tag button be visible
+     * Should the create knowledge button be visible
      *
      * @param inputValue
      */
-    shouldShowCreateTagButton(inputValue: string): boolean
+    shouldShowCreateKnowledgeButton(inputValue: string): boolean
     {
-        return !!!(inputValue === '' || this.knowledges.findIndex(tag => tag.type.toLowerCase() === inputValue.toLowerCase()) > -1);
+        return !!!(inputValue === '' || this.knowledges.findIndex(knowledge => knowledge.type.toLowerCase() === inputValue.toLowerCase()) > -1);
     }
 
     /**

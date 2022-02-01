@@ -113,7 +113,7 @@ export class CollaboratorsCountriesResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class CollaboratorsTagsResolver implements Resolve<any>
+export class CollaboratorsKnowledgesResolver implements Resolve<any>
 {
     /**
      * Constructor
@@ -134,7 +134,7 @@ export class CollaboratorsTagsResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Knowledge[]>
     {
-        return this._collaboratorsService.getTags();
+        return this._collaboratorsService.getKnowledges();
     }
 }
 
