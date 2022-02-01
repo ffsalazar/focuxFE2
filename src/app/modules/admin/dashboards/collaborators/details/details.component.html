@@ -75,7 +75,7 @@
                     <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
-                            <div class="ml-6 leading-6">{{collaborator.employeePosition.position.name}}</div>
+                            <div class="ml-6 leading-6">{{collaborator.employeePosition.name}}</div>
                         </div>
                     </ng-container>
 
@@ -273,7 +273,7 @@
                                     [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                                 <input
                                     matInput
-                                    [formControlName]="'name'"
+                                    formControlName="name"
                                     [placeholder]="'Nombres'"
                                     [spellcheck]="false">
                             </mat-form-field>
@@ -288,7 +288,7 @@
                                     [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                                 <input
                                     matInput
-                                    [formControlName]="'lastName'"
+                                    formControlName="lastName"
                                     [placeholder]="'Apellidos'"
                                     [spellcheck]="false">
                             </mat-form-field>
@@ -420,35 +420,33 @@
                         </div>
                     </div>
 
-                    <!-- Title -->
-                    <div class="mt-8">
+                    <!-- Company -->
+                   <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
                             <mat-label>Departamento</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
-                            <input
-                                matInput
-                                [formControlName]="'departament'"
-                                [placeholder]="'Departamento'">
-                        </mat-form-field>
+                                [svgIcon]="'heroicons_solid:clipboard-check'"></mat-icon>                            
+                                <mat-select [placeholder]="'Departamento'" formControlName="department" (selectionChange)="filterPositionsByDepartment()">
+                                    <mat-option *ngFor="let department of departments" [value]="department.id">{{department.name}}</mat-option>
+                                </mat-select>
+                        </mat-form-field>                                                
                     </div>
-
-                    <!-- Company -->
+                    
+                    <!-- Title -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Cargo</mat-label>
+                            <mat-label>Posición</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:clipboard-check'"></mat-icon>
-                            <input
-                                matInput
-                                [formControlName]="'employeePosition'"
-                                [placeholder]="'Cargo'">
+                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>              
+                            <mat-select [placeholder]="collaborator.employeePosition.name" formControlName="employeePosition"> 
+                                <mat-option *ngFor="let employeePosition of filteredEmployeePositions" [value]="employeePosition.id">{{employeePosition.name}}</mat-option>
+                            </mat-select>
                         </mat-form-field>
-                    </div>
+                    </div>                
 
                     <!-- Mail -->
                     <div class="mt-8">
@@ -460,13 +458,89 @@
                                 [svgIcon]="'heroicons_solid:mail'"></mat-icon>
                             <input
                                 matInput
-                                [formControlName]="'mail'"
+                                formControlName="mail"
                                 [placeholder]="'Correo'">
                         </mat-form-field>
                     </div>
-
-
-
+                    <!-- Phone numbers -->
+                    <div class="mt-8">
+                        <div class="space-y-4">
+                            <ng-container *ngFor="let phoneNumber of collaborator.phones; let first = first; let last = last">
+                                <div class="relative flex">
+                                    <mat-form-field class="fuse-mat-no-subscript flex-auto">
+                                        <!-- <mat-label *ngIf="first">tel&eacute;fono</mat-label> -->
+                                        <input
+                                            matInput
+                                            [formControl]="phoneNumber.number"
+                                            [placeholder]="'Phone'">
+                                        <!-- <mat-select
+                                            class="mr-1.5"
+                                            [formControl]="phoneNumber.get('country')"
+                                            matPrefix>
+                                            <mat-select-trigger>
+                                                <span class="flex items-center">
+                                                    <span
+                                                        class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
+                                                        [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                                        [style.backgroundSize]="'24px 3876px'"
+                                                        [style.backgroundPosition]="getCountryByIso(phoneNumber.get('country').value).flagImagePos"></span>
+                                                    <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso(phoneNumber.get('country').value).code}}</span>
+                                                </span>
+                                            </mat-select-trigger>
+                                            <ng-container *ngFor="let country of countries; trackBy: trackByFn">
+                                                <mat-option [value]="country.iso">
+                                                    <span class="flex items-center">
+                                                        <span
+                                                            class="w-6 h-4 overflow-hidden"
+                                                            [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                                            [style.backgroundSize]="'24px 3876px'"
+                                                            [style.backgroundPosition]="country.flagImagePos"></span>
+                                                        <span class="ml-2">{{country.name}}</span>
+                                                        <span class="ml-2 font-medium">{{country.code}}</span>
+                                                    </span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select> -->
+                                    </mat-form-field>
+                                    <mat-form-field class="fuse-mat-no-subscript flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4">
+                                        <!-- <mat-label *ngIf="first">Label</mat-label> -->
+                                        <mat-icon
+                                            matPrefix
+                                            class="hidden sm:flex icon-size-5"
+                                            [svgIcon]="'heroicons_solid:tag'"></mat-icon>
+                                        <input
+                                            matInput
+                                            [formControl]="phoneNumber.type"
+                                            [placeholder]="'Label'">
+                                    </mat-form-field>
+                                    <!-- Remove phone number -->
+                                    <ng-container *ngIf="!(first && last)">
+                                        <div
+                                            class="flex items-center w-10 pl-2"
+                                            [ngClass]="{'mt-6': first}">
+                                            <button
+                                                class="w-8 h-8 min-h-8"
+                                                mat-icon-button
+                                                (click)="removePhoneNumberField(i)"
+                                                matTooltip="Remove">
+                                                <mat-icon
+                                                    class="icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div
+                            class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
+                            (click)="addPhoneNumberField()">
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                            <span class="ml-2 font-medium text-secondary group-hover:underline">Agregar tel&eacute;fono</span>
+                        </div>
+                    </div>
                     <!-- Address -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -477,7 +551,7 @@
                                 [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
                             <input
                                 matInput
-                                [formControlName]="'assignedLocation'"
+                                formControlName="assignedLocation"
                                 [placeholder]="'Direcci&oacute;n de sede'">
                         </mat-form-field>
                     </div>
@@ -493,7 +567,7 @@
                             <input
                                 matInput
                                 [matDatepicker]="bornDatepicker"
-                                [formControlName]="'bornDate'"
+                                formControlName="bornDate"
                                 [placeholder]="'Fecha de nacimiento'">
                             <mat-datepicker-toggle
                                 matSuffix
@@ -514,7 +588,7 @@
                             <input
                                 matInput
                                 [matDatepicker]="organizationEntryDatepicker"
-                                [formControlName]="'organizationEntryDate'"
+                                formControlName="organizationEntryDate"
                                 [placeholder]="'organizationEntryDate'">
                             <mat-datepicker-toggle
                                 matSuffix
@@ -535,7 +609,7 @@
                             <input
                                 matInput
                                 [matDatepicker]="companyEntryDatepicker"
-                                [formControlName]="'companyEntryDate'"
+                                formControlName="companyEntryDate"
                                 [placeholder]="'companyEntryDate'">
                             <mat-datepicker-toggle
                                 matSuffix
@@ -555,7 +629,7 @@
                                 [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                             <textarea
                                 matInput
-                                [formControlName]="'notes'"
+                                formControlName="notes"
                                 [placeholder]="'Notes'"
                                 [rows]="5"
                                 [spellcheck]="false"

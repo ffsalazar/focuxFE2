@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Collaborator, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +14,8 @@ export class CollaboratorsService
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
-
+    private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
+    private _employeePositions: BehaviorSubject<EmployeePosition[] | null> = new BehaviorSubject(null);
     /**
      * Constructor
      */
@@ -57,7 +58,20 @@ export class CollaboratorsService
     {
         return this._knowledges.asObservable();
     }
-
+    /**
+     * Getter for departments
+     */
+     get departments$(): Observable<Department[]>
+    {
+        return this._departments.asObservable();
+    }
+    /**
+     * Getter for employeePositions
+     */
+    get employeePositions$(): Observable<EmployeePosition[]>
+    {
+        return this._employeePositions.asObservable();
+    }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -69,7 +83,15 @@ export class CollaboratorsService
     {        
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
             tap((collaborators) => {
-                console.log(collaborators);
+                function compare(a: Collaborator, b: Collaborator) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+                    // Their names are equal
+                    if (a.lastName < b.lastName) return -1;
+                    if (a.lastName > b.lastName) return 1;
+                    return 0;
+                }
+                collaborators.sort(compare);
                 this._collaborators.next(collaborators);
             })
         );
@@ -154,11 +176,12 @@ export class CollaboratorsService
      */
     updateCollaborator(id: number, collaborator: Collaborator): Observable<Collaborator>
     {
+       console.log(JSON.stringify(collaborator));
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', {                
+            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save',           
                 collaborator
-            }).pipe(
+            ).pipe(
                 map((updatedCollaborator) => {
 
                     // Find the index of the updated collaborator
@@ -390,6 +413,24 @@ export class CollaboratorsService
                     })
                 ))
             ))
+        );
+    }
+    getDepartments(): Observable<Department[]>
+    {
+        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+            tap((departments) => {
+                console.log(departments)
+                this._departments.next(departments);                
+            })
+        );
+    }
+    getEmployeePositions(): Observable<EmployeePosition[]>
+    {
+        return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeeposition/all').pipe(
+            tap((employeePositions) => {
+                console.log(employeePositions)
+                this._employeePositions.next(employeePositions);                
+            })
         );
     }
 }

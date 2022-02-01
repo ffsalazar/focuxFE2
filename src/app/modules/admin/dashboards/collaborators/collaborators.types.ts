@@ -50,17 +50,12 @@ export interface Department
     name: string;
     description: string;
 }
-export interface Position 
-{
-    id: number;
-    name: string;
-    description: string;
-    isActive: boolean;
-}
+
 export interface EmployeePosition 
 {
     id: number;
-    position: Position
+    name: String;
+    description: String;
     isActive: boolean;
     department: Department;
 }

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Collaborator, CollaboratorKnowledge, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
@@ -30,10 +30,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     collaborator: Collaborator;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
+    departments: Department[];
+    filteredDepartments: Department[];
     countries: Country[];
+    employeePositions: EmployeePosition[];
+    filteredEmployeePositions: EmployeePosition[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
     /**
      * Constructor
      */
@@ -65,23 +68,27 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         this._collaboratorsListComponent.matDrawer.open();
 
         // Create the collaborator form
-        this.collaboratorForm = this._formBuilder.group({
-            id          : [''],
-            avatar      : [null],
-            name        : ['', [Validators.required]],
-            mail        : [''],
-            lastName    : [''],
-            nationality : [''],
-            departament : [''],
-            employeePosition : [''],
-            companyEntryDate : [''],
-            organizationEntryDate : [''],
-            gender       : [''],
-            bornDate     : [''],
-            assignedLocation : [''],
-            knowledges         : [[]]
-        });
-
+        this.collaboratorForm = new FormGroup({
+            id          : new FormControl(''),
+            idFile      : new FormControl(''),
+            avatar      : new FormControl(null),
+            name        : new FormControl('',[Validators.required]), 
+            mail        : new FormControl(''),
+            lastName    : new FormControl(''),
+            nationality : new FormControl(''),
+            department : new FormControl(null),
+            employeePosition : new FormControl(''),
+            companyEntryDate : new FormControl(''),
+            organizationEntryDate : new FormControl(''),
+            gender       : new FormControl(''),
+            bornDate     : new FormControl(''),
+            assignedLocation : new FormControl(''),
+            knowledges         : new FormControl([]),
+            isActive: new FormControl(''),
+            technicalSkills: new FormControl(''),
+            phones: new FormControl([])
+        })
+            
         // Get the collaborators
         this._collaboratorsService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -92,30 +99,52 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+            
+            // Get the collaborator        
+            
+        this._collaboratorsService.departments$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((deparments: Department[]) => {
+                this.departments = deparments;
+                this.filteredDepartments = deparments;                
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+        
+        this._collaboratorsService.employeePositions$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((employeePositions: EmployeePosition[]) => {
+                this.employeePositions = employeePositions;
+                this.filteredEmployeePositions = employeePositions;
+                console.log(this.employeePositions);
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
-        // Get the collaborator
         this._collaboratorsService.collaborator$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborator: Collaborator) => {
 
+               
                 // Open the drawer in case it is closed
                 this._collaboratorsListComponent.matDrawer.open();
 
                 // Get the collaborator
                 this.collaborator = collaborator;
-
-
-
+                            
                     // Clear the emails and phoneNumbers form arrays
                /* (this.collaboratorForm.get('emails') as FormArray).clear();
                 (this.collaboratorForm.get('phoneNumbers') as FormArray).clear();*/
 
                 // Patch values to the form
                 this.collaboratorForm.patchValue(collaborator);
-
-
-
-
+                //console.log(this.collaborator.employeePosition.department.id);                                
+                
+                this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
+                this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
+                this.collaboratorForm.get('phones').setValue(collaborator.phones);
+                console.log(this.collaboratorForm.value);
+                console.log("Linea 134");
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
 
@@ -139,10 +168,10 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .subscribe((knowledges: Knowledge[]) => {
                 this.knowledges = knowledges;
                 this.filteredTags = knowledges;
-
+                console.log(knowledges)
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            });
+            });                
     }
 
     /**
@@ -180,6 +209,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     toggleEditMode(editMode: boolean | null = null): void
     {
+        console.log(this.collaboratorForm.value);
+        
         if ( editMode === null )
         {
             this.editMode = !this.editMode;
@@ -199,9 +230,10 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     updateCollaborator(): void
     {
         // Get the collaborator object
-        const collaborator = this.collaboratorForm.getRawValue();
-
+        let collaborator = this.collaboratorForm.getRawValue();
+        collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
         // Update the collaborator on the server
+        console.log(collaborator)
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {
 
             // Toggle the edit mode off
@@ -209,6 +241,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         });
     }
 
+    filterPositionsByDepartment() {
+        let departmentSelected = this.collaboratorForm.get("department").value;
+
+        this.filteredEmployeePositions = this.employeePositions.filter(elem => elem.department.id === departmentSelected)
+
+    }
+    
     /**
      * Delete the collaborator
      */

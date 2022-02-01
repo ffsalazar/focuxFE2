@@ -7,7 +7,9 @@ import {
     CollaboratorsCollaboratorResolver,
     CollaboratorsCountriesResolver,
     CollaboratorsResolver,
-    CollaboratorsTagsResolver
+    CollaboratorsTagsResolver,
+    CollaboratorsDepartmentsResolver,
+    CollaboratorsEmployeePositionResolver
 } from "./collaborators.resolvers";
 
 
@@ -32,7 +34,9 @@ export const collaboratorsRoutes: Route[] = [
                         component    : CollaboratorsDetailsComponent,
                         resolve      : {
                             task     : CollaboratorsCollaboratorResolver,
-                            countries: CollaboratorsCountriesResolver
+                            countries: CollaboratorsCountriesResolver,
+                            departments: CollaboratorsDepartmentsResolver,
+                            employeePositions: CollaboratorsEmployeePositionResolver
                         },
                         canDeactivate: [CanDeactivateCollaboratorsDetails]
                     }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Collaborator, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "./collaborators.service";
 
 
@@ -135,5 +135,61 @@ export class CollaboratorsTagsResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Knowledge[]>
     {
         return this._collaboratorsService.getTags();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CollaboratorsDepartmentsResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(private _collaboratorsService: CollaboratorsService)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Department[]>
+    {
+        return this._collaboratorsService.getDepartments();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CollaboratorsEmployeePositionResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(private _collaboratorsService: CollaboratorsService)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<EmployeePosition[]>
+    {
+        return this._collaboratorsService.getEmployeePositions();
     }
 }
