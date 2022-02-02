@@ -357,7 +357,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                         }
                     }
                 }
-                
+
 
                 // Delete the collaborator
                 this.collaborator.isActive = 0;
@@ -641,7 +641,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
-        console.log(this.collaboratorForm.value.knowledges)
 
         // Mark for check
         this._changeDetectorRef.detectChanges();

@@ -83,16 +83,27 @@ export class CollaboratorsService
     {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
             tap((collaborators) => {
+
+
+                let collaboratorFiltered : any[]=[];
+
                 function compare(a: Collaborator, b: Collaborator) {
                     if (a.name < b.name) return -1;
                     if (a.name > b.name) return 1;
                     // Their names are equal
                     if (a.lastName < b.lastName) return -1;
                     if (a.lastName > b.lastName) return 1;
+
                     return 0;
                 }
                 collaborators.sort(compare);
-                this._collaborators.next(collaborators);
+                collaborators.forEach((collaborator) => {
+                    if (collaborator.isActive != 0){
+                        collaboratorFiltered.push(collaborator);
+                    }
+                });
+                this._collaborators.next(collaboratorFiltered);
+
             })
         );
     }
@@ -108,14 +119,22 @@ export class CollaboratorsService
             params: {query}
         }).pipe(
             tap((collaborators) => {
+                let collaboratorFiltered : any[]=[];
+                collaborators.forEach((collaborator) => {
+                    if (collaborator.isActive != 0){
+                        collaboratorFiltered.push(collaborator);
+                    }
+                });
                 // If the query exists...
                 if ( query )
                 {
                     // Filter the collaborators
-                    collaborators = collaborators.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
-                    this._collaborators.next(collaborators);
+
+                    collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+
+                    this._collaborators.next(collaboratorFiltered);
                 }else{
-                    this._collaborators.next(collaborators);
+                    this._collaborators.next(collaboratorFiltered);
                 }
 
             })
