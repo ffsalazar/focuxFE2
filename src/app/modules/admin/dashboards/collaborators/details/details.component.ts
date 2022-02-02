@@ -229,6 +229,10 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
         });
 
+        if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
+            this.editMode = true;
+        }
+
 
 
 
