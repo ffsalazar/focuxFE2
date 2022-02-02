@@ -178,7 +178,7 @@ export class CollaboratorsService
        console.log(JSON.stringify(collaborator));
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save',
+            switchMap(collaborators => this._httpClient.put<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/collaborator/' + collaborator.id,
                 collaborator
             ).pipe(
                 map((updatedCollaborator) => {

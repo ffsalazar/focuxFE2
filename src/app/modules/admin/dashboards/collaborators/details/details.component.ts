@@ -143,7 +143,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                         // Create an email form group
                         phoneNumbersFormGroups.push(
                             this._formBuilder.group({
-                                id   : Math.floor(Math.random()*(50001+1)+1),
+                                id   : [phoneNumber.id],
                                 number: [phoneNumber.number],
                                 type      : [phoneNumber.type]
                             })
@@ -155,7 +155,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                     // Create a phone number form group
                     phoneNumbersFormGroups.push(
                         this._formBuilder.group({
-                            id   : Math.floor(Math.random()*(50001+1)+1),
                             number: [''],
                             type      : ['']
                         })
