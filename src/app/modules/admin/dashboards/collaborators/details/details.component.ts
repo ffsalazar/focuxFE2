@@ -339,19 +339,26 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 // Get the next/previous collaborator's id
                 const currentCollaboratorIndex = this.collaborators.findIndex(item => item.id === id);
-                const nextCollaboratorIndex = currentCollaboratorIndex + ((currentCollaboratorIndex === (this.collaborators.length - 1)) ? -1 : 1);
-                const nextCollaboratorId = (this.collaborators.length === 1 && this.collaborators[0].id === id) ? null : this.collaborators[nextCollaboratorIndex].id;
+                let nextCollaboratorId = null;
+                if (currentCollaboratorIndex == (this.collaborators.length - 1)) {
+                    for (let i = currentCollaboratorIndex - 1; i >= 0; i--) {
+                        if (this.collaborators[i].isActive != 0) {
+                            nextCollaboratorId = this.collaborators[i].id;
+                        }
+                    }
+                } else {
+                    for (let i = currentCollaboratorIndex + 1; i < this.collaborators.length; i++) {
+                        if (this.collaborators[i].isActive != 0) {
+                            nextCollaboratorId = this.collaborators[i].id;
+                        }
+                    }
+                }
+                
 
                 // Delete the collaborator
-                this._collaboratorsService.deleteCollaborator(id)
-                    .subscribe((isDeleted) => {
-
-                        // Return if the collaborator wasn't deleted...
-                        if ( !isDeleted )
-                        {
-                            return;
-                        }
-
+                this.collaborator.isActive = 0;
+                this._collaboratorsService.deleteCollaborator(this.collaborator)
+                    .subscribe(() => {
                         // Navigate to the next collaborator if available
                         if ( nextCollaboratorId )
                         {

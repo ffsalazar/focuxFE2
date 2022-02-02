@@ -247,24 +247,24 @@ export class CollaboratorsService
      *
      * @param id
      */
-    deleteCollaborator(id: number): Observable<boolean>
+    deleteCollaborator(collaborator: Collaborator): Observable<Collaborator>
     {
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.delete('api/dashboards/collaborators/collaborator', {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
+            switchMap(collaborators => this._httpClient.put('http://localhost:1616/api/v1/followup/collaborators/status/' + collaborator.id, collaborator).pipe(
+                map((updatedCollaborator: Collaborator) => {
 
                     // Find the index of the deleted collaborator
-                    const index = collaborators.findIndex(item => item.id === id);
+                    const index = collaborators.findIndex(item => item.id === collaborator.id);
 
-                    // Delete the collaborator
-                    collaborators.splice(index, 1);
+                    // Update the collaborator
+                    collaborators[index] = updatedCollaborator;
 
                     // Update the collaborators
                     this._collaborators.next(collaborators);
 
-                    // Return the deleted status
-                    return isDeleted;
+                    // Return the updated collaborator
+                    return updatedCollaborator;
                 })
             ))
         );

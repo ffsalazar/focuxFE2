@@ -109,8 +109,9 @@
                     <ng-container *ngIf="collaborators$ | async as collaborators">
                         <ng-container *ngIf="collaborators.length; else noCollaborators">
                             <ng-container *ngFor="let collaborator of collaborators; let i = index; trackBy: trackByFn">
-                                <!-- Group -->
-                                <ng-container *ngIf="i === 0 || collaborator.name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
+                            <ng-container *ngIf="collaborator.isActive != 0">
+                                 <!-- Group -->
+                                 <ng-container *ngIf="i === 0 || collaborator.name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
                                     <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
                                         {{collaborator.name.charAt(0)}}
                                     </div>
@@ -139,6 +140,7 @@
                                         <div class="leading-5 truncate text-secondary">{{collaborator.employeePosition.name}}</div>
                                     </div>
                                 </a>
+                            </ng-container>                               
                             </ng-container>
                         </ng-container>
                     </ng-container>

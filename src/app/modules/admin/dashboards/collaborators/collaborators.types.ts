@@ -16,6 +16,7 @@ export interface Collaborator
     knowledges: CollaboratorKnowledge[];
     phones: Phone[];
     file?:string | null;
+    isActive: number;
 }
 
 export interface Country
