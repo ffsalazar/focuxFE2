@@ -35,7 +35,7 @@ export interface Knowledge
     name: string;
 }
 
-export interface CollaboratorKnowledge 
+export interface CollaboratorKnowledge
 {
     id: number;
     level: number;
@@ -51,7 +51,7 @@ export interface Department
     description: string;
 }
 
-export interface EmployeePosition 
+export interface EmployeePosition
 {
     id: number;
     name: String;
@@ -64,4 +64,5 @@ export interface Phone
 {
     id: number;
     number: string;
+    type: string;
 }

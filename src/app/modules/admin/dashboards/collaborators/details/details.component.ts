@@ -69,49 +69,122 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         this._collaboratorsListComponent.matDrawer.open();
 
         // Create the collaborator form
-        this.collaboratorForm = new FormGroup({
-            id          : new FormControl(''),
-            idFile      : new FormControl(''),
-            avatar      : new FormControl(null),
-            name        : new FormControl('',[Validators.required]), 
-            mail        : new FormControl(''),
-            lastName    : new FormControl(''),
-            nationality : new FormControl(''),
-            department : new FormControl(null),
-            employeePosition : new FormControl(''),
-            companyEntryDate : new FormControl(''),
-            organizationEntryDate : new FormControl(''),
-            gender       : new FormControl(''),
-            bornDate     : new FormControl(''),
-            assignedLocation : new FormControl(''),
-            knowledges         : new FormControl([]),
-            isActive: new FormControl(''),
-            technicalSkills: new FormControl(''),
-            phones: new FormControl([])
+        this.collaboratorForm = this._formBuilder.group({
+            id          : [''],
+            idFile      : [''],
+            avatar      : [null],
+            name        : ['',[Validators.required]],
+            mail        : [''],
+            lastName    : [''],
+            nationality : [''],
+            department : [''],
+            employeePosition : [[]],
+            companyEntryDate : [''],
+            organizationEntryDate : [''],
+            gender       : [''],
+            bornDate     : [''],
+            assignedLocation : [''],
+            knowledges         : [[]],
+            isActive: [''],
+            technicalSkills: [''],
+            phoneNumbers: this._formBuilder.array([]),
+            phones: this._formBuilder.array([])
         })
-            
+
         // Get the collaborators
         this._collaboratorsService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborators: Collaborator[]) => {
                 this.collaborators = collaborators;
 
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        // Get the collaborator
+        this._collaboratorsService.collaborator$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((collaborator: Collaborator) => {
+
+
+
+
+
+                // Open the drawer in case it is closed
+                this._collaboratorsListComponent.matDrawer.open();
+
+                // Get the collaborator
+                this.collaborator = collaborator;
+
+
+
+
+                // Clear the emails and phoneNumbers form arrays
+
+                (this.collaboratorForm.get('phones') as FormArray).clear();
+
+                // Patch values to the form
+                this.collaboratorForm.patchValue(collaborator);
+
+                this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
+                this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
+                console.log(this.collaboratorForm.value);
+
+
+
+                // Setup the phone numbers form array
+                const phoneNumbersFormGroups = [];
+
+                if ( collaborator.phones.length > 0 )
+                {
+                    // Iterate through them
+                    collaborator.phones.forEach((phoneNumber) => {
+
+                        // Create an email form group
+                        phoneNumbersFormGroups.push(
+                            this._formBuilder.group({
+                                id   : Math.floor(Math.random()*(50001+1)+1),
+                                number: [phoneNumber.number],
+                                type      : [phoneNumber.type]
+                            })
+                        );
+                    });
+                }
+                else
+                {
+                    // Create a phone number form group
+                    phoneNumbersFormGroups.push(
+                        this._formBuilder.group({
+                            id   : Math.floor(Math.random()*(50001+1)+1),
+                            number: [''],
+                            type      : ['']
+                        })
+                    );
+                }
+
+                // Add the phone numbers form groups to the phone numbers form array
+                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
+                    (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
+                });
+
+                // Toggle the edit mode off
+                this.toggleEditMode(false);
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-            
-            // Get the collaborator        
-            
+
+        // Get the collaborator
+
         this._collaboratorsService.departments$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((deparments: Department[]) => {
                 this.departments = deparments;
-                this.filteredDepartments = deparments;                
+                this.filteredDepartments = deparments;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
+
         this._collaboratorsService.employeePositions$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((employeePositions: EmployeePosition[]) => {
@@ -122,36 +195,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        this._collaboratorsService.collaborator$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((collaborator: Collaborator) => {
 
-               
-                // Open the drawer in case it is closed
-                this._collaboratorsListComponent.matDrawer.open();
-
-                // Get the collaborator
-                this.collaborator = collaborator;
-                            
-                    // Clear the emails and phoneNumbers form arrays
-               /* (this.collaboratorForm.get('emails') as FormArray).clear();
-                (this.collaboratorForm.get('phoneNumbers') as FormArray).clear();*/
-
-                // Patch values to the form
-                this.collaboratorForm.patchValue(collaborator);
-                //console.log(this.collaborator.employeePosition.department.id);                                
-                
-                this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
-                this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
-                this.collaboratorForm.get('phones').setValue(collaborator.phones);
-                console.log(this.collaboratorForm.value);
-                console.log("Linea 134");
-                // Toggle the edit mode off
-                this.toggleEditMode(false);
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
         // Get the country telephone codes
         this._collaboratorsService.countries$
@@ -186,7 +230,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
         });
 
-        console.log(this.filteredKnowledges)
 
 
 
@@ -231,7 +274,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     toggleEditMode(editMode: boolean | null = null): void
     {
         console.log(this.collaboratorForm.value);
-        
+
         if ( editMode === null )
         {
             this.editMode = !this.editMode;
@@ -268,7 +311,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         this.filteredEmployeePositions = this.employeePositions.filter(elem => elem.department.id === departmentSelected)
 
     }
-    
+
     /**
      * Delete the collaborator
      */
@@ -582,16 +625,18 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     addKnowledgeToCollaborator(knowledge: any): void
     {
-        // Update the collaborator form
-        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
-
-
         // Add the knowledge
         this.collaborator.knowledges.unshift(knowledge);
 
+        // Update the collaborator form
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
+
+        console.log(this.collaboratorForm.value.knowledges)
 
         // Mark for check
         this._changeDetectorRef.detectChanges();
+
+
 
     }
 
@@ -617,21 +662,21 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    toggleCollaboratorKnowledge(knowledge: any): void
+    toggleCollaboratorKnowledge(Knowledge: any): void
     {
         /*let collaboratorKnowledge : CollaboratorKnowledge = {
             id: knowledge.id,
             level : 0,
             knowledge : knowledge
         }*/
-        if ( this.collaborator.knowledges.includes(knowledge) )
+        if ( this.collaborator.knowledges.find(knowledge => knowledge.id == Knowledge.id ) )
         {
-            this.removeKnowledgeFromCollaborator(knowledge);
+            this.removeKnowledgeFromCollaborator(Knowledge);
         }
         else
         {
 
-            this.addKnowledgeToCollaborator(knowledge);
+            this.addKnowledgeToCollaborator(Knowledge);
         }
     }
 
@@ -687,13 +732,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     {
         // Create an empty phone number form group
         const phoneNumberFormGroup = this._formBuilder.group({
-            country    : ['us'],
-            phoneNumber: [''],
-            label      : ['']
+            id    : Math.floor(Math.random()*(50001+1)+1),
+            number: [''],
+            type     : ['']
         });
 
         // Add the phone number form group to the phoneNumbers form array
-        (this.collaboratorForm.get('phoneNumbers') as FormArray).push(phoneNumberFormGroup);
+        (this.collaboratorForm.get('phones') as FormArray).push(phoneNumberFormGroup);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -707,7 +752,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     removePhoneNumberField(index: number): void
     {
         // Get form array for phone numbers
-        const phoneNumbersFormArray = this.collaboratorForm.get('phoneNumbers') as FormArray;
+        const phoneNumbersFormArray = this.collaboratorForm.get('phones') as FormArray;
 
         // Remove the phone number field
         phoneNumbersFormArray.removeAt(index);
@@ -736,4 +781,21 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+
+    checkerKnowledges(Knowledge: CollaboratorKnowledge) {
+        let knowledgeC: any;
+
+        if(!this.collaborator.knowledges.length){
+            knowledgeC = this.collaborator.knowledges.find(knowledge => knowledge.id === Knowledge.id);
+        }else{
+            knowledgeC = this.collaborator.knowledges.find(knowledge => knowledge.id === Knowledge.id);
+
+
+        }
+
+
+        return knowledgeC
+
+
+    };
 }

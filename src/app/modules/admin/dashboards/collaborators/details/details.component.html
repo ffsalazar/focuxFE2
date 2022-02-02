@@ -131,7 +131,7 @@
                                             class="text-md truncate text-secondary"
                                             *ngIf="phoneNumber">
                                             <span class="mx-2">&bull;</span>
-                                            <span class="font-medium">{{phoneNumber}}</span>
+                                            <span class="font-medium">{{phoneNumber.type}}</span>
                                         </div>
                                     </div>
                                 </ng-container>
@@ -372,7 +372,7 @@
                                                     matRipple>
                                                     <mat-checkbox
                                                         class="flex items-center h-10 min-h-10 pointer-events-none"
-                                                        [checked]="collaborator.knowledges.includes(knowledge)"
+                                                        [checked]="checkerKnowledges(knowledge)"
                                                         [color]="'primary'"
                                                         [disableRipple]="true">
                                                     </mat-checkbox>
@@ -427,13 +427,13 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:clipboard-check'"></mat-icon>                            
+                                [svgIcon]="'heroicons_solid:clipboard-check'"></mat-icon>
                                 <mat-select [placeholder]="'Departamento'" formControlName="department" (selectionChange)="filterPositionsByDepartment()">
                                     <mat-option *ngFor="let department of departments" [value]="department.id">{{department.name}}</mat-option>
                                 </mat-select>
-                        </mat-form-field>                                                
+                        </mat-form-field>
                     </div>
-                    
+
                     <!-- Title -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -441,12 +441,12 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>              
-                            <mat-select [placeholder]="collaborator.employeePosition.name" formControlName="employeePosition"> 
+                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                            <mat-select [placeholder]="collaborator.employeePosition.name" formControlName="employeePosition">
                                 <mat-option *ngFor="let employeePosition of filteredEmployeePositions" [value]="employeePosition.id">{{employeePosition.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
-                    </div>                
+                    </div>
 
                     <!-- Mail -->
                     <div class="mt-8">
@@ -463,19 +463,25 @@
                         </mat-form-field>
                     </div>
                     <!-- Phone numbers -->
-                    <!-- <div class="mt-8">
+                   <div class="mt-8">
                         <div class="space-y-4">
-                            <ng-container *ngFor="let phoneNumber of collaborator.phones; let first = first; let last = last">
+                            <ng-container *ngFor="let phoneNumber of collaboratorForm.get('phones')['controls']; let i = index; let first = first; let last = last; trackBy: trackByFn">
                                 <div class="relative flex">
                                     <mat-form-field class="fuse-mat-no-subscript flex-auto">
-                                        <mat-label *ngIf="first">tel&eacute;fono</mat-label> 
+                                        <mat-label *ngIf="first">tel&eacute;fono</mat-label>
                                         <input
                                             matInput
-                                            [formControl]="phoneNumber.number"
+                                            [formControl]="phoneNumber.get('number')"
                                             [placeholder]="'Phone'">
-                                         <mat-select
+                                        <input
                                             class="mr-1.5"
-                                            [formControl]="phoneNumber.get('country')"
+                                            matInput
+                                            [hidden]="true"
+                                            [formControl]="phoneNumber.get('id')">
+
+                                        <!--<mat-select
+                                            class="mr-1.5"
+
                                             matPrefix>
                                             <mat-select-trigger>
                                                 <span class="flex items-center">
@@ -483,8 +489,8 @@
                                                         class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
                                                         [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
                                                         [style.backgroundSize]="'24px 3876px'"
-                                                        [style.backgroundPosition]="getCountryByIso(phoneNumber.get('country').value).flagImagePos"></span>
-                                                    <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso(phoneNumber.get('country').value).code}}</span>
+                                                        [style.backgroundPosition]="getCountryByIso('us').flagImagePos"></span>
+                                                    <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso('us').code}}</span>
                                                 </span>
                                             </mat-select-trigger>
                                             <ng-container *ngFor="let country of countries; trackBy: trackByFn">
@@ -500,20 +506,20 @@
                                                     </span>
                                                 </mat-option>
                                             </ng-container>
-                                        </mat-select> 
+                                        </mat-select>-->
                                     </mat-form-field>
                                     <mat-form-field class="fuse-mat-no-subscript flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4">
-                                         <mat-label *ngIf="first">Label</mat-label>
+                                        <mat-label *ngIf="first">Label</mat-label>
                                         <mat-icon
                                             matPrefix
                                             class="hidden sm:flex icon-size-5"
                                             [svgIcon]="'heroicons_solid:tag'"></mat-icon>
                                         <input
                                             matInput
-                                            [formControl]="phoneNumber.type"
+                                            [formControl]="phoneNumber.get('type')"
                                             [placeholder]="'Label'">
                                     </mat-form-field>
-                                     Remove phone number 
+
                                     <ng-container *ngIf="!(first && last)">
                                         <div
                                             class="flex items-center w-10 pl-2"
@@ -524,7 +530,7 @@
                                                 (click)="removePhoneNumberField(i)"
                                                 matTooltip="Remove">
                                                 <mat-icon
-                                                    class="icon-size-5"
+                                                    class="icon-size-2"
                                                     [svgIcon]="'heroicons_solid:trash'"></mat-icon>
                                             </button>
                                         </div>
@@ -540,7 +546,7 @@
                                 [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
                             <span class="ml-2 font-medium text-secondary group-hover:underline">Agregar tel&eacute;fono</span>
                         </div>
-                    </div> -->
+                    </div>
                     <!-- Address -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
