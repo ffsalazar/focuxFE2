@@ -123,8 +123,7 @@ export class CollaboratorsService
             map((collaborators) => {
 
                 // Find the collaborator¿
-                console.log(collaborators)
-                console.log(collaborators[0].id === id) ;
+
                 const collaborator = collaborators.find(item => item.id === id) || null;
                 const collaborator_test = collaborators.find(item => item.id === id);
 
@@ -179,7 +178,7 @@ export class CollaboratorsService
        console.log(JSON.stringify(collaborator));
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save',           
+            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save',
                 collaborator
             ).pipe(
                 map((updatedCollaborator) => {
@@ -420,7 +419,7 @@ export class CollaboratorsService
         return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
             tap((departments) => {
                 console.log(departments)
-                this._departments.next(departments);                
+                this._departments.next(departments);
             })
         );
     }
@@ -429,7 +428,7 @@ export class CollaboratorsService
         return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeeposition/all').pipe(
             tap((employeePositions) => {
                 console.log(employeePositions)
-                this._employeePositions.next(employeePositions);                
+                this._employeePositions.next(employeePositions);
             })
         );
     }

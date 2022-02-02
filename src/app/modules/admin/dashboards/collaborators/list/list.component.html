@@ -1,4 +1,4 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="absolute inset-0 flex flex-col min-w-100 overflow-hidden">
 
     <mat-drawer-container
         class="flex-auto h-full bg-card dark:bg-transparent"
@@ -7,7 +7,7 @@
         <!-- Drawer -->
         <mat-drawer
             class="w-full md:w-160 dark:bg-gray-900"
-            [mode]="drawerMode"
+            [mode]="'over'"
             [opened]="false"
             [position]="'end'"
             [disableClose]="true"
