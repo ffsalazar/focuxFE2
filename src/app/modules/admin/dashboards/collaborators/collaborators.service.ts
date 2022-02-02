@@ -104,11 +104,20 @@ export class CollaboratorsService
      */
     searchCollaborator(query: string): Observable<Collaborator[]>
     {
-        return this._httpClient.get<Collaborator[]>('api/dashboards/collaborators/search', {
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
             params: {query}
         }).pipe(
             tap((collaborators) => {
-                this._collaborators.next(collaborators);
+                // If the query exists...
+                if ( query )
+                {
+                    // Filter the collaborators
+                    collaborators = collaborators.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+                    this._collaborators.next(collaborators);
+                }else{
+                    this._collaborators.next(collaborators);
+                }
+
             })
         );
     }
