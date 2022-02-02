@@ -38,11 +38,11 @@ export class ContactsService
      * Getter for contacts
      */
     get contacts$(): Observable<Contact[]>
-    {        
+    {
         return this._contacts.asObservable();
     }
 
-    /** 
+    /**
      * Getter for countries
      */
     get countries$(): Observable<Country[]>
@@ -72,7 +72,7 @@ export class ContactsService
         //     //     console.log(contacts);
         //     // })
         // )
-        
+
         return this._httpClient.get<Contact[]>('api/apps/contacts/all').pipe(
             tap((contacts) => {
                 this._contacts.next(contacts);

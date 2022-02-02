@@ -152,11 +152,42 @@ export class CollaboratorsService
      */
     createCollaborator(): Observable<Collaborator>
     {
+        // Generate a new collaborator
+        const newCollaborator = {
+
+            idFile: 0,
+            name: 'Nuevo',
+            lastName: 'Colaborador',
+            employeePosition: {
+                id: 2,
+                department: {
+                    id: 1,
+                    code: 'A01',
+                    name: 'Aplicaciones',
+                    description: 'Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.',
+                    isActive: 1
+                },
+                name: 'Analista de aplicaciones',
+                description: 'Es capaz de mantener y desrrollar programas.',
+                isActive: 1
+            },
+            companyEntryDate: '1970-01-01T00:00:00.000+00:00',
+            organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
+            gender: 'M',
+            bornDate: '1970-01-01T00:00:00.000+00:00',
+            nationality: 'Venezolana',
+            mail: '' ,
+            isActive: 1,
+            assignedLocation: 'Intelix Principal',
+            technicalSkills: '',
+            knowledges: [],
+            phones: []
+
+        };
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('api/dashboards/collaborators/collaborator', {}).pipe(
+            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', newCollaborator).pipe(
                 map((newCollaborator) => {
-
                     // Update the collaborators with the new collaborator
                     this._collaborators.next([newCollaborator, ...collaborators]);
 

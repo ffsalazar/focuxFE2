@@ -731,7 +731,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     {
         // Create an empty phone number form group
         const phoneNumberFormGroup = this._formBuilder.group({
-            id    : Math.floor(Math.random()*(50001+1)+1),
+            id    : [''],
             number: [''],
             type     : ['']
         });

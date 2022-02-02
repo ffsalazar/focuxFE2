@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { assign, cloneDeep } from 'lodash-es';
 import { FuseMockApiService, FuseMockApiUtils } from '@fuse/lib/mock-api';
 import { collaborators as collaboratorsData, countries as countriesData, tags as tagsData } from 'app/mock-api/dashboards/collaborators/data';
+import {Validators} from '@angular/forms';
 
 @Injectable({
     providedIn: 'root'
@@ -99,25 +100,41 @@ export class CollaboratorsMockApi
         // -----------------------------------------------------------------------------------------------------
         // @ Collaborator - POST
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
-            .onPost('api/dashboards/collaborators/collaborator')
+        /*this._fuseMockApiService
+            .onPost('http://localhost:1616/api/v1/followup/collaborators/save')
             .reply(() => {
 
                 // Generate a new collaborator
                 const newCollaborator = {
-                    id          : FuseMockApiUtils.guid(),
-                    avatar      : null,
-                    name        : 'Nuevo Colaborador',
-                    emails      : [],
-                    phoneNumbers: [],
-                    job         : {
-                        title  : '',
-                        company: ''
+
+                    idFile: 0,
+                    name: 'Nuevo',
+                    lastName: 'Colaborador',
+                    employeePosition: {
+                    id: 2,
+                        department: {
+                        id: 1,
+                            code: 'A01',
+                            name: 'Aplicaciones',
+                            description: 'Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.',
+                            isActive: 1
                     },
-                    birthday    : null,
-                    address     : null,
-                    notes       : null,
-                    tags        : []
+                    name: 'Analista de aplicaciones',
+                        description: 'Es capaz de mantener y desrrollar programas.',
+                        isActive: 1
+                },
+                    companyEntryDate: '1970-01-01T00:00:00.000+00:00',
+                    organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
+                    gender: 'M',
+                    bornDate: '1970-01-01T00:00:00.000+00:00',
+                    nationality: 'Venezolana',
+                    mail: '' ,
+                    isActive: 1,
+                    assignedLocation: 'Intelix Principal',
+                    technicalSkills: '',
+                    knowledges: [],
+                    phones: []
+
                 };
 
                 // Unshift the new collaborator
@@ -125,7 +142,7 @@ export class CollaboratorsMockApi
 
                 // Return the response
                 return [200, newCollaborator];
-            });
+            });*/
 
         // -----------------------------------------------------------------------------------------------------
         // @ Collaborator - PATCH
