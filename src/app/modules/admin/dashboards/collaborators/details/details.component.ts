@@ -26,7 +26,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     editMode: boolean = false;
     knowledges: Knowledge[];
     knowledgesEditMode: boolean = false;
-    filteredKnowledges: CollaboratorKnowledge[]=[];
+    filteredKnowledges: CollaboratorKnowledge[] = [];
     collaborator: Collaborator;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
@@ -215,28 +215,23 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+            
+        this.filteredKnowledges = this.collaborator.knowledges;
+        
+        // this.knowledges.forEach(filteredKnowledges => {
+        //     let filteredKnowledge = {
+        //         id : filteredKnowledges.id,
+        //         level: 0,
+        //         knowledge: filteredKnowledges,
+        //         isActive: 1
+        //     };
 
-        this.knowledges.forEach(filteredKnowledges => {
-
-            let filteredKnowledge = {
-                id : filteredKnowledges.id,
-                level: 0,
-                knowledge: filteredKnowledges
-            };
-            this.filteredKnowledges.push(filteredKnowledge);
-
-        });
+        //     this.filteredKnowledges.push(filteredKnowledge);
+        // });
 
         if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
             this.editMode = true;
         }
-
-
-
-
-
-
-
     }
 
     /**
@@ -629,20 +624,34 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    addKnowledgeToCollaborator(knowledge: any): void
+    addKnowledgeToCollaborator(knowledge: Knowledge): void
     {
+        // TODO: we need to add logic for levels here
+        let newKnowledge: CollaboratorKnowledge = {
+            level: 0,
+            knowledge: knowledge,
+            isActive: 1
+        }
+
         // Add the knowledge
-        this.collaborator.knowledges.unshift(knowledge);
+        this.collaborator.knowledges.unshift(newKnowledge);
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
+        // Mark for check
+        this._changeDetectorRef.detectChanges();
+    }
+    
+    activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {        
+        knowledge.isActive = 1;
+        // Update the collaborator form
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
         // Mark for check
         this._changeDetectorRef.detectChanges();
 
-
-
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe()
     }
 
     /**
@@ -650,14 +659,16 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    removeKnowledgeFromCollaborator(knowledge: any): void
+    removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
     {
         // Remove the knowledge
-        this.collaborator.knowledges.splice(this.collaborator.knowledges.findIndex(item => item.id === knowledge.id), 1);
+        knowledge.isActive = 0;        
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
-
+        // Setting status to inactive
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe();
+        
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -667,21 +678,21 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    toggleCollaboratorKnowledge(Knowledge: any): void
+    toggleCollaboratorKnowledge(knowledge: Knowledge): void
     {
         /*let collaboratorKnowledge : CollaboratorKnowledge = {
             id: knowledge.id,
             level : 0,
             knowledge : knowledge
         }*/
-        if ( this.collaborator.knowledges.find(knowledge => knowledge.id == Knowledge.id ) )
-        {
-            this.removeKnowledgeFromCollaborator(Knowledge);
+        let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
+        if (knowledgeFound) {
+            if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+            else  this.activeCollaboratorKnowledge(knowledgeFound);
         }
         else
         {
-
-            this.addKnowledgeToCollaborator(Knowledge);
+            this.addKnowledgeToCollaborator(knowledge);
         }
     }
 
@@ -791,20 +802,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         return item.id || index;
     }
 
-    checkerKnowledges(Knowledge: CollaboratorKnowledge) {
-        let knowledgeC: any;
-
-        if(!this.collaborator.knowledges.length){
-            knowledgeC = this.collaborator.knowledges.find(knowledge => knowledge.id === Knowledge.id);
-        }else{
-            knowledgeC = this.collaborator.knowledges.find(knowledge => knowledge.id === Knowledge.id);
-
-
-        }
-
-
-        return knowledgeC
-
-
+    checkerKnowledges(knowledge: Knowledge): boolean {
+        let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);        
+        return hasKnowledge !== undefined;
     };
 }

@@ -39,9 +39,10 @@ export interface Knowledge
 
 export interface CollaboratorKnowledge
 {
-    id: number;
+    id?: number;
     level: number;
     knowledge: Knowledge;
+    isActive: number;
 }
 
 export interface Department

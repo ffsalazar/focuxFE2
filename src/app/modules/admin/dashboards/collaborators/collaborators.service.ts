@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Client, Collaborator, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -204,6 +204,19 @@ export class CollaboratorsService
                 description: 'Es capaz de mantener y desrrollar programas.',
                 isActive: 1
             },
+            client: {
+                id: 1,
+                businessType: {
+                  id: 2,
+                  code: "FIN01",
+                  name: "Financiero",
+                  description: "Servicios Financieros, inversiones, creditos personales",
+                  isActive: 1
+                },
+                name: "Credix",
+                description: "Empresa del ramo financiero en Costa Rica",
+                isActive: 1
+              },
             companyEntryDate: '1970-01-01T00:00:00.000+00:00',
             organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
             gender: 'M',
@@ -510,7 +523,17 @@ export class CollaboratorsService
         console.log(phone);
         return this._httpClient.put<Phone>('http://localhost:1616/api/v1/followup/phones/status/'+ id, phone).pipe(
             tap(phone => {
-                console.log(phone)
+                //console.log(phone)
+            })
+        );
+    }
+
+    updateCollaboratorKnowledgeStatus(id: number, collaboratorKnowledge: CollaboratorKnowledge): Observable<CollaboratorKnowledge>
+    {
+        console.log(collaboratorKnowledge);
+        return this._httpClient.put<CollaboratorKnowledge>('http://localhost:1616/api/v1/followup/collaboratorknowledge/status/'+ id, collaboratorKnowledge).pipe(
+            tap(collaboratorKnowledge => {
+                console.log(collaboratorKnowledge);
             })
         );
     }
