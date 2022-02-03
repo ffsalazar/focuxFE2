@@ -222,6 +222,7 @@ export class CollaboratorsEmployeePositionResolver implements Resolve<any> {
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Client[]>
 {
+
     return this._collaboratorsService.getClients();
 }
 

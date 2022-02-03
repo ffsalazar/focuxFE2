@@ -528,8 +528,14 @@ export class CollaboratorsService
     {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
             tap((clients) => {
-                console.log(clients)
-                this._clients.next(clients);
+                let clientsFiltered : Client[] = []
+                clients.forEach((client) => {
+                    if (client.isActive != 0){
+                        clientsFiltered.push(client);
+                    }
+                });
+
+                this._clients.next(clientsFiltered);
             })
         );
     }
