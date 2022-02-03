@@ -17,6 +17,7 @@ export interface Collaborator
     phones: Phone[];
     file?:string | null;
     isActive: number;
+    client: Client;
 }
 
 export interface Country

@@ -71,19 +71,27 @@
                 </ng-container>
 
                 <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
-                    <!-- Title -->
+                    <!-- Role in the company -->
                     <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
                             <div class="ml-6 leading-6">{{collaborator.employeePosition.name}}</div>
                         </div>
                     </ng-container>
-
-                    <!-- Company -->
+                    
+                    <!-- Department -->
                     <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
                             <div class="ml-6 leading-6">{{collaborator.employeePosition.department.name}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Client -->
+                    <ng-container *ngIf="collaborator.client">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <div class="ml-6 leading-6">{{collaborator.client.name}}</div>
                         </div>
                     </ng-container>
 
@@ -446,6 +454,20 @@
                                 [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
                             <mat-select [placeholder]="collaborator.employeePosition.name" formControlName="employeePosition">
                                 <mat-option *ngFor="let employeePosition of filteredEmployeePositions" [value]="employeePosition.id">{{employeePosition.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!-- Title -->
+                    
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Cliente</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
+                            <mat-select [placeholder]="collaborator.client.name" formControlName="client">
+                                <mat-option *ngFor="let client of clients" [value]="client.id">{{client.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>

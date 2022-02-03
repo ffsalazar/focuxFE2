@@ -66,11 +66,6 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        console.log(this.collaborators$)
-
-
-
-
         // Get the collaborator
         this._collaboratorsService.collaborator$
             .pipe(takeUntil(this._unsubscribeAll))

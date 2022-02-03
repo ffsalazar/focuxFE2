@@ -7,7 +7,7 @@ import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
@@ -35,6 +35,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     countries: Country[];
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
+    clients: Client[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -79,6 +80,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             nationality : [''],
             department : [''],
             employeePosition : [[]],
+            client: [[]],
             companyEntryDate : [''],
             organizationEntryDate : [''],
             gender       : [''],
@@ -106,19 +108,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborator: Collaborator) => {
 
-
-
-
-
                 // Open the drawer in case it is closed
                 this._collaboratorsListComponent.matDrawer.open();
 
                 // Get the collaborator
                 this.collaborator = collaborator;
-
-
-
-
+                console.log(this.collaborator);
                 // Clear the emails and phoneNumbers form arrays
 
                 (this.collaboratorForm.get('phones') as FormArray).clear();
@@ -128,10 +123,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
                 this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
-                console.log(this.collaboratorForm.value);
-
-
-
+                this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 // Setup the phone numbers form array
                 const phoneNumbersFormGroups = [];
 
@@ -191,13 +183,17 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .subscribe((employeePositions: EmployeePosition[]) => {
                 this.employeePositions = employeePositions;
                 this.filteredEmployeePositions = employeePositions;
-                console.log(this.employeePositions);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
-
-
+        
+        this._collaboratorsService.clients$
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((clients: Client[]) => {
+            this.clients = clients;            
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });    
         // Get the country telephone codes
         this._collaboratorsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -278,8 +274,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     toggleEditMode(editMode: boolean | null = null): void
     {
-        console.log(this.collaboratorForm.value);
-
         if ( editMode === null )
         {
             this.editMode = !this.editMode;
@@ -301,8 +295,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Get the collaborator object
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
-        // Update the collaborator on the server
-        console.log(collaborator)
+        collaborator.client = this.clients.find(value => value.id === collaborator.client);
+        // Update the collaborator on the server        
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {
 
             // Toggle the edit mode off
