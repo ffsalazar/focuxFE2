@@ -66,4 +66,5 @@ export interface Phone
     id: number;
     number: string;
     type: string;
+    isActive: number;
 }

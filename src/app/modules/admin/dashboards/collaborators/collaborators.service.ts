@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Collaborator, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -473,6 +473,7 @@ export class CollaboratorsService
             ))
         );
     }
+
     getDepartments(): Observable<Department[]>
     {
         return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
@@ -482,12 +483,23 @@ export class CollaboratorsService
             })
         );
     }
+
     getEmployeePositions(): Observable<EmployeePosition[]>
     {
         return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeeposition/all').pipe(
             tap((employeePositions) => {
                 console.log(employeePositions)
                 this._employeePositions.next(employeePositions);
+            })
+        );
+    }
+
+    updatePhoneStatus(id: number, phone: Phone): Observable<Phone>
+    {
+        console.log(phone);
+        return this._httpClient.put<Phone>('http://localhost:1616/api/v1/followup/phones/status/'+ id, phone).pipe(
+            tap(phone => {
+                console.log(phone)
             })
         );
     }

@@ -118,22 +118,24 @@
                             <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                             <div class="min-w-0 ml-6 space-y-1">
                                 <ng-container *ngFor="let phoneNumber of collaborator.phones">
-                                    <div class="flex items-center leading-6">
-                                        <!-- <div
-                                            class="hidden sm:flex w-6 h-4 overflow-hidden"
-                                            [matTooltip]="getCountryByIso(phoneNumber.country).name"
-                                            [style.background]="'url(\'/assets/images/apps/collaborators/flags.png\') no-repeat 0 0'"
-                                            [style.backgroundSize]="'24px 3876px'"
-                                            [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div>
-                                        <div class="sm:ml-3 font-mono">{{getCountryByIso(phoneNumber.country).code}}</div>-->
-                                        <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
-                                        <div
-                                            class="text-md truncate text-secondary"
-                                            *ngIf="phoneNumber">
-                                            <span class="mx-2">&bull;</span>
-                                            <span class="font-medium">{{phoneNumber.type}}</span>
+                                    <ng-container *ngIf="phoneNumber.isActive != 0">
+                                        <div class="flex items-center leading-6">
+                                            <!-- <div
+                                                class="hidden sm:flex w-6 h-4 overflow-hidden"
+                                                [matTooltip]="getCountryByIso(phoneNumber.country).name"
+                                                [style.background]="'url(\'/assets/images/apps/collaborators/flags.png\') no-repeat 0 0'"
+                                                [style.backgroundSize]="'24px 3876px'"
+                                                [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div>
+                                            <div class="sm:ml-3 font-mono">{{getCountryByIso(phoneNumber.country).code}}</div>-->
+                                            <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
+                                            <div
+                                                class="text-md truncate text-secondary"
+                                                *ngIf="phoneNumber">
+                                                <span class="mx-2">&bull;</span>
+                                                <span class="font-medium">{{phoneNumber.type}}</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </ng-container>
                                 </ng-container>
                             </div>
                         </div>
@@ -464,78 +466,80 @@
                     </div>
                     <!-- Phone numbers -->
                    <div class="mt-8">
-                        <div class="space-y-4">
+                        <div class="space-y-4">                            
                             <ng-container *ngFor="let phoneNumber of collaboratorForm.get('phones')['controls']; let i = index; let first = first; let last = last; trackBy: trackByFn">
-                                <div class="relative flex">
-                                    <mat-form-field class="fuse-mat-no-subscript flex-auto">
-                                        <mat-label *ngIf="first">tel&eacute;fono</mat-label>
-                                        <input
-                                            matInput
-                                            [formControl]="phoneNumber.get('number')"
-                                            [placeholder]="'Phone'">
-                                        <!-- <input
-                                            class="mr-1.5"
-                                            matInput
-                                            [hidden]="true"
-                                            [formControl]="phoneNumber.get('id')"> -->
+                                <ng-container *ngIf="phoneNumber.isActive != 0">
+                                    <div class="relative flex">
+                                        <mat-form-field class="fuse-mat-no-subscript flex-auto">
+                                            <mat-label *ngIf="first">tel&eacute;fono</mat-label>
+                                            <input
+                                                matInput
+                                                [formControl]="phoneNumber.get('number')"
+                                                [placeholder]="'Phone'">
+                                            <!-- <input
+                                                class="mr-1.5"
+                                                matInput
+                                                [hidden]="true"
+                                                [formControl]="phoneNumber.get('id')"> -->
 
-                                        <!--<mat-select
-                                            class="mr-1.5"
+                                            <!--<mat-select
+                                                class="mr-1.5"
 
-                                            matPrefix>
-                                            <mat-select-trigger>
-                                                <span class="flex items-center">
-                                                    <span
-                                                        class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
-                                                        [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
-                                                        [style.backgroundSize]="'24px 3876px'"
-                                                        [style.backgroundPosition]="getCountryByIso('us').flagImagePos"></span>
-                                                    <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso('us').code}}</span>
-                                                </span>
-                                            </mat-select-trigger>
-                                            <ng-container *ngFor="let country of countries; trackBy: trackByFn">
-                                                <mat-option [value]="country.iso">
+                                                matPrefix>
+                                                <mat-select-trigger>
                                                     <span class="flex items-center">
                                                         <span
-                                                            class="w-6 h-4 overflow-hidden"
+                                                            class="hidden sm:flex w-6 h-4 mr-1 overflow-hidden"
                                                             [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
                                                             [style.backgroundSize]="'24px 3876px'"
-                                                            [style.backgroundPosition]="country.flagImagePos"></span>
-                                                        <span class="ml-2">{{country.name}}</span>
-                                                        <span class="ml-2 font-medium">{{country.code}}</span>
+                                                            [style.backgroundPosition]="getCountryByIso('us').flagImagePos"></span>
+                                                        <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso('us').code}}</span>
                                                     </span>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>-->
-                                    </mat-form-field>
-                                    <mat-form-field class="fuse-mat-no-subscript flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4">
-                                        <mat-label *ngIf="first">Label</mat-label>
-                                        <mat-icon
-                                            matPrefix
-                                            class="hidden sm:flex icon-size-5"
-                                            [svgIcon]="'heroicons_solid:tag'"></mat-icon>
-                                        <input
-                                            matInput
-                                            [formControl]="phoneNumber.get('type')"
-                                            [placeholder]="'Label'">
-                                    </mat-form-field>
+                                                </mat-select-trigger>
+                                                <ng-container *ngFor="let country of countries; trackBy: trackByFn">
+                                                    <mat-option [value]="country.iso">
+                                                        <span class="flex items-center">
+                                                            <span
+                                                                class="w-6 h-4 overflow-hidden"
+                                                                [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                                                [style.backgroundSize]="'24px 3876px'"
+                                                                [style.backgroundPosition]="country.flagImagePos"></span>
+                                                            <span class="ml-2">{{country.name}}</span>
+                                                            <span class="ml-2 font-medium">{{country.code}}</span>
+                                                        </span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>-->
+                                        </mat-form-field>
+                                        <mat-form-field class="fuse-mat-no-subscript flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4">
+                                            <mat-label *ngIf="first">Label</mat-label>
+                                            <mat-icon
+                                                matPrefix
+                                                class="hidden sm:flex icon-size-5"
+                                                [svgIcon]="'heroicons_solid:tag'"></mat-icon>
+                                            <input
+                                                matInput
+                                                [formControl]="phoneNumber.get('type')"
+                                                [placeholder]="'Label'">
+                                        </mat-form-field>
 
-                                    <ng-container *ngIf="!(first && last)">
-                                        <div
-                                            class="flex items-center w-10 pl-2"
-                                            [ngClass]="{'mt-6': first}">
-                                            <button
-                                                class="w-8 h-8 min-h-8"
-                                                mat-icon-button
-                                                (click)="removePhoneNumberField(i)"
-                                                matTooltip="Remove">
-                                                <mat-icon
-                                                    class="icon-size-2"
-                                                    [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                            </button>
-                                        </div>
-                                    </ng-container>
-                                </div>
+                                        <ng-container *ngIf="!(first && last)">
+                                            <div
+                                                class="flex items-center w-10 pl-2"
+                                                [ngClass]="{'mt-6': first}">
+                                                <button
+                                                    class="w-8 h-8 min-h-8"
+                                                    mat-icon-button
+                                                    (click)="removePhoneNumberField(i, phoneNumber.get('id').value)"
+                                                    matTooltip="Remove">
+                                                    <mat-icon
+                                                        class="icon-size-2"
+                                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
                             </ng-container>
                         </div>
                         <div

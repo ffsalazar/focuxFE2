@@ -145,7 +145,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                             this._formBuilder.group({
                                 id   : [phoneNumber.id],
                                 number: [phoneNumber.number],
-                                type      : [phoneNumber.type]
+                                type      : [phoneNumber.type],
+                                isActive: [phoneNumber.isActive]
                             })
                         );
                     });
@@ -156,7 +157,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                     phoneNumbersFormGroups.push(
                         this._formBuilder.group({
                             number: [''],
-                            type      : ['']
+                            type      : [''],
+                            isActive: [1]
                         })
                     );
                 }
@@ -743,7 +745,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         const phoneNumberFormGroup = this._formBuilder.group({
             id    : [''],
             number: [''],
-            type     : ['']
+            type     : [''],
+            isActive: [1]
         });
 
         // Add the phone number form group to the phoneNumbers form array
@@ -758,16 +761,19 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param index
      */
-    removePhoneNumberField(index: number): void
+    removePhoneNumberField(index: number, id: number): void
     {
         // Get form array for phone numbers
         const phoneNumbersFormArray = this.collaboratorForm.get('phones') as FormArray;
-
+        const phone = phoneNumbersFormArray.at(index).value
+        phone.isActive = 0;
         // Remove the phone number field
         phoneNumbersFormArray.removeAt(index);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
+
+        this._collaboratorsService.updatePhoneStatus(id, phone).subscribe();
     }
 
     /**
