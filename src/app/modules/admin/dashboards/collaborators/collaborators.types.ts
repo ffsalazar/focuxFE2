@@ -17,7 +17,7 @@ export interface Collaborator
     phones: Phone[];
     file?:string | null;
     isActive: number;
-    client : Client;
+    client: Client;
 }
 
 export interface Country
@@ -39,9 +39,10 @@ export interface Knowledge
 
 export interface CollaboratorKnowledge
 {
-    id: number;
+    id?: number;
     level: number;
     knowledge: Knowledge;
+    isActive: number;
 }
 
 export interface Department
@@ -73,18 +74,17 @@ export interface Phone
 export interface Client
 {
     id: number;
-    businessType: BusinessType;
     name: string;
     description: string;
-    isActive: number
+    isActive: number;
+    businessType: BusinessType;
 }
 
 export interface BusinessType
 {
     id: number;
-   code:string;
+    code: string;
     name: string;
     description: string;
-    isActive: number
+    isActive: number;
 }
-

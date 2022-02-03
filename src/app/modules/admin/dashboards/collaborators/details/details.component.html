@@ -63,27 +63,37 @@
                     <div class="flex flex-wrap items-center mt-2">
                         <!-- Knowledge -->
                         <ng-container *ngFor="let knowledge of collaborator.knowledges">
-                            <div class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                <span class="text-sm font-medium whitespace-nowrap">{{knowledge.knowledge.name}}</span>
-                            </div>
+                            <ng-container *ngIf="knowledge.isActive != 0">
+                                <div class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
+                                    <span class="text-sm font-medium whitespace-nowrap">{{knowledge.knowledge.name}}</span>
+                                </div>
+                            </ng-container>
                         </ng-container>
                     </div>
                 </ng-container>
 
                 <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
-                    <!-- Title -->
+                    <!-- Role in the company -->
                     <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
                             <div class="ml-6 leading-6">{{collaborator.employeePosition.name}}</div>
                         </div>
                     </ng-container>
-
-                    <!-- Company -->
+                    
+                    <!-- Department -->
                     <ng-container *ngIf="collaborator.employeePosition">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
                             <div class="ml-6 leading-6">{{collaborator.employeePosition.department.name}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Client -->
+                    <ng-container *ngIf="collaborator.client">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <div class="ml-6 leading-6">{{collaborator.client.name}}</div>
                         </div>
                     </ng-container>
 
@@ -147,15 +157,7 @@
                             <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
                             <div class="ml-6 leading-6">{{collaborator.assignedLocation}}</div>
                         </div>
-                    </ng-container>
-
-                    <!-- Address -->
-                    <ng-container *ngIf="collaborator.client">
-                        <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
-                            <div class="ml-6 leading-6">{{collaborator.client.name}}</div>
-                        </div>
-                    </ng-container>
+                    </ng-container>                   
 
                     <!-- Birthday -->
                     <ng-container *ngIf="collaborator.bornDate">
@@ -309,12 +311,13 @@
                     <div class="flex flex-wrap items-center -m-1.5 mt-6">
                         <mat-label class="w-full">Habilidades</mat-label>
                         <!-- Knowledges -->
-
                         <ng-container *ngIf="collaborator.knowledges.length">
                             <ng-container *ngFor="let collaboratorKnowledge of collaborator.knowledges">
-                                <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                    <span class="text-md font-medium whitespace-nowrap">{{collaboratorKnowledge.knowledge.name}}</span>
-                                </div>
+                                <ng-container *ngIf="collaboratorKnowledge.isActive != 0">
+                                    <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
+                                        <span class="text-md font-medium whitespace-nowrap">{{collaboratorKnowledge.knowledge.name}}</span>
+                                    </div>
+                                </ng-container>
                             </ng-container>
                         </ng-container>
                         <!-- Knowledges panel and its button -->
@@ -375,7 +378,7 @@
                                         class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
                                         <!-- Knowledges-->
                                         <ng-container *ngIf="!knowledgesEditMode">
-                                            <ng-container *ngFor="let knowledge of filteredKnowledges; trackBy: trackByFn">
+                                            <ng-container *ngFor="let knowledge of knowledges; trackBy: trackByFn">
                                                 <div
                                                     class="flex items-center h-10 min-h-10 px-4 cursor-pointer hover:bg-hover"
                                                     (click)="toggleCollaboratorKnowledge(knowledge)"
@@ -386,7 +389,7 @@
                                                         [color]="'primary'"
                                                         [disableRipple]="true">
                                                     </mat-checkbox>
-                                                    <div class="ml-1">{{knowledge.knowledge.name}}</div>
+                                                    <div class="ml-1">{{knowledge.name}}</div>
                                                 </div>
                                             </ng-container>
                                         </ng-container>
@@ -457,21 +460,21 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-
                     <!-- Title -->
+                    
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
                             <mat-label>Cliente</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
-                            <mat-select [placeholder]="collaborator.client" formControlName="client">
-                                <mat-option *ngFor="let client of filteredclients" [value]="client.id">{{client.name}}</mat-option>
+                                [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
+                            <mat-select [placeholder]="collaborator.client.name" formControlName="client">
+                                <mat-option *ngFor="let client of clients" [value]="client.id">{{client.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
-
+             
                     <!-- Mail -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">

@@ -2,15 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import {
-    Client,
-    Collaborator,
-    Country,
-    Department,
-    EmployeePosition,
-    Knowledge,
-    Phone
-} from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -81,14 +73,13 @@ export class CollaboratorsService
     {
         return this._employeePositions.asObservable();
     }
-
     /**
      * Getter for employeePositions
      */
-    get clients$(): Observable<Client[]>
-    {
-        return this._clients.asObservable();
-    }
+     get clients$(): Observable<Client[]>
+     {
+         return this._clients.asObservable();
+     }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -120,7 +111,6 @@ export class CollaboratorsService
                     }
                 });
                 this._collaborators.next(collaboratorFiltered);
-
             })
         );
     }
@@ -227,20 +217,6 @@ export class CollaboratorsService
             technicalSkills: '',
             knowledges: [],
             phones: [],
-            client:{
-                "id": 1,
-                "businessType": {
-                    "id": 2,
-                    "code": "FIN01",
-                    "name": "Financiero",
-                    "description": "Servicios Financieros, inversiones, creditos personales",
-                    "isActive": 1
-                },
-                "name": "Credix",
-                "description": "Empresa del ramo financiero en Costa Rica",
-                "isActive": 1
-            }
-
         };
         return this.collaborators$.pipe(
             take(1),
@@ -264,7 +240,6 @@ export class CollaboratorsService
      */
     updateCollaborator(id: number, collaborator: Collaborator): Observable<Collaborator>
     {
-       console.log(JSON.stringify(collaborator));
         return this.collaborators$.pipe(
             take(1),
             switchMap(collaborators => this._httpClient.put<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/collaborator/' + collaborator.id,
@@ -518,7 +493,6 @@ export class CollaboratorsService
     {
         return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeeposition/all').pipe(
             tap((employeePositions) => {
-                console.log(employeePositions)
                 this._employeePositions.next(employeePositions);
             })
         );
@@ -527,6 +501,7 @@ export class CollaboratorsService
     getClients(): Observable<Client[]>
     {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
+
             tap((clients) => {
                 let clientsFiltered : Client[] = []
                 clients.forEach((client) => {
@@ -545,7 +520,17 @@ export class CollaboratorsService
         console.log(phone);
         return this._httpClient.put<Phone>('http://localhost:1616/api/v1/followup/phones/status/'+ id, phone).pipe(
             tap(phone => {
-                console.log(phone)
+                //console.log(phone)
+            })
+        );
+    }
+
+    updateCollaboratorKnowledgeStatus(id: number, collaboratorKnowledge: CollaboratorKnowledge): Observable<CollaboratorKnowledge>
+    {
+        console.log(collaboratorKnowledge);
+        return this._httpClient.put<CollaboratorKnowledge>('http://localhost:1616/api/v1/followup/collaboratorknowledge/status/'+ id, collaboratorKnowledge).pipe(
+            tap(collaboratorKnowledge => {
+                console.log(collaboratorKnowledge);
             })
         );
     }

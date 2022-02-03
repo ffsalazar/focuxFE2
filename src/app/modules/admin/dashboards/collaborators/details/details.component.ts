@@ -7,15 +7,7 @@ import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import {
-    Client,
-    Collaborator,
-    CollaboratorKnowledge,
-    Country,
-    Department,
-    EmployeePosition,
-    Knowledge
-} from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
@@ -34,7 +26,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     editMode: boolean = false;
     knowledges: Knowledge[];
     knowledgesEditMode: boolean = false;
-    filteredKnowledges: CollaboratorKnowledge[]=[];
+    filteredKnowledges: CollaboratorKnowledge[] = [];
     collaborator: Collaborator;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
@@ -89,6 +81,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             nationality : [''],
             department : [''],
             employeePosition : [[]],
+            client: [[]],
             companyEntryDate : [''],
             organizationEntryDate : [''],
             gender       : [''],
@@ -99,7 +92,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             technicalSkills: [''],
             phoneNumbers: this._formBuilder.array([]),
             phones: this._formBuilder.array([]),
-            client: [[]]
         })
 
         // Get the collaborators
@@ -117,19 +109,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborator: Collaborator) => {
 
-
-
-
-
                 // Open the drawer in case it is closed
                 this._collaboratorsListComponent.matDrawer.open();
 
                 // Get the collaborator
                 this.collaborator = collaborator;
-
-
-
-
+                console.log(this.collaborator);
                 // Clear the emails and phoneNumbers form arrays
 
                 (this.collaboratorForm.get('phones') as FormArray).clear();
@@ -140,10 +125,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
                 this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
-                console.log(this.collaboratorForm.value);
-
-
-
+                this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 // Setup the phone numbers form array
                 const phoneNumbersFormGroups = [];
 
@@ -203,23 +185,17 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .subscribe((employeePositions: EmployeePosition[]) => {
                 this.employeePositions = employeePositions;
                 this.filteredEmployeePositions = employeePositions;
-                console.log(this.employeePositions);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+        
         this._collaboratorsService.clients$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((clients: Client[]) => {
-                this.clients = clients;
-                this.filteredclients = clients;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-
-
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((clients: Client[]) => {
+            this.clients = clients;            
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });    
         // Get the country telephone codes
         this._collaboratorsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -241,28 +217,23 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+            
+        this.filteredKnowledges = this.collaborator.knowledges;
+        
+        // this.knowledges.forEach(filteredKnowledges => {
+        //     let filteredKnowledge = {
+        //         id : filteredKnowledges.id,
+        //         level: 0,
+        //         knowledge: filteredKnowledges,
+        //         isActive: 1
+        //     };
 
-        this.knowledges.forEach(filteredKnowledges => {
-
-            let filteredKnowledge = {
-                id : filteredKnowledges.id,
-                level: 0,
-                knowledge: filteredKnowledges
-            };
-            this.filteredKnowledges.push(filteredKnowledge);
-
-        });
+        //     this.filteredKnowledges.push(filteredKnowledge);
+        // });
 
         if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
             this.editMode = true;
         }
-
-
-
-
-
-
-
     }
 
     /**
@@ -300,8 +271,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     toggleEditMode(editMode: boolean | null = null): void
     {
-        console.log(this.collaboratorForm.value);
-
         if ( editMode === null )
         {
             this.editMode = !this.editMode;
@@ -323,9 +292,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Get the collaborator object
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
-        collaborator.client = this.clients.find(value => value.id == collaborator.client)
-        // Update the collaborator on the server
-        console.log(collaborator)
+        collaborator.client = this.clients.find(value => value.id === collaborator.client);
+        // Update the collaborator on the server        
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {
 
             // Toggle the edit mode off
@@ -658,20 +626,34 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    addKnowledgeToCollaborator(knowledge: any): void
+    addKnowledgeToCollaborator(knowledge: Knowledge): void
     {
+        // TODO: we need to add logic for levels here
+        let newKnowledge: CollaboratorKnowledge = {
+            level: 0,
+            knowledge: knowledge,
+            isActive: 1
+        }
+
         // Add the knowledge
-        this.collaborator.knowledges.unshift(knowledge);
+        this.collaborator.knowledges.unshift(newKnowledge);
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
+        // Mark for check
+        this._changeDetectorRef.detectChanges();
+    }
+    
+    activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {        
+        knowledge.isActive = 1;
+        // Update the collaborator form
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
         // Mark for check
         this._changeDetectorRef.detectChanges();
 
-
-
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe()
     }
 
     /**
@@ -679,14 +661,16 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    removeKnowledgeFromCollaborator(knowledge: any): void
+    removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
     {
         // Remove the knowledge
-        this.collaborator.knowledges.splice(this.collaborator.knowledges.findIndex(item => item.id === knowledge.id), 1);
+        knowledge.isActive = 0;        
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
-
+        // Setting status to inactive
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe();
+        
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -696,21 +680,21 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    toggleCollaboratorKnowledge(Knowledge: any): void
+    toggleCollaboratorKnowledge(knowledge: Knowledge): void
     {
         /*let collaboratorKnowledge : CollaboratorKnowledge = {
             id: knowledge.id,
             level : 0,
             knowledge : knowledge
         }*/
-        if ( this.collaborator.knowledges.find(knowledge => knowledge.id == Knowledge.id ) )
-        {
-            this.removeKnowledgeFromCollaborator(Knowledge);
+        let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
+        if (knowledgeFound) {
+            if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+            else  this.activeCollaboratorKnowledge(knowledgeFound);
         }
         else
         {
-
-            this.addKnowledgeToCollaborator(Knowledge);
+            this.addKnowledgeToCollaborator(knowledge);
         }
     }
 
@@ -820,20 +804,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         return item.id || index;
     }
 
-    checkerKnowledges(Knowledge: CollaboratorKnowledge) {
-        let knowledgeC: any;
-
-        if(!this.collaborator.knowledges.length){
-            knowledgeC = this.collaborator.knowledges.find(knowledge => knowledge.id === Knowledge.id);
-        }else{
-            knowledgeC = this.collaborator.knowledges.find(knowledge => knowledge.id === Knowledge.id);
-
-
-        }
-
-
-        return knowledgeC
-
-
+    checkerKnowledges(knowledge: Knowledge): boolean {
+        let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);        
+        return hasKnowledge !== undefined;
     };
 }
