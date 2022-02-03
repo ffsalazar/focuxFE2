@@ -32,10 +32,11 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     collaborators: Collaborator[];
     departments: Department[];
     filteredDepartments: Department[];
+    clients:Client[];
+    filteredclients: Client[];
     countries: Country[];
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
-    clients: Client[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -90,7 +91,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             isActive: [''],
             technicalSkills: [''],
             phoneNumbers: this._formBuilder.array([]),
-            phones: this._formBuilder.array([])
+            phones: this._formBuilder.array([]),
         })
 
         // Get the collaborators
@@ -122,6 +123,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.collaboratorForm.patchValue(collaborator);
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
+                this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
                 this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 // Setup the phone numbers form array

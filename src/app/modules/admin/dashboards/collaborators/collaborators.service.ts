@@ -227,8 +227,7 @@ export class CollaboratorsService
             assignedLocation: 'Intelix Principal',
             technicalSkills: '',
             knowledges: [],
-            phones: []
-
+            phones: [],
         };
         return this.collaborators$.pipe(
             take(1),
