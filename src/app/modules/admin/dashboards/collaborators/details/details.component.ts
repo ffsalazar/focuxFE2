@@ -7,7 +7,15 @@ import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import {
+    Client,
+    Collaborator,
+    CollaboratorKnowledge,
+    Country,
+    Department,
+    EmployeePosition,
+    Knowledge
+} from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
@@ -32,6 +40,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     collaborators: Collaborator[];
     departments: Department[];
     filteredDepartments: Department[];
+    clients:Client[];
+    filteredclients: Client[];
     countries: Country[];
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
@@ -88,7 +98,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             isActive: [''],
             technicalSkills: [''],
             phoneNumbers: this._formBuilder.array([]),
-            phones: this._formBuilder.array([])
+            phones: this._formBuilder.array([]),
+            client: [[]]
         })
 
         // Get the collaborators
@@ -127,6 +138,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.collaboratorForm.patchValue(collaborator);
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
+                this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
                 console.log(this.collaboratorForm.value);
 
@@ -192,6 +204,16 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.employeePositions = employeePositions;
                 this.filteredEmployeePositions = employeePositions;
                 console.log(this.employeePositions);
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._collaboratorsService.clients$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((clients: Client[]) => {
+                this.clients = clients;
+                this.filteredclients = clients;
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -301,6 +323,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Get the collaborator object
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
+        collaborator.client = this.clients.find(value => value.id == collaborator.client)
         // Update the collaborator on the server
         console.log(collaborator)
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {

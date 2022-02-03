@@ -149,6 +149,14 @@
                         </div>
                     </ng-container>
 
+                    <!-- Address -->
+                    <ng-container *ngIf="collaborator.client">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{collaborator.client.name}}</div>
+                        </div>
+                    </ng-container>
+
                     <!-- Birthday -->
                     <ng-container *ngIf="collaborator.bornDate">
                         <div class="flex sm:items-center">
@@ -443,9 +451,23 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:users'"></mat-icon>
                             <mat-select [placeholder]="collaborator.employeePosition.name" formControlName="employeePosition">
                                 <mat-option *ngFor="let employeePosition of filteredEmployeePositions" [value]="employeePosition.id">{{employeePosition.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Cliente</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                            <mat-select [placeholder]="collaborator.client" formControlName="client">
+                                <mat-option *ngFor="let client of filteredclients" [value]="client.id">{{client.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -466,7 +488,7 @@
                     </div>
                     <!-- Phone numbers -->
                    <div class="mt-8">
-                        <div class="space-y-4">                            
+                        <div class="space-y-4">
                             <ng-container *ngFor="let phoneNumber of collaboratorForm.get('phones')['controls']; let i = index; let first = first; let last = last; trackBy: trackByFn">
                                 <ng-container *ngIf="phoneNumber.isActive != 0">
                                     <div class="relative flex">

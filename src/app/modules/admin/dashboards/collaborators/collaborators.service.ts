@@ -2,7 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Collaborator, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import {
+    Client,
+    Collaborator,
+    Country,
+    Department,
+    EmployeePosition,
+    Knowledge,
+    Phone
+} from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +24,7 @@ export class CollaboratorsService
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
     private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
     private _employeePositions: BehaviorSubject<EmployeePosition[] | null> = new BehaviorSubject(null);
+    private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
     /**
      * Constructor
      */
@@ -71,6 +80,14 @@ export class CollaboratorsService
     get employeePositions$(): Observable<EmployeePosition[]>
     {
         return this._employeePositions.asObservable();
+    }
+
+    /**
+     * Getter for employeePositions
+     */
+    get clients$(): Observable<Client[]>
+    {
+        return this._clients.asObservable();
     }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -209,7 +226,20 @@ export class CollaboratorsService
             assignedLocation: 'Intelix Principal',
             technicalSkills: '',
             knowledges: [],
-            phones: []
+            phones: [],
+            client:{
+                "id": 1,
+                "businessType": {
+                    "id": 2,
+                    "code": "FIN01",
+                    "name": "Financiero",
+                    "description": "Servicios Financieros, inversiones, creditos personales",
+                    "isActive": 1
+                },
+                "name": "Credix",
+                "description": "Empresa del ramo financiero en Costa Rica",
+                "isActive": 1
+            }
 
         };
         return this.collaborators$.pipe(
@@ -490,6 +520,16 @@ export class CollaboratorsService
             tap((employeePositions) => {
                 console.log(employeePositions)
                 this._employeePositions.next(employeePositions);
+            })
+        );
+    }
+
+    getClients(): Observable<Client[]>
+    {
+        return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
+            tap((clients) => {
+                console.log(clients)
+                this._clients.next(clients);
             })
         );
     }
