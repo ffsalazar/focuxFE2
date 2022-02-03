@@ -1,0 +1,64 @@
+<div class="flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full dark:bg-transparent">
+
+    <div class="w-full">
+        <div class="flex flex-col">
+            <div class="flex flex-row justify-end mr-12">
+                <search-box class="w-1/3 pr-2 pt-2" [data]="collaborators" [placeHolder]="'Colaborador'" (selectionEvent)="onCollaboratorSearchChange($event)">
+                </search-box>
+
+
+                <search-box class="w-1/3 pr-2 pt-2" [data]="collaborators" [placeHolder]="'Cliente'" (selectionEvent)="onCollaboratorSearchChange($event)">
+                </search-box>
+
+                <search-box class="w-1/3 pr-2 pt-2" [data]="collaborators" [placeHolder]="'Estatus'" (selectionEvent)="onCollaboratorSearchChange($event)">
+                </search-box>
+
+            </div>
+
+            <div class="flex flex-row mt-24">
+                <span class="mr-4"><b>Proyecto</b>: {{project.name}}</span>
+                <span class="mr-4"><b>Skills</b>: {{project.skills}}</span>
+                <span class="mr-4"><b>Cliente</b>: {{project.client.name}}</span>
+                <span class="mr-4"><b>Inicio</b>: {{project.initDate | date: 'dd-MM-yyyy'}}</span>
+                <span><b>Culmina</b>: {{project.endDate | date: 'dd-MM-yyyy'}}</span>
+            </div>
+
+            <div class="bg-card py-3 px-6 rounded shadow mt-24 flex flex-col">
+                <div class="flex flex-row justify-center mb-8 w-full">
+                    <button mat-flat-button color="primary" class="mr-4">Colaboradores</button>
+                    <button mat-flat-button color="primary" class="mr-4">Actividad</button>
+                    <button mat-flat-button color="primary" class="mr-4">Skills</button>
+                    <button mat-flat-button color="primary">Progreso</button>
+                </div>
+
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="">Colaboradores</th>
+                            <th class="">Actividad</th>
+                            <th class="">Progreso</th>
+                            <th class="">Skills</th>
+
+                            <th>Disponibilidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let colaborator of collaborators; let i = index">
+                            <td align="start">{{colaborator.name + ' ' + colaborator.lastName}}</td>
+                            <td align="start">{{activity[i].name}}</td>
+                            <td align="center">{{activity[i].progress}}</td>
+                            <td align="center">{{colaborator.technicalSkills}}</td>
+                            <td align="center">{{activity[i].progress === '100%' ? 'Disponible' : 'No Disponible'}}</td>
+                            <td><button mat-button [color]="'primary'">
+                                <mat-icon>
+
+                                </mat-icon>
+                            </button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

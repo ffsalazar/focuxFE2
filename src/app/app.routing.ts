@@ -83,7 +83,9 @@ export const appRoutes: Route[] = [
                 {path: 'crypto', loadChildren: () => import('app/modules/admin/dashboards/crypto/crypto.module').then(m => m.CryptoModule)},
                 {path: 'requestPanel', loadChildren: () => import('app/modules/admin/dashboards/requestPanel/requestPanel.module').then(m => m.RequestPanelModule)},
                 {path: 'collaborators', loadChildren: () => import('app/modules/admin/dashboards/collaborators/collaborators.module').then(m => m.CollaboratorsModule)},
-            ]},
+                {path: 'assignment-occupation', loadChildren: () => import('app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module').then(m => m.AssignmentOccupationModule)},
+                {path: 'vacations', loadChildren: () => import('app/modules/admin/dashboards/vacations/vacations.module').then(m => m.VacationsModule)}
+                ]},
 
             // Apps
             {path: 'apps', children: [

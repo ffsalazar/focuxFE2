@@ -35,7 +35,7 @@ export interface Knowledge
     name: string;
 }
 
-export interface CollaboratorKnowledge 
+export interface CollaboratorKnowledge
 {
     id: number;
     level: number;
