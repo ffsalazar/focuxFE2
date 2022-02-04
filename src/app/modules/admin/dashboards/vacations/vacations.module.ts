@@ -10,6 +10,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatRippleModule} from "@angular/material/core";
 import {VacationsRouting} from "./vacations.routing";
 import {SearchBoxModule} from "../../../../shared/components/search-box/search-box.module";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSelectModule} from "@angular/material/select";
 
 
 
@@ -27,7 +29,9 @@ import {SearchBoxModule} from "../../../../shared/components/search-box/search-b
         MatButtonModule,
         MatRippleModule,
         RouterModule.forChild(VacationsRouting),
-        SearchBoxModule
+        SearchBoxModule,
+        MatFormFieldModule,
+        MatSelectModule
     ]
 })
 export class VacationsModule { }

@@ -12,22 +12,72 @@
             </search-box>
         </div>
 
-        <span class="font-bold text-xl mt-10">Consultar</span>
+        <h4 class="font-bold text-xl mt-10">Consultar</h4>
 
         <div class="mt-6">
-            <table class="border-collapse border border-slate-400">
+            <table class="border-collapse border border-slate-400 w-full">
                 <thead>
                     <tr>
-                        <th>Colaborador</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th align="start">Colaborador</th>
+                        <th align="start">Periodo Actual</th>
+                        <th align="start">Fecha inicio</th>
+                        <th align="start">Fecha fin</th>
+                        <th align="start">Dias de disfrute</th>
+                        <th align="start">Retorno a la oficina</th>
                     </tr>
                 </thead>
+                <tbody>
+                    <tr>
+                        <td>Emmanuel Ortega</td>
+                        <td>2021-2022</td>
+                        <td>01-02-2022</td>
+                        <td>01-03-2022</td>
+                        <td>18</td>
+                        <td>01-03-2022</td>
+                    </tr>
+                    <tr>
+                        <td align="end">-No Aplica</td>
+                        <td align="end">-No Aplica</td>
+                        <td align="end">-No Aplica</td>
+                        <td align="end">-No Aplica</td>
+                        <td align="end">-No Aplica</td>
+                        <td align="end">-No Aplica</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
 
+
+        <h4 class="mt-8 font-bold text-xl">Historial</h4>
+
+
+        <div class="mt-8">
+            <table class="border-collapse border border-slate-400 w-full">
+                <thead>
+                <tr>
+                    <th align="start">Colaborador</th>
+                    <th align="start">Periodo disfrutados</th>
+                    <th align="start">Fecha inicio</th>
+                    <th align="start">Fecha fin</th>
+                    <th align="start">Dias pendiente de disfrute</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Emmanuel Ortega</td>
+                        <td>2019-2020</td>
+                        <td>01-02-2021</td>
+                        <td>01-03-2021</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex flex-row w-full mt-8 justify-end">
+            <span class="font-bold text-xl mr-6 pt-2">Dias pendientes</span>
+            <span class="font-medium text-center pt-3 mr-6">18</span>
+            <button mat-flat-button color="primary" > Asignar </button>
+        </div>
     </div>
 </div>
