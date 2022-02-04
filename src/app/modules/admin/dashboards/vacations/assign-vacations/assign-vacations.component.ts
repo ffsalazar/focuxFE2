@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AssignVacationsComponent implements OnInit {
 
+    formFieldHelpers: string[] = [''];
   constructor() { }
 
   ngOnInit(): void {

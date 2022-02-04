@@ -12,6 +12,9 @@ import {VacationsRouting} from "./vacations.routing";
 import {SearchBoxModule} from "../../../../shared/components/search-box/search-box.module";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatInputModule} from "@angular/material/input";
+import {MatMomentDateModule} from "@angular/material-moment-adapter";
 
 
 
@@ -31,7 +34,10 @@ import {MatSelectModule} from "@angular/material/select";
         RouterModule.forChild(VacationsRouting),
         SearchBoxModule,
         MatFormFieldModule,
-        MatSelectModule
+        MatMomentDateModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatInputModule
     ]
 })
 export class VacationsModule { }
