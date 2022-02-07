@@ -304,7 +304,7 @@ export class ClientsService
 
     getBusinessTypes(): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessTypes/all').pipe(
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all').pipe(
             tap((businessTypes) => {
                 console.log(businessTypes)
                 this._businessTypes.next(businessTypes);
