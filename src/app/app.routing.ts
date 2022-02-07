@@ -100,6 +100,7 @@ export const appRoutes: Route[] = [
                 {path: 'tasks', loadChildren: () => import('app/modules/admin/apps/tasks/tasks.module').then(m => m.TasksModule)},
                 {path: 'portafolio', loadChildren: () => import('app/modules/admin/apps/portafolio/portafolio.module').then(m => m.PortafolioModule)},
                 {path: 'clients', loadChildren: () => import('app/modules/admin/masters/clients/clients.module').then(m => m.ClientsModule)},
+                {path: 'employeePosition', loadChildren: () => import('app/modules/admin/masters/employeePosition/employeePosition.module').then(m => m.EmployeePositionModule)},
 
 
                 ]},

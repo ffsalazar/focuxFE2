@@ -120,7 +120,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 ]
             },
             {
-                id      : 'teacher.collaborator',
+                id      : 'masters.collaborator',
                 title   : 'Colaboradores',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:users',
@@ -135,7 +135,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'teacher.collaborator.employeePosition',
                         title: 'Cargos',
                         type : 'basic',
-                        link : ''
+                        link : '/apps/employeePosition'
                     },
                     {
                         id   : 'teacher.collaborator.departament',

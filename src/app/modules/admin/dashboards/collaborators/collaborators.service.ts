@@ -491,7 +491,7 @@ export class CollaboratorsService
 
     getEmployeePositions(): Observable<EmployeePosition[]>
     {
-        return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeeposition/all').pipe(
+        return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeePosition/all').pipe(
             tap((employeePositions) => {
                 this._employeePositions.next(employeePositions);
             })
