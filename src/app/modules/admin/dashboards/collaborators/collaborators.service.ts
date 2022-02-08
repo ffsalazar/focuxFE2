@@ -138,9 +138,28 @@ export class CollaboratorsService
                     // Filter the collaborators
 
                     collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+                    function compare(a: Collaborator, b: Collaborator) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+                        // Their names are equal
+                        if (a.lastName < b.lastName) return -1;
+                        if (a.lastName > b.lastName) return 1;
 
+                        return 0;
+                    }
+                    collaboratorFiltered.sort(compare);
                     this._collaborators.next(collaboratorFiltered);
                 }else{
+                    function compare(a: Collaborator, b: Collaborator) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+                        // Their names are equal
+                        if (a.lastName < b.lastName) return -1;
+                        if (a.lastName > b.lastName) return 1;
+
+                        return 0;
+                    }
+                    collaboratorFiltered.sort(compare);
                     this._collaborators.next(collaboratorFiltered);
                 }
 
@@ -322,7 +341,15 @@ export class CollaboratorsService
     {
         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
             tap((knowledges) => {
-                this._knowledges.next(knowledges);
+                let knowledgesFiltered : Knowledge[] = []
+                knowledges.forEach((knowledge) => {
+                    if (knowledge.isActive != 0){
+                        knowledgesFiltered.push(knowledge);
+                    }
+                });
+
+
+                this._knowledges.next(knowledgesFiltered);
             })
         );
     }
@@ -483,8 +510,15 @@ export class CollaboratorsService
     {
         return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
             tap((departments) => {
-                console.log(departments)
-                this._departments.next(departments);
+                let departmentsFiltered : Department[] = []
+                departments.forEach((department) => {
+                    if (department.isActive != 0){
+                        departmentsFiltered.push(department);
+                    }
+                });
+
+
+                this._departments.next(departmentsFiltered);
             })
         );
     }
@@ -493,7 +527,15 @@ export class CollaboratorsService
     {
         return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeePosition/all').pipe(
             tap((employeePositions) => {
-                this._employeePositions.next(employeePositions);
+                let employeePositionsFiltered : EmployeePosition[] = []
+                employeePositions.forEach((employeePosition) => {
+                    if (employeePosition.isActive != 0){
+                        employeePositionsFiltered.push(employeePosition);
+                    }
+                });
+
+
+                this._employeePositions.next(employeePositionsFiltered);
             })
         );
     }

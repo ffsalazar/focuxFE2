@@ -105,9 +105,24 @@ export class ClientsService
                     // Filter the clients
 
                     clientFiltered = clientFiltered.filter(client => client.name && client.name.toLowerCase().includes(query.toLowerCase()));
+                    function compare(a: Client, b: Client) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
 
+
+                        return 0;
+                    }
+                    clientFiltered.sort(compare);
                     this._clients.next(clientFiltered);
                 }else{
+                    function compare(a: Client, b: Client) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    clientFiltered.sort(compare);
                     this._clients.next(clientFiltered);
                 }
 

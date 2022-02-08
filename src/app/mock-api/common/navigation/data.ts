@@ -103,7 +103,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.client',
                         title: 'Clientes',
                         type : 'basic',
-                        link : '/apps/clients'
+                        link : '/masters/clients'
                     },
                     {
                         id   : 'masters.portafolio.commercialArea',
@@ -116,6 +116,12 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         title: 'Area Técnica',
                         type : 'basic',
                         link : ''
+                    },
+                    {
+                        id   : 'masters.portafolio.businessType',
+                        title: 'tipo de negocio',
+                        type : 'basic',
+                        link : '/masters/businessTypes'
                     }
                 ]
             },
@@ -126,22 +132,22 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon    : 'heroicons_outline:users',
                 children: [
                     {
-                        id   : 'teacher.collaborator.collaborator',
-                        title: 'Colaborador',
+                        id   : 'masters.collaborator.collaborator',
+                        title: 'Conocimiento',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/knowledges'
                     },
                     {
-                        id   : 'teacher.collaborator.employeePosition',
+                        id   : 'masters.collaborator.employeePosition',
                         title: 'Cargos',
                         type : 'basic',
-                        link : '/apps/employeePosition'
+                        link : '/masters/employeePosition'
                     },
                     {
-                        id   : 'teacher.collaborator.departament',
+                        id   : 'masters.collaborator.departament',
                         title: 'Departamento',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/departments'
                     }
                 ]
             }/*

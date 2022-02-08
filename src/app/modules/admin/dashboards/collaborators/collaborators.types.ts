@@ -35,6 +35,7 @@ export interface Knowledge
     type: string;
     description: string;
     name: string;
+    isActive: number;
 }
 
 export interface CollaboratorKnowledge
@@ -49,7 +50,7 @@ export interface Department
 {
     id: number;
     code: string;
-    isActive: boolean;
+    isActive: number;
     name: string;
     description: string;
 }
@@ -59,7 +60,7 @@ export interface EmployeePosition
     id: number;
     name: String;
     description: String;
-    isActive: boolean;
+    isActive: number;
     department: Department;
 }
 

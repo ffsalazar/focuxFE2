@@ -7,17 +7,17 @@ import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Client, BusinessType} from 'app/modules/admin/masters/clients/clients.types';
-import { ClientsListComponent } from 'app/modules/admin/masters/clients/list/list.component';
-import { ClientsService } from 'app/modules/admin/masters/clients/clients.service';
+import { Knowledge} from 'app/modules/admin/masters/knowledges/knowledges.types';
+import { KnowledgesListComponent } from 'app/modules/admin/masters/knowledges/list/list.component';
+import { KnowledgesService } from 'app/modules/admin/masters/knowledges/knowledges.service';
 
 @Component({
-    selector       : 'clients-details',
+    selector       : 'knowledges-details',
     templateUrl    : './details.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClientsDetailsComponent implements OnInit, OnDestroy
+export class KnowledgesDetailsComponent implements OnInit, OnDestroy
 {
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
@@ -27,11 +27,9 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
 
     knowledgesEditMode: boolean = false;
 
-    client: Client;
-    clientForm: FormGroup;
-    clients: Client[];
-    businessTypes: BusinessType[];
-    filteredBusinessTypes: BusinessType[];
+    knowledge: Knowledge;
+    knowledgeForm: FormGroup;
+    knowledges: Knowledge[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -41,8 +39,8 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _clientsListComponent: ClientsListComponent,
-        private _clientsService: ClientsService,
+        private _knowledgesListComponent: KnowledgesListComponent,
+        private _knowledgesService: KnowledgesService,
         private _formBuilder: FormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _renderer2: Renderer2,
@@ -63,49 +61,50 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
     ngOnInit(): void
     {
         // Open the drawer
-        this._clientsListComponent.matDrawer.open();
+        this._knowledgesListComponent.matDrawer.open();
 
-        // Create the client form
-        this.clientForm = this._formBuilder.group({
+        // Create the knowledge form
+        this.knowledgeForm = this._formBuilder.group({
             id: [''],
             name: [''],
             description: [''],
-            isActive: [''],
-            businessType: [[]]
+            type:[''],
+            isActive: ['']
+
         })
 
-        // Get the clients
-        this._clientsService.clients$
+        // Get the knowledges
+        this._knowledgesService.knowledges$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((clients: Client[]) => {
-                this.clients = clients;
+            .subscribe((knowledges: Knowledge[]) => {
+                this.knowledges = knowledges;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the client
-        this._clientsService.client$
+        // Get the knowledge
+        this._knowledgesService.knowledge$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((client: Client) => {
+            .subscribe((knowledge: Knowledge) => {
 
 
-
+                console.log(knowledge)
 
 
                 // Open the drawer in case it is closed
-                this._clientsListComponent.matDrawer.open();
+                this._knowledgesListComponent.matDrawer.open();
 
-                // Get the client
-                this.client = client;
+                // Get the knowledge
+                this.knowledge = knowledge;
 
 
 
 
                 // Patch values to the form
-                this.clientForm.patchValue(client);
+                this.knowledgeForm.patchValue(knowledge);
 
-                this.clientForm.get('businessType').setValue(client.businessType.id);
+                this.knowledgeForm.get('type').setValue(knowledge.type);
 
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
@@ -114,20 +113,9 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the client
-
-        this._clientsService.businessTypes$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((businessType: BusinessType[]) => {
-                this.businessTypes = businessType;
-                this.filteredBusinessTypes = businessType;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
 
-
-        if(this.client.name === 'Nuevo Cliente'){
+        if(this.knowledge.name === 'Nuevo Conocimiento'){
             this.editMode = true;
         }
 
@@ -158,7 +146,7 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
      */
     closeDrawer(): Promise<MatDrawerToggleResult>
     {
-        return this._clientsListComponent.matDrawer.close();
+        return this._knowledgesListComponent.matDrawer.close();
     }
 
     /**
@@ -168,7 +156,7 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
      */
     toggleEditMode(editMode: boolean | null = null): void
     {
-        console.log(this.clientForm.value);
+        console.log(this.knowledgeForm.value);
 
         if ( editMode === null )
         {
@@ -184,39 +172,34 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
     }
 
     /**
-     * Update the client
+     * Update the knowledge
      */
-    updateClient(): void
+    updateKnowledge(): void
     {
-        // Get the client object
-        let client = this.clientForm.getRawValue();
-        client.businessType = this.businessTypes.find(value => value.id == client.businessType)
-        // Update the client on the server
-        console.log(client)
-        this._clientsService.updateClient(client.id, client).subscribe(() => {
+        // Get the knowledge object
+        let knowledge = this.knowledgeForm.getRawValue();
+
+        // Update the knowledge on the server
+        console.log(knowledge)
+        this._knowledgesService.updateKnowledge(knowledge.id, knowledge).subscribe(() => {
 
             // Toggle the edit mode off
             this.toggleEditMode(false);
         });
     }
 
-    filterPositionsByBusinessType() {
-        let businessTypeSelected = this.clientForm.get("businessType").value;
 
-        this.businessTypes = this.businessTypes.filter(elem => elem.id === businessTypeSelected)
-
-    }
 
     /**
-     * Delete the client
+     * Delete the knowledge
      */
-    deleteClient(): void
+    deleteKnowledge(): void
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar Cliente',
+            title  : 'Borrar conocimiento',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este cliente? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este Conocimiento? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'
@@ -230,35 +213,35 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
             // If the confirm button pressed...
             if ( result === 'confirmed' )
             {
-                // Get the current client's id
-                const id = this.client.id;
+                // Get the current knowledge's id
+                const id = this.knowledge.id;
 
-                // Get the next/previous client's id
-                const currentClientIndex = this.clients.findIndex(item => item.id === id);
-                let nextClientId = null;
-                if (currentClientIndex == (this.clients.length - 1)) {
-                    for (let i = currentClientIndex - 1; i >= 0; i--) {
-                        if (this.clients[i].isActive != 0) {
-                            nextClientId = this.clients[i].id;
+                // Get the next/previous knowledge's id
+                const currentKnowledgeIndex = this.knowledges.findIndex(item => item.id === id);
+                let nextKnowledgeId = null;
+                if (currentKnowledgeIndex == (this.knowledges.length - 1)) {
+                    for (let i = currentKnowledgeIndex - 1; i >= 0; i--) {
+                        if (this.knowledges[i].isActive != 0) {
+                            nextKnowledgeId = this.knowledges[i].id;
                         }
                     }
                 } else {
-                    for (let i = currentClientIndex + 1; i < this.clients.length; i++) {
-                        if (this.clients[i].isActive != 0) {
-                            nextClientId = this.clients[i].id;
+                    for (let i = currentKnowledgeIndex + 1; i < this.knowledges.length; i++) {
+                        if (this.knowledges[i].isActive != 0) {
+                            nextKnowledgeId = this.knowledges[i].id;
                         }
                     }
                 }
 
 
-                // Delete the client
-                this.client.isActive = 0;
-                this._clientsService.deleteClient(this.client)
+                // Delete the knowledge
+                this.knowledge.isActive = 0;
+                this._knowledgesService.deleteKnowledge(this.knowledge)
                     .subscribe(() => {
-                        // Navigate to the next client if available
-                        if ( nextClientId )
+                        // Navigate to the next knowledge if available
+                        if ( nextKnowledgeId )
                         {
-                            this._router.navigate(['../', nextClientId], {relativeTo: this._activatedRoute});
+                            this._router.navigate(['../', nextKnowledgeId], {relativeTo: this._activatedRoute});
                         }
                         // Otherwise, navigate to the parent
                         else
@@ -300,7 +283,7 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
         }
 
         // Upload the avatar
-        this._clientsService.uploadAvatar(this.client.id, file).subscribe();
+        this._knowledgesService.uploadAvatar(this.knowledge.id, file).subscribe();
     }
 
     /**
@@ -309,7 +292,7 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
     removeAvatar(): void
     {
         // Get the form control for 'avatar'
-        const avatarFormControl = this.clientForm.get('avatar');
+        const avatarFormControl = this.knowledgeForm.get('avatar');
 
         // Set the avatar as null
         avatarFormControl.setValue(null);
@@ -317,8 +300,8 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
         // Set the file input value as null
         this._avatarFileInput.nativeElement.value = null;
 
-        // Update the client
-        this.client.avatar = null;
+        // Update the knowledge
+        this.knowledge.avatar = null;
     }*/
 
 

@@ -106,8 +106,27 @@ export class EmployeePositionsService
 
                     employeePositionFiltered = employeePositionFiltered.filter(employeePosition => employeePosition.name && employeePosition.name.toLowerCase().includes(query.toLowerCase()));
 
+                    function compare(a: EmployeePosition, b: EmployeePosition) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+
+                    employeePositionFiltered.sort(compare);
+
                     this._employeePositions.next(employeePositionFiltered);
                 }else{
+                    function compare(a: EmployeePosition, b: EmployeePosition) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+
+                    employeePositionFiltered.sort(compare);
                     this._employeePositions.next(employeePositionFiltered);
                 }
 

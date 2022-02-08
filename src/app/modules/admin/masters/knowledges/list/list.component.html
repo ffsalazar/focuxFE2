@@ -25,24 +25,24 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Cargos
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Conocimientos
                             <button
                                 class="ml-4"
                                 mat-flat-button
                                 [color]="'primary'"
-                                (click)="createEmployeePosition()">
+                                (click)="createKnowledge()">
                                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                                 <span class="ml-2 mr-1">Agregar</span>
                             </button></div>
 
                         <div class="ml-0.5 font-medium text-secondary">
-                            <ng-container *ngIf="employeePositionsCount > 0">
-                                {{employeePositionsCount}}
+                            <ng-container *ngIf="knowledgesCount > 0">
+                                {{knowledgesCount}}
                             </ng-container>
-                            {{employeePositionsCount | i18nPlural: {
-                            '=0'   : 'No hay Cargos',
-                            '=1'   : 'Cargo',
-                            'other': 'Cargos'
+                            {{knowledgesCount | i18nPlural: {
+                            '=0'   : 'No hay conocimientos',
+                            '=1'   : 'conocimiento',
+                            'other': 'conocimientos'
                         } }}
 
                         </div>
@@ -62,51 +62,52 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Buscar cargo'">
+                                    [placeholder]="'Buscar Conocimiento'">
 
                             </mat-form-field>
 
 
                         </div>
-                        <!-- Add employeePosition button -->
+                        <!-- Add knowledge button -->
 
                     </div>
                 </div>
 
-                <!-- EmployeePositions list -->
+                <!-- Knowledges list -->
                 <div class="relative">
-                    <ng-container *ngIf="employeePositions$ | async as employeePositions">
-                        <ng-container *ngIf="employeePositions.length; else noEmployeePositions">
-                            <ng-container *ngFor="let employeePosition of employeePositions; let i = index; trackBy: trackByFn">
-                            <ng-container *ngIf="employeePosition.isActive != 0">
+                    <ng-container *ngIf="knowledges$ | async as knowledges">
+                        <ng-container *ngIf="knowledges.length; else noKnowledges">
+                            <ng-container *ngFor="let knowledge of knowledges; let i = index; trackBy: trackByFn">
+                            <ng-container *ngIf="knowledge.isActive != 0">
                                  <!-- Group -->
-                                 <ng-container *ngIf="i === 0 || employeePosition.name.charAt(0) !== employeePositions[i - 1].name.charAt(0)">
+                                 <ng-container *ngIf="i === 0 || knowledge.name.charAt(0) !== knowledges[i - 1].name.charAt(0)">
                                     <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                        {{employeePosition.name.charAt(0)}}
+                                        {{knowledge.name.charAt(0)}}
                                     </div>
                                 </ng-container>
-                                <!-- EmployeePosition -->
+                                <!-- Knowledge -->
                                 <a
                                     class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
-                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedEmployeePosition || selectedEmployeePosition.id !== employeePosition.id,
-                                                'bg-primary-50 dark:bg-hover': selectedEmployeePosition && selectedEmployeePosition.id === employeePosition.id}"
-                                    [routerLink]="['./', employeePosition.id]">
+                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedKnowledge || selectedKnowledge.id !== knowledge.id,
+                                                'bg-primary-50 dark:bg-hover': selectedKnowledge && selectedKnowledge.id === knowledge.id}"
+                                    [routerLink]="['./', knowledge.id]">
                                     <!--<div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                        <ng-container *ngIf="employeePosition.avatar">
+                                        <ng-container *ngIf="knowledge.avatar">
                                             <img
                                                 class="object-cover w-full h-full"
-                                                [src]="employeePosition.avatar"
-                                                alt="EmployeePosition avatar"/>
+                                                [src]="knowledge.avatar"
+                                                alt="Knowledge avatar"/>
                                         </ng-container>
-                                        <ng-container *ngIf="!employeePosition.avatar">
+                                        <ng-container *ngIf="!knowledge.avatar">
                                             <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                {{employeePosition.name.charAt(0)}}
+                                                {{knowledge.name.charAt(0)}}
                                             </div>
                                         </ng-container>
                                     </div>-->
                                     <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{employeePosition.name}} </div>
-                                        <div class="leading-5 truncate text-secondary">{{employeePosition.department.name}}</div>
+                                        <div class="font-medium leading-5 truncate">{{knowledge.name}} </div>
+                                        <div class="leading-5 truncate text-secondary">{{knowledge.type}}</div>
+
                                     </div>
                                 </a>
                             </ng-container>
@@ -114,9 +115,9 @@
                         </ng-container>
                     </ng-container>
 
-                    <!-- No employeePositions -->
-                    <ng-template #noEmployeePositions>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay cargos!</div>
+                    <!-- No knowledges -->
+                    <ng-template #noKnowledges>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay Conocimintos!</div>
                     </ng-template>
 
                 </div>
