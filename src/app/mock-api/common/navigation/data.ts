@@ -39,7 +39,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             {
                 id   : 'dashboards.finance',
-                title: 'Vacaciones',
+                title: 'Gestion vacaciones',
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/vacations'

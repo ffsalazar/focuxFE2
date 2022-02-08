@@ -15,6 +15,9 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatInputModule} from "@angular/material/input";
 import {MatMomentDateModule} from "@angular/material-moment-adapter";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 
@@ -37,7 +40,10 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
         MatMomentDateModule,
         MatSelectModule,
         MatDatepickerModule,
-        MatInputModule
+        MatInputModule,
+        MatCheckboxModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule
     ]
 })
 export class VacationsModule { }

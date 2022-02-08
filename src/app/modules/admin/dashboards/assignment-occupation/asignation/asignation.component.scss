@@ -1,11 +1,9 @@
-.input-border{
-    border: 1px solid gray;
-    border-radius: 5px;
-    min-height: 45px;
-    margin-top: 2px;
+
+::ng-deep.mat-header-row{
+    background-color: rgb(243 244 246) !important;
 }
 
-table{
-    border-collapse: separate;
-    border-spacing: 1em 1em;
+
+:host ::ng-deep.mat-stroked-button{
+    border-color: #dc3846 !important;
 }

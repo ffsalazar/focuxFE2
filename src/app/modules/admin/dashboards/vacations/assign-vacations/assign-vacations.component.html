@@ -1,8 +1,8 @@
-<div class="flex flex-col px-6 py-4">
+<div class="flex flex-col px-6 py-4 bg-card w-full">
     <div class="flex flex-row justify-between">
         <form class="flex flex-col px-5 py-4">
             <div class="flex flex-row justify-between">
-                <span class="font-bold pt-2">Colaborador</span>
+                <span class="font-medium leading-tight pt-2">Colaborador</span>
                 <mat-form-field class="ml-4 w-90 pr-2 pt-2">
                     <mat-select >
                         <ng-container >
@@ -15,34 +15,70 @@
             </div>
 
             <div class="flex flex-row justify-between">
-                <span class="font-bold pt-2">Periodo</span>
-                <mat-form-field class="ml-4 w-90 pr-2 pt-2">
-                    <mat-select >
-                        <ng-container >
-                            <mat-option >
-
-                            </mat-option>
+                <span class="font-medium leading-tight pt-2">Periodo</span>
+                <div class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                    <!-- Header -->
+                    <div class="flex items-center -my-px py-2 px-3">
+                        <div class="flex items-center flex-auto min-w-0">
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                            <input
+                                class="min-w-0 ml-2 py-1 border-0"
+                                type="text"
+                                placeholder="Escriba el nombre"
+                                (input)="filterTags($event)"
+                                (keydown)="filterTagsInputKeyDown($event)"
+                                [maxLength]="50"
+                                #newTagInput>
+                        </div>
+                        <button
+                            class="ml-3 w-8 h-8 min-h-8"
+                            mat-icon-button
+                            (click)="toggleTagsEditMode()">
+                            <mat-icon
+                                *ngIf="!tagsEditMode"
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                            <mat-icon
+                                *ngIf="tagsEditMode"
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                        </button>
+                    </div>
+                    <!-- Available tags -->
+                    <div class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                        <!-- Tags -->
+                        <ng-container *ngIf="!tagsEditMode">
+                            <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
+                                <mat-checkbox
+                                    class="flex items-center h-10 min-h-10 px-4"
+                                    [color]="'primary'"
+                                    [checked]="selectedProduct.tags.includes(tag.id)"
+                                    (change)="toggleProductTag(tag, $event)">
+                                    {{tag.title}}
+                                </mat-checkbox>
+                            </ng-container>
                         </ng-container>
-                    </mat-select>
-                </mat-form-field>
+                    </div>
+                </div>
             </div>
-
             <div class="flex flex-row justify-between">
-                <span class="font-bold w-40 pt-2">Cantidad de dias de los seleccionados</span>
+                <span class="font-medium leading-tight w-40 pt-2">Cantidad de dias de los seleccionados</span>
                 <mat-form-field class="ml-4 w-90 pr-2 pt-2">
                     <input matInput placeholder="Días">
                 </mat-form-field>
             </div>
 
             <div class="flex flex-row justify-between">
-                <span class="font-bold pt-2">Dias a disfrutar</span>
+                <span class="font-medium leading-tight pt-2">Dias a disfrutar</span>
                 <mat-form-field class="ml-4 w-90 pr-2 pt-2">
                     <input matInput placeholder="Días">
                 </mat-form-field>
             </div>
 
             <div class="flex flex-row justify-between">
-                <span class="font-bold pt-2">Fecha inicio</span>
+                <span class="font-medium leading-tight pt-2">Fecha inicio</span>
                 <mat-form-field class="w-auto"
                                 style="padding-right: 8px; width: 359px !important;"
                                 [ngClass]="formFieldHelpers">
@@ -57,7 +93,7 @@
             </div>
 
             <div class="flex flex-row justify-between">
-                <span class="font-bold pt-2">Fecha fin</span>
+                <span class="font-medium leading-tight pt-2">Fecha fin</span>
                 <mat-form-field class="w-auto"
                                 style="padding-right: 8px; width: 359px !important;"
                                 [ngClass]="formFieldHelpers">
@@ -72,14 +108,14 @@
             </div>
 
             <div class="flex flex-row justify-between">
-                <span class="font-bold w-40 pt-2">Cantidad de feriados en el periodo</span>
+                <span class="font-medium leading-tight w-40 pt-2">Cantidad de feriados en el periodo</span>
                 <mat-form-field class="ml-4 w-90 pr-2 pt-2">
                     <input matInput placeholder="Días">
                 </mat-form-field>
             </div>
 
             <div class="flex flex-row justify-between">
-                <span class="font-bold pt-4">Fecha de retorno</span>
+                <span class="font-medium leading-tight pt-4">Fecha de retorno</span>
                 <mat-form-field class="ml-4 w-90 pr-2 pt-2">
                     <input matInput placeholder="Días">
                 </mat-form-field>

@@ -1,64 +1,209 @@
-<div class="flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full dark:bg-transparent">
+<div class="flex flex-auto bg-white border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full ">
 
     <div class="w-full">
-        <div class="flex flex-col">
-            <div class="flex flex-row justify-end mr-12">
-                <search-box class="w-1/3 pr-2 pt-2" [data]="collaborators" [placeHolder]="'Colaborador'" (selectionEvent)="onCollaboratorSearchChange($event)">
-                </search-box>
+            <div class="flex flex-col">
+                <div class="flex flex-row justify-end mr-12">
+                    <mat-form-field class="w-50 mr-5" appearance="fill">
+                        <mat-label>Colaborador</mat-label>
+                        <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
 
+                    <mat-form-field class="w-50 mr-5" appearance="fill">
+                        <mat-label>Cliente</mat-label>
+                        <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
 
-                <search-box class="w-1/3 pr-2 pt-2" [data]="collaborators" [placeHolder]="'Cliente'" (selectionEvent)="onCollaboratorSearchChange($event)">
-                </search-box>
-
-                <search-box class="w-1/3 pr-2 pt-2" [data]="collaborators" [placeHolder]="'Estatus'" (selectionEvent)="onCollaboratorSearchChange($event)">
-                </search-box>
-
-            </div>
-
-            <div class="flex flex-row mt-24">
-                <span class="mr-4"><b>Proyecto</b>: {{project.name}}</span>
-                <span class="mr-4"><b>Skills</b>: {{project.skills}}</span>
-                <span class="mr-4"><b>Cliente</b>: {{project.client.name}}</span>
-                <span class="mr-4"><b>Inicio</b>: {{project.initDate | date: 'dd-MM-yyyy'}}</span>
-                <span><b>Culmina</b>: {{project.endDate | date: 'dd-MM-yyyy'}}</span>
-            </div>
-
-            <div class="bg-card py-3 px-6 rounded shadow mt-24 flex flex-col">
-                <div class="flex flex-row justify-center mb-8 w-full">
-                    <button mat-flat-button color="primary" class="mr-4">Colaboradores</button>
-                    <button mat-flat-button color="primary" class="mr-4">Actividad</button>
-                    <button mat-flat-button color="primary" class="mr-4">Skills</button>
-                    <button mat-flat-button color="primary">Progreso</button>
+                    <mat-form-field class="w-50 mr-5" appearance="fill">
+                        <mat-label>Actividad</mat-label>
+                        <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
                 </div>
 
-                <table class="w-full">
-                    <thead>
-                        <tr>
-                            <th class="">Colaboradores</th>
-                            <th class="">Actividad</th>
-                            <th class="">Progreso</th>
-                            <th class="">Skills</th>
+                <div class="flex flex-row mt-10">
+                    <span class="font-bold text-xl pt-4">Proyecto</span>
+                    <mat-form-field class="ml-4 pr-2 pt-2" style="width: 650px;">
+                        <mat-select >
+                            <ng-container >
+                                <mat-option >
 
-                            <th>Disponibilidad</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let colaborator of collaborators; let i = index">
-                            <td align="start">{{colaborator.name + ' ' + colaborator.lastName}}</td>
-                            <td align="start">{{activity[i].name}}</td>
-                            <td align="center">{{activity[i].progress}}</td>
-                            <td align="center">{{colaborator.technicalSkills}}</td>
-                            <td align="center">{{activity[i].progress === '100%' ? 'Disponible' : 'No Disponible'}}</td>
-                            <td><button mat-button [color]="'primary'">
-                                <mat-icon>
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
 
-                                </mat-icon>
-                            </button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="bg-card py-3 px-6 rounded shadow mt-24 flex flex-col">
+                    <mat-tab-group class="flex flex-row justify-center">
+                        <mat-tab label="Recomendado"></mat-tab>
+                        <mat-tab label="1"></mat-tab>
+                        <mat-tab label="2"></mat-tab>
+                        <mat-tab label="3"></mat-tab>
+                        <mat-tab label="4"></mat-tab>
+                    </mat-tab-group>
+
+    <!--                <div class="flex flex-row justify-center mb-8 w-full">-->
+    <!--                </div>-->
+
+                    <div class="flex flex-auto overflow-hidden">
+                    <!-- Products list -->
+                        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+                            <ng-container *ngIf="(products$ | async) as products">
+                                <ng-container *ngIf="products.length > 0; else noProducts">
+                                    <div class="grid">
+                                        <!-- Header -->
+                                        <div
+                                            class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                                            matSort
+                                            matSortDisableClear>
+                                            <div></div>
+                                            <div
+                                                class="hidden md:block"
+                                                [mat-sort-header]="'sku'">
+                                                Compañia
+                                            </div>
+                                            <div [mat-sort-header]="'name'">Solicitud</div>
+                                            <div
+                                                class="hidden sm:block"
+                                                [mat-sort-header]="'price'">
+                                                Porcentaje A.
+                                            </div>
+                                            <div
+                                                class="hidden lg:block"
+                                                [mat-sort-header]="'stock'">
+                                                Desviación
+                                            </div>
+                                            <div
+                                                class="hidden lg:block"
+                                                [mat-sort-header]="'active'">
+                                                Estado
+                                            </div>
+                                            <div class="hidden sm:block">Asignar</div>
+                                        </div>
+                                        <!-- Rows -->
+                                        <ng-container *ngIf="(products$ | async) as products">
+                                            <ng-container *ngFor="let product of products; trackBy: trackByFn">
+                                                <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+
+                                                    <!-- Image -->
+                                                    <!--<div class="flex items-center">
+                                                        <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden border">
+                                                            <img
+                                                                class="w-8"
+                                                                *ngIf="product.thumbnail"
+                                                                [alt]="'Product thumbnail image'"
+                                                                [src]="product.thumbnail">
+                                                            <div
+                                                                class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"
+                                                                *ngIf="!product.thumbnail">
+                                                                NO THUMB
+                                                            </div>
+                                                        </div>
+                                                    </div>-->
+                                                    <div>   </div>
+                                                    <!-- SKU -->
+                                                    <div class="hidden md:block truncate">
+                                                        {{product.sku}}
+                                                    </div>
+
+                                                    <!-- Name -->
+                                                    <div class="truncate">
+                                                        {{product.name}}
+                                                    </div>
+
+                                                    <!-- Price -->
+                                                    <div class="hidden sm:block">
+                                                        {{product.taxPercent}}%
+                                                    </div>
+
+                                                    <!-- Stock -->
+                                                    <div class="hidden lg:flex items-center">
+                                                        <div class="min-w-4">{{product.stock}}</div>
+                                                        <!-- Low stock -->
+                                                        <div
+                                                            class="flex items-end ml-2 w-1 h-4 bg-red-200 rounded overflow-hidden"
+                                                            *ngIf="product.stock < 20">
+                                                            <div class="flex w-full h-1/3 bg-red-600"></div>
+                                                        </div>
+                                                        <!-- Medium stock -->
+                                                        <div
+                                                            class="flex items-end ml-2 w-1 h-4 bg-orange-200 rounded overflow-hidden"
+                                                            *ngIf="product.stock >= 20 && product.stock < 30">
+                                                            <div class="flex w-full h-2/4 bg-orange-400"></div>
+                                                        </div>
+                                                        <!-- High stock -->
+                                                        <div
+                                                            class="flex items-end ml-2 w-1 h-4 bg-green-100 rounded overflow-hidden"
+                                                            *ngIf="product.stock >= 30">
+                                                            <div class="flex w-full h-full bg-green-400"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Active -->
+                                                    <div class="hidden lg:block">
+                                                        <ng-container *ngIf="product.active">
+                                                            <mat-icon
+                                                                class="text-green-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!product.active">
+                                                            <mat-icon
+                                                                class="text-gray-400 icon-size-5"
+                                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                                        </ng-container>
+                                                    </div>
+
+                                                    <!-- Details button -->
+                                                    <div>
+                                                        <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                            mat-stroked-button
+                                                            (click)="toggleDetails(product.id)">
+                                                            <mat-icon
+                                                                class="icon-size-5">keyboard_arrow_right</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="grid">
+                                                    <ng-container *ngIf="selectedProduct?.id === product.id">
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+
+                                    <mat-paginator
+                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                        [ngClass]="{'pointer-events-none': isLoading}"
+                                        [length]="pagination.length"
+                                        [pageIndex]="pagination.page"
+                                        [pageSize]="pagination.size"
+                                        [pageSizeOptions]="[5, 10, 25, 100]"
+                                        [showFirstLastButtons]="true"></mat-paginator>
+
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-template #noProducts>
+                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay colaboradores</div>
+                            </ng-template>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
 </div>

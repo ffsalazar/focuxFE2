@@ -19,6 +19,11 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {SearchBoxModule} from "../../../../shared/components/search-box/search-box.module";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatMomentDateModule} from "@angular/material-moment-adapter";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 
@@ -42,7 +47,12 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
         ReactiveFormsModule,
         SearchBoxModule,
         MatDatepickerModule,
-        MatMomentDateModule
+        MatMomentDateModule,
+        MatAutocompleteModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatTabsModule
     ],
     providers: [
         AssingmentOccupationService

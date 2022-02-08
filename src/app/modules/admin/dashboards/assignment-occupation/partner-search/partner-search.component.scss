@@ -1,16 +1,15 @@
+.inventory-grid {
+    grid-template-columns: 48px auto 40px;
 
-::ng-deep.mat-select-panel{
-    margin-top: 50px !important;
-    position: relative;
-    right: 150px;
-    width: 25rem;
-}
+    @screen sm {
+        grid-template-columns: 48px auto 112px 72px;
+    }
 
+    @screen md {
+        grid-template-columns: 48px 112px auto 112px 72px;
+    }
 
-
-
-
-table{
-    border-collapse: separate;
-    border-spacing: 1em 1em;
+    @screen lg {
+        grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
+    }
 }

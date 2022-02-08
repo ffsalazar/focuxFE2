@@ -14,6 +14,7 @@ export class SearchBoxComponent implements OnInit {
   searchPanelStyle = false;
   inputControl = new FormControl();
   searchingResult: any = [];
+  showAll = false;
 
   constructor() {
 
@@ -27,13 +28,18 @@ export class SearchBoxComponent implements OnInit {
   onFocusout() {
     setTimeout(() => {
       this.searchPanelStyle = false;
-      this.inputControl.reset();
-    }, 300);
+      // this.inputControl.reset();
+    }, 1500000);
   }
 
   onClickItem(item: any) {
+    this.inputControl.setValue(item.name);
     this.selectionEvent.emit(item);
   }
+
+    showAllData() {
+        this.showAll = !this.showAll;
+    }
 
   onInputChanged() {
     this.inputControl.valueChanges.subscribe(value => {
@@ -49,6 +55,10 @@ export class SearchBoxComponent implements OnInit {
           }
         } else {
           this.searchPanelStyle = false;
+        }
+
+        if (value.length === 0) {
+            this.showAll = false;
         }
       }, 300);
     });

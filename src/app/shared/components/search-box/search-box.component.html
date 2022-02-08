@@ -1,22 +1,26 @@
 <div class="search_box_container">
-  <div [ngClass]="{'search_box': !inputControl.value, 'search_box_active': inputControl.value}"
-    style="position: absolute;  z-index: 1; left: 8px; top: 8px;">
-    <div class="search_icon_content">
-      <mat-icon class="search_icon" svgIcon="search"></mat-icon>
-    </div>
-    <input matInput [ngClass]="{'search_input_text': !inputControl.value, 'search_input_text_active': inputControl.value}"
-     [formControl]="inputControl" [placeholder]="placeHolder" type="text">
-  </div>
-  <div [ngClass]="{'search_panel': searchPanelStyle, 'search_panel_inactive': !searchPanelStyle}">
-    <div (click)="onClickItem(item)" *ngFor="let item of searchingResult, let last = last" class="panel_item_content">
-      <div class="panel_item_header">
-        <mat-icon *ngIf="item.icon" [svgIcon]="item.icon" class="search_icon" style="margin-right: 12px;"></mat-icon>
-        <span class="item_title">{{item.title}}</span>
-      </div>
-      <div class="item_body_content">
-        <span [innerHTML]="item.name | highlightSearch : inputControl.value" class="item_body"></span>
-      </div>
-      <mat-divider *ngIf="!last" class="mt-4 mb-4" dividerFocus></mat-divider>
-    </div>
-  </div>
+    <mat-form-field class="w-full" style="height: 70px;">
+        <mat-label>{{placeHolder}}</mat-label>
+        <input matInput [formControl]="inputControl">
+        <mat-icon (click)="showAll = !showAll">keyboard_arrow_down</mat-icon>
+    </mat-form-field>
+        <div *ngIf="showAll" class="search_panel">
+            <div (click)="onClickItem(item)" *ngFor="let item of data, let last = last" class="panel_item_content">
+                <div class="panel_item_header">
+                    <span class="item_title">{{item.name}}</span>
+                </div>
+                <mat-divider *ngIf="!last" class="mt-4 mb-4" dividerFocus></mat-divider>
+            </div>
+        </div>
+          <div *ngIf="!showAll" [ngClass]="{'search_panel': searchPanelStyle, 'search_panel_inactive': !searchPanelStyle}">
+            <div (click)="onClickItem(item)" *ngFor="let item of searchingResult, let last = last" class="panel_item_content">
+              <div class="panel_item_header">
+                <span class="item_title">{{item.title}}</span>
+              </div>
+              <div class="item_body_content">
+                <span [innerHTML]="item.name | highlightSearch : inputControl.value" class="item_body"></span>
+              </div>
+              <mat-divider *ngIf="!last" class="mt-4 mb-4" dividerFocus></mat-divider>
+            </div>
+          </div>
 </div>

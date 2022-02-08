@@ -26,6 +26,7 @@
         "isActive": 1,
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "JAVA",
+        "activitys": [],
         "knowledges": [],
         "phones": []
     },
@@ -57,6 +58,7 @@
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "PHP",
         "knowledges": [],
+        "activitys": [],
         "phones": []
     },
     {
@@ -104,7 +106,8 @@
                 "number": "04143469317",
                 "type": "Personal"
             }
-        ]
+        ],
+        "activitys": []
     },
     {
         "id": 4,
@@ -170,7 +173,8 @@
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "addsf",
         "knowledges": [],
-        "phones": []
+        "phones": [],
+        "activitys": []
     },
     {
         "id": 5,
@@ -200,6 +204,7 @@
         "assignedLocation": "A Lazaretto",
         "technicalSkills": "PHP",
         "knowledges": [],
-        "phones": []
+        "phones": [],
+        "activitys": []
     }
 ]

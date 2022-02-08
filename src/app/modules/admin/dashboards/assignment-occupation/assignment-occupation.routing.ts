@@ -2,6 +2,11 @@ import {Route, Router} from "@angular/router";
 import {PartnerSearchComponent} from "./partner-search/partner-search.component";
 import {AsignationComponent} from "./asignation/asignation.component";
 import {AssignmentOccupationComponent} from "./assignment-occupation.component";
+import {
+    RequestBrandsResolver,
+    RequestCategoriesResolver,
+    RequestProductsResolver, RequestTagsResolver, RequestVendorsResolver
+} from "../../apps/portafolio/request/request.resolvers";
 
 
 export const AssignmentOccupationRouter: Route[] = [
@@ -21,7 +26,10 @@ export const AssignmentOccupationRouter: Route[] = [
         },
         {
             path: 'partner-search',
-            component: PartnerSearchComponent
+            component: PartnerSearchComponent,
+            resolve  : {
+                products  : RequestProductsResolver,
+            }
         },
         {
             path: 'assignation',
