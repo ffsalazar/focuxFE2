@@ -52,19 +52,21 @@
             <div class="flex flex-row">
                 <div
                     class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-default mr-2"
+                    [class.tab-select]="tabIndex === 0"
                     matRipple>
                     <div class="flex items-center">
                         <div class="overflow-hidden">
-                            <div class="font-medium leading-6 truncate" (click)="redirection('partner-search')" >Busqueda de colaborador</div>
+                            <div class="font-medium leading-6 truncate" (click)="redirection('partner-search', 0)" >Busqueda de colaborador</div>
                         </div>
                     </div>
                 </div>
                 <div
                     class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-default"
+                    [class.tab-select]="tabIndex === 1"
                     matRipple>
                     <div class="flex items-center">
                         <div class="overflow-hidden">
-                            <div class="font-medium leading-6 truncate" (click)="redirection('assignation')">Asignación</div>
+                            <div class="font-medium leading-6 truncate"  (click)="redirection('assignation', 1)">Asignación</div>
                         </div>
                     </div>
                 </div>

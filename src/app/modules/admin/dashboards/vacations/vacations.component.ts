@@ -8,13 +8,15 @@ import {Router} from "@angular/router";
 })
 export class VacationsComponent implements OnInit {
 
+    tabIndex = 0;
   constructor(private _router: Router) { }
 
 
   ngOnInit(): void {
   }
 
-    redirection(tab: string) {
+    redirection(tab: string, index: number) {
+        this.tabIndex = index;
         this._router.navigate(['dashboards/vacations/index/' + tab]).then();
     }
 }

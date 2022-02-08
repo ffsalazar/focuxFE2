@@ -15,7 +15,8 @@ export class AssignmentOccupationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  redirection(tab: string) {
+  redirection(tab: string, index: number) {
+      this.tabIndex = index;
       this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
   }
 }
