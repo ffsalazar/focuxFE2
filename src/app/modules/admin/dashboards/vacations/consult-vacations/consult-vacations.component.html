@@ -34,65 +34,97 @@
 
         <h4 class="font-bold text-xl mt-10">Consultar</h4>
 
-        <div class="mt-6">
-            <table class="border-collapse border border-slate-400 w-full">
-                <thead>
-                    <tr>
-                        <th align="start">Colaborador</th>
-                        <th align="start">Periodo Actual</th>
-                        <th align="start">Fecha inicio</th>
-                        <th align="start">Fecha fin</th>
-                        <th align="start">Dias de disfrute</th>
-                        <th align="start">Retorno a la oficina</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Emmanuel Ortega</td>
-                        <td>2021-2022</td>
-                        <td>01-02-2022</td>
-                        <td>01-03-2022</td>
-                        <td>18</td>
-                        <td>01-03-2022</td>
-                    </tr>
-                    <tr>
-                        <td align="end">-No Aplica</td>
-                        <td align="end">-No Aplica</td>
-                        <td align="end">-No Aplica</td>
-                        <td align="end">-No Aplica</td>
-                        <td align="end">-No Aplica</td>
-                        <td align="end">-No Aplica</td>
-                    </tr>
-                </tbody>
+        <div class="mt-6" *ngIf="dataSource.length > 0 && dataSource != null else noPeriodConsult">
+            <table mat-table class="border-collapse border border-slate-400 w-full" [dataSource]="dataSource">
+                <ng-container matColumnDef="collaborator">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Colaborador</th>
+                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="period">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Periodo</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.period}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="initDate">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Fecha de inicio</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.initDate}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="endDate">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Fecha fin</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.endDate}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="daysOfEnjoyment">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Dias de disfrute</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8 text-center" *matCellDef="let element">{{element?.daysOfEnjoyment}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="returnToOffice">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Retorno a la oficina</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.returnToOffice}}</td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
+
+
+        <ng-template #noPeriodConsult>
+            <!-- Warn -->
+            <fuse-alert class="mt-10" [type]="'warn'">
+                <span fuseAlertTitle>No hay periodos disponibles</span>
+                    No hay periodos disponibles en consulta
+            </fuse-alert>
+        </ng-template>
 
 
         <h4 class="mt-8 font-bold text-xl">Historial</h4>
 
 
-        <div class="mt-8">
-            <table class="border-collapse border border-slate-400 w-full">
-                <thead>
-                <tr>
-                    <th align="start">Colaborador</th>
-                    <th align="start">Periodo disfrutados</th>
-                    <th align="start">Fecha inicio</th>
-                    <th align="start">Fecha fin</th>
-                    <th align="start">Dias pendiente de disfrute</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Emmanuel Ortega</td>
-                        <td>2019-2020</td>
-                        <td>01-02-2021</td>
-                        <td>01-03-2021</td>
-                        <td>0</td>
-                    </tr>
-                </tbody>
+        <div class="mt-8" *ngIf="historicDataSource.length > 0 && historicDataSource != null else noHistoricConsult">
+            <table mat-table class="border-collapse border border-slate-400 w-full" [dataSource]="historicDataSource">
+                <ng-container matColumnDef="collaborator">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Colaborador</th>
+                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="period">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Periodo</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.period}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="initDate">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Fecha de inicio</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.initDate}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="endDate">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Fecha fin</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8" *matCellDef="let element">{{element?.endDate}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="daysPendingEnjoyment">
+                    <th  class="w-96 gap-4 py-4 px-6 md:px-8 text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" mat-header-cell *matHeaderCellDef>Dias de disfrute</th>
+                    <td mat-cell class="gap-4 py-4 px-6 md:px-8 text-center" *matCellDef="let element">{{element?.daysPendingEnjoyment}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedHistoryColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedHistoryColumns;"></tr>
             </table>
         </div>
+
+
+        <ng-template #noHistoricConsult>
+            <!-- Warn -->
+            <fuse-alert class="mt-10" [type]="'warn'">
+                <span fuseAlertTitle>No hay historicos disponibles</span>
+                No hay historicos disponibles en consulta
+            </fuse-alert>
+        </ng-template>
 
         <div class="flex flex-row w-full mt-8 justify-end">
             <span class="font-bold text-xl mr-6 pt-2">Dias pendientes</span>

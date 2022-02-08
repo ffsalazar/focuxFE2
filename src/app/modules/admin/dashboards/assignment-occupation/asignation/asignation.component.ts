@@ -35,6 +35,8 @@ export class AsignationComponent implements OnInit {
           this.filterEvent();
           this.dataSource = [
               {collaborator: 'test', occupation: 'test', percent: '100%'},
+              {collaborator: 'test', occupation: 'test', percent: '100%'},
+              {collaborator: 'test', occupation: 'test', percent: '100%'},
           ];
       }
 

@@ -18,6 +18,8 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {ReactiveFormsModule} from "@angular/forms";
+import {MatTableModule} from "@angular/material/table";
+import {FuseAlertModule} from "../../../../../@fuse/components/alert";
 
 
 
@@ -43,7 +45,9 @@ import {ReactiveFormsModule} from "@angular/forms";
         MatInputModule,
         MatCheckboxModule,
         MatAutocompleteModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatTableModule,
+        FuseAlertModule
     ]
 })
 export class VacationsModule { }
