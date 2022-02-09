@@ -17,11 +17,20 @@ import { SharedModule } from 'app/shared/shared.module';
 import { portafolioRoutes } from 'app/modules/admin/apps/portafolio/portafolio.routing';
 import {RequestComponent} from "./request/request.component";
 import {RequestListComponent} from "./request/list/request.component";
+import { RequestStepperComponent } from './request/list/request-stepper/request-stepper/request-stepper.component';
+import { RequestStepOneComponent } from './request/list/request-stepper/request-stepper/request-step-one/request-step-one.component';
+import { RequestStepTwoComponent } from './request/list/request-stepper/request-stepper/request-step-two/request-step-two.component';
+import { RequestStepThirdComponent } from './request/list/request-stepper/request-stepper/request-step-third/request-step-third.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
     declarations: [
         RequestComponent,
-        RequestListComponent
+        RequestListComponent,
+        RequestStepperComponent,
+        RequestStepOneComponent,
+        RequestStepTwoComponent,
+        RequestStepThirdComponent
     ],
     imports     : [
         RouterModule.forChild(portafolioRoutes),
@@ -38,7 +47,8 @@ import {RequestListComponent} from "./request/list/request.component";
         MatSelectModule,
         MatSlideToggleModule,
         MatTooltipModule,
-        SharedModule
+        MatStepperModule,
+        SharedModule,
     ]
 })
 export class PortafolioModule

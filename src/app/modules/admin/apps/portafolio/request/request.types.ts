@@ -1,3 +1,36 @@
+export interface Request {
+    id: number,
+    idCompany: number,
+    idArea: number,
+    typeRequest: any,
+    titleRequest: string,
+    descriptionRequest: string, // N
+    responsibleRequest: any,
+    priorityOrder: 1, // N
+    dateRequest: Date,
+    dateInit: Date,
+    datePlanEnd: Date,
+    dateRealEnd: Date,
+    idStatus: number,
+    completionPercentage: number,
+    deviationPercentage: number, // N
+    deliverablesCompletedIntelix: string, 
+    pendingActivitiesIntelix: string,
+    commentsIntelix: string,
+    updateDate: Date,
+    commentsClient: string,
+    technicalArea: any,
+    idCategory: number,
+    internalFeedbackIntelix: string,
+    idSolverGroup: number,
+    idRequestPeriod: number,
+    dateInitPause: Date,
+    dateEndPause: Date,
+    totalPauseDays: string,
+    idCustomerBranch: number,
+    isActive: number
+}
+
 export interface InventoryProduct
 {
     id: string;

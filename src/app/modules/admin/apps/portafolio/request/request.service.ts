@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
+import { Request } from './request.types';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,40 @@ export class RequestService
     private _tags: BehaviorSubject<InventoryTag[] | null> = new BehaviorSubject(null);
     private _vendors: BehaviorSubject<InventoryVendor[] | null> = new BehaviorSubject(null);
 
+    private _request: BehaviorSubject<Request[] | null> = new BehaviorSubject(null); 
+
+    request: Request[]  = [{
+        id: 1,
+        idCompany: 0,
+        idArea: 1,
+        typeRequest: 1,
+        titleRequest: "Test Title DESDE JSONDOC",
+        descriptionRequest: "Test Title DESDE JSONDOC", // N
+        responsibleRequest: 2,
+        priorityOrder: 1, // N
+        dateRequest: new Date(),
+        dateInit: new Date(),
+        datePlanEnd: new Date(),
+        dateRealEnd: new Date(),
+        idStatus: 1,
+        completionPercentage: 1,
+        deviationPercentage: 1, // N
+        deliverablesCompletedIntelix: "Test Title DESDE JSONDOC", 
+        pendingActivitiesIntelix: "Test Title DESDE JSONDOC",
+        commentsIntelix: "Test Title DESDE JSONDOC",
+        updateDate: new Date(),
+        commentsClient: "Test Title DESDE JSONDOC",
+        technicalArea: 1,
+        idCategory: 1,
+        internalFeedbackIntelix: "Test Title DESDE JSONDOC",
+        idSolverGroup: 1,
+        idRequestPeriod: 1,
+        dateInitPause: new Date(),
+        dateEndPause: new Date(),
+        totalPauseDays: "Test Title DESDE JSONDOC",
+        idCustomerBranch: 1,
+        isActive: 1
+        }];
     /**
      * Constructor
      */
@@ -67,6 +102,14 @@ export class RequestService
     get products$(): Observable<InventoryProduct[]>
     {
         return this._products.asObservable();
+    }
+
+    /**
+     * Getter for products
+     */
+    get request$(): Observable<Request[]>
+    {
+        return this._request.asObservable();
     }
 
     /**
@@ -123,9 +166,10 @@ export class RequestService
      * @param order
      * @param search
      */
-    getProducts(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    getRequest(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
     {
+        console.log("entrooooo");
         return this._httpClient.get<{ pagination: InventoryPagination; products: InventoryProduct[] }>('api/apps/ecommerce/inventory/products', {
             params: {
                 page: '' + page,
@@ -136,8 +180,12 @@ export class RequestService
             }
         }).pipe(
             tap((response) => {
-                this._pagination.next(response.pagination);
-                this._products.next(response.products);
+
+                console.log("response: ", response);
+                // this._pagination.next(response.pagination);
+                // this._products.next(response.products);
+
+                this._request.next(this.request);
             })
         );
     }
@@ -152,13 +200,13 @@ export class RequestService
             map((products) => {
 
                 // Find the product
-                const product = products.find(item => item.id === id) || null;
+                const request = products.find(item => item.id === id) || null;
 
                 // Update the product
-                this._product.next(product);
+                this._product.next(request);
 
                 // Return the product
-                return product;
+                return request;
             }),
             switchMap((product) => {
 
@@ -175,18 +223,57 @@ export class RequestService
     /**
      * Create product
      */
-    createProduct(): Observable<InventoryProduct>
+    createProduct(): Observable<Request>
     {
         return this.products$.pipe(
             take(1),
             switchMap(products => this._httpClient.post<InventoryProduct>('api/apps/ecommerce/inventory/product', {}).pipe(
                 map((newProduct) => {
 
-                    // Update the products with the new product
-                    this._products.next([newProduct, ...products]);
 
-                    // Return the new product
-                    return newProduct;
+                    // // Update the products with the new product
+                    // this._products.next([newProduct, ...products]);
+
+                    // // Return the new product
+                    // return newProduct;
+
+                    let req: Request = {
+                        id: Math.random(),
+                        idCompany: 0,
+                        idArea: 1,
+                        typeRequest: 1,
+                        titleRequest: "Test Title DESDE JSONDOC",
+                        descriptionRequest: "Test Title DESDE JSONDOC", // N
+                        responsibleRequest: 2,
+                        priorityOrder: 1, // N
+                        dateRequest: new Date(),
+                        dateInit: new Date(),
+                        datePlanEnd: new Date(),
+                        dateRealEnd: new Date(),
+                        idStatus: 1,
+                        completionPercentage: 1,
+                        deviationPercentage: 1, // N
+                        deliverablesCompletedIntelix: "Test Title DESDE JSONDOC", 
+                        pendingActivitiesIntelix: "Test Title DESDE JSONDOC",
+                        commentsIntelix: "Test Title DESDE JSONDOC",
+                        updateDate: new Date(),
+                        commentsClient: "Test Title DESDE JSONDOC",
+                        technicalArea: 1,
+                        idCategory: 1,
+                        internalFeedbackIntelix: "Test Title DESDE JSONDOC",
+                        idSolverGroup: 1,
+                        idRequestPeriod: 1,
+                        dateInitPause: new Date(),
+                        dateEndPause: new Date(),
+                        totalPauseDays: "Test Title DESDE JSONDOC",
+                        idCustomerBranch: 1,
+                        isActive: 1
+                        };
+                    
+                    this._request.next([req, ...this.request]);
+                    this.request = [req, ...this.request];
+                    console.log(this.request);
+                    return req;
                 })
             ))
         );
