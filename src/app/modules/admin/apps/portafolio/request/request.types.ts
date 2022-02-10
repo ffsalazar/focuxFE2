@@ -1,60 +1,204 @@
-export interface InventoryProduct
+export interface Request{
+    id: number,
+    category: Category,
+    client: Client,
+    code: String
+    collaboratorsAssigned: [],
+    commentsClient: String,
+    commentsIntelix: String,
+    commercialArea: CommercialArea,
+    completionPercentage: number,
+    dateEndPause: Date,
+    dateInit: Date,
+    dateInitPause: Date,
+    datePlanEnd: Date,
+    dateRealEnd: Date,
+    dateRequest: Date,
+    deliverablesCompletedIntelix: String,
+    descriptionRequest: string,
+    deviationPercentage: number,
+    internalFeedbackIntelix: String,
+    isActive: number,
+    pendingActivitiesIntelix: String,
+    priorityOrder: number,
+    requestPeriod: RequestPeriod,
+    responsibleRequest: ResponsibleRequest,
+    solverGroup: SolverGroup,
+    status: Status,
+    technicalArea: TechnicalArea,
+    titleRequest: string,
+    totalPauseDays: number,
+    typeRequest: TypeRequest,
+    updateDate: Date,
+
+}
+
+export interface Category {
+    id:          number;
+    name:        string;
+    description: string;
+    isActive:    number;
+}
+
+export interface Client
 {
-    id: string;
-    category?: string;
+    id: number;
     name: string;
-    description?: string;
-    tags?: string[];
-    sku?: string | null;
-    barcode?: string | null;
-    brand?: string | null;
-    vendor: string | null;
-    stock: number;
-    reserved: number;
-    cost: number;
-    basePrice: number;
-    taxPercent: number;
-    price: number;
-    weight: number;
-    thumbnail: string;
-    images: string[];
-    active: boolean;
+    description: string;
+    isActive: number;
+    businessType: BusinessType;
 }
 
-export interface InventoryPagination
+export interface BusinessType
 {
-    length: number;
-    size: number;
-    page: number;
-    lastPage: number;
-    startIndex: number;
-    endIndex: number;
-}
-
-export interface InventoryCategory
-{
-    id: string;
-    parentId: string;
+    id: number;
+    code: string;
     name: string;
-    slug: string;
+    description: string;
+    isActive: number;
 }
 
-export interface InventoryBrand
+export interface CommercialArea {
+    id:          number;
+    code:        string;
+    name:        string;
+    description: string;
+    isActive:    number;
+}
+
+export interface RequestPeriod {
+    id:          number;
+    name:        string;
+    description: string;
+    isActive:    number;
+}
+
+export interface Collaborator
 {
-    id: string;
+    id: number;
+    avatar?: string | null;
+    background?: string | null;
     name: string;
-    slug: string;
+    mail: string;
+    nationality: string;
+    lastName: string;
+    employeePosition: EmployeePosition | null;
+    companyEntryDate:string;
+    organizationEntryDate:string;
+    gender:string;
+    bornDate:string;
+    assignedLocation?: string | null;
+    knowledges: CollaboratorKnowledge[];
+    phones: Phone[];
+    file?:string | null;
+    isActive: number;
+    client: Client;
+}
+export interface EmployeePosition
+{
+    id: number;
+    name: String;
+    description: String;
+    isActive: boolean;
+    department: Department;
 }
 
-export interface InventoryTag
+export interface Department
 {
-    id?: string;
-    title?: string;
-}
-
-export interface InventoryVendor
-{
-    id: string;
+    id: number;
+    code: string;
+    isActive: boolean;
     name: string;
-    slug: string;
+    description: string;
 }
+
+export interface Phone
+{
+    id: number;
+    number: string;
+    type: string;
+    isActive: number;
+}
+
+export interface CollaboratorKnowledge
+{
+    id?: number;
+    level: number;
+    knowledge: Knowledge;
+    isActive: number;
+}
+
+export interface Knowledge
+{
+    id: number;
+    type: string;
+    description: string;
+    name: string;
+}
+
+
+export interface TypeRequest {
+    id:          number;
+    code:        string;
+    name:        string;
+    description: string;
+    isActive:    number;
+}
+
+export interface SolverGroup {
+    id:               number;
+    idFile:           number;
+    name:             string;
+    lastName:         string;
+    employeePosition: EmployeePosition;
+}
+
+
+export interface TechnicalArea {
+    id:          number;
+    code:        string;
+    name:        string;
+    description: string;
+    isActive:    number;
+}
+
+export interface Status {
+    id:           number;
+    idTypeStatus: number;
+    name:         string;
+    description:  string;
+    isActive:     number;
+}
+
+export interface ResponsibleRequest {
+    id:                    number;
+    idFile:                number;
+    name:                  string;
+    lastName:              string;
+    employeePosition:      EmployeePosition;
+    companyEntryDate:      Date;
+    organizationEntryDate: Date;
+    gender:                string;
+    bornDate:              Date;
+    nationality:           string;
+    mail:                  string;
+    isActive:              number;
+    assignedLocation:      string;
+    technicalSkills:       string;
+    knowledges:            Knowledge[];
+    phones:                Phone[];
+    client:                Client;
+    assigments:            Assigment[];
+}
+
+
+export interface Assigment {
+    id:                   number;
+    occupationPercentage: number;
+    assignmentStartDate:  Date;
+    assignmentEndDate:    Date;
+    code:                 string;
+    observations:         string;
+    isActive:             number;
+}
+

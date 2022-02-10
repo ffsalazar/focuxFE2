@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
+import { Request } from './request.types';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +18,11 @@ export class RequestService
     private _products: BehaviorSubject<InventoryProduct[] | null> = new BehaviorSubject(null);
     private _tags: BehaviorSubject<InventoryTag[] | null> = new BehaviorSubject(null);
     private _vendors: BehaviorSubject<InventoryVendor[] | null> = new BehaviorSubject(null);
+
+    private _request: BehaviorSubject<Request | null> = new BehaviorSubject(null); 
+    private _requests: BehaviorSubject<any[] | null> = new BehaviorSubject(null);
+
+    request: Request;
 
     /**
      * Constructor
@@ -70,6 +76,14 @@ export class RequestService
     }
 
     /**
+     * Getter for products
+     */
+    get requests$(): Observable<Request[]>
+    {
+        return this._requests.asObservable();
+    }
+
+    /**
      * Getter for tags
      */
     get tags$(): Observable<InventoryTag[]>
@@ -113,52 +127,59 @@ export class RequestService
         );
     }
 
-    /**
-     * Get products
-     *
-     *
-     * @param page
-     * @param size
-     * @param sort
-     * @param order
-     * @param search
-     */
-    getProducts(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
-        Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
-    {
-        return this._httpClient.get<{ pagination: InventoryPagination; products: InventoryProduct[] }>('api/apps/ecommerce/inventory/products', {
-            params: {
-                page: '' + page,
-                size: '' + size,
-                sort,
-                order,
-                search
-            }
-        }).pipe(
-            tap((response) => {
-                this._pagination.next(response.pagination);
-                this._products.next(response.products);
-            })
-        );
-    }
+    // /**
+    //  * Get products
+    //  *
+    //  *
+    //  * @param page
+    //  * @param size
+    //  * @param sort
+    //  * @param order
+    //  * @param search
+    //  */
+    // getRequest(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
+    //     Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
+    // {
+    //     console.log("entrooooo");
+    //     return this._httpClient.get<{ pagination: InventoryPagination; products: InventoryProduct[] }>('api/apps/ecommerce/inventory/products', {
+    //         params: {
+    //             page: '' + page,
+    //             size: '' + size,
+    //             sort,
+    //             order,
+    //             search
+    //         }
+    //     }).pipe(
+    //         tap((response) => {
+
+    //             console.log("response: ", response);
+    //             // this._pagination.next(response.pagination);
+    //             // this._products.next(response.products);
+
+    //             this._request.next(this.request);
+    //         })
+    //     );
+    // }
 
     /**
      * Get product by id
      */
-    getProductById(id: string): Observable<InventoryProduct>
+    getProductById(id: number): Observable<Request>
     {
-        return this._products.pipe(
+        return this._requests.pipe(
             take(1),
-            map((products) => {
+            map((requests) => {
 
                 // Find the product
-                const product = products.find(item => item.id === id) || null;
+                const request = requests.find(item => item.id === id) || null;
 
-                // Update the product
-                this._product.next(product);
+                // Update the product*//
+
+                
+                this._request.next(request);
 
                 // Return the product
-                return product;
+                return request;
             }),
             switchMap((product) => {
 
@@ -172,21 +193,78 @@ export class RequestService
         );
     }
 
+    getRequests(): Observable<Request[]> {
+        return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all').pipe(
+            tap((requests) => {
+
+                console.log("request: ", requests);
+                this._requests.next(requests);
+            })
+        );
+    }
+    
     /**
      * Create product
      */
-    createProduct(): Observable<InventoryProduct>
+    createRequest(): Observable<Request>
     {
-        return this.products$.pipe(
+        const newRequest = {
+            "client": {
+              "id": 1
+            },
+            "commercialArea": {
+              "id": 1
+            },
+            "typeRequest": {
+              "id": 1
+            },
+            "titleRequest": "PRUEBA DESDE JSONDOC CON CAMBIOS",
+            "descriptionRequest": "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
+            "responsibleRequest": {
+              "id": 3
+            },
+            "priorityOrder": 1,
+            "dateRequest": "2022-02-07T04:00:00.000+00:00",
+            "dateInit": "2022-02-07T04:00:00.000+00:00",
+            "datePlanEnd": "2022-02-08T04:00:00.000+00:00",
+            "dateRealEnd": "2022-02-09T04:00:00.000+00:00",
+            "status": {
+              "id": 1
+            },
+            "completionPercentage": 30,
+            "deviationPercentage": 70,
+            "deliverablesCompletedIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
+            "pendingActivitiesIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
+            "commentsIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
+            "updateDate": "2022-02-07T04:00:00.000+00:00",
+            "commentsClient": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
+            "technicalArea": {
+              "id": 1
+            },
+            "category": {
+              "id": 1
+            },
+            "internalFeedbackIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
+            "solverGroup": {
+              "id": 1
+            },
+            "requestPeriod": {
+              "id": 1
+            },
+            "dateInitPause": "2022-02-08T04:00:00.000+00:00",
+            "dateEndPause": "2022-02-08T04:00:00.000+00:00",
+            "totalPauseDays": 1,
+            "isActive": 1,
+            "code": "asd21"
+          }
+          
+        return this.requests$.pipe(
             take(1),
-            switchMap(products => this._httpClient.post<InventoryProduct>('api/apps/ecommerce/inventory/product', {}).pipe(
-                map((newProduct) => {
-
-                    // Update the products with the new product
-                    this._products.next([newProduct, ...products]);
-
-                    // Return the new product
-                    return newProduct;
+            switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', newRequest).pipe(
+                map((newRequest) => {
+                    this._requests.next([newRequest, ...requests]);
+                   
+                    return newRequest;
                 })
             ))
         );
@@ -240,22 +318,23 @@ export class RequestService
      * Delete the product
      *
      * @param id
+     * @param request
      */
-    deleteProduct(id: string): Observable<boolean>
+    deleteRequest(id: number, request: Request): Observable<boolean>
     {
-        return this.products$.pipe(
+        return this.requests$.pipe(
             take(1),
-            switchMap(products => this._httpClient.delete('api/apps/ecommerce/inventory/product', {params: {id}}).pipe(
+            switchMap(requests => this._httpClient.put('http://localhost:1616/api/v1/followup/requests/request/' + id, request).pipe(
                 map((isDeleted: boolean) => {
 
                     // Find the index of the deleted product
-                    const index = products.findIndex(item => item.id === id);
+                    const index = requests.findIndex(item => item.id === id);
 
                     // Delete the product
-                    products.splice(index, 1);
+                    requests.splice(index, 1);
 
                     // Update the products
-                    this._products.next(products);
+                    this._requests.next(requests);
 
                     // Return the deleted status
                     return isDeleted;

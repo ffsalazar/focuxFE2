@@ -9,6 +9,10 @@ import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
+import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
+import { RequestService } from '../request.service';
+import { Request } from '../request.types';
+
 
 @Component({
     selector       : 'request-list',
@@ -41,6 +45,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
+    @ViewChild('horizontalStepper') private _stepper: MatStepper;
 
     products$: Observable<InventoryProduct[]>;
 
@@ -51,13 +56,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     isLoading: boolean = false;
     pagination: InventoryPagination;
     searchInputControl: FormControl = new FormControl();
-    selectedProduct: InventoryProduct | null = null;
+    selectedProduct: any | null = null;
     selectedProductForm: FormGroup;
     tags: InventoryTag[];
     tagsEditMode: boolean = false;
     vendors: InventoryVendor[];
+    horizontalStepperForm;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    request$: any;
     /**
      * Constructor
      */
@@ -65,7 +71,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: FormBuilder,
-        private _inventoryService: InventoryService
+        private _inventoryService: InventoryService,
+        private _requestService: RequestService,
     )
     {
     }
@@ -101,6 +108,51 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             images           : [[]],
             currentImageIndex: [0], // Image index that is currently being viewed
             active           : [false]
+        });
+   
+
+        this.horizontalStepperForm = this._formBuilder.group({
+            step1: this._formBuilder.group({
+                //Info solicictud basica y compañia
+                titleRequest        : ['', [Validators.required]],
+                typeRequest         : ['', [Validators.required]],
+                descriptionRequest  : [''],//Descripción solicitud
+                company             : ['', [Validators.required]],
+                areaComercial       : ['', [Validators.required]],
+                customerBranch      : [''],//Ramo cliente
+            }),
+            step2: this._formBuilder.group({
+                //Detalle de solicitud
+                solverGroup         : [''],//Grupo solucionador
+                priorityOrder       : [''], //Prioridad solicitud 
+                category            : ['', [Validators.required]],
+                dateInit            : [''],//Fecha de inicio
+                dateRealEnd         : [''],//Fecha culminacion
+                datePlanEnd         : [''],//Fecha compromiso 
+                isActive            : [''],//Solciitud activa
+                responsibleRequest  : [''],//Responsable solicitud
+                dateRequest         : [''],//Fecha de creacion solcitud
+                status              : [''],// Status solicitud id
+                technicalArea       : [''],//Area tecnica
+            }),
+            step3: this._formBuilder.group({
+                //Periodo de pausa
+                completionPercentage        : [''],//Porcentaje completado
+                deviationPercentage         : [''], // Procentaje desviación
+                internalFeedbackIntelix     : [''],//Feedback interno intelix
+                idRequestPeriod             : [''],//Periodo de solicitud
+                dateInitPause               : [''],//Fecha inicial de pausa
+                dateEndPause                : [''],//Fecha fin pausa
+                totalPauseDays              : [''], //Total días de pausa
+            }),
+            step4: this._formBuilder.group({
+               //Avances y updates de Intelix
+                commentsIntelix                 : [''], //Comentarios Intellix
+                deliverablesCompletedIntelix    : [''], //Actividades completadas
+                pendingActivitiesIntelix        : [''],//Actividades pendientes de intellix
+                updateDate                      : [''],//Fecha de actualización
+                commentsClient                  : [''],//Comentarios del cliente
+            }),
         });
 
         // Get the brands
@@ -141,6 +193,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Get the products
         this.products$ = this._inventoryService.products$;
+        
+        // Get the request
+        this.request$ = this._requestService.requests$;
+        
+        this._requestService.getRequests().subscribe(response => {
+            console.log(response);
+        });
 
         // Get the tags
         this._inventoryService.tags$
@@ -245,7 +304,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      * @param productId
      */
-    toggleDetails(productId: string): void
+    toggleDetails(productId: number): void
     {
         // If the product is already selected...
         if ( this.selectedProduct && this.selectedProduct.id === productId )
@@ -256,17 +315,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Get the product by id
-        this._inventoryService.getProductById(productId)
+        this._requestService.getProductById(productId)
             .subscribe((product) => {
 
                 // Set the selected product
                 this.selectedProduct = product;
 
                 // Fill the form
-                this.selectedProductForm.patchValue(product);
+                // this.selectedProductForm.patchValue(product);
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+                // // Mark for check
+                // this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -490,8 +549,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     createProduct(): void
     {
         // Create the product
-        this._inventoryService.createProduct().subscribe((newProduct) => {
+        console.log("createProduct");
+        this._requestService.createRequest().subscribe((newProduct) => {
 
+            console.log("newProduct: ",  newProduct);
             // Go to new product
             this.selectedProduct = newProduct;
 
@@ -533,7 +594,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             message: '¿Seguro que quiere eliminar la solicitud?',
             actions: {
                 confirm: {
-                    label: 'Eliminar solicitud'
+                    label: 'Eliminar solicitud',
+          
                 }
             }
         });
@@ -544,6 +606,100 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             // If the confirm button pressed...
             if ( result === 'confirmed' )
             {
+                // Clear the Wizzard
+                this._stepper.reset();
+
+                // Get the product object
+                const product = this.selectedProductForm.getRawValue();
+
+                // Delete the product on the server
+
+                let newRequest: any = {
+                    "id": 5,
+                    "client": {
+                      "id": 1
+                    },
+                    "commercialArea": {
+                      "id": 1
+                    },
+                    "typeRequest": {
+                      "id": 1
+                    },
+                    "titleRequest": "PRUEBA DESDE JSONDOC CON CAMBIOS",
+                    "descriptionRequest": "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
+                    "responsibleRequest": {
+                      "id": 3
+                    },
+                    "priorityOrder": 1,
+                    "dateRequest": "2022-02-07T04:00:00.000+00:00",
+                    "dateInit": "2022-02-07T04:00:00.000+00:00",
+                    "datePlanEnd": "2022-02-08T04:00:00.000+00:00",
+                    "dateRealEnd": "2022-02-09T04:00:00.000+00:00",
+                    "status": {
+                      "id": 1
+                    },
+                    "completionPercentage": 30,
+                    "deviationPercentage": 70,
+                    "deliverablesCompletedIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
+                    "pendingActivitiesIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
+                    "commentsIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
+                    "updateDate": "2022-02-07T04:00:00.000+00:00",
+                    "commentsClient": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
+                    "technicalArea": {
+                      "id": 1
+                    },
+                    "category": {
+                      "id": 1
+                    },
+                    "internalFeedbackIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
+                    "solverGroup": {
+                      "id": 1
+                    },
+                    "requestPeriod": {
+                      "id": 1
+                    },
+                    "dateInitPause": "2022-02-08T04:00:00.000+00:00",
+                    "dateEndPause": "2022-02-08T04:00:00.000+00:00",
+                    "totalPauseDays": 1,
+                    "isActive": 1,
+                    "code": "asd21"
+                  };
+                this._requestService.deleteRequest(5, newRequest).subscribe(() => {
+
+                    // Close the details
+                    this.closeDetails();
+                });
+            }
+        });
+    }
+
+    confirmSaveRequest(): void
+    {
+        // Open the confirmation dialog
+        const confirmation = this._fuseConfirmationService.open({
+            title  : 'Guardar solicitud',
+            message: '¿Seguro que desea guardar la solicitud?',
+            icon: {
+                show: true,
+                name: "heroicons_outline:check",
+                color: "primary"
+              },
+            actions: {
+                confirm: {
+                    label: 'Guardar solicitud',
+                    color: 'primary'
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if ( result === 'confirmed' )
+            {
+                // Clear the Wizzard
+                this._stepper.reset();
 
                 // Get the product object
                 const product = this.selectedProductForm.getRawValue();
@@ -554,9 +710,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     // Close the details
                     this.closeDetails();
                 });
+        
             }
         });
     }
+
 
     /**
      * Show flash message
