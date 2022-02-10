@@ -48,17 +48,42 @@ export class AsignationComponent implements OnInit, OnDestroy {
       ngOnInit(): void {
           this.getProject();
           this.filterEvent();
+          this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
           this.collaboratorFormGroup = this._formBuilder.group({
-              collaborators:[[]]
+              collaborators: this._formBuilder.array([])
           });
-          console.log(this.collaboratorFormGroup.status);
           this.collaborators$ = this._assignmentOccupationService.collaborators$;
           this.collaborators$.subscribe(collaborators => {
-              if (collaborators) {
-                    this.collaboratorFormGroup.controls.collaborators
-                        .patchValue(this._formBuilder.array(collaborators.map( value => this.addingCollaboratorsToForm(value))));
-                    console.log(this.collaboratorFormGroup.controls.collaborators.value);
+              const collaboratorsFormGroups = [];
+              (this.collaboratorFormGroup.get('collaborators') as FormArray).clear();
+              if (collaborators && collaborators.length > 0) {
+
+                  collaborators.forEach( collaborator => {
+                        collaboratorsFormGroups.push(
+                            this._formBuilder.group({
+                                name: [collaborator.name],
+                                assignation: [collaborator.assignation],
+                                progress: [collaborator.progress]
+                            })
+                        );
+                  });
+
+
+                  collaboratorsFormGroups
+                      .forEach( collaboratorForm => (this.collaboratorFormGroup.get('collaborators') as FormArray).push(collaboratorForm));
+
+                    // this.collaboratorFormGroup.controls.collaborators
+                    //     .patchValue(this._formBuilder.array(collaborators.map( value => this.addingCollaboratorsToForm(value))));
+
                     this._changeDetectorRef.markForCheck();
+              } else {
+                  collaboratorsFormGroups.push(
+                      this._formBuilder.group({
+                          name: [''],
+                          assignation: [''],
+                          progress: [0]
+                      })
+                  )
               }
           });
       }
@@ -111,12 +136,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 map(value => (typeof value === 'string' ? value : value.name)),
                 map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
             );
-        this.filteredCollaboratorsOptions = this.collaboratorFormGroup?.controls.collaboratorName.valueChanges
-            .pipe(
-                startWith(''),
-                map(value => (typeof value === 'string' ? value : value.name)),
-                map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
-            );
+        // this.filteredCollaboratorsOptions = this.collaboratorFormGroup?.controls.collaborators.valueChanges
+        //     .pipe(
+        //         startWith(''),
+        //         map(value => (typeof value === 'string' ? value : value.name)),
+        //         map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
+        //     );
     }
 
 

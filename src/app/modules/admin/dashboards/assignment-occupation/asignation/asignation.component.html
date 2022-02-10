@@ -100,8 +100,12 @@
                             </div>
                             <!-- Rows -->
 
-                                    <ng-container *ngIf="(collaborators$ | async) as collaborators">
-                                        <ng-container  *ngFor="let collaborator of collaborators; trackBy: trackByFn;">
+                                    <ng-container *ngFor="let collaborator of collaboratorFormGroup.get('collaborators')['controls'];
+                                                    let i = index;
+                                                    let first = first;
+                                                    let last = last;
+                                                     trackBy: trackByFn;">
+                                        <ng-container *ngIf="collaboratorsArr.length > 0" >
                                             <div class="flex flex-row justify-between inventory-grid grid items-center py-3 px-2 md:px-8 border-b">
                                                 <div>   </div>
                                                 <!-- SKU -->
@@ -109,13 +113,12 @@
                                                         <mat-form-field class="w-full pt-4 pr-4 min-h-0">
                                                             <input type="text"
                                                                    matInput
-                                                                   [value]="collaborator.name"
-                                                                   [matAutocomplete]="auto">
-                                                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                                                                <mat-option *ngFor="let option of filteredCollaboratorsOptions | async" [value]="option">
-                                                                    {{option.name}}
-                                                                </mat-option>
-                                                            </mat-autocomplete>
+                                                                   [formControl]="collaborator.get('name')">
+<!--                                                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">-->
+<!--                                                                <mat-option *ngFor="let option of filteredCollaboratorsOptions | async" [value]="option">-->
+<!--                                                                    {{option.name}}-->
+<!--                                                                </mat-option>-->
+<!--                                                            </mat-autocomplete>-->
                                                         </mat-form-field>
 
                                                     </div>
@@ -123,18 +126,18 @@
                                                     <!-- Name -->
                                                     <div class="truncate lg:block">
                                                         <mat-form-field class="w-full pl-4 pt-4 min-h-0 pr-4">
-                                                            <input  [value]="collaborator.assignation" matInput>
+                                                            <input [formControl]="collaborator.get('assignation')" matInput>
                                                         </mat-form-field>
                                                     </div>
 
                                                     <!-- Price -->
                                                     <div class="sm:block">
                                                         <mat-form-field class="w-full pt-4 pl-4 pr-4 min-h-0">
-                                                            <input [value]="collaborator.progress.toString()"  matInput>
+                                                            <input [formControl]="collaborator.get('progress')"  matInput>
                                                         </mat-form-field>
                                                     </div>
                                                     <!-- Details button -->
-                                                    <div class="sm:block">
+                                                    <div class="sm:block" *ngIf="!(first && last)">
                                                         <button class="min-w-8 min-h-8 h-8 px-2 leading-2 ml-3 mt-3 mb-3"
                                                                 mat-stroked-button color="warn"
                                                                 (click)="removeCollaborator(collaborator)">

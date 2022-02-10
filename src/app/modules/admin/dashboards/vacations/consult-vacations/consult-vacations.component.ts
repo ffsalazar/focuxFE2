@@ -10,6 +10,8 @@ import {Collaborator} from "../../assignment-occupation/assignment-occupation.ty
   styleUrls: ['./consult-vacations.component.scss']
 })
 export class ConsultVacationsComponent implements OnInit {
+
+    pendingDays = 10;
     displayedColumns: string[] = ['collaborator', 'period', 'initDate', 'endDate', 'daysOfEnjoyment', 'returnToOffice'];
     displayedHistoryColumns: string[] = ['collaborator', 'period', 'initDate', 'endDate','daysPendingEnjoyment'];
     historicDataSource = [
@@ -51,6 +53,10 @@ export class ConsultVacationsComponent implements OnInit {
     private _filter(name: string): any[] {
         const filterValue = name.toLowerCase();
         return this.collaborators.filter(option => option.name.toLowerCase().includes(filterValue));
+    }
+
+    assignVacations() {
+
     }
 
 }

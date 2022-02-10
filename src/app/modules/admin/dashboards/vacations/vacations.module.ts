@@ -20,6 +20,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatTableModule} from "@angular/material/table";
 import {FuseAlertModule} from "../../../../../@fuse/components/alert";
+import {FuseCardModule} from "../../../../../@fuse/components/card";
 
 
 
@@ -47,7 +48,8 @@ import {FuseAlertModule} from "../../../../../@fuse/components/alert";
         MatAutocompleteModule,
         ReactiveFormsModule,
         MatTableModule,
-        FuseAlertModule
+        FuseAlertModule,
+        FuseCardModule
     ]
 })
 export class VacationsModule { }

@@ -16,15 +16,21 @@ import {InventoryService} from "../../../apps/ecommerce/inventory/inventory.serv
 })
 export class AssignVacationsComponent implements OnInit {
 
+    pendingDays = 10;
+    daysToAssign = 18;
     formFieldHelpers: string[] = [''];
     brands: InventoryBrand[];
     categories: InventoryCategory[];
     filteredTags: InventoryTag[];
     formAssignVacation: FormGroup = new FormGroup({
-        collaborator: new FormControl('TESTValue'),
-        period: new FormControl(''),
-        daysSelected: new FormControl('11'),
-
+        collaborator: new FormControl(null),
+        period: new FormControl(null),
+        daysSelected: new FormControl(null),
+        daysOfEnjoyment: new FormControl(null),
+        initDate: new FormControl(null),
+        endDate: new FormControl(null),
+        holidays: new FormControl(null),
+        dayReturnOffice: new FormControl(null)
     });
     selectedProduct: InventoryProduct | null = null;
     selectedProductForm: FormGroup;
@@ -34,6 +40,15 @@ export class AssignVacationsComponent implements OnInit {
               private _inventoryService: InventoryService) { }
 
   ngOnInit(): void {
+
+      this.formAssignVacation.controls.daysOfEnjoyment.valueChanges
+          .subscribe(values => {
+             this.pendingDays = this.pendingDays - values;
+             if (this.pendingDays < 0) {
+                 console.log('los dias estan por debajo de 0');
+                 this.pendingDays = 10;
+             }
+          });
   }
 
 

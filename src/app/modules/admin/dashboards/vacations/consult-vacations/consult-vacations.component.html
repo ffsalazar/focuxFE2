@@ -128,8 +128,8 @@
 
         <div class="flex flex-row w-full mt-8 justify-end">
             <span class="font-bold text-xl mr-6 pt-2">Dias pendientes</span>
-            <span class="font-medium text-center pt-3 mr-6">18</span>
-            <button mat-flat-button color="primary" > Asignar </button>
+            <span class="font-medium text-center pt-3 mr-6">{{pendingDays}}</span>
+            <button mat-flat-button color="primary" (click)="assignVacations()"> Asignar </button>
         </div>
     </div>
 </div>
