@@ -26,6 +26,8 @@
         "isActive": 1,
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "JAVA",
+        "assignation" : "US218 Integracion de mensajeria ws",
+        "progress": 50,
         "activitys": [],
         "knowledges": [],
         "phones": []
@@ -57,6 +59,8 @@
         "isActive": 0,
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "PHP",
+        "assignation": "Analisis de arquitecturas devops",
+        "progress": 100,
         "knowledges": [],
         "activitys": [],
         "phones": []
@@ -87,6 +91,8 @@
         "mail": "fsalazar@intelix.biz",
         "isActive": 1,
         "assignedLocation": "Intelix Principal",
+        "assignation" : "US316 Integracion de nueva tarjeta debito",
+        "progress": 80,
         "technicalSkills": "JAVA",
         "knowledges": [
             {
@@ -137,6 +143,8 @@
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "JAVA",
         "knowledges": [],
+        "assignation" : "Cambio de metodos de pago en caja EPA",
+        "progress": 20,
         "phones": [
             {
                 "id": 2,
@@ -172,6 +180,8 @@
         "isActive": 0,
         "assignedLocation": "Intelix Principal",
         "technicalSkills": "addsf",
+        "assignation" : "Incidencia en inventario Compier Mayoreo",
+        "progress": 40,
         "knowledges": [],
         "phones": [],
         "activitys": []
@@ -203,6 +213,8 @@
         "isActive": 1,
         "assignedLocation": "A Lazaretto",
         "technicalSkills": "PHP",
+        "assignation" : "Proyecto FormAccion",
+        "progress": 100,
         "knowledges": [],
         "phones": [],
         "activitys": []

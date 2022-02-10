@@ -1,9 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import {Activity, Collaborator, Project} from "../assignment-occupation.types";
-import {FormControl} from "@angular/forms";
+import {
+    AfterContentChecked,
+    AfterContentInit,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit, ViewChildren
+} from '@angular/core';
+import {
+    Activity,
+    Collaborator,
+    EmployeePosition,
+    KnowledgeElement,
+    Phone,
+    Project
+} from "../assignment-occupation.types";
+import {Form, FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
-import {map, startWith} from "rxjs/operators";
-import {Observable} from "rxjs";
+import {map, startWith, takeUntil} from "rxjs/operators";
+import {Observable, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
@@ -11,37 +26,55 @@ import {MatTableDataSource} from "@angular/material/table";
   templateUrl: './asignation.component.html',
   styleUrls: ['./asignation.component.scss']
 })
-export class AsignationComponent implements OnInit {
-    displayedColumns: string[] = ['collaborator', 'ocupation', 'percent', 'clear'];
-    dataSource: any;
-
-    collaborators: Collaborator[] = [];
-    activity: Activity[] = [];
-
-
-    clickedRows = new Set<any>();
+export class AsignationComponent implements OnInit, OnDestroy {
+    collaboratorFormGroup: FormGroup;
     myControlTest = new FormControl();
+
+    collaborators$: Observable<Collaborator[]>;
+    collaboratorsArr: Collaborator[] = [];
+    collaboratorAsigned = false;
     filteredOptions: Observable<any[]>;
+    filteredCollaboratorsOptions: Observable<any[]>;
     project: Project = undefined;
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
     formFieldHelpers: string[] = [''];
 
+      constructor(private _assignmentOccupationService: AssingmentOccupationService,
+                  private _changeDetectorRef: ChangeDetectorRef,
+                  private _formBuilder: FormBuilder) {
 
-      constructor(private _assignmentOccupationService: AssingmentOccupationService) { }
-
-      ngOnInit(): void {
-          this.getAllCollaborators();
-          this.getProject();
-          this.getActivitys();
-          this.filterEvent();
-          this.dataSource = [
-              {collaborator: 'test', occupation: 'test', percent: '100%'},
-              {collaborator: 'test', occupation: 'test', percent: '100%'},
-              {collaborator: 'test', occupation: 'test', percent: '100%'},
-          ];
       }
 
-        getAllCollaborators(){
-            // this.collaborators = this._assignmentOccupationService.collaborators;
+      ngOnInit(): void {
+          this.getProject();
+          this.filterEvent();
+          this.collaboratorFormGroup = this._formBuilder.group({
+              collaborators:[[]]
+          });
+          console.log(this.collaboratorFormGroup.status);
+          this.collaborators$ = this._assignmentOccupationService.collaborators$;
+          this.collaborators$.subscribe(collaborators => {
+              if (collaborators) {
+                    this.collaboratorFormGroup.controls.collaborators
+                        .patchValue(this._formBuilder.array(collaborators.map( value => this.addingCollaboratorsToForm(value))));
+                    console.log(this.collaboratorFormGroup.controls.collaborators.value);
+                    this._changeDetectorRef.markForCheck();
+              }
+          });
+      }
+
+        /**
+         * On destroy
+         */
+        ngOnDestroy(): void
+        {
+            // Unsubscribe from all subscriptions
+            this._unsubscribeAll.next();
+            this._unsubscribeAll.complete();
+        }
+
+        get collaborators() {
+            return this.collaboratorFormGroup.controls['collaborators'] as FormArray;
         }
 
         getProject() {
@@ -57,16 +90,8 @@ export class AsignationComponent implements OnInit {
                     name: 'Credix',
                     description: 'Entidad financiera ubicada en Costa Rica'
                 },
-                collaborators: this.collaborators
+                collaborators: this.collaboratorsArr
             };
-        }
-
-        getActivitys() {
-            this.activity = this._assignmentOccupationService.activitys;
-        }
-
-        onCollaboratorSearchChange(event) {
-            console.log(event);
         }
 
 
@@ -75,19 +100,50 @@ export class AsignationComponent implements OnInit {
     }
 
 
+    removeCollaborator(collaborator) {
+        this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
+    }
+
     filterEvent() {
         this.filteredOptions = this.myControlTest.valueChanges
             .pipe(
                 startWith(''),
                 map(value => (typeof value === 'string' ? value : value.name)),
-                map(name => (name ? this._filter(name) : this.collaborators.slice()))
-            )
+                map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
+            );
+        this.filteredCollaboratorsOptions = this.collaboratorFormGroup?.controls.collaboratorName.valueChanges
+            .pipe(
+                startWith(''),
+                map(value => (typeof value === 'string' ? value : value.name)),
+                map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
+            );
+    }
+
+
+    addingCollaboratorsToForm(collaborator: Collaborator): FormGroup {
+            return this._formBuilder.group({
+               name: collaborator.name,
+               assignation: collaborator.assignation,
+               progress: collaborator.progress
+            });
+    }
+
+
+    /**
+     * Track by function for ngFor loops
+     *
+     * @param index
+     * @param item
+     */
+    trackByFn(index: number, item: any): any
+    {
+        return item.id || index;
     }
 
 
     private _filter(name: string): any[] {
         const filterValue = name.toLowerCase();
-        return this.collaborators.filter(option => option.name.toLowerCase().includes(filterValue));
+        return this.collaboratorsArr.filter(option => option.name.toLowerCase().includes(filterValue));
     }
 
 }

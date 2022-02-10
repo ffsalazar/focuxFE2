@@ -6,7 +6,7 @@ import {
     InventoryTag
 } from "../../../apps/ecommerce/inventory/inventory.types";
 import {MatCheckboxChange} from "@angular/material/checkbox";
-import {FormGroup} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {InventoryService} from "../../../apps/ecommerce/inventory/inventory.service";
 
 @Component({
@@ -20,6 +20,12 @@ export class AssignVacationsComponent implements OnInit {
     brands: InventoryBrand[];
     categories: InventoryCategory[];
     filteredTags: InventoryTag[];
+    formAssignVacation: FormGroup = new FormGroup({
+        collaborator: new FormControl('TESTValue'),
+        period: new FormControl(''),
+        daysSelected: new FormControl('11'),
+
+    });
     selectedProduct: InventoryProduct | null = null;
     selectedProductForm: FormGroup;
     tags: InventoryTag[];

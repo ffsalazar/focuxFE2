@@ -15,7 +15,8 @@ export interface Collaborator {
     technicalSkills:       string;
     knowledges:            KnowledgeElement[];
     phones:                Phone[];
-    activitys?:             Activity[];
+    assignation?:           string;
+    progress?:              number;
 }
 
 export interface EmployeePosition {

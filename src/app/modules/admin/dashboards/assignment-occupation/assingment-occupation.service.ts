@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import {Activity, Collaborator, EmployeePosition, KnowledgeElement, Phone} from "./assignment-occupation.types";
+import {Activity, Collaborator} from "./assignment-occupation.types";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 @Injectable()
@@ -10,38 +10,48 @@ export class AssingmentOccupationService {
 
     private _collaborators: BehaviorSubject<Collaborator[] | null > = new BehaviorSubject(null);
     private _activitys: Activity[] = activitys;
+    private _collaboratorsAssign: Collaborator[] = data;
+    private _tabIndex: Subject<number> = new Subject<number>();
 
     constructor(private _http: HttpClient) { }
+
+
+
+    get tabIndex$(): Observable<number> {
+        return this._tabIndex.asObservable();
+    }
+
+    setTabIndex(id: number) {
+        this._tabIndex.next(id);
+    }
 
     get collaborators$(): Observable<Collaborator[]> {
         return this._collaborators.asObservable();
     }
 
+    get collaboratorsAssign() {
+        return this._collaboratorsAssign;
+    }
+
+    set collaboratorsAssign(collaborators: Collaborator[]) {
+        this._collaboratorsAssign = collaborators;
+    }
+
+    setCollaboratorByAssign(collaborator: Collaborator) {
+        this._collaboratorsAssign.push(collaborator);
+    }
+
+    removeCollaboratorByAssign(collaborator: Collaborator) {
+        const index = this._collaboratorsAssign.findIndex(find => find.id === collaborator.id);
+        this._collaboratorsAssign.splice(index, 1);
+        this._collaborators.next(this._collaboratorsAssign);
+    }
+
+
     getCollaboratorsJson() {
         const dataJson: Collaborator[] = data;
-        const arrayAux = dataJson.map( values => {
-            return {
-                id: values.id,
-                idFile:  values.idFile,
-                name:  values.name,
-                lastName: values.lastName,
-                employeePosition: values.employeePosition,
-                companyEntryDate: values.companyEntryDate,
-                organizationEntryDate: values.organizationEntryDate,
-                gender: values.gender,
-                bornDate: values.bornDate,
-                nationality: values.nationality,
-                mail: values.mail,
-                isActive: values.isActive,
-                assignedLocation: values.assignedLocation,
-                technicalSkills: values.technicalSkills,
-                knowledges: values.knowledges,
-                phones: values.phones,
-                activitys: this._activitys.filter( elem => elem.colaboratorName === values.name + ' ' +values.lastName)
-            }
-        });
-        this._collaborators.next(arrayAux);
-        return arrayAux;
+        this._collaborators.next(dataJson);
+        return dataJson;
     }
 
 

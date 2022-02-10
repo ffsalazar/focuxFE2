@@ -1,9 +1,25 @@
+.inventory-grid {
+    grid-template-columns: 48px auto 40px;
 
-::ng-deep.mat-header-row{
-    background-color: rgb(243 244 246) !important;
+    @screen sm {
+        grid-template-columns: 48px auto 112px 72px;
+    }
+
+    @screen md {
+        grid-template-columns: 48px 112px auto 112px 72px;
+    }
+
+    @screen lg {
+        grid-template-columns: 0 27em  27em 10em 8em;
+    }
 }
+
 
 
 :host ::ng-deep.mat-stroked-button{
     border-color: #dc3846 !important;
+}
+
+:host ::ng-deep.mat-sort-header-container {
+    justify-content: center !important;
 }
