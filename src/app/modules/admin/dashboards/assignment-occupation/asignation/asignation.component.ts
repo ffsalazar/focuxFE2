@@ -129,6 +129,40 @@ export class AsignationComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
     }
 
+    removeField(index: number): void
+    {
+        // Get form array for phone numbers
+        const collaboratorsFormArray = this.collaboratorFormGroup.get('collaborators') as FormArray;
+        //const collaborator = collaboratorsFormArray.at(index).value
+        //collaborator.isActive = 0;
+        // Remove the phone number field
+        collaboratorsFormArray.removeAt(index);
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+
+        //this._collaboratorsService.updatePhoneStatus(id, phone).subscribe();
+    }
+
+    /**
+     * Add an empty phone number field
+     */
+    addcollaboratorField(): void
+    {
+        // Create an empty phone number form group
+        const collaboratorsFormGroup = this._formBuilder.group({
+            name: [''],
+            assignation: [''],
+            progress: [0]
+        });
+
+        // Add the phone number form group to the phoneNumbers form array
+        (this.collaboratorFormGroup.get('collaborators') as FormArray).push(collaboratorsFormGroup);
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
     filterEvent() {
         this.filteredOptions = this.myControlTest.valueChanges
             .pipe(
