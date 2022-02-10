@@ -11,6 +11,8 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
+import { Request } from '../request.types';
+
 
 @Component({
     selector       : 'request-list',
@@ -112,67 +114,45 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
                 //Info solicictud basica y compañia
-                titleRequest: ['', [Validators.required]],
-                typeRequest : ['', [Validators.required]],
-                descriptionRequest: ['', ],//Descripción solicitud
-                
-                company: ['', [Validators.required]],
-                areaComercial: ['', [Validators.required]],
-                customerBranch: ['', ],//Ramo cliente
+                titleRequest        : ['', [Validators.required]],
+                typeRequest         : ['', [Validators.required]],
+                descriptionRequest  : [''],//Descripción solicitud
+                company             : ['', [Validators.required]],
+                areaComercial       : ['', [Validators.required]],
+                customerBranch      : [''],//Ramo cliente
             }),
             step2: this._formBuilder.group({
                 //Detalle de solicitud
-                solverGroup: [''],//Grupo solucionador
-                priorityOrder: [''], //Prioridad solicitud 
-                category:  ['', [Validators.required]],
-                
-                dateInit: ['', ],//Fecha de inicio
-                dateRealEnd: ['', ],//Fecha culminacion
-                datePlanEnd: ['', ],//Fecha compromiso
-                
-                isActive: [''],//Solciitud activa
-                responsibleRequest: [''],//Responsable solicitud
-                dateRequest: ['', ],//Fecha de creacion solcitud
-                status: [''],// Status solicitud id
-
-                technicalArea: [''],//Area tecnica
-
+                solverGroup         : [''],//Grupo solucionador
+                priorityOrder       : [''], //Prioridad solicitud 
+                category            : ['', [Validators.required]],
+                dateInit            : [''],//Fecha de inicio
+                dateRealEnd         : [''],//Fecha culminacion
+                datePlanEnd         : [''],//Fecha compromiso 
+                isActive            : [''],//Solciitud activa
+                responsibleRequest  : [''],//Responsable solicitud
+                dateRequest         : [''],//Fecha de creacion solcitud
+                status              : [''],// Status solicitud id
+                technicalArea       : [''],//Area tecnica
             }),
             step3: this._formBuilder.group({
                 //Periodo de pausa
-                completionPercentage: [''],//Porcentaje completado
-                deviationPercentage: [''], // Procentaje desviación
-                internalFeedbackIntelix: [''],//Feedback interno intelix
-                idRequestPeriod: [''],//Periodo de solicitud
-                dateInitPause: [''],//Fecha inicial de pausa
-                dateEndPause: [''],//Fecha fin pausa
-                totalPauseDays: [''], //Total días de pausa
-                 
+                completionPercentage        : [''],//Porcentaje completado
+                deviationPercentage         : [''], // Procentaje desviación
+                internalFeedbackIntelix     : [''],//Feedback interno intelix
+                idRequestPeriod             : [''],//Periodo de solicitud
+                dateInitPause               : [''],//Fecha inicial de pausa
+                dateEndPause                : [''],//Fecha fin pausa
+                totalPauseDays              : [''], //Total días de pausa
             }),
             step4: this._formBuilder.group({
                //Avances y updates de Intelix
-                commentsIntelix: ['', ], //Comentarios Intellix
-                deliverablesCompletedIntelix: [''], //Actividades completadas
-                pendingActivitiesIntelix: [''],//Actividades pendientes de intellix
-                updateDate: [''],//Fecha de actualización
-                commentsClient: [''],//Comentarios del cliente
-              
-                
-                
+                commentsIntelix                 : [''], //Comentarios Intellix
+                deliverablesCompletedIntelix    : [''], //Actividades completadas
+                pendingActivitiesIntelix        : [''],//Actividades pendientes de intellix
+                updateDate                      : [''],//Fecha de actualización
+                commentsClient                  : [''],//Comentarios del cliente
             }),
-            
-        });
-
-        // this.horizontalStepperForm.valueChanges.subscribe(value => {
-        //     console.log("value: ", value);
-        // });
-
-        this.horizontalStepperForm.get('step1').valueChanges.subscribe((step1) => {
-            console.log("step1: ", step1);
-        });
-
-        this.horizontalStepperForm.get('step2').valueChanges.subscribe((step2) => {
-            console.log("step2: ", step2);
         });
 
         // Get the brands
@@ -215,9 +195,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.products$ = this._inventoryService.products$;
         
         // Get the request
-        this.request$ = this._requestService.request$;
+        this.request$ = this._requestService.requests$;
         
-        this._requestService.getRequest().subscribe(response => {
+        this._requestService.getRequests().subscribe(response => {
             console.log(response);
         });
 
@@ -324,7 +304,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      * @param productId
      */
-    toggleDetails(productId: string): void
+    toggleDetails(productId: number): void
     {
         // If the product is already selected...
         if ( this.selectedProduct && this.selectedProduct.id === productId )
@@ -342,10 +322,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this.selectedProduct = product;
 
                 // Fill the form
-                this.selectedProductForm.patchValue(product);
+                // this.selectedProductForm.patchValue(product);
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+                // // Mark for check
+                // this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -570,7 +550,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     {
         // Create the product
         console.log("createProduct");
-        this._requestService.createProduct().subscribe((newProduct) => {
+        this._requestService.createRequest().subscribe((newProduct) => {
 
             console.log("newProduct: ",  newProduct);
             // Go to new product
@@ -633,7 +613,58 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 const product = this.selectedProductForm.getRawValue();
 
                 // Delete the product on the server
-                this._inventoryService.deleteProduct(product.id).subscribe(() => {
+
+                let newRequest: any = {
+                    "id": 5,
+                    "client": {
+                      "id": 1
+                    },
+                    "commercialArea": {
+                      "id": 1
+                    },
+                    "typeRequest": {
+                      "id": 1
+                    },
+                    "titleRequest": "PRUEBA DESDE JSONDOC CON CAMBIOS",
+                    "descriptionRequest": "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
+                    "responsibleRequest": {
+                      "id": 3
+                    },
+                    "priorityOrder": 1,
+                    "dateRequest": "2022-02-07T04:00:00.000+00:00",
+                    "dateInit": "2022-02-07T04:00:00.000+00:00",
+                    "datePlanEnd": "2022-02-08T04:00:00.000+00:00",
+                    "dateRealEnd": "2022-02-09T04:00:00.000+00:00",
+                    "status": {
+                      "id": 1
+                    },
+                    "completionPercentage": 30,
+                    "deviationPercentage": 70,
+                    "deliverablesCompletedIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
+                    "pendingActivitiesIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
+                    "commentsIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
+                    "updateDate": "2022-02-07T04:00:00.000+00:00",
+                    "commentsClient": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
+                    "technicalArea": {
+                      "id": 1
+                    },
+                    "category": {
+                      "id": 1
+                    },
+                    "internalFeedbackIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
+                    "solverGroup": {
+                      "id": 1
+                    },
+                    "requestPeriod": {
+                      "id": 1
+                    },
+                    "dateInitPause": "2022-02-08T04:00:00.000+00:00",
+                    "dateEndPause": "2022-02-08T04:00:00.000+00:00",
+                    "totalPauseDays": 1,
+                    "isActive": 1,
+                    "code": "asd21"
+                  };
+                this._requestService.deleteRequest(5, newRequest).subscribe(() => {
 
                     // Close the details
                     this.closeDetails();

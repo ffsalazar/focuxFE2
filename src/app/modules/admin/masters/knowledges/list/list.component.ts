@@ -68,6 +68,7 @@ export class KnowledgesListComponent implements OnInit, OnDestroy
 
         console.log(this.knowledges$)
 
+        this._knowledgesService.getKnowledges().subscribe(res => console.log("res: ", res));
 
 
 

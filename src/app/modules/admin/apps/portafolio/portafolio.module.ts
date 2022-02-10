@@ -22,6 +22,7 @@ import { RequestStepOneComponent } from './request/list/request-stepper/request-
 import { RequestStepTwoComponent } from './request/list/request-stepper/request-stepper/request-step-two/request-step-two.component';
 import { RequestStepThirdComponent } from './request/list/request-stepper/request-stepper/request-step-third/request-step-third.component';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MomentModule } from 'ngx-moment';
 
 @NgModule({
     declarations: [
@@ -49,6 +50,7 @@ import { MatStepperModule } from '@angular/material/stepper';
         MatTooltipModule,
         MatStepperModule,
         SharedModule,
+        MomentModule,
     ]
 })
 export class PortafolioModule

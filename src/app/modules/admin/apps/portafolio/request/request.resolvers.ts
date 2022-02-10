@@ -5,6 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
 import {RequestListComponent} from "./list/request.component";
+import { RequestService } from './request.service';
+import { Request } from './request.types';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +16,8 @@ export class RequestBrandsResolver implements Resolve<any>
     /**
      * Constructor
      */
-    constructor(private _inventoryService: InventoryService)
+    constructor(private _inventoryService: InventoryService,
+                private _requestService: RequestService,)
     {
     }
 
@@ -28,9 +31,9 @@ export class RequestBrandsResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<InventoryBrand[]>
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Request[]>
     {
-        return this._inventoryService.getBrands();
+        return this._requestService.getRequests();
     }
 }
 
