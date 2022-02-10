@@ -80,7 +80,7 @@
                                 <div class="grid-cols-12 grid items-center gap-2 py-3 px-3 md:px-3 border-b">
                                     <!-- SKU -->
                                     <div class="hidden sm:block truncate">
-                                        {{product.client.businessType.name}}
+                                        {{product.client.name}}
                                     </div>
 
                                     <!-- Name -->
@@ -120,7 +120,7 @@
 
                                     <!-- DateReal End -->
                                     <div class="hidden sm:block">
-                                        {{product.dateRealEnd | amTimeAgo}}
+                                        {{product.dateRealEnd | amParse: formats | amDateFormat:'LL'}}
                                     </div>
 
                                     <!-- Deviation Percentage -->
@@ -130,7 +130,7 @@
 
                                     <!-- DateEnd Pause -->
                                     <div class="hidden sm:block">
-                                        {{product.dateEndPause}}
+                                        {{product.dateEndPause | amParse: formats | amDateFormat:'LL'}}
                                     </div>
 
                                     <!-- DatePlan End -->

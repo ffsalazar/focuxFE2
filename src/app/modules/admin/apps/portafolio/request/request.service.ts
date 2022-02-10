@@ -24,38 +24,6 @@ export class RequestService
 
     request: Request;
 
-    // request: Request[]  = [{
-    //     id: 1,
-    //     idCompany: 0,
-    //     idArea: 1,
-    //     typeRequest: 1,
-    //     titleRequest: "Solicitud de Intelix",
-    //     descriptionRequest: "Test Title DESDE JSONDOC", // N
-    //     responsibleRequest: 2,
-    //     priorityOrder: 1, // N
-    //     dateRequest: new Date(),
-    //     dateInit: new Date(),
-    //     datePlanEnd: new Date(),
-    //     dateRealEnd: new Date(),
-    //     idStatus: 1,
-    //     completionPercentage: 80,
-    //     deviationPercentage: 90, // N
-    //     deliverablesCompletedIntelix: "Test Title DESDE JSONDOC", 
-    //     pendingActivitiesIntelix: "Test Title DESDE JSONDOC",
-    //     commentsIntelix: "Test Title DESDE JSONDOC",
-    //     updateDate: new Date(),
-    //     commentsClient: "Test Title DESDE JSONDOC",
-    //     technicalArea: 1,
-    //     idCategory: 1,
-    //     internalFeedbackIntelix: "Test Title DESDE JSONDOC",
-    //     idSolverGroup: 1,
-    //     idRequestPeriod: 1,
-    //     dateInitPause: new Date(),
-    //     dateEndPause: new Date(),
-    //     totalPauseDays: "Test Title DESDE JSONDOC",
-    //     idCustomerBranch: 1,
-    //     isActive: 1
-    //     }];
     /**
      * Constructor
      */
@@ -240,7 +208,6 @@ export class RequestService
      */
     createRequest(): Observable<Request>
     {
-
         const newRequest = {
             "client": {
               "id": 1
