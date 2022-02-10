@@ -164,7 +164,7 @@ export class RequestService
     /**
      * Get product by id
      */
-    getProductById(id: number): Observable<Request>
+    getRequestById(id: number): Observable<Request>
     {
         return this._requests.pipe(
             take(1),
@@ -173,6 +173,7 @@ export class RequestService
                 // Find the product
                 const request = requests.find(item => item.id === id) || null;
 
+                console.log("getRequestById: ", request);
                 // Update the product*//
 
                 
@@ -256,7 +257,7 @@ export class RequestService
             "totalPauseDays": 1,
             "isActive": 1,
             "code": "asd21"
-          }
+        }
           
         return this.requests$.pipe(
             take(1),

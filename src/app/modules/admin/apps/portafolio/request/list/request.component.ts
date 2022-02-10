@@ -304,10 +304,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      * @param productId
      */
-    toggleDetails(productId: number): void
+    toggleDetails(requestId: number): void
     {
         // If the product is already selected...
-        if ( this.selectedProduct && this.selectedProduct.id === productId )
+        if ( this.selectedProduct && this.selectedProduct.id === requestId )
         {
             // Close the details
             this.closeDetails();
@@ -315,11 +315,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Get the product by id
-        this._requestService.getProductById(productId)
-            .subscribe((product) => {
+        this._requestService.getRequestById( requestId )
+            .subscribe((request) => {
 
+                console.log("toggleDetails");
                 // Set the selected product
-                this.selectedProduct = product;
+                this.selectedProduct = request;
 
                 // Fill the form
                 // this.selectedProductForm.patchValue(product);
@@ -549,10 +550,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     createProduct(): void
     {
         // Create the product
-        console.log("createProduct");
         this._requestService.createRequest().subscribe((newProduct) => {
 
-            console.log("newProduct: ",  newProduct);
             // Go to new product
             this.selectedProduct = newProduct;
 
@@ -664,7 +663,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     "isActive": 1,
                     "code": "asd21"
                   };
-                this._requestService.deleteRequest(5, newRequest).subscribe(() => {
+                this._requestService.deleteRequest(this.selectedProduct.id, this.selectedProduct).subscribe(() => {
 
                     // Close the details
                     this.closeDetails();
