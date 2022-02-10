@@ -173,7 +173,6 @@ export class RequestService
                 // Find the product
                 const request = requests.find(item => item.id === id) || null;
 
-                console.log("getRequestById: ", request);
                 // Update the product*//
 
                 

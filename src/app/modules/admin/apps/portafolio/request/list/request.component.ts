@@ -120,6 +120,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 company             : ['', [Validators.required]],
                 areaComercial       : ['', [Validators.required]],
                 customerBranch      : [''],//Ramo cliente
+                requestCode        : [''],
             }),
             step2: this._formBuilder.group({
                 //Detalle de solicitud
@@ -318,7 +319,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.getRequestById( requestId )
             .subscribe((request) => {
 
-                console.log("toggleDetails");
                 // Set the selected product
                 this.selectedProduct = request;
 
