@@ -54,7 +54,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         ]
     },
     {
-        id      : 'apps',
+        id      : 'masters',
         title   : 'Maestros',
         subtitle: '',
         type    : 'group',
@@ -90,72 +90,78 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/apps/contacts'
             },
             */{
-                id      : 'teachers.portafolio',
+                id      : 'masters.portafolio',
                 title   : 'Portafolio',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:archive',
                 children: [
                     {
-                        id   : 'teachers.portafolio.status',
+                        id   : 'masters.portafolio.status',
                         title: 'Estatus',
                         type : 'basic',
                         link : ''
                     },
                     {
-                        id   : 'teachers.portafolio.request',
+                        id   : 'masters.portafolio.request',
                         title: 'Solicitudes',
                         type : 'basic',
                         link : '/apps/portafolio/request'
                     },
                     {
-                        id   : 'teachers.portafolio.typeStatus',
+                        id   : 'masters.portafolio.typeStatus',
                         title: 'Tipo de Estatus',
                         type : 'basic',
                         link : ''
                     },
                     {
-                        id   : 'teachers.portafolio.client',
+                        id   : 'masters.portafolio.client',
                         title: 'Clientes',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/clients'
                     },
                     {
-                        id   : 'teachers.portafolio.commercialArea',
+                        id   : 'masters.portafolio.commercialArea',
                         title: 'Area Comercial',
                         type : 'basic',
                         link : ''
                     },
                     {
-                        id   : 'teachers.portafolio.technicalArea',
+                        id   : 'masters.portafolio.technicalArea',
                         title: 'Area Técnica',
                         type : 'basic',
                         link : ''
+                    },
+                    {
+                        id   : 'masters.portafolio.businessType',
+                        title: 'tipo de negocio',
+                        type : 'basic',
+                        link : '/masters/businessTypes'
                     }
                 ]
             },
             {
-                id      : 'teacher.collaborator',
+                id      : 'masters.collaborator',
                 title   : 'Colaboradores',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:users',
                 children: [
                     {
-                        id   : 'teacher.collaborator.collaborator',
-                        title: 'Colaborador',
+                        id   : 'masters.collaborator.collaborator',
+                        title: 'Conocimiento',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/knowledges'
                     },
                     {
-                        id   : 'teacher.collaborator.employeePosition',
+                        id   : 'masters.collaborator.employeePosition',
                         title: 'Cargos',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/employeePosition'
                     },
                     {
-                        id   : 'teacher.collaborator.departament',
+                        id   : 'masters.collaborator.departament',
                         title: 'Departamento',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/departments'
                     }
                 ]
             }/*

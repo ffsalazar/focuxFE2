@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Collaborator, CollaboratorKnowledge, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
@@ -26,14 +26,20 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     editMode: boolean = false;
     knowledges: Knowledge[];
     knowledgesEditMode: boolean = false;
-    filteredKnowledges: CollaboratorKnowledge[]=[];
+    filteredKnowledges: CollaboratorKnowledge[] = [];
     collaborator: Collaborator;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
+    departments: Department[];
+    filteredDepartments: Department[];
+    clients:Client[];
+    filteredclients: Client[];
     countries: Country[];
+    employeePositions: EmployeePosition[];
+    filteredEmployeePositions: EmployeePosition[];
+    private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
     /**
      * Constructor
      */
@@ -67,27 +73,32 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Create the collaborator form
         this.collaboratorForm = this._formBuilder.group({
             id          : [''],
+            idFile      : [''],
             avatar      : [null],
-            name        : ['', [Validators.required]],
+            name        : ['',[Validators.required]],
             mail        : [''],
             lastName    : [''],
             nationality : [''],
-            departament : [''],
-            employeePosition : [''],
+            department : [''],
+            employeePosition : [[]],
+            client: [[]],
             companyEntryDate : [''],
             organizationEntryDate : [''],
             gender       : [''],
             bornDate     : [''],
             assignedLocation : [''],
-            knowledges         : [[]]
-        });
+            knowledges         : [[]],
+            isActive: [''],
+            technicalSkills: [''],
+            phoneNumbers: this._formBuilder.array([]),
+            phones: this._formBuilder.array([]),
+        })
 
         // Get the collaborators
         this._collaboratorsService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborators: Collaborator[]) => {
                 this.collaborators = collaborators;
-
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -103,18 +114,53 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 // Get the collaborator
                 this.collaborator = collaborator;
+                console.log(this.collaborator);
+                // Clear the emails and phoneNumbers form arrays
 
-
-
-                    // Clear the emails and phoneNumbers form arrays
-               /* (this.collaboratorForm.get('emails') as FormArray).clear();
-                (this.collaboratorForm.get('phoneNumbers') as FormArray).clear();*/
+                (this.collaboratorForm.get('phones') as FormArray).clear();
 
                 // Patch values to the form
                 this.collaboratorForm.patchValue(collaborator);
 
+                this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
+                this.collaboratorForm.get('client').setValue(collaborator.client.id);
+                this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
+                this.collaboratorForm.get('client').setValue(collaborator.client.id);
+                // Setup the phone numbers form array
+                const phoneNumbersFormGroups = [];
 
+                if ( collaborator.phones.length > 0 )
+                {
+                    // Iterate through them
+                    collaborator.phones.forEach((phoneNumber) => {
 
+                        // Create an email form group
+                        phoneNumbersFormGroups.push(
+                            this._formBuilder.group({
+                                id   : [phoneNumber.id],
+                                number: [phoneNumber.number],
+                                type      : [phoneNumber.type],
+                                isActive: [phoneNumber.isActive]
+                            })
+                        );
+                    });
+                }
+                else
+                {
+                    // Create a phone number form group
+                    phoneNumbersFormGroups.push(
+                        this._formBuilder.group({
+                            number: [''],
+                            type      : [''],
+                            isActive: [1]
+                        })
+                    );
+                }
+
+                // Add the phone numbers form groups to the phone numbers form array
+                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
+                    (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
+                });
 
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
@@ -123,6 +169,33 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+        // Get the collaborator
+
+        this._collaboratorsService.departments$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((deparments: Department[]) => {
+                this.departments = deparments;
+                this.filteredDepartments = deparments;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._collaboratorsService.employeePositions$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((employeePositions: EmployeePosition[]) => {
+                this.employeePositions = employeePositions;
+                this.filteredEmployeePositions = employeePositions;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+        
+        this._collaboratorsService.clients$
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((clients: Client[]) => {
+            this.clients = clients;            
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });    
         // Get the country telephone codes
         this._collaboratorsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -144,25 +217,23 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+            
+        this.filteredKnowledges = this.collaborator.knowledges;
+        
+        // this.knowledges.forEach(filteredKnowledges => {
+        //     let filteredKnowledge = {
+        //         id : filteredKnowledges.id,
+        //         level: 0,
+        //         knowledge: filteredKnowledges,
+        //         isActive: 1
+        //     };
 
-        this.knowledges.forEach(filteredKnowledges => {
+        //     this.filteredKnowledges.push(filteredKnowledge);
+        // });
 
-            let filteredKnowledge = {
-                id : filteredKnowledges.id,
-                level: 0,
-                knowledge: filteredKnowledges
-            };
-            this.filteredKnowledges.push(filteredKnowledge);
-
-        });
-
-        console.log(this.filteredKnowledges)
-
-
-
-
-
-
+        if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
+            this.editMode = true;
+        }
     }
 
     /**
@@ -219,14 +290,22 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     updateCollaborator(): void
     {
         // Get the collaborator object
-        const collaborator = this.collaboratorForm.getRawValue();
-
-        // Update the collaborator on the server
+        let collaborator = this.collaboratorForm.getRawValue();
+        collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
+        collaborator.client = this.clients.find(value => value.id === collaborator.client);
+        // Update the collaborator on the server        
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {
 
             // Toggle the edit mode off
             this.toggleEditMode(false);
         });
+    }
+
+    filterPositionsByDepartment() {
+        let departmentSelected = this.collaboratorForm.get("department").value;
+
+        this.filteredEmployeePositions = this.employeePositions.filter(elem => elem.department.id === departmentSelected)
+
     }
 
     /**
@@ -257,19 +336,26 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 // Get the next/previous collaborator's id
                 const currentCollaboratorIndex = this.collaborators.findIndex(item => item.id === id);
-                const nextCollaboratorIndex = currentCollaboratorIndex + ((currentCollaboratorIndex === (this.collaborators.length - 1)) ? -1 : 1);
-                const nextCollaboratorId = (this.collaborators.length === 1 && this.collaborators[0].id === id) ? null : this.collaborators[nextCollaboratorIndex].id;
+                let nextCollaboratorId = null;
+                if (currentCollaboratorIndex == (this.collaborators.length - 1)) {
+                    for (let i = currentCollaboratorIndex - 1; i >= 0; i--) {
+                        if (this.collaborators[i].isActive != 0) {
+                            nextCollaboratorId = this.collaborators[i].id;
+                        }
+                    }
+                } else {
+                    for (let i = currentCollaboratorIndex + 1; i < this.collaborators.length; i++) {
+                        if (this.collaborators[i].isActive != 0) {
+                            nextCollaboratorId = this.collaborators[i].id;
+                        }
+                    }
+                }
+
 
                 // Delete the collaborator
-                this._collaboratorsService.deleteCollaborator(id)
-                    .subscribe((isDeleted) => {
-
-                        // Return if the collaborator wasn't deleted...
-                        if ( !isDeleted )
-                        {
-                            return;
-                        }
-
+                this.collaborator.isActive = 0;
+                this._collaboratorsService.deleteCollaborator(this.collaborator)
+                    .subscribe(() => {
                         // Navigate to the next collaborator if available
                         if ( nextCollaboratorId )
                         {
@@ -540,19 +626,34 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    addKnowledgeToCollaborator(knowledge: any): void
+    addKnowledgeToCollaborator(knowledge: Knowledge): void
     {
+        // TODO: we need to add logic for levels here
+        let newKnowledge: CollaboratorKnowledge = {
+            level: 0,
+            knowledge: knowledge,
+            isActive: 1
+        }
+
+        // Add the knowledge
+        this.collaborator.knowledges.unshift(newKnowledge);
+
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
-
-        // Add the knowledge
-        this.collaborator.knowledges.unshift(knowledge);
-
+        // Mark for check
+        this._changeDetectorRef.detectChanges();
+    }
+    
+    activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {        
+        knowledge.isActive = 1;
+        // Update the collaborator form
+        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
         // Mark for check
         this._changeDetectorRef.detectChanges();
 
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe()
     }
 
     /**
@@ -560,14 +661,16 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    removeKnowledgeFromCollaborator(knowledge: any): void
+    removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
     {
         // Remove the knowledge
-        this.collaborator.knowledges.splice(this.collaborator.knowledges.findIndex(item => item.id === knowledge.id), 1);
+        knowledge.isActive = 0;        
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
-
+        // Setting status to inactive
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe();
+        
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -577,20 +680,20 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    toggleCollaboratorKnowledge(knowledge: any): void
+    toggleCollaboratorKnowledge(knowledge: Knowledge): void
     {
         /*let collaboratorKnowledge : CollaboratorKnowledge = {
             id: knowledge.id,
             level : 0,
             knowledge : knowledge
         }*/
-        if ( this.collaborator.knowledges.includes(knowledge) )
-        {
-            this.removeKnowledgeFromCollaborator(knowledge);
+        let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
+        if (knowledgeFound) {
+            if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+            else  this.activeCollaboratorKnowledge(knowledgeFound);
         }
         else
         {
-
             this.addKnowledgeToCollaborator(knowledge);
         }
     }
@@ -647,13 +750,14 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     {
         // Create an empty phone number form group
         const phoneNumberFormGroup = this._formBuilder.group({
-            country    : ['us'],
-            phoneNumber: [''],
-            label      : ['']
+            id    : [''],
+            number: [''],
+            type     : [''],
+            isActive: [1]
         });
 
         // Add the phone number form group to the phoneNumbers form array
-        (this.collaboratorForm.get('phoneNumbers') as FormArray).push(phoneNumberFormGroup);
+        (this.collaboratorForm.get('phones') as FormArray).push(phoneNumberFormGroup);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -664,16 +768,19 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param index
      */
-    removePhoneNumberField(index: number): void
+    removePhoneNumberField(index: number, id: number): void
     {
         // Get form array for phone numbers
-        const phoneNumbersFormArray = this.collaboratorForm.get('phoneNumbers') as FormArray;
-
+        const phoneNumbersFormArray = this.collaboratorForm.get('phones') as FormArray;
+        const phone = phoneNumbersFormArray.at(index).value
+        phone.isActive = 0;
         // Remove the phone number field
         phoneNumbersFormArray.removeAt(index);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
+
+        this._collaboratorsService.updatePhoneStatus(id, phone).subscribe();
     }
 
     /**
@@ -696,4 +803,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+
+    checkerKnowledges(knowledge: Knowledge): boolean {
+        let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);        
+        return hasKnowledge !== undefined;
+    };
 }

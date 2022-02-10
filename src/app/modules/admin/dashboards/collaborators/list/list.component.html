@@ -1,4 +1,4 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="absolute inset-0 flex flex-col min-w-100 overflow-hidden">
 
     <mat-drawer-container
         class="flex-auto h-full bg-card dark:bg-transparent"
@@ -7,7 +7,7 @@
         <!-- Drawer -->
         <mat-drawer
             class="w-full md:w-160 dark:bg-gray-900"
-            [mode]="drawerMode"
+            [mode]="'over'"
             [opened]="false"
             [position]="'end'"
             [disableClose]="true"
@@ -109,8 +109,9 @@
                     <ng-container *ngIf="collaborators$ | async as collaborators">
                         <ng-container *ngIf="collaborators.length; else noCollaborators">
                             <ng-container *ngFor="let collaborator of collaborators; let i = index; trackBy: trackByFn">
-                                <!-- Group -->
-                                <ng-container *ngIf="i === 0 || collaborator.name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
+                            <ng-container *ngIf="collaborator.isActive != 0">
+                                 <!-- Group -->
+                                 <ng-container *ngIf="i === 0 || collaborator.name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
                                     <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
                                         {{collaborator.name.charAt(0)}}
                                     </div>
@@ -136,9 +137,10 @@
                                     </div>
                                     <div class="min-w-0 ml-4">
                                         <div class="font-medium leading-5 truncate">{{collaborator.name}} {{collaborator.lastName}}</div>
-                                        <div class="leading-5 truncate text-secondary">{{collaborator.employeePosition.position.name}} en {{collaborator.employeePosition.department.name}}</div>
+                                        <div class="leading-5 truncate text-secondary">{{collaborator.employeePosition.name}}</div>
                                     </div>
                                 </a>
+                            </ng-container>                               
                             </ng-container>
                         </ng-container>
                     </ng-container>

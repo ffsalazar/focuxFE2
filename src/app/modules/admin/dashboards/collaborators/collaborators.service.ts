@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Collaborator, Country, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +14,9 @@ export class CollaboratorsService
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
-
+    private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
+    private _employeePositions: BehaviorSubject<EmployeePosition[] | null> = new BehaviorSubject(null);
+    private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
     /**
      * Constructor
      */
@@ -57,7 +59,27 @@ export class CollaboratorsService
     {
         return this._knowledges.asObservable();
     }
-
+    /**
+     * Getter for departments
+     */
+     get departments$(): Observable<Department[]>
+    {
+        return this._departments.asObservable();
+    }
+    /**
+     * Getter for employeePositions
+     */
+    get employeePositions$(): Observable<EmployeePosition[]>
+    {
+        return this._employeePositions.asObservable();
+    }
+    /**
+     * Getter for employeePositions
+     */
+     get clients$(): Observable<Client[]>
+     {
+         return this._clients.asObservable();
+     }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -69,8 +91,26 @@ export class CollaboratorsService
     {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
             tap((collaborators) => {
-                console.log(collaborators);
-                this._collaborators.next(collaborators);
+
+
+                let collaboratorFiltered : any[]=[];
+
+                function compare(a: Collaborator, b: Collaborator) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+                    // Their names are equal
+                    if (a.lastName < b.lastName) return -1;
+                    if (a.lastName > b.lastName) return 1;
+
+                    return 0;
+                }
+                collaborators.sort(compare);
+                collaborators.forEach((collaborator) => {
+                    if (collaborator.isActive != 0){
+                        collaboratorFiltered.push(collaborator);
+                    }
+                });
+                this._collaborators.next(collaboratorFiltered);
             })
         );
     }
@@ -82,11 +122,47 @@ export class CollaboratorsService
      */
     searchCollaborator(query: string): Observable<Collaborator[]>
     {
-        return this._httpClient.get<Collaborator[]>('api/dashboards/collaborators/search', {
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
             params: {query}
         }).pipe(
             tap((collaborators) => {
-                this._collaborators.next(collaborators);
+                let collaboratorFiltered : any[]=[];
+                collaborators.forEach((collaborator) => {
+                    if (collaborator.isActive != 0){
+                        collaboratorFiltered.push(collaborator);
+                    }
+                });
+                // If the query exists...
+                if ( query )
+                {
+                    // Filter the collaborators
+
+                    collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+                    function compare(a: Collaborator, b: Collaborator) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+                        // Their names are equal
+                        if (a.lastName < b.lastName) return -1;
+                        if (a.lastName > b.lastName) return 1;
+
+                        return 0;
+                    }
+                    collaboratorFiltered.sort(compare);
+                    this._collaborators.next(collaboratorFiltered);
+                }else{
+                    function compare(a: Collaborator, b: Collaborator) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+                        // Their names are equal
+                        if (a.lastName < b.lastName) return -1;
+                        if (a.lastName > b.lastName) return 1;
+
+                        return 0;
+                    }
+                    collaboratorFiltered.sort(compare);
+                    this._collaborators.next(collaboratorFiltered);
+                }
+
             })
         );
     }
@@ -101,8 +177,7 @@ export class CollaboratorsService
             map((collaborators) => {
 
                 // Find the collaborator¿
-                console.log(collaborators)
-                console.log(collaborators[0].id === id) ;
+
                 const collaborator = collaborators.find(item => item.id === id) || null;
                 const collaborator_test = collaborators.find(item => item.id === id);
 
@@ -131,11 +206,41 @@ export class CollaboratorsService
      */
     createCollaborator(): Observable<Collaborator>
     {
+        // Generate a new collaborator
+        const newCollaborator = {
+
+            idFile: 0,
+            name: 'Nuevo',
+            lastName: 'Colaborador',
+            employeePosition: {
+                id: 2,
+                department: {
+                    id: 1,
+                    code: 'A01',
+                    name: 'Aplicaciones',
+                    description: 'Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.',
+                    isActive: 1
+                },
+                name: 'Analista de aplicaciones',
+                description: 'Es capaz de mantener y desrrollar programas.',
+                isActive: 1
+            },
+            companyEntryDate: '1970-01-01T00:00:00.000+00:00',
+            organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
+            gender: 'M',
+            bornDate: '1970-01-01T00:00:00.000+00:00',
+            nationality: 'Venezolana',
+            mail: '' ,
+            isActive: 1,
+            assignedLocation: 'Intelix Principal',
+            technicalSkills: '',
+            knowledges: [],
+            phones: [],
+        };
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('api/dashboards/collaborators/collaborator', {}).pipe(
+            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', newCollaborator).pipe(
                 map((newCollaborator) => {
-
                     // Update the collaborators with the new collaborator
                     this._collaborators.next([newCollaborator, ...collaborators]);
 
@@ -156,9 +261,9 @@ export class CollaboratorsService
     {
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', {
+            switchMap(collaborators => this._httpClient.put<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/collaborator/' + collaborator.id,
                 collaborator
-            }).pipe(
+            ).pipe(
                 map((updatedCollaborator) => {
 
                     // Find the index of the updated collaborator
@@ -194,24 +299,24 @@ export class CollaboratorsService
      *
      * @param id
      */
-    deleteCollaborator(id: number): Observable<boolean>
+    deleteCollaborator(collaborator: Collaborator): Observable<Collaborator>
     {
         return this.collaborators$.pipe(
             take(1),
-            switchMap(collaborators => this._httpClient.delete('api/dashboards/collaborators/collaborator', {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
+            switchMap(collaborators => this._httpClient.put('http://localhost:1616/api/v1/followup/collaborators/status/' + collaborator.id, collaborator).pipe(
+                map((updatedCollaborator: Collaborator) => {
 
                     // Find the index of the deleted collaborator
-                    const index = collaborators.findIndex(item => item.id === id);
+                    const index = collaborators.findIndex(item => item.id === collaborator.id);
 
-                    // Delete the collaborator
-                    collaborators.splice(index, 1);
+                    // Update the collaborator
+                    collaborators[index] = updatedCollaborator;
 
                     // Update the collaborators
                     this._collaborators.next(collaborators);
 
-                    // Return the deleted status
-                    return isDeleted;
+                    // Return the updated collaborator
+                    return updatedCollaborator;
                 })
             ))
         );
@@ -236,7 +341,15 @@ export class CollaboratorsService
     {
         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
             tap((knowledges) => {
-                this._knowledges.next(knowledges);
+                let knowledgesFiltered : Knowledge[] = []
+                knowledges.forEach((knowledge) => {
+                    if (knowledge.isActive != 0){
+                        knowledgesFiltered.push(knowledge);
+                    }
+                });
+
+
+                this._knowledges.next(knowledgesFiltered);
             })
         );
     }
@@ -390,6 +503,77 @@ export class CollaboratorsService
                     })
                 ))
             ))
+        );
+    }
+
+    getDepartments(): Observable<Department[]>
+    {
+        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+            tap((departments) => {
+                let departmentsFiltered : Department[] = []
+                departments.forEach((department) => {
+                    if (department.isActive != 0){
+                        departmentsFiltered.push(department);
+                    }
+                });
+
+
+                this._departments.next(departmentsFiltered);
+            })
+        );
+    }
+
+    getEmployeePositions(): Observable<EmployeePosition[]>
+    {
+        return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeePosition/all').pipe(
+            tap((employeePositions) => {
+                let employeePositionsFiltered : EmployeePosition[] = []
+                employeePositions.forEach((employeePosition) => {
+                    if (employeePosition.isActive != 0){
+                        employeePositionsFiltered.push(employeePosition);
+                    }
+                });
+
+
+                this._employeePositions.next(employeePositionsFiltered);
+            })
+        );
+    }
+
+    getClients(): Observable<Client[]>
+    {
+        return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
+
+            tap((clients) => {
+                let clientsFiltered : Client[] = []
+                clients.forEach((client) => {
+                    if (client.isActive != 0){
+                        clientsFiltered.push(client);
+                    }
+                });
+
+                this._clients.next(clientsFiltered);
+            })
+        );
+    }
+
+    updatePhoneStatus(id: number, phone: Phone): Observable<Phone>
+    {
+        console.log(phone);
+        return this._httpClient.put<Phone>('http://localhost:1616/api/v1/followup/phones/status/'+ id, phone).pipe(
+            tap(phone => {
+                //console.log(phone)
+            })
+        );
+    }
+
+    updateCollaboratorKnowledgeStatus(id: number, collaboratorKnowledge: CollaboratorKnowledge): Observable<CollaboratorKnowledge>
+    {
+        console.log(collaboratorKnowledge);
+        return this._httpClient.put<CollaboratorKnowledge>('http://localhost:1616/api/v1/followup/collaboratorknowledge/status/'+ id, collaboratorKnowledge).pipe(
+            tap(collaboratorKnowledge => {
+                console.log(collaboratorKnowledge);
+            })
         );
     }
 }

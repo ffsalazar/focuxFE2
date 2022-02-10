@@ -16,6 +16,8 @@ export interface Collaborator
     knowledges: CollaboratorKnowledge[];
     phones: Phone[];
     file?:string | null;
+    isActive: number;
+    client: Client;
 }
 
 export interface Country
@@ -33,35 +35,32 @@ export interface Knowledge
     type: string;
     description: string;
     name: string;
+    isActive: number;
 }
 
 export interface CollaboratorKnowledge
 {
-    id: number;
+    id?: number;
     level: number;
     knowledge: Knowledge;
+    isActive: number;
 }
 
 export interface Department
 {
     id: number;
     code: string;
-    isActive: boolean;
+    isActive: number;
     name: string;
     description: string;
 }
-export interface Position 
+
+export interface EmployeePosition
 {
     id: number;
-    name: string;
-    description: string;
-    isActive: boolean;
-}
-export interface EmployeePosition 
-{
-    id: number;
-    position: Position
-    isActive: boolean;
+    name: String;
+    description: String;
+    isActive: number;
     department: Department;
 }
 
@@ -69,4 +68,24 @@ export interface Phone
 {
     id: number;
     number: string;
+    type: string;
+    isActive: number;
+}
+
+export interface Client
+{
+    id: number;
+    name: string;
+    description: string;
+    isActive: number;
+    businessType: BusinessType;
+}
+
+export interface BusinessType
+{
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    isActive: number;
 }

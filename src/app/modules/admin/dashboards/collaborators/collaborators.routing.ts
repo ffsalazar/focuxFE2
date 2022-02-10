@@ -7,7 +7,10 @@ import {
     CollaboratorsCollaboratorResolver,
     CollaboratorsCountriesResolver,
     CollaboratorsResolver,
-    CollaboratorsKnowledgesResolver
+    CollaboratorsDepartmentsResolver,
+    CollaboratorsEmployeePositionResolver,
+    CollaboratorsKnowledgesResolver,
+    CollaboratorsClientResolver
 } from "./collaborators.resolvers";
 
 
@@ -32,7 +35,10 @@ export const collaboratorsRoutes: Route[] = [
                         component    : CollaboratorsDetailsComponent,
                         resolve      : {
                             task     : CollaboratorsCollaboratorResolver,
-                            countries: CollaboratorsCountriesResolver
+                            countries: CollaboratorsCountriesResolver,
+                            departments: CollaboratorsDepartmentsResolver,
+                            employeePositions: CollaboratorsEmployeePositionResolver,
+                            clients: CollaboratorsClientResolver
                         },
                         canDeactivate: [CanDeactivateCollaboratorsDetails]
                     }

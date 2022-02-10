@@ -55,19 +55,16 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     {
         // Get the collaborators
         this.collaborators$ = this._collaboratorsService.collaborators$;
+
         this._collaboratorsService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborators: Collaborator[]) => {
 
-                // Update the counts
                 this.collaboratorsCount = collaborators.length;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
-
-
 
         // Get the collaborator
         this._collaboratorsService.collaborator$
