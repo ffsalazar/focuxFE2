@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { RequestComponent} from "./request/request.component";
 
-import { RequestBrandsResolver, RequestCategoriesResolver, RequestProductsResolver, RequestTagsResolver, RequestVendorsResolver } from 'app/modules/admin/apps/portafolio/request/request.resolvers';
+import { RequestBrandsResolver, RequestCategoriesResolver, RequestClientsResolver, RequestComercAreaResolver, RequestPeriodResolver, RequestProductsResolver, RequestStatusResolver, RequestTagsResolver, RequestTypeResolver, RequestVendorsResolver, TechnicalAreaResolver } from 'app/modules/admin/apps/portafolio/request/request.resolvers';
 import {RequestListComponent} from "./request/list/request.component";
 
 export const portafolioRoutes: Route[] = [
@@ -22,7 +22,13 @@ export const portafolioRoutes: Route[] = [
                     categories: RequestCategoriesResolver,
                     products  : RequestProductsResolver,
                     tags      : RequestTagsResolver,
-                    vendors   : RequestVendorsResolver
+                    vendors   : RequestVendorsResolver,
+                    clients   : RequestClientsResolver,
+                    commerc  : RequestComercAreaResolver,
+                    status: RequestStatusResolver,
+                    requestp: RequestPeriodResolver,
+                    typereq: RequestTypeResolver,
+                    areatech: TechnicalAreaResolver
                 }
             }
         ]

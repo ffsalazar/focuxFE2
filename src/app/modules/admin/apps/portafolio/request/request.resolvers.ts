@@ -6,7 +6,7 @@ import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inv
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
 import {RequestListComponent} from "./list/request.component";
 import { RequestService } from './request.service';
-import { Request } from './request.types';
+import { CommercialArea, Request, Status, Client, Category, RequestPeriod, TypeRequest, TechnicalArea } from './request.types';
 
 @Injectable({
     providedIn: 'root'
@@ -45,7 +45,7 @@ export class RequestCategoriesResolver implements Resolve<any>
     /**
      * Constructor
      */
-    constructor(private _inventoryService: InventoryService)
+    constructor(private _requestService: RequestService)
     {
     }
 
@@ -59,22 +59,22 @@ export class RequestCategoriesResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<InventoryCategory[]>
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Category[]>
     {
-        return this._inventoryService.getCategories();
+        return this._requestService.getCategory();
     }
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class RequestProductResolver implements Resolve<any>
+export class RequestClientsResolver implements Resolve<any>
 {
     /**
      * Constructor
      */
     constructor(
-        private _inventoryService: InventoryService,
+        private _requestService: RequestService,
         private _router: Router
     )
     {
@@ -90,28 +90,136 @@ export class RequestProductResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<InventoryProduct>
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Client[]>
     {
-        return this._inventoryService.getProductById(route.paramMap.get('id'))
-                   .pipe(
-                       // Error here means the requested product is not available
-                       catchError((error) => {
-
-                           // Log the error
-                           console.error(error);
-
-                           // Get the parent url
-                           const parentUrl = state.url.split('/').slice(0, -1).join('/');
-
-                           // Navigate to there
-                           this._router.navigateByUrl(parentUrl);
-
-                           // Throw an error
-                           return throwError(error);
-                       })
-                   );
+        return this._requestService.getClients();           
     }
 }
+@Injectable({
+    providedIn: 'root'
+})
+export class RequestComercAreaResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CommercialArea[]>
+    {
+        return this._requestService.getComercArea();           
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class RequestStatusResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Status[]>
+    {
+        return this._requestService.getStatus();           
+    }
+}
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class RequestPeriodResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RequestPeriod[]>
+    {
+        return this._requestService.getRequestPeriod();           
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class RequestTypeResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TypeRequest[]>
+    {
+        return this._requestService.getTypeRequest();           
+    }
+}
+
 
 @Injectable({
     providedIn: 'root'
@@ -166,6 +274,37 @@ export class RequestTagsResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<InventoryTag[]>
     {
         return this._inventoryService.getTags();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class TechnicalAreaResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TechnicalArea[]>
+    {
+        return this._requestService.getAreaTech();           
     }
 }
 

@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import { Request } from './request.types';
+import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea } from './request.types';
+import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable({
     providedIn: 'root'
@@ -12,15 +13,23 @@ export class RequestService
 {
     // Private
     private _brands: BehaviorSubject<InventoryBrand[] | null> = new BehaviorSubject(null);
-    private _categories: BehaviorSubject<InventoryCategory[] | null> = new BehaviorSubject(null);
+  
     private _pagination: BehaviorSubject<InventoryPagination | null> = new BehaviorSubject(null);
     private _product: BehaviorSubject<InventoryProduct | null> = new BehaviorSubject(null);
     private _products: BehaviorSubject<InventoryProduct[] | null> = new BehaviorSubject(null);
     private _tags: BehaviorSubject<InventoryTag[] | null> = new BehaviorSubject(null);
     private _vendors: BehaviorSubject<InventoryVendor[] | null> = new BehaviorSubject(null);
 
+    private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
+    private _commerc: BehaviorSubject<CommercialArea[] | null> = new BehaviorSubject(null);
     private _request: BehaviorSubject<Request | null> = new BehaviorSubject(null); 
-    private _requests: BehaviorSubject<any[] | null> = new BehaviorSubject(null);
+    private _requests: BehaviorSubject<Request[] | null> = new BehaviorSubject(null);
+    private _status: BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
+    private _categories: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
+    private _requestp: BehaviorSubject<RequestPeriod[] | null> = new BehaviorSubject(null);
+    private _typereq: BehaviorSubject<TypeRequest[] | null> = new BehaviorSubject(null);
+    private _areatech: BehaviorSubject<TechnicalArea[] | null> = new BehaviorSubject(null);
+
 
     request: Request;
 
@@ -36,17 +45,9 @@ export class RequestService
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Getter for brands
-     */
-    get brands$(): Observable<InventoryBrand[]>
-    {
-        return this._brands.asObservable();
-    }
-
-    /**
      * Getter for categories
      */
-    get categories$(): Observable<InventoryCategory[]>
+    get categories$(): Observable<Category[]>
     {
         return this._categories.asObservable();
     }
@@ -83,6 +84,11 @@ export class RequestService
         return this._requests.asObservable();
     }
 
+    get request$(): Observable<Request>
+    {
+        return this._request.asObservable();
+    }
+
     /**
      * Getter for tags
      */
@@ -91,41 +97,65 @@ export class RequestService
         return this._tags.asObservable();
     }
 
-    /**
-     * Getter for vendors
+     /**
+     * Getter for commerca
      */
-    get vendors$(): Observable<InventoryVendor[]>
+    get commerca$(): Observable<CommercialArea[]>
     {
-        return this._vendors.asObservable();
+        return this._commerc.asObservable();
+    }
+     
+     /**
+     * Getter for status
+     */
+    get status$(): Observable<Status[]>
+    {
+        return this._status.asObservable();
     }
 
+    /**
+     * Getter for client
+     */
+    get clients$(): Observable<Client[]>
+    {
+        return this._clients.asObservable();
+    }
+
+    /**
+     * Getter for request
+     */
+    get requestp$(): Observable<RequestPeriod []>
+    {
+        return this._requestp.asObservable();
+    }
+
+    get areatech$(): Observable<TechnicalArea []>{
+        return this._areatech.asObservable()
+     }
+
+    /**
+     * Getter for type request
+     */
+    get typereq$(): Observable<TypeRequest []>{
+       return this._typereq.asObservable()
+    }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get brands
-     */
-    getBrands(): Observable<InventoryBrand[]>
-    {
-        return this._httpClient.get<InventoryBrand[]>('api/apps/ecommerce/inventory/brands').pipe(
-            tap((brands) => {
-                this._brands.next(brands);
-            })
-        );
-    }
-
-    /**
      * Get categories
      */
-    getCategories(): Observable<InventoryCategory[]>
+    getCategory(): Observable<Category[]>
     {
-        return this._httpClient.get<InventoryCategory[]>('api/apps/ecommerce/inventory/categories').pipe(
+        return this._httpClient.get<Category[]>('http://localhost:1616/api/v1/followup/categories/all').pipe(
             tap((categories) => {
                 this._categories.next(categories);
             })
         );
     }
+
+    
 
     // /**
     //  * Get products
@@ -162,7 +192,7 @@ export class RequestService
     // }
 
     /**
-     * Get product by id
+     * Get request by id
      */
     getRequestById(id: number): Observable<Request>
     {
@@ -170,25 +200,24 @@ export class RequestService
             take(1),
             map((requests) => {
 
-                // Find the product
+                // Find the request
                 const request = requests.find(item => item.id === id) || null;
 
-                // Update the product*//
+                // Update the request
 
-                
                 this._request.next(request);
 
-                // Return the product
+                // Return the request
                 return request;
             }),
-            switchMap((product) => {
+            switchMap((request) => {
 
-                if ( !product )
+                if ( !request )
                 {
-                    return throwError('Could not found product with id of ' + id + '!');
+                    return throwError('Could not found request with id of ' + id + '!');
                 }
 
-                return of(product);
+                return of(request);
             })
         );
     }
@@ -197,18 +226,154 @@ export class RequestService
         return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all').pipe(
             tap((requests) => {
 
-                console.log("request: ", requests);
+                // Filter inactive request 
+                requests = requests.filter(item => item.isActive !== 0);
+
+                console.log("request filter: ", requests);
+                // Emit next value 
                 this._requests.next(requests);
             })
         );
     }
-    
+
+    getClients(): Observable<Client[]> {
+        return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
+            tap((clients) => {
+
+                console.log("request: ", clients);
+                this._clients.next(clients);
+            })
+        );
+    }
+
+    getComercArea(): Observable<CommercialArea[]> {
+        return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all').pipe(
+            tap((commerc) => {
+
+                console.log("request: ", commerc);
+                this._commerc.next(commerc);
+            })
+        );
+    }
+
+    getRequestPeriod(): Observable<RequestPeriod[]> {
+        return this._httpClient.get<RequestPeriod[]>('http://localhost:1616/api/v1/followup/requestPeriod/all').pipe(
+            tap((reqperiod) => {
+
+                console.log("request: ", reqperiod);
+                this._requestp.next(reqperiod);
+            })
+        );
+    }
+
+    getTypeRequest(): Observable<TypeRequest[]> {
+        return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
+            tap((typereq) => {
+
+                console.log("request: ", typereq);
+                this._typereq.next(typereq);
+            })
+        );
+    }
+
+    getStatus(): Observable<Status[]> {
+        return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/typestatuses/all').pipe(
+            tap((status) => {
+
+                console.log("request: ", status);
+                this._status.next(status);
+            })
+        );
+    }
+
+    getAreaTech(): Observable<TechnicalArea[]> {
+        return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all').pipe(
+            tap((areatech) => {
+
+                console.log("request: ", areatech);
+                this._areatech.next(areatech);
+            })
+        );
+    }
     /**
      * Create product
      */
     createRequest(): Observable<Request>
     {
         const newRequest = {
+            client: {
+              id: 1
+            },
+            commercialArea: {
+              id: 1
+            },
+            typeRequest: {
+              id: 1
+            },
+            titleRequest: "PRUEBA DESDE JSONDOC CON CAMBIOS",
+            descriptionRequest: "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
+            responsibleRequest: {
+              id: 3
+            },
+            priorityOrder: 1,
+            dateRequest: "2022-02-07T04:00:00.000+00:00",
+            dateInit: "2022-02-07T04:00:00.000+00:00",
+            datePlanEnd: "2022-02-08T04:00:00.000+00:00",
+            dateRealEnd: "2022-02-09T04:00:00.000+00:00",
+            status: {
+              "id": 1
+            },
+            completionPercentage: 30,
+            deviationPercentage: 70,
+            deliverablesCompletedIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
+            pendingActivitiesIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
+            commentsIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
+            updateDate: "2022-02-07T04:00:00.000+00:00",
+            commentsClient: "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
+            technicalArea: {
+              id: 1
+            },
+            category: {
+              id: 1
+            },
+            internalFeedbackIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
+            solverGroup: {
+              id: 1
+            },
+            requestPeriod: {
+              id: 1
+            },
+            dateInitPause: "2022-02-08T04:00:00.000+00:00",
+            dateEndPause: "2022-02-08T04:00:00.000+00:00",
+            totalPauseDays: 1,
+            isActive: 1,
+            code: "asd21"
+        }
+          
+        return this.requests$.pipe(
+            take(1),
+            switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', newRequest).pipe(
+                map((newRequest) => {
+                    this._requests.next([newRequest, ...requests]);
+                   
+                    return newRequest;
+                })
+            ))
+        );
+    }
+
+    /**
+     * Update product
+     *
+     * @param id
+     * @param request
+     */
+    updateRequest(id: number, request: Request): Observable<any>
+    {
+        console.log("updateRequest: ", request);
+
+        const newRequest = {
+            id: 6,
             "client": {
               "id": 1
             },
@@ -218,7 +383,7 @@ export class RequestService
             "typeRequest": {
               "id": 1
             },
-            "titleRequest": "PRUEBA DESDE JSONDOC CON CAMBIOS",
+            "titleRequest": "Petición de Tesis :)",
             "descriptionRequest": "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
             "responsibleRequest": {
               "id": 3
@@ -257,57 +422,36 @@ export class RequestService
             "isActive": 1,
             "code": "asd21"
         }
-          
+
         return this.requests$.pipe(
             take(1),
-            switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', newRequest).pipe(
-                map((newRequest) => {
-                    this._requests.next([newRequest, ...requests]);
-                   
-                    return newRequest;
-                })
-            ))
-        );
-    }
-
-    /**
-     * Update product
-     *
-     * @param id
-     * @param product
-     */
-    updateProduct(id: string, product: InventoryProduct): Observable<InventoryProduct>
-    {
-        return this.products$.pipe(
-            take(1),
-            switchMap(products => this._httpClient.patch<InventoryProduct>('api/apps/ecommerce/inventory/product', {
-                id,
-                product
-            }).pipe(
-                map((updatedProduct) => {
+            switchMap(requests => this._httpClient.put<Request> ('http://localhost:1616/api/v1/followup/requests/request/' + id, 
+                request
+            ).pipe(
+                map((updatedRequest) => {
 
                     // Find the index of the updated product
-                    const index = products.findIndex(item => item.id === id);
+                    const index = requests.findIndex(item => item.id === id);
 
-                    // Update the product
-                    products[index] = updatedProduct;
+                    // // Update the product
+                    requests[index] = updatedRequest;
 
                     // Update the products
-                    this._products.next(products);
+                    this._requests.next(requests);
 
-                    // Return the updated product
-                    return updatedProduct;
+                    // // Return the updated product
+                    return updatedRequest;
                 }),
-                switchMap(updatedProduct => this.product$.pipe(
+                switchMap(updatedRequest => this.request$.pipe(
                     take(1),
                     filter(item => item && item.id === id),
                     tap(() => {
 
                         // Update the product if it's selected
-                        this._product.next(updatedProduct);
+                        this._request.next(updatedRequest);
 
                         // Return the updated product
-                        return updatedProduct;
+                        return updatedRequest;
                     })
                 ))
             ))
@@ -324,7 +468,7 @@ export class RequestService
     {
         return this.requests$.pipe(
             take(1),
-            switchMap(requests => this._httpClient.put('http://localhost:1616/api/v1/followup/requests/request/' + id, request).pipe(
+            switchMap(requests => this._httpClient.put('http://localhost:1616/api/v1/followup/requests/status/' + id, request).pipe(
                 map((isDeleted: boolean) => {
 
                     // Find the index of the deleted product
@@ -343,178 +487,4 @@ export class RequestService
         );
     }
 
-    /**
-     * Get tags
-     */
-    getTags(): Observable<InventoryTag[]>
-    {
-        return this._httpClient.get<InventoryTag[]>('api/apps/ecommerce/inventory/tags').pipe(
-            tap((tags) => {
-                this._tags.next(tags);
-            })
-        );
-    }
-
-    /**
-     * Create tag
-     *
-     * @param tag
-     */
-    createTag(tag: InventoryTag): Observable<InventoryTag>
-    {
-        return this.tags$.pipe(
-            take(1),
-            switchMap(tags => this._httpClient.post<InventoryTag>('api/apps/ecommerce/inventory/tag', {tag}).pipe(
-                map((newTag) => {
-
-                    // Update the tags with the new tag
-                    this._tags.next([...tags, newTag]);
-
-                    // Return new tag from observable
-                    return newTag;
-                })
-            ))
-        );
-    }
-
-    /**
-     * Update the tag
-     *
-     * @param id
-     * @param tag
-     */
-    updateTag(id: string, tag: InventoryTag): Observable<InventoryTag>
-    {
-        return this.tags$.pipe(
-            take(1),
-            switchMap(tags => this._httpClient.patch<InventoryTag>('api/apps/ecommerce/inventory/tag', {
-                id,
-                tag
-            }).pipe(
-                map((updatedTag) => {
-
-                    // Find the index of the updated tag
-                    const index = tags.findIndex(item => item.id === id);
-
-                    // Update the tag
-                    tags[index] = updatedTag;
-
-                    // Update the tags
-                    this._tags.next(tags);
-
-                    // Return the updated tag
-                    return updatedTag;
-                })
-            ))
-        );
-    }
-
-    /**
-     * Delete the tag
-     *
-     * @param id
-     */
-    deleteTag(id: string): Observable<boolean>
-    {
-        return this.tags$.pipe(
-            take(1),
-            switchMap(tags => this._httpClient.delete('api/apps/ecommerce/inventory/tag', {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
-
-                    // Find the index of the deleted tag
-                    const index = tags.findIndex(item => item.id === id);
-
-                    // Delete the tag
-                    tags.splice(index, 1);
-
-                    // Update the tags
-                    this._tags.next(tags);
-
-                    // Return the deleted status
-                    return isDeleted;
-                }),
-                filter(isDeleted => isDeleted),
-                switchMap(isDeleted => this.products$.pipe(
-                    take(1),
-                    map((products) => {
-
-                        // Iterate through the contacts
-                        products.forEach((product) => {
-
-                            const tagIndex = product.tags.findIndex(tag => tag === id);
-
-                            // If the contact has the tag, remove it
-                            if ( tagIndex > -1 )
-                            {
-                                product.tags.splice(tagIndex, 1);
-                            }
-                        });
-
-                        // Return the deleted status
-                        return isDeleted;
-                    })
-                ))
-            ))
-        );
-    }
-
-    /**
-     * Get vendors
-     */
-    getVendors(): Observable<InventoryVendor[]>
-    {
-        return this._httpClient.get<InventoryVendor[]>('api/apps/ecommerce/inventory/vendors').pipe(
-            tap((vendors) => {
-                this._vendors.next(vendors);
-            })
-        );
-    }
-
-    /**
-     * Update the avatar of the given contact
-     *
-     * @param id
-     * @param avatar
-     */
-    /*uploadAvatar(id: string, avatar: File): Observable<Contact>
-    {
-        return this.contacts$.pipe(
-            take(1),
-            switchMap(contacts => this._httpClient.post<Contact>('api/apps/contacts/avatar', {
-                id,
-                avatar
-            }, {
-                headers: {
-                    'Content-Type': avatar.type
-                }
-            }).pipe(
-                map((updatedContact) => {
-
-                    // Find the index of the updated contact
-                    const index = contacts.findIndex(item => item.id === id);
-
-                    // Update the contact
-                    contacts[index] = updatedContact;
-
-                    // Update the contacts
-                    this._contacts.next(contacts);
-
-                    // Return the updated contact
-                    return updatedContact;
-                }),
-                switchMap(updatedContact => this.contact$.pipe(
-                    take(1),
-                    filter(item => item && item.id === id),
-                    tap(() => {
-
-                        // Update the contact if it's selected
-                        this._contact.next(updatedContact);
-
-                        // Return the updated contact
-                        return updatedContact;
-                    })
-                ))
-            ))
-        );
-    }*/
 }

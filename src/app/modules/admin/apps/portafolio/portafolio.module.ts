@@ -23,6 +23,9 @@ import { RequestStepTwoComponent } from './request/list/request-stepper/request-
 import { RequestStepThirdComponent } from './request/list/request-stepper/request-stepper/request-step-third/request-step-third.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MomentModule } from 'ngx-moment';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+
 
 @NgModule({
     declarations: [
@@ -49,8 +52,10 @@ import { MomentModule } from 'ngx-moment';
         MatSlideToggleModule,
         MatTooltipModule,
         MatStepperModule,
+        MatDatepickerModule,
         SharedModule,
         MomentModule,
+        MatMomentDateModule,
     ]
 })
 export class PortafolioModule
