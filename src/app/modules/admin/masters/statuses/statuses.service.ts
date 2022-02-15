@@ -208,11 +208,11 @@ export class StatusesService
        console.log(JSON.stringify(status));
         return this.statuses$.pipe(
             take(1),
-            switchMap(statuses => this._httpClient.put<Status>('http://localhost:1616/api/v1/followup/statuses/status/' + status.id,
+            switchMap(statuses => this._httpClient.put<Status>('http://localhost:1616/api/v1/followup/statuses/statuses/' + status.id,
                 status
             ).pipe(
                 map((updatedStatus) => {
-
+                    console.log(updatedStatus)
                     // Find the index of the updated status
                     const index = statuses.findIndex(item => item.id === id);
 
