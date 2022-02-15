@@ -321,8 +321,22 @@ export class ClientsService
     {
         return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all').pipe(
             tap((businessTypes) => {
-                console.log(businessTypes)
-                this._businessTypes.next(businessTypes);
+                let businessTypeFiltered : any[]=[];
+
+                function compare(a: BusinessType, b: BusinessType) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+
+
+                    return 0;
+                }
+                businessTypes.sort(compare);
+                businessTypes.forEach((businessType) => {
+                    if (businessType.isActive != 0){
+                       businessTypeFiltered.push(businessType);
+                }
+                });
+                this._clients.next(businessTypeFiltered);
             })
         );
     }

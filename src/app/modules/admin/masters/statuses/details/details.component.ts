@@ -190,7 +190,7 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     {
         // Get the status object
         let status = this.statusForm.getRawValue();
-        status.typeStatus = this.TypeStatuss.find(value => value.id == status.TypeStatus);
+        status.typeStatus = this.TypeStatuss.find(value => value.id == status.typeStatus);
 
         // Update the status on the server
         console.log(status)
