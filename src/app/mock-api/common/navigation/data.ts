@@ -99,7 +99,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.status',
                         title: 'Estatus',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/statuses'
                     },
                     {
                         id   : 'masters.portafolio.request',
@@ -111,7 +111,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.typeStatus',
                         title: 'Tipo de Estatus',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/typesStatus'
                     },
                     {
                         id   : 'masters.portafolio.client',
@@ -123,13 +123,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.commercialArea',
                         title: 'Area Comercial',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/commercialAreas'
                     },
                     {
                         id   : 'masters.portafolio.technicalArea',
                         title: 'Area Técnica',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/technicalAreas'
                     },
                     {
                         id   : 'masters.portafolio.businessType',
