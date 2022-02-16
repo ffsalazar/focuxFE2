@@ -6,7 +6,7 @@ import {Observable, Subject} from "rxjs";
 import {map, startWith} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-partner-search',
@@ -87,11 +87,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         }
     ];
     project: Project = undefined;
+    tabIndex = 0;
+
 
   constructor(
       private _assignmentOccupationService: AssingmentOccupationService,
       private _changeDetectorRef: ChangeDetectorRef,
-      private _router: Router
+      private _router: Router,
+      private activateRouter: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -162,6 +165,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
 
     assignActivity(collaborator) {
+        console.log(collaborator);
         this._assignmentOccupationService.setCollaboratorByAssign(collaborator);
         this._assignmentOccupationService.setTabIndex(1);
     }
@@ -175,4 +179,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
+     
+    
+    redirection(tab: string, index: number) {
+         this.assignActivity(this.collaborators);
+      this._assignmentOccupationService.tabIndex$.subscribe(id => {
+          if (id != null) this.tabIndex = id;
+      });
+      this.tabIndex = index;
+      this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
+  }
 }
