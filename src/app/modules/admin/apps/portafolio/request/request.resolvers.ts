@@ -16,8 +16,7 @@ export class RequestBrandsResolver implements Resolve<any>
     /**
      * Constructor
      */
-    constructor(private _inventoryService: InventoryService,
-                private _requestService: RequestService,)
+    constructor(private _requestService: RequestService)
     {
     }
 
@@ -31,7 +30,7 @@ export class RequestBrandsResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Request[]>
+    resolve(): Observable<Request[]>
     {
         return this._requestService.getRequests();
     }

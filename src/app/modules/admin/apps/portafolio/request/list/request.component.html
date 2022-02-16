@@ -35,7 +35,7 @@
                 [dismissible]="true"
                 [dismissed]="true"
                 [name]="'alertBox4'"
-                (click)="test('alertBox4')"
+                (click)="dismissFuse('alertBox4')"
                 >
                 <span fuseAlertTitle>{{successSave}}</span>
             </fuse-alert>
@@ -169,7 +169,7 @@
                                             </mat-icon>
                                         </button>
                                         <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
-                                            (click)="openCompDialog(request.id)">
+                                            (click)="openPopup(request.id)">
                                             <mat-icon class="icon-size-5"
                                                 [svgIcon]="'heroicons_solid:pencil'">
                                             </mat-icon>

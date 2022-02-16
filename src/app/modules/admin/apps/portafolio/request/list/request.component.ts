@@ -405,7 +405,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.isDetail = true;
 
         this._changeDetectorRef.markForCheck();
-        this.toggleDetails(id);
+        this.fillDataFormWizzard(id);
     }
 
     /**
@@ -413,10 +413,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      * @param requestId
      */
-    toggleDetails(requestId: number): void
+    fillDataFormWizzard(requestId: number): void
     {
-        
-
+    
         // Get the request by id
         this._requestService.getRequestById( requestId )
             .subscribe((request) => {
@@ -472,6 +471,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Fill the formGroup step4
         this.step4.patchValue(request);
 
+        console.log("form lleno: ", this.horizontalStepperForm);
+
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -511,19 +512,24 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * Create product
+     * Create request
      */
     createRequest(): void
     {
-        // Create the product
-        this._requestService.createRequest().subscribe((newProduct) => {
+        // Create the request
+        this._requestService.createRequest().subscribe((newRequest) => {
 
-            // Go to new product
-            this.selectedRequest = newProduct;
+            // Go to new request
+            this.selectedRequest = newRequest;
 
-            this.step1.get('id').setValue(newProduct.id);
-            this.step2.get('isActive').setValue(newProduct.isActive);
-            this.openCompDialog(newProduct.id);
+            // Set controls id and isActive
+            this.step1.get('id').setValue(newRequest.id);
+            this.step1.get('titleRequest').setValue(newRequest.titleRequest);
+            this.step2.get('isActive').setValue(newRequest.isActive);
+
+            // Open modal
+            this.openPopup(newRequest.id);
+
             // Fill the form
             //this.fillWizzardForm(this.selectedRequest);
 
@@ -535,22 +541,32 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     /**
      * Update the selected product using the form data
      */
-    updateSelectedRequest(): void
-    {
-        // Get the product object
-        const product = this.selecteProductForm.getRawValue();
+    // updateSelectedRequest(): void
+    // {
+    //     // Get the product object
+    //     const product = this.selecteProductForm.getRawValue();
 
-        // Remove the currentImageIndex field
-        delete product.currentImageIndex;
+    //     // Remove the currentImageIndex field
+    //     delete product.currentImageIndex;
 
-        // Update the product on the server
-        this._inventoryService.updateProduct(product.id, product).subscribe(() => {
+    //     // Update the product on the server
+    //     this._inventoryService.updateProduct(product.id, product).subscribe(() => {
 
-            // Show a success message
-            this.showFlashMessage('success');
-        });
+    //         // Show a success message
+    //         this.showFlashMessage('success');
+    //     });
+    // }
+
+
+    /**
+     * Update the selected request using the form data
+     * @param requestId 
+     */
+    updateSelectedRequest(requestId: number) {
+        this.isEditing = true;
+        this.openPopup(requestId);
     }
-
+    
     /**
      * Delete the selected product using the form data
      */
@@ -589,9 +605,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }
         });
     }
-    test(name){
+
+    /**
+     * 
+     * @param name 
+     */
+    dismissFuse(name){
        this._fuseAlertService.dismiss(name);
     }
+
+
     confirmSaveRequest(): void
     {
         // Open the confirmation dialog
@@ -680,14 +703,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }, 3000);
     }
 
+    
     /**
-     * OpenCompDialog
+     * openPopup
      * @param id 
      */
-    openCompDialog(id: number): void  {
-    
-        this.toggleDetails(id);
-    
+    openPopup(id: number): void  {
+        
+        if ( this.isDetail || this.isEditing ) {
+            this.fillDataFormWizzard(id);
+        }
+        
         this._requestService.open({
             template: this.tplDetail, title: 'Editar Solicitud'
           },

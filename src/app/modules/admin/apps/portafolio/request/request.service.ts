@@ -201,6 +201,57 @@ export class RequestService
     //         })
     //     );
     // }
+    /**
+     * Search collaborators with given query
+     *
+     * @param query
+     */
+    //  searchCollaborator(query: string): Observable<Collaborator[]>
+    //  {
+    //      return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
+    //          params: {query}
+    //      }).pipe(
+    //          tap((collaborators) => {
+    //              let collaboratorFiltered : any[]=[];
+    //              collaborators.forEach((collaborator) => {
+    //                  if (collaborator.isActive != 0){
+    //                      collaboratorFiltered.push(collaborator);
+    //                  }
+    //              });
+    //              // If the query exists...
+    //              if ( query )
+    //              {
+    //                  // Filter the collaborators
+ 
+    //                  collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+    //                  function compare(a: Collaborator, b: Collaborator) {
+    //                      if (a.name < b.name) return -1;
+    //                      if (a.name > b.name) return 1;
+    //                      // Their names are equal
+    //                      if (a.lastName < b.lastName) return -1;
+    //                      if (a.lastName > b.lastName) return 1;
+ 
+    //                      return 0;
+    //                  }
+    //                  collaboratorFiltered.sort(compare);
+    //                  this._collaborators.next(collaboratorFiltered);
+    //              }else{
+    //                  function compare(a: Collaborator, b: Collaborator) {
+    //                      if (a.name < b.name) return -1;
+    //                      if (a.name > b.name) return 1;
+    //                      // Their names are equal
+    //                      if (a.lastName < b.lastName) return -1;
+    //                      if (a.lastName > b.lastName) return 1;
+ 
+    //                      return 0;
+    //                 }
+    //                 collaboratorFiltered.sort(compare);
+    //                 this._collaborators.next(collaboratorFiltered);
+    //             }
+ 
+    //         })
+    //     );
+    // }
 
     /**
      * Get request by id
@@ -244,40 +295,40 @@ export class RequestService
         )
         .pipe(
             tap((requests) => {
-                let requestsFiltered : any[]=[];
+                let requestsFiltered : Request[]=[];
                 // Filter inactive request 
                 requestsFiltered = requests.filter(item => item.isActive !== 0);
 
                 // If the query exists...
-                // if ( query )
-                // {
-                //     // Filter the collaborators
+                if ( query )
+                {
+                    // Filter the requests
 
-                //     // collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
-                //     // function compare(a: Collaborator, b: Collaborator) {
-                //     //     if (a.name < b.name) return -1;
-                //     //     if (a.name > b.name) return 1;
-                //     //     // Their names are equal
-                //     //     if (a.lastName < b.lastName) return -1;
-                //     //     if (a.lastName > b.lastName) return 1;
+                    requestsFiltered = requestsFiltered.filter(request => request.titleRequest && request.titleRequest .toLowerCase().includes(query.toLowerCase()));
+                    function compare(a: Request, b: Request) {
+                        if (a.titleRequest < b.titleRequest) return -1;
+                        if (a.titleRequest > b.titleRequest) return 1;
+                        // Their names are equal
+                        if (a.titleRequest < b.titleRequest) return -1;
+                        if (a.titleRequest > b.titleRequest) return 1;
 
-                //     //     return 0;
-                //     // }
-                //     collaboratorFiltered.sort(compare);
-                //     this._collaborators.next(collaboratorFiltered);
-                // }else{
-                //     function compare(a: Collaborator, b: Collaborator) {
-                //         if (a.name < b.name) return -1;
-                //         if (a.name > b.name) return 1;
-                //         // Their names are equal
-                //         if (a.lastName < b.lastName) return -1;
-                //         if (a.lastName > b.lastName) return 1;
+                        return 0;
+                    }
+                    requestsFiltered.sort(compare);
+                    this._requests.next(requestsFiltered);
+                }else{
+                    function compare(a: Request, b: Request) {
+                        if (a.titleRequest < b.titleRequest) return -1;
+                        if (a.titleRequest > b.titleRequest) return 1;
+                        // Their names are equal
+                        if (a.titleRequest < b.titleRequest) return -1;
+                        if (a.titleRequest > b.titleRequest) return 1;
 
-                //         return 0;
-                //     }
-                //     collaboratorFiltered.sort(compare);
-                //     this._collaborators.next(collaboratorFiltered);
-                // }
+                        return 0;
+                    }
+                    requestsFiltered.sort(compare);
+                    this._requests.next(requestsFiltered);
+                }
 
                 return this._requests.next(requestsFiltered);
             })
