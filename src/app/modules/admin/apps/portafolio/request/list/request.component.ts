@@ -14,6 +14,7 @@ import { RequestService } from '../request.service';
 import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea  } from '../request.types';
 import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
+import { FuseAlertService } from '@fuse/components/alert';
 
 
 @Component({
@@ -68,12 +69,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     categories: Category[];
     clients: Client[];
     bunch: BusinessType[];
-    commerc: CommercialArea[];  
+    commercialArea: CommercialArea[];  
     status: Status[]; 
     requestp: RequestPeriod[];
-    typeReq: TypeRequest[];
-    techarea: TechnicalArea[]
+    typeRequest: TypeRequest[];
+    technicalArea: TechnicalArea[]
+    isEditing: boolean = false;
+    isDetail: boolean = false;
     myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do']
+    alert: boolean = false;
+    successSave: String = "";
     /**
      * Constructor
      */
@@ -83,7 +88,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         private _formBuilder: FormBuilder,
         private _inventoryService: InventoryService,
         private _requestService: RequestService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private _fuseAlertService: FuseAlertService
     )
     {
     }
@@ -128,25 +134,25 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 id                  : [''],
                 titleRequest        : ['', [Validators.required, Validators.minLength(2)]],
                 typeRequest         : ['', [Validators.required]],
-                descriptionRequest  : [''],
+                descriptionRequest  : ['', [Validators.required, Validators.minLength(2)]],
                 client              : ['', [Validators.required]],
                 commercialArea      : ['', [Validators.required]],
                 customerBranch      : ['', [Validators.required]],
-                code                : [''],
+                code                : ['', [Validators.required]],
             }),
             step2: this._formBuilder.group({
                 //Planificación de solicitud
-                solverGroup         : [''],
-                priorityOrder       : [''],
+                solverGroup         : ['Freddy Salazar', [Validators.required]],
+                priorityOrder       : ['', [Validators.required]],
                 category            : ['', [Validators.required]],
-                dateInit            : [''],
-                dateRealEnd         : [''],
-                datePlanEnd         : [''],
-                isActive            : [''],
-                responsibleRequest  : [''],
-                dateRequest         : [''],
+                dateInit            : ['', [Validators.required]],
+                dateRealEnd         : ['', [Validators.required]],
+                datePlanEnd         : ['', [Validators.required]],
+                isActive            : ['1', [Validators.required]],
+                responsibleRequest  : ['Freddy Salazar', [Validators.required]],
+                dateRequest         : ['', [Validators.required]],
                 status              : [''],
-                technicalArea       : [''],
+                technicalArea       : ['', [Validators.required]],
             }),
             step3: this._formBuilder.group({
                 //Periodo de pausa
@@ -206,11 +212,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this._requestService.commerca$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((commerca: CommercialArea[]) => {
+            .subscribe((commercialArea: CommercialArea[]) => {
 
-                // Update the commerca
-                this.commerc = commerca;
-                console.log("clients: ", this.clients);
+                // Update the commercialArea
+                this.commercialArea = commercialArea;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -228,21 +233,19 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         
         this._requestService.typereq$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((typereq: TypeRequest[]) => {
+            .subscribe((typeRequest: TypeRequest[]) => {
 
-                // Update the client
-                this.typeReq = typereq;
-                console.log("clients: ", this.typeReq);
+                // Update the typeRequest
+                this.typeRequest = typeRequest;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
         
             this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((techarea: TechnicalArea[]) => {
+            .subscribe((technicalArea: TechnicalArea[]) => {
 
-                // Update the client
-                this.techarea = techarea;
-                console.log("clients: ", this.techarea);
+                // Update the technicalArea
+                this.technicalArea = technicalArea;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -275,7 +278,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the tags
                 this.tags = tags;
                 this.filteredTags = tags;
-                console.log("tags", tags)
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -285,20 +287,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
-                debounceTime(300),
-                switchMap((query) => {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._inventoryService.getProducts(0, 10, 'name', 'asc', query);
-                }),
-                map(() => {
-                    this.isLoading = false;
-                })
+                switchMap(query => 
+    
+                    // Search
+                    this._requestService.searchRequest(query)
+                ),
             )
             .subscribe();
             
         this.handleChangeClients();
-        
+        //this.disableSteps();
     }
 
     /**
@@ -390,19 +388,34 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
+     * showDetail
+     * @param requestId 
+     *  
+     */
+    showDetail(id: number) {
+
+        // If the request is already selected...
+        if ( this.selectedRequest && this.selectedRequest.id === id )
+        {
+            // Close the details
+            this.closeDetails();
+            return;
+        }
+
+        this.isDetail = true;
+
+        this._changeDetectorRef.markForCheck();
+        this.toggleDetails(id);
+    }
+
+    /**
      * Toggle request details
      *
      * @param requestId
      */
     toggleDetails(requestId: number): void
     {
-        // If the request is already selected...
-        if ( this.selectedRequest && this.selectedRequest.id === requestId )
-        {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
+        
 
         // Get the request by id
         this._requestService.getRequestById( requestId )
@@ -416,10 +429,20 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             });
 
             this.horizontalStepperForm.get('step1').valueChanges.subscribe((res) => {
-                console.log("res: ", res);
-                console.log(this.horizontalStepperForm);
+  
             });
     }
+
+    /**
+     * Disable steps controls 
+     */
+
+    disableSteps() {
+        Object.keys(this.step1.controls).forEach(key => {
+            this.step1.controls[key].disable();
+        });
+    }
+
 
     /**
      * Fill Wizzard form
@@ -470,6 +493,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     closeDetails(): void
     {
         this.selectedRequest = null;
+        this.isDetail = false;
     }
 
     /**
@@ -496,10 +520,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
             // Go to new product
             this.selectedRequest = newProduct;
-            console.log("newRequest: ", newProduct);
+
             this.step1.get('id').setValue(newProduct.id);
             this.step2.get('isActive').setValue(newProduct.isActive);
-
+            this.openCompDialog(newProduct.id);
             // Fill the form
             //this.fillWizzardForm(this.selectedRequest);
 
@@ -553,19 +577,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Clear the Wizzard
                 this._stepper.reset();
 
-                // Get the request object
-                const request = this.selecteProductForm.getRawValue();
-                
                 this.selectedRequest.isActive = 0;
                 // Delete the request on the server
                 this._requestService.deleteRequest(this.selectedRequest.id, this.selectedRequest).subscribe(() => {
                     // Close the details
                     this.closeDetails();
+                    this.successSave = 'La solicitud ha sido eliminada con éxito!'
+                    this._fuseAlertService.show('alertBox4');
+                  
                 });
             }
         });
     }
-
+    test(name){
+       this._fuseAlertService.dismiss(name);
+    }
     confirmSaveRequest(): void
     {
         // Open the confirmation dialog
@@ -600,37 +626,31 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 let requestNew = {...wizzard.step1, ...wizzard.step2, ...wizzard.step3, ...wizzard.step4};
 
                 requestNew.client = this.clients.find(item => item.id === requestNew.client);
-                requestNew.typeRequest = this.typeReq.find(item => item.id === requestNew.typeRequest);
-                requestNew.commercialArea = this.commerc.find(item => item.id === requestNew.commercialArea);
+                requestNew.typeRequest = this.typeRequest.find(item => item.id === requestNew.typeRequest);
+                requestNew.commercialArea = this.commercialArea.find(item => item.id === requestNew.commercialArea);
                 requestNew.category = this.categories.find(item => item.id === requestNew.category);
                 requestNew.status = this.status.find(item => item.id === requestNew.status);
                 requestNew.requestPeriod = this.requestp.find(item => item.id === requestNew.requestPeriod);
-                requestNew.solverGroup = {id: 1};
+                requestNew.solverGroup = {
+                    id: 1
+                };
           
                 requestNew.responsibleRequest = {
-                    "id": 1
+                    id: 1
                 };
 
                 requestNew.technicalArea = {
-                    "id": 1
+                    id: 1
                 };
-
-                // requestNew.dateEndPause = "2022-02-08T04:00:00.000+00:00";
-                // requestNew.dateInitPause = "2022-02-08T04:00:00.000+00:00";
-                // requestNew.dateRequest = "2022-02-08T04:00:00.000+00:00";
-                // requestNew.dateInit = "2022-02-08T04:00:00.000+00:00";
-                // requestNew.dateRealEnd = "2022-02-08T04:00:00.000+00:00";
-                // requestNew.updateDate = "2022-02-08T04:00:00.000+00:00";
-                // requestNew.datePlanEnd = "2022-02-08T04:00:00.000+00:00";
-
-                console.log("requestNew: ", requestNew);
 
                 // Update the request on the server
                 this._requestService.updateRequest(requestNew.id, requestNew).subscribe((request) => {
                     // Clear Wizzard
                     this._stepper.reset();
                     this.showFlashMessage('success');
-
+                    this._fuseAlertService.show('alertBox4');
+                    this.successSave = 'Solicitud actualizada con éxito!'
+                    
                     // Close the details
                     this.closeDetails();
                 });
@@ -660,18 +680,35 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }, 3000);
     }
 
-    openCompDialog(id: number): void {
-        this.toggleDetails(id)
-        const myCompDialog = this.dialog.open(this.tplDetail, { data: this.myFooList });
-        myCompDialog.afterClosed().subscribe((res) => {
-          // Data back from dialog
-          console.log({ res });
-        });
-      }
+    /**
+     * OpenCompDialog
+     * @param id 
+     */
+    openCompDialog(id: number): void  {
+    
+        this.toggleDetails(id);
+    
+        this._requestService.open({
+            template: this.tplDetail, title: 'Editar Solicitud'
+          },
+          {width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
+            if ( confirm ) {
+                
+                if ( this.isDetail ) {
+                    this.isDetail = false;
+                }
 
-      closeDialog() { 
-          
-       }
+                if ( this.isEditing ) {
+                    this.isEditing = false;
+                }
+
+                this.selectedRequest = null;
+                
+                this._changeDetectorRef.markForCheck();
+            }
+        });
+    }
+
     /**
      * Track by function for ngFor loops
      *

@@ -1,0 +1,13 @@
+<div style="padding: 0 !important;" >
+    <div mat-dialog-actions class="flex justify-end mr-2 mb-0">
+      <!--button mat-button mat-dialog-close (click)="closeDialog()"> <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon></button-->
+    </div>
+        <p class="mt-0 text-xl">{{data.title}}</p>
+    <div *ngIf="data.template" mat-dialog-content>
+        <div style="width: 1000px; height: 790px;">
+            <ng-container *ngTemplateOutlet="data.template, context: data.context" class="drop-shadow-none"></ng-container>
+        </div>
+    </div>
+  
+</div>
+  

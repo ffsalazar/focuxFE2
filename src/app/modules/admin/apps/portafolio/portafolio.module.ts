@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -25,7 +25,8 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MomentModule } from 'ngx-moment';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-
+import { FuseAlertModule } from '@fuse/components/alert';
+import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component';
 
 @NgModule({
     declarations: [
@@ -34,9 +35,10 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
         RequestStepperComponent,
         RequestStepOneComponent,
         RequestStepTwoComponent,
-        RequestStepThirdComponent
+        RequestStepThirdComponent,
+        FocuxPopupComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(portafolioRoutes),
         MatButtonModule,
         MatCheckboxModule,
@@ -56,6 +58,10 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
         SharedModule,
         MomentModule,
         MatMomentDateModule,
+        FuseAlertModule
+    ],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
     ]
 })
 export class PortafolioModule

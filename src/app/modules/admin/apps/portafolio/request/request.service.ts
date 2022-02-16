@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea } from './request.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData } from './request.types';
 import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FocuxPopupComponent }  from './focux-popup/focux-popup.component';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +20,6 @@ export class RequestService
     private _product: BehaviorSubject<InventoryProduct | null> = new BehaviorSubject(null);
     private _products: BehaviorSubject<InventoryProduct[] | null> = new BehaviorSubject(null);
     private _tags: BehaviorSubject<InventoryTag[] | null> = new BehaviorSubject(null);
-    private _vendors: BehaviorSubject<InventoryVendor[] | null> = new BehaviorSubject(null);
 
     private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
     private _commerc: BehaviorSubject<CommercialArea[] | null> = new BehaviorSubject(null);
@@ -30,13 +31,15 @@ export class RequestService
     private _typereq: BehaviorSubject<TypeRequest[] | null> = new BehaviorSubject(null);
     private _areatech: BehaviorSubject<TechnicalArea[] | null> = new BehaviorSubject(null);
 
+    private _isOpenModal: Subject<boolean | null> = new Subject(); 
 
     request: Request;
 
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(private _httpClient: HttpClient,
+        private dialog: MatDialog)
     {
     }
 
@@ -139,6 +142,14 @@ export class RequestService
     get typereq$(): Observable<TypeRequest []>{
        return this._typereq.asObservable()
     }
+
+    /**
+     * Getter for type request
+     */
+    get isOpenModal$(): Observable<Boolean>{
+       return this._isOpenModal.asObservable()
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -222,6 +233,57 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * @param query 
+     */
+    searchRequest(query: string): Observable<Request[]> {
+
+        return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all',
+            {params: {query}}
+        )
+        .pipe(
+            tap((requests) => {
+                let requestsFiltered : any[]=[];
+                // Filter inactive request 
+                requestsFiltered = requests.filter(item => item.isActive !== 0);
+
+                // If the query exists...
+                // if ( query )
+                // {
+                //     // Filter the collaborators
+
+                //     // collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+                //     // function compare(a: Collaborator, b: Collaborator) {
+                //     //     if (a.name < b.name) return -1;
+                //     //     if (a.name > b.name) return 1;
+                //     //     // Their names are equal
+                //     //     if (a.lastName < b.lastName) return -1;
+                //     //     if (a.lastName > b.lastName) return 1;
+
+                //     //     return 0;
+                //     // }
+                //     collaboratorFiltered.sort(compare);
+                //     this._collaborators.next(collaboratorFiltered);
+                // }else{
+                //     function compare(a: Collaborator, b: Collaborator) {
+                //         if (a.name < b.name) return -1;
+                //         if (a.name > b.name) return 1;
+                //         // Their names are equal
+                //         if (a.lastName < b.lastName) return -1;
+                //         if (a.lastName > b.lastName) return 1;
+
+                //         return 0;
+                //     }
+                //     collaboratorFiltered.sort(compare);
+                //     this._collaborators.next(collaboratorFiltered);
+                // }
+
+                return this._requests.next(requestsFiltered);
+            })
+        );
+    }
+
     getRequests(): Observable<Request[]> {
         return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all').pipe(
             tap((requests) => {
@@ -229,7 +291,6 @@ export class RequestService
                 // Filter inactive request 
                 requests = requests.filter(item => item.isActive !== 0);
 
-                console.log("request filter: ", requests);
                 // Emit next value 
                 this._requests.next(requests);
             })
@@ -240,7 +301,6 @@ export class RequestService
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
             tap((clients) => {
 
-                console.log("request: ", clients);
                 this._clients.next(clients);
             })
         );
@@ -250,7 +310,6 @@ export class RequestService
         return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all').pipe(
             tap((commerc) => {
 
-                console.log("request: ", commerc);
                 this._commerc.next(commerc);
             })
         );
@@ -260,7 +319,6 @@ export class RequestService
         return this._httpClient.get<RequestPeriod[]>('http://localhost:1616/api/v1/followup/requestPeriod/all').pipe(
             tap((reqperiod) => {
 
-                console.log("request: ", reqperiod);
                 this._requestp.next(reqperiod);
             })
         );
@@ -270,7 +328,6 @@ export class RequestService
         return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
             tap((typereq) => {
 
-                console.log("request: ", typereq);
                 this._typereq.next(typereq);
             })
         );
@@ -280,7 +337,6 @@ export class RequestService
         return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/typestatuses/all').pipe(
             tap((status) => {
 
-                console.log("request: ", status);
                 this._status.next(status);
             })
         );
@@ -290,11 +346,12 @@ export class RequestService
         return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all').pipe(
             tap((areatech) => {
 
-                console.log("request: ", areatech);
                 this._areatech.next(areatech);
             })
         );
     }
+
+    
     /**
      * Create product
      */
@@ -310,44 +367,44 @@ export class RequestService
             typeRequest: {
               id: 1
             },
-            titleRequest: "PRUEBA DESDE JSONDOC CON CAMBIOS",
-            descriptionRequest: "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
+            titleRequest: 'Nueva solicitud',
+            descriptionRequest: 'Description PRUEBA DESDE JSONDOC CON CAMBIOS',
             responsibleRequest: {
               id: 3
             },
             priorityOrder: 1,
-            dateRequest: "2022-02-07T04:00:00.000+00:00",
-            dateInit: "2022-02-07T04:00:00.000+00:00",
-            datePlanEnd: "2022-02-08T04:00:00.000+00:00",
-            dateRealEnd: "2022-02-09T04:00:00.000+00:00",
+            dateRequest: '2022-02-07T04:00:00.000+00:00',
+            dateInit: '2022-02-07T04:00:00.000+00:00',
+            datePlanEnd: '2022-02-08T04:00:00.000+00:00',
+            dateRealEnd: '2022-02-09T04:00:00.000+00:00',
             status: {
-              "id": 1
+              id: 1
             },
             completionPercentage: 30,
             deviationPercentage: 70,
-            deliverablesCompletedIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
-            pendingActivitiesIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
-            commentsIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
-            updateDate: "2022-02-07T04:00:00.000+00:00",
-            commentsClient: "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
+            deliverablesCompletedIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES',
+            pendingActivitiesIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS PENDING',
+            commentsIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS',
+            updateDate: '2022-02-07T04:00:00.000+00:00',
+            commentsClient: 'PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT',
             technicalArea: {
               id: 1
             },
             category: {
               id: 1
             },
-            internalFeedbackIntelix: "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
+            internalFeedbackIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK',
             solverGroup: {
               id: 1
             },
             requestPeriod: {
               id: 1
             },
-            dateInitPause: "2022-02-08T04:00:00.000+00:00",
-            dateEndPause: "2022-02-08T04:00:00.000+00:00",
+            dateInitPause: '2022-02-08T04:00:00.000+00:00',
+            dateEndPause: '2022-02-08T04:00:00.000+00:00',
             totalPauseDays: 1,
             isActive: 1,
-            code: "asd21"
+            code: 'asd21'
         }
           
         return this.requests$.pipe(
@@ -439,6 +496,8 @@ export class RequestService
                     // Update the products
                     this._requests.next(requests);
 
+                    console.log("Se actualizo");
+                    this._isOpenModal.next(true);
                     // // Return the updated product
                     return updatedRequest;
                 }),
@@ -449,6 +508,10 @@ export class RequestService
 
                         // Update the product if it's selected
                         this._request.next(updatedRequest);
+                        
+                        this._isOpenModal.next(true);
+                        //this._isOpenModal.complete();
+
 
                         // Return the updated product
                         return updatedRequest;
@@ -479,12 +542,30 @@ export class RequestService
 
                     // Update the products
                     this._requests.next(requests);
-
+                    this._isOpenModal.next(false);
                     // Return the deleted status
+                    
                     return isDeleted;
                 })
             ))
         );
     }
 
+    /**
+     * 
+     * @param data 
+     * @param options 
+     * @param modalType 
+     * @returns 
+     */
+    open(data: DialogData, options: DialogOptions = {width: 800, minHeight: 0, height: 200, disableClose: true}, modalType: 1 | 2 = 1): Observable<boolean> {
+        const dialogRef: MatDialogRef<FocuxPopupComponent> = this.dialog.open<FocuxPopupComponent, DialogData>(
+            FocuxPopupComponent,
+            {
+                data
+            }
+        );
+        return dialogRef.afterClosed();
+
+    }
 }

@@ -1,3 +1,5 @@
+import {Injectable, TemplateRef} from '@angular/core';
+
 export interface Request{
     id: number,
     category: Category,
@@ -202,3 +204,19 @@ export interface Assigment {
     isActive:             number;
 }
 
+
+export interface DialogOptions {
+    width: number;
+    disableClose: boolean;
+    minHeight?: number;
+    height?: number;
+    panelClass?: string;
+  }
+  
+  export interface DialogData {
+    template?: TemplateRef<any>;
+    component?: any;
+    title?: string;
+    hideCloseButton?: boolean;
+    data?: any;
+  }
