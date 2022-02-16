@@ -1,0 +1,77 @@
+<div class="assignment-occupation flex flex-col flex-auto min-w-0">
+    <div class="bg-card">
+        <div class="flex flex-col w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+            <div class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-8 sm:my-12">
+                <!-- Avatar and name -->
+                <div class="flex flex-auto items-center min-w-0">
+                    <div class="flex-0 w-16 h-16 rounded-full overflow-hidden">
+                        <img
+                            class="w-full h-full object-cover"
+                            src="assets/images/avatars/brian-hughes.jpg">
+                    </div>
+                    <div class="flex flex-col min-w-0 ml-4">
+                        <ng-container *transloco="let t">
+                            <div
+                                class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">{{t('Bienvenido')}}
+                                , Brian!
+                            </div>
+                        </ng-container>
+                        <div class="flex items-center">
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                            <div class="ml-1.5 leading-6 truncate text-secondary">tienes 2 mensajes y 12 solicitudes
+                                nuevas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center mt-6 sm:mt-0 sm:ml-2 space-x-3">
+                    <button
+                        class="fuse-mat-button-rounded bg-accent-700"
+                        mat-flat-button
+                        [color]="'accent'">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:mail'"></mat-icon>
+                        <span class="ml-2">Mensajes</span>
+                    </button>
+                    <button
+                        class="fuse-mat-button-rounded"
+                        mat-flat-button
+                        [color]="'primary'">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:cog'"></mat-icon>
+                        <span class="ml-2">Configuraci&oacute;n</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Tabs ASSIGNMENT-OCCUPATION -->
+            <div class="flex flex-row">
+                <div
+                    class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1) mr-2"
+                    [class.tab-select]="tabIndex === 0"
+                    matRipple>
+                    <div class="flex items-center">
+                        <div class="overflow-hidden">
+                            <div class="font-medium leading-6 truncate" (click)="redirection('partner-search', 0)" >Busqueda de colaborador</div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1)"
+                    [class.tab-select]="tabIndex === 1"
+                    matRipple>
+                    <div class="flex items-center">
+                        <div class="overflow-hidden">
+                            <div class="font-medium leading-6 truncate">Asignación</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <router-outlet></router-outlet>
+</div>

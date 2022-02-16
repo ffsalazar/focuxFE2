@@ -1,0 +1,26 @@
+<div class="search_box_container">
+    <mat-form-field class="w-full" style="height: 70px;">
+        <mat-label>{{placeHolder}}</mat-label>
+        <input matInput [formControl]="inputControl">
+        <mat-icon (click)="showAll = !showAll">keyboard_arrow_down</mat-icon>
+    </mat-form-field>
+        <div *ngIf="showAll" class="search_panel">
+            <div (click)="onClickItem(item)" *ngFor="let item of data, let last = last" class="panel_item_content">
+                <div class="panel_item_header">
+                    <span class="item_title">{{item.name}}</span>
+                </div>
+                <mat-divider *ngIf="!last" class="mt-4 mb-4" dividerFocus></mat-divider>
+            </div>
+        </div>
+          <div *ngIf="!showAll" [ngClass]="{'search_panel': searchPanelStyle, 'search_panel_inactive': !searchPanelStyle}">
+            <div (click)="onClickItem(item)" *ngFor="let item of searchingResult, let last = last" class="panel_item_content">
+              <div class="panel_item_header">
+                <span class="item_title">{{item.title}}</span>
+              </div>
+              <div class="item_body_content">
+                <span [innerHTML]="item.name | highlightSearch : inputControl.value" class="item_body"></span>
+              </div>
+              <mat-divider *ngIf="!last" class="mt-4 mb-4" dividerFocus></mat-divider>
+            </div>
+          </div>
+</div>
