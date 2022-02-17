@@ -40,7 +40,7 @@ export const routes: Route[] = [
         MatMomentDateModule,
         MatSelectModule,
         FuseHighlightModule,
-        SharedModule
+        SharedModule,
     ]
 })
 export class FormsFieldsModule

@@ -30,6 +30,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : ''
             },
+            {
+                id   : 'dashboards.finance',
+                title: 'Asignación de Ocupación',
+                type : 'basic',
+                icon : 'heroicons_outline:cash',
+                link : '/dashboards/assignment-occupation'
+            },
+            {
+                id   : 'dashboards.finance',
+                title: 'Gestion vacaciones',
+                type : 'basic',
+                icon : 'heroicons_outline:cash',
+                link : '/dashboards/vacations'
+            },
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
