@@ -115,7 +115,7 @@ export class TypeStatusDetailsComponent implements OnInit, OnDestroy
 
 
 
-        if(this.typeStatu.name === 'Nuevo tipo de status'){
+        if(this.typeStatu.name === 'Nuevo tipo de estatus'){
             this.editMode = true;
         }
 
@@ -197,9 +197,9 @@ export class TypeStatusDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar Departamento',
+            title  : 'Borrar tipo de estatus',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este typeStatuo? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este tipo de estatus? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'

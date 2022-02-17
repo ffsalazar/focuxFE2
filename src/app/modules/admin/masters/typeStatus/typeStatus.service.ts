@@ -169,7 +169,7 @@ export class TypeStatusService
 
         {
             "code": "COD",
-            "name": "Nuevo tipo de status",
+            "name": "Nuevo tipo de estatus",
             "description": "Nueva descripcion",
             "isActive": 1
         }

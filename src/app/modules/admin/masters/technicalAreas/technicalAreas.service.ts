@@ -169,8 +169,8 @@ export class TechnicalAreasService
 
         {
             "code": "COD",
-            "name": "Nueva area tecnica",
-            "description": "Nueva descripcion",
+            "name": "Nueva área técnica",
+            "description": "Nueva descripción",
             "isActive": 1
         }
         ;

@@ -25,7 +25,7 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Status
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Estatus
                             <button
                                 class="ml-4"
                                 mat-flat-button
@@ -40,9 +40,9 @@
                                 {{statusesCount}}
                             </ng-container>
                             {{statusesCount | i18nPlural: {
-                            '=0'   : 'No hay status',
-                            '=1'   : 'status',
-                            'other': 'status'
+                            '=0'   : 'No hay Estatus',
+                            '=1'   : 'estatus',
+                            'other': 'estatus'
                         } }}
 
                         </div>
@@ -62,7 +62,7 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Buscar status'">
+                                    [placeholder]="'Buscar Estatus'">
 
                             </mat-form-field>
 

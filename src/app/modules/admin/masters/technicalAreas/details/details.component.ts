@@ -115,7 +115,7 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
 
 
 
-        if(this.technicalArea.name === 'Nueva area tecnica'){
+        if(this.technicalArea.name === 'Nueva &aacute;rea t&eacute;cnica'){
             this.editMode = true;
         }
 
@@ -197,9 +197,9 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar Departamento',
+            title  : 'Borrar &Aacute;rea T&eacute;cnica',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este technicalAreao? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar esta área técnica? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'

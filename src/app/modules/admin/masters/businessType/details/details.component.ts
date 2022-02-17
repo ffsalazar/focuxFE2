@@ -197,9 +197,9 @@ export class BusinessTypesDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar conocimiento',
+            title  : 'Borrar tipo de negocio',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este Conocimiento? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este tipo de negocio? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'

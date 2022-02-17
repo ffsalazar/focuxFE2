@@ -40,9 +40,9 @@
                                 {{commercialAreasCount}}
                             </ng-container>
                             {{commercialAreasCount | i18nPlural: {
-                            '=0'   : 'No hay Areas comerciales',
-                            '=1'   : 'area comercial',
-                            'other': 'areas comerciales'
+                            '=0'   : 'No hay &aacute;reas comerciales',
+                            '=1'   : '&aacute;rea comercial',
+                            'other': '&aacute;reas comerciales'
                         } }}
 
                         </div>
@@ -62,7 +62,7 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Buscar area comercial'">
+                                    [placeholder]="'Buscar &aacute;rea comercial'">
 
                             </mat-form-field>
 
@@ -116,7 +116,7 @@
 
                     <!-- No commercialAreas -->
                     <ng-template #noCommercialAreas>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay areas coemrciales!</div>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay &aacute;reas comerciales!</div>
                     </ng-template>
 
                 </div>

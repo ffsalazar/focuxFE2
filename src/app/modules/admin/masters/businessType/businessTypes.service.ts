@@ -170,7 +170,7 @@ export class BusinessTypesService
 
             "name": "Nuevo tipo de negocio",
             "code":"00AA",
-            "description": "descripcion de tipo de negocio",
+            "description": "Descripcion de tipo de negocio",
             "isActive": 1
         };
         return this.businessTypes$.pipe(

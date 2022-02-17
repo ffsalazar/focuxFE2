@@ -25,7 +25,7 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">&Aacute;rea T&eacute;cnica
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">&Aacute;rea t&eacute;cnica
                             <button
                                 class="ml-4"
                                 mat-flat-button
@@ -40,9 +40,9 @@
                                 {{technicalAreasCount}}
                             </ng-container>
                             {{technicalAreasCount | i18nPlural: {
-                            '=0'   : 'No hay Areas tecnicas',
-                            '=1'   : 'area tecnica',
-                            'other': 'areas tecnicas'
+                            '=0'   : 'No hay &Aacute;rea t&eacute;cnica',
+                            '=1'   : '&aacute;rea t&eacute;cnica',
+                            'other': '&aacute;rea t&eacute;cnicas'
                         } }}
 
                         </div>
@@ -62,7 +62,7 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Buscar area tecnica'">
+                                    [placeholder]="'Buscar &aacute;rea t&eacute;cnica'">
 
                             </mat-form-field>
 

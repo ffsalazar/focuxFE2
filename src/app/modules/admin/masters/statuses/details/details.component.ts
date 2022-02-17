@@ -215,9 +215,9 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar Statuse',
+            title  : 'Borrar Estatus',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este statuse? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este estatus? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'
