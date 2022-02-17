@@ -4,16 +4,19 @@ import data from './data/data.json';
 import activitys from './data/activitys.json'
 import {Activity, Collaborator} from "./assignment-occupation.types";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
+import { tap } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class AssingmentOccupationService {
 
-    private _collaborators: BehaviorSubject<Collaborator[] | null > = new BehaviorSubject(null);
+    private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _activitys: Activity[] = activitys;
     private _collaboratorsAssign: Collaborator[] = data;
     private _tabIndex: Subject<number> = new Subject<number>();
 
-    constructor(private _http: HttpClient) { }
+    constructor(private _httpClient: HttpClient) { }
 
 
 
@@ -26,6 +29,8 @@ export class AssingmentOccupationService {
     }
 
     get collaborators$(): Observable<Collaborator[]> {
+
+        console.log("getCollaborators");
         return this._collaborators.asObservable();
     }
 
@@ -46,14 +51,19 @@ export class AssingmentOccupationService {
         this._collaboratorsAssign.splice(index, 1);
         this._collaborators.next(this._collaboratorsAssign);
     }
-
-
-    getCollaboratorsJson() {
-        const dataJson: Collaborator[] = data;
-        this._collaborators.next(dataJson);
-        return dataJson;
+    
+    /***
+     * Get Collaborators
+     */
+    getCollaborators(): Observable<Collaborator[]> {
+        console.log("getCollaborators 123");
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all')
+            .pipe(
+                tap((collaborators) => {
+                    console.log("collaborators: ", collaborators);
+                    this._collaborators.next(collaborators);
+            }));
     }
-
 
     get activitys(): Activity[] {
         return this._activitys;

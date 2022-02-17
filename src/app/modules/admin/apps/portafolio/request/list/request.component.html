@@ -17,8 +17,8 @@
                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
                     [placeholder]="'Buscar Solicitudes'">
             </mat-form-field>
-            <!-- Add product button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createProduct()">
+            <!-- Add request button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createRequest()">
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                 <span class="ml-2 mr-1">Agregar</span>
             </button>
@@ -28,10 +28,19 @@
     <!-- Main -->
     <div class="flex flex-auto overflow-hidden">
 
-        <!-- Products list -->
+        <!-- Request list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-            <ng-container *ngIf="(request$ | async) as products">
-                <ng-container *ngIf="products.length > 0; else noProducts">
+            <fuse-alert
+                [type]="'success'" 
+                [dismissible]="true"
+                [dismissed]="true"
+                [name]="'alertBox4'"
+                (click)="dismissFuse('alertBox4')"
+                >
+                <span fuseAlertTitle>{{successSave}}</span>
+            </fuse-alert>
+            <ng-container *ngIf="(request$ | async) as requests">
+                <ng-container *ngIf="requests.length > 0; else noRequests">
                     <div class="grid">
                         <!-- Header -->
                         <div class="z-10 sticky top-0 grid grid-cols-12 gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
@@ -75,77 +84,77 @@
                             <div class="hidden sm:block">Detalles</div>
                         </div>
                         <!-- Rows -->
-                        <ng-container *ngIf="(request$ | async) as products">
-                            <ng-container *ngFor="let product of products; trackBy: trackByFn">
-                                <div class="grid-cols-12 grid items-center gap-2 py-3 px-3 md:px-3 border-b">
+                        <ng-container *ngIf="(request$ | async) as requests">
+                            <ng-container *ngFor="let request of requests; trackBy: trackByFn">
+                                <div class="grid-cols-12 grid items-center gap-2 py-3 px-3 md:px-8 border-b">
                                     <!-- SKU -->
                                     <div class="hidden sm:block truncate">
-                                        {{product.client.name}}
+                                        {{request.client.name}}
                                     </div>
 
                                     <!-- Name -->
                                     <div class="hidden sm:block truncate">
-                                        {{product.client.name}}
+                                        {{request.client.name}}
                                     </div>
 
                                     <!-- Description -->
-                                    <div class="hidden sm:block">
-                                        {{product.requestPeriod.description}}
+                                    <div class="hidden md:block truncate">
+                                        {{request.titleRequest}}
                                     </div>
 
                                     <!-- Code -->
                                     <div class="hidden sm:block">
-                                        {{product.code}}
+                                        {{request.code}}
                                     </div>
 
                                     <!-- Responsible Request -->
-                                    <div class="hidden sm:block">
-                                        {{product.responsibleRequest.name}}
+                                    <div class="hidden md:block text-center">
+                                        {{request.responsibleRequest.name}}
                                     </div>
 
                                     <!-- Priority Order -->
-                                    <div class="hidden sm:block">
-                                        {{product.priorityOrder}}
+                                    <div class="hidden sm:block text-center">
+                                        {{request.priorityOrder}}
                                     </div>
 
                                     <!-- Status -->
                                     <div class="hidden sm:block">
-                                        {{product.status.name}}
+                                        {{request.status.name}}
                                     </div>
 
                                     <!-- Completion Percentage -->
-                                    <div class="hidden sm:block">
-                                        {{product.completionPercentage}}
+                                    <div class="hidden sm:block text-center">
+                                        {{request.completionPercentage}}
                                     </div>
 
                                     <!-- DateReal End -->
                                     <div class="hidden sm:block">
-                                        {{product.dateRealEnd | amParse: formats | amDateFormat:'LL'}}
+                                        {{request.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY'}}
                                     </div>
 
                                     <!-- Deviation Percentage -->
-                                    <div class="hidden sm:block">
-                                        {{product.deviationPercentage}}
+                                    <div class="hidden sm:block text-center">
+                                        {{request.deviationPercentage}}
                                     </div>
 
                                     <!-- DateEnd Pause -->
                                     <div class="hidden sm:block">
-                                        {{product.dateEndPause | amParse: formats | amDateFormat:'LL'}}
+                                        {{request.dateEndPause | amParse: formats | amDateFormat:'DD/MM/YYYY'}}
                                     </div>
 
                                     <!-- DatePlan End -->
                                     <!-- <div class="hidden sm:block">
-                                        {{product.datePlanEnd}}
+                                        {{request.datePlanEnd}}
                                     </div> -->
                                    
 
                                     <!-- Active -->
                                     <!-- <div class="hidden lg:block">
-                                        <ng-container *ngIf="product.active">
+                                        <ng-container *ngIf="request.active">
                                             <mat-icon class="text-green-400 icon-size-5"
                                                 [svgIcon]="'heroicons_solid:check'"></mat-icon>
                                         </ng-container>
-                                        <ng-container *ngIf="!product.active">
+                                        <ng-container *ngIf="!request.active">
                                             <mat-icon class="text-gray-400 icon-size-5" [svgIcon]="'heroicons_solid:x'">
                                             </mat-icon>
                                         </ng-container>
@@ -154,17 +163,23 @@
                                     <!-- Details button -->
                                     <div>
                                         <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
-                                            (click)="toggleDetails(product.id)">
+                                            (click)="showDetail(request.id)">
                                             <mat-icon class="icon-size-5"
-                                                [svgIcon]="selectedProduct?.id === product.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'">
+                                                [svgIcon]="selectedRequest?.id === request.id && isDetail? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'">
+                                            </mat-icon>
+                                        </button>
+                                        <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                            (click)="updateSelectedRequest(request.id)">
+                                            <mat-icon class="icon-size-5"
+                                                [svgIcon]="'heroicons_solid:pencil'">
                                             </mat-icon>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="grid">
-                                    <ng-container *ngIf="selectedProduct?.id === product.id">
+                                    <ng-container *ngIf="selectedRequest?.id === request.id && isDetail">
                                         <ng-container
-                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: product}">
+                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: request}">
                                         </ng-container>
                                     </ng-container>
                                 </div>
@@ -181,14 +196,19 @@
                 </ng-container>
             </ng-container>
 
-            <ng-template #rowDetailsTemplate let-product>
-                <div class="shadow-lg overflow-hidden">
+            <ng-template #rowDetailsTemplate let-request>
+                <div class="overflow-hidden">
                     <!-- <div class="flex border-b"> -->
-                    <!-- Selected product form -->
-                    <form class="p-4 bg-card shadow rounded overflow-hidden" [formGroup]="horizontalStepperForm">
-                        <mat-horizontal-stepper [linear]="true" #horizontalStepper class="w-3/4 m-auto">
-                            <mat-step [formGroupName]="'step1'" [stepControl]="horizontalStepperForm.get('step1')"
-                                #horizontalStepperStep1>
+                    <!-- Selected request form -->
+                 
+                    <form class="p-2 bg-card shadow rounded overflow-hidden" [formGroup]="horizontalStepperForm">
+                        <mat-horizontal-stepper [linear]="true" #horizontalStepper class="m-auto" [ngClass]="[isDetail ? 'w-3/4' : 'w-full']">
+                       
+                            <mat-step
+                                [formGroupName]="'step1'"
+                                [stepControl]="horizontalStepperForm.get('step1')"
+                                #horizontalStepperStep1
+                            >
                                 <ng-template matStepLabel>Solicitud cliente</ng-template>
                                 <p class="my-6 font-medium">
                                     Datos de la solicitud
@@ -197,38 +217,56 @@
                                 <div class="flex space-x-4">
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Solicitud</mat-label>
-                                        <input matInput [formControlName]="'titleRequest'"
-                                            [placeholder]="'Titulo solicitud'">
+                                        <input
+                                            matInput
+                                            formControlName="titleRequest"
+                                            [placeholder]="'Titulo solicitud'"
+                                            [readonly]="isDetail"
+                                        >
                                         <mat-icon class="icon-size-5" matPrefix
                                             [svgIcon]="'heroicons_solid:document-text'"></mat-icon>
+                                            <mat-error *ngIf="!step1.get('titleRequest').valid && (step1.get('titleRequest').dirty || step1.get('titleRequest').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
+
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Tipo de Solicitud</mat-label>
-                                        <mat-select [formControlName]="'typeRequest'">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
+                                        <mat-select
+                                            formControlName="typeRequest"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                        >
+                                            <ng-container *ngFor="let type of typeRequest">
+                                                <mat-option [value]="type.id">
+                                                    {{type.name}}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
+                                        <mat-error *ngIf="!step1.get('typeRequest').valid && (step1.get('typeRequest').dirty || step1.get('typeRequest').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
-
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Código de solicitud</mat-label>
-
-                                        <input matInput [formControlName]="'requestCode'"
-                                            [placeholder]="'Código de solicitud'">
+                                        <input
+                                            matInput
+                                            formControlName="code"
+                                            [placeholder]="'Código de solicitud'"
+                                            [readonly]="isDetail"
+                                        >
                                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:tag'">
                                         </mat-icon>
+                                        <mat-error *ngIf="!step1.get('code').valid && (step1.get('code').dirty || step1.get('code').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
-
                                 </div>
                                 <div class="flex space-x-4">
                                     <mat-form-field class="w-full">
                                         <mat-label>Descripción de solicitud</mat-label>
-                                        <input matInput [formControlName]="'descriptionRequest'">
+                                        <input
+                                            matInput
+                                            formControlName="descriptionRequest"
+                                            [readonly]="isDetail"
+                                        >
                                         <mat-icon class="icon-size-5" matPrefix
                                             [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
+                                        <mat-error *ngIf="!step1.get('descriptionRequest').valid && (step1.get('descriptionRequest').dirty || step1.get('descriptionRequest').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                 </div>
                                 <p class="my-6 font-medium">
@@ -237,51 +275,69 @@
                                 <div class="flex space-x-4">
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Cliente</mat-label>
-                                        <mat-select [formControlName]="'company'">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
+                                        <mat-select
+                                            formControlName="client"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                        >
+                                            <ng-container *ngFor="let client of clients">
+                                                <mat-option [value]="client.id">
+                                                    {{client.name}}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
+                                        <mat-error *ngIf="!step1.get('client').valid && (step1.get('client').dirty || step1.get('client').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Área Comercial</mat-label>
-                                        <mat-select [formControlName]="'areaComercial'">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
+                                        <mat-select
+                                            formControlName="commercialArea"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                        >
+                                            <ng-container *ngFor="let area of commercialArea">
+                                                <mat-option [value]="area.id">
+                                                    {{area.name}}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
+                                        <mat-error *ngIf="!step1.get('commercialArea').valid && (step1.get('commercialArea').dirty || step1.get('commercialArea').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
-
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Ramo cliente</mat-label>
-                                        <mat-select [formControlName]="'customerBranch'">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
+                                        <input
+                                            matInput
+                                            formControlName="customerBranch"
+                                            [readonly]="isDetail"
+                                        >
+                                        <mat-icon class="icon-size-5" matPrefix
+                                            [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
+                                        <mat-error *ngIf="!step1.get('customerBranch').valid && (step1.get('customerBranch').dirty || step1.get('customerBranch').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="flex justify-between">
-                                    <button class="-ml-4" mat-button [color]="'warn'" (click)="deleteSelectedProduct()">
+                                    <button class="-ml-4" mat-button [color]="'warn'" (click)="deleteSelectedRequest()">
                                         Eliminar
                                     </button>
-                                    <button class="px-8" mat-flat-button [color]="'primary'"
-                                        [disabled]="horizontalStepperStep1.stepControl.pristine || horizontalStepperStep1.stepControl.invalid"
-                                        type="button" matStepperNext>
-                                        Next
+                                    <button
+                                        class="px-8"
+                                        mat-flat-button
+                                        [color]="'primary'"
+                                        [disabled]="horizontalStepperForm.get('step1').invalid"
+                                        type="button"
+                                        matStepperNext
+                                    >
+                                        Continuar
                                     </button>
                                 </div>
                             </mat-step>
 
-                            <mat-step [formGroupName]="'step2'" [stepControl]="horizontalStepperForm.get('step2')"
-                                #horizontalStepperStep2>
+                            <mat-step
+                                [formGroupName]="'step2'"
+                                [stepControl]="horizontalStepperForm.get('step2')"
+                                #horizontalStepperStep2
+                            >
                                 <ng-template matStepLabel>Planificación</ng-template>
                                 <p class="my-6 font-medium">
                                     Detalle solicitud
@@ -289,40 +345,72 @@
                                 <div class="flex space-x-4">
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Creación de solicitud</mat-label>
-                                        <input type="date" matInput [formControlName]="'dateRequest'">
-                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:calendar'">
-                                        </mat-icon>
+                                        <mat-icon
+                                            matPrefix
+                                            class="hidden sm:flex icon-size-5"
+                                            [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                        <input
+                                            matInput
+                                            [matDatepicker]="dateRequestPicker"
+                                            formControlName="dateRequest"
+                                            [disabled]="isDetail"
+                                        >
+                                        <mat-datepicker-toggle
+                                            matSuffix
+                                            [for]="dateRequestPicker"
+                                            [readonly]="isDetail"
+                                        >
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker [readonly]="isDetail" #dateRequestPicker ></mat-datepicker>
+                                        <mat-error *ngIf="!step2.get('dateRequest').valid && (step2.get('dateRequest').dirty || step2.get('dateRequest').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Estatus</mat-label>
-                                        <mat-select [formControlName]="'status'">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
+                                        <mat-select
+                                            formControlName="status"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                        >
+                                            <ng-container *ngFor="let state of status">
+                                                <mat-option [value]="state.id">
+                                                    {{state.name}}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
+                                        <mat-error *ngIf="!step2.get('status').valid && (step2.get('status').dirty || step2.get('status').touched)">El campo es obligatorio</mat-error>
+
                                     </mat-form-field>
-                                    <mat-form-field class="w-1/4">
+
+                                    <mat-form-field class="w-1/3">
                                         <mat-label>Prioridad</mat-label>
-                                        <mat-select [formControlName]="'priorityOrder'">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
+                                        <input
+                                            matInput
+                                            formControlName="priorityOrder"
+                                            [readonly]="isDetail"
+                                        >
+                                        <mat-icon class="icon-size-5" matPrefix
+                                            [svgIcon]="'heroicons_solid:document-text'">
+                                        </mat-icon>
+                                        <mat-error *ngIf="!step2.get('priorityOrder').valid && (step2.get('priorityOrder').dirty || step2.get('priorityOrder').touched)">El campo es obligatorio</mat-error>
+
                                     </mat-form-field>
+
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Categoría</mat-label>
-                                        <mat-select [formControlName]="'category'">
+                                        <mat-select
+                                            formControlName="category"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                        >
                                             <ng-container *ngFor="let category of categories">
                                                 <mat-option [value]="category.id">
                                                     {{category.name}}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
+                                        <mat-error *ngIf="!step2.get('category').valid && (step2.get('category').dirty || step2.get('category').touched)">El campo es obligatorio</mat-error>
+
                                     </mat-form-field>
                                 </div>
 
@@ -333,14 +421,34 @@
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Área tecnica</mat-label>
-                                        <input matInput [formControlName]="'technicalArea'">
+                                        <mat-select
+                                            formControlName="technicalArea"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                        >
+                                            <ng-container *ngFor="let area of technicalArea">
+                                                <mat-option [value]="area.id">
+                                                    {{area.name}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error *ngIf="!step2.get('technicalArea').valid && (step2.get('technicalArea').dirty || step2.get('technicalArea').touched)">El campo es obligatorio</mat-error>
+                                    </mat-form-field>
+                                    
+                                    <mat-form-field class="w-1/3">
+                                        <mat-label>Responsable</mat-label>
+                                        <input
+                                            matInput
+                                            formControlName="responsibleRequest"
+                                            [readonly]="isDetail"
+                                        >
                                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
                                         </mat-icon>
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Grupo solucionador</mat-label>
-                                        <mat-select [formControlName]="'solverGroup'">
+                                        <!-- <mat-select formControlName="solverGroup">
                                             <ng-container *ngFor="let category of categories">
                                                 <mat-option [value]="category.id">
                                                     {{category.name}}
@@ -348,9 +456,16 @@
 
                                             </ng-container>
 
-                                        </mat-select>
+                                        </mat-select> -->
+                                        <input
+                                            matInput
+                                            formControlName="solverGroup"
+                                            [readonly]="isDetail"
+                                            
+                                        >
+                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
+                                        </mat-icon>
                                     </mat-form-field>
-
                                     <div class="w-1/3">
                                         <span class="mb-px font-medium leading-tight">Colaborador</span>
                                         <div
@@ -360,9 +475,12 @@
                                                 <div class="flex items-center flex-auto min-w-0">
                                                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:search'">
                                                     </mat-icon>
-                                                    <input class="min-w-0 ml-2 py-1 border-0" type="text"
-                                                        placeholder="Escriba el nombre" (input)="filterTags($event)"
-                                                        (keydown)="filterTagsInputKeyDown($event)" [maxLength]="50"
+                                                    <input
+                                                        class="min-w-0 ml-2 py-1 border-0"
+                                                        type="text"
+                                                        placeholder="Escriba el nombre"
+                                                        (input)="filterTags($event)"
+                                                        [maxLength]="50"
                                                         #newTagInput>
                                                 </div>
                                             </div>
@@ -382,58 +500,73 @@
 
                                                     </ng-container>
                                                 </ng-container>
-                                                <!-- Tags editing -->
-                                                <ng-container *ngIf="tagsEditMode">
-                                                    <div class="p-4 space-y-2">
-                                                        <ng-container
-                                                            *ngFor="let tag of filteredTags; trackBy: trackByFn">
-                                                            <mat-form-field
-                                                                class="fuse-mat-dense fuse-mat-no-subscript w-full">
-                                                                <input matInput [value]="tag.title"
-                                                                    (input)="updateTagTitle(tag, $event)">
-                                                                <button mat-icon-button (click)="deleteTag(tag)"
-                                                                    matSuffix>
-                                                                    <mat-icon class="icon-size-5"
-                                                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                                                </button>
-                                                            </mat-form-field>
-                                                        </ng-container>
-                                                    </div>
-                                                </ng-container>
-
                                             </div>
                                         </div>
                                     </div>
-
-
+                                    
                                 </div>
-
-
+                               
                                 <p class="my-6 font-medium">
                                     Periodo para solventar solicitud
                                 </p>
-
                                 <div class="flex space-x-4">
-                                    <mat-form-field class="w-1/3">
+                                    <mat-form-field class="fuse-mat-no-subscript w-1/3">
                                         <mat-label>Fecha de Inicio</mat-label>
-                                        <input type="date" matInput [formControlName]="'dateInit'">
-                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:calendar'">
-                                        </mat-icon>
-
+                                        <mat-icon
+                                            matPrefix
+                                            class="hidden sm:flex icon-size-5"
+                                            [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                        <input
+                                            matInput
+                                            [matDatepicker]="dateInitPicker"
+                                            formControlName="dateInit"
+                                            placeholder="Fecha de Inicio"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail"
+                                            >
+                                        <mat-datepicker-toggle
+                                                matSuffix
+                                                [for]="dateInitPicker">
+                                            </mat-datepicker-toggle>
+                                        <mat-datepicker #dateInitPicker></mat-datepicker>
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Fecha de Culminación</mat-label>
-                                        <input type="date" matInput [formControlName]="'dateRealEnd'">
-                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:calendar'">
-                                        </mat-icon>
+                                        <mat-icon
+                                            matPrefix
+                                            class="hidden sm:flex icon-size-5"
+                                            [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                        <input
+                                            matInput
+                                            [matDatepicker]="dateRealEndPicker"
+                                            formControlName="dateRealEnd"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail">
+                                            <mat-datepicker-toggle
+                                                matSuffix
+                                                [for]="dateRealEndPicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #dateRealEndPicker></mat-datepicker>
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Fecha de Compromiso</mat-label>
-                                        <input type="date" matInput [formControlName]="'datePlanEnd'">
-                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:calendar'">
-                                        </mat-icon>
+                                        <mat-icon
+                                            matPrefix
+                                            class="hidden sm:flex icon-size-5"
+                                            [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                        <input
+                                            matInput
+                                            [matDatepicker]="datePlanEndPicker"
+                                            formControlName="datePlanEnd"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail">
+                                        <mat-datepicker-toggle
+                                            matSuffix
+                                            [for]="datePlanEndPicker">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #datePlanEndPicker></mat-datepicker>
                                     </mat-form-field>
                                 </div>
 
@@ -441,7 +574,7 @@
                                     <div class="flex">
 
                                         <button class="-ml-4" mat-button [color]="'warn'"
-                                            (click)="deleteSelectedProduct()">
+                                            (click)="deleteSelectedRequest()">
                                             Eliminar
                                         </button>
                                     </div>
@@ -449,12 +582,17 @@
                                     <div class="flex justify-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
                                             matStepperPrevious>
-                                            Back
+                                            Regresar
                                         </button>
-                                        <button class="px-8" mat-flat-button [color]="'primary'"
-                                            [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
-                                            type="button" matStepperNext>
-                                            Next
+                                        <button
+                                            class="px-8"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            [disabled]="horizontalStepperForm.get('step2').invalid"
+                                            type="button"
+                                            matStepperNext
+                                        >
+                                            Continuar
                                         </button>
                                     </div>
 
@@ -472,25 +610,38 @@
                                         <div class="flex space-x-4">
                                             <mat-form-field class="w-1/3">
                                                 <mat-label>Porcentaje completado</mat-label>
-                                                <input matInput type="number"
-                                                    [formControlName]="'completionPercentage'">
+                                                <input
+                                                    matInput type="number"
+                                                    formControlName="completionPercentage"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isDetail"
+                                                >
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:document-report'"></mat-icon>
                                             </mat-form-field>
 
                                             <mat-form-field class="w-1/3">
                                                 <mat-label>Procentaje desviación</mat-label>
-                                                <input matInput type="number" [formControlName]="'deviationPercentage'">
+                                                <input
+                                                    matInput type="number"
+                                                    formControlName="deviationPercentage"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isDetail"
+                                                >
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:document-report'"></mat-icon>
                                             </mat-form-field>
 
                                             <mat-form-field class="w-1/3">
                                                 <mat-label>Periodo de solicitud</mat-label>
-                                                <mat-select [formControlName]="'idRequestPeriod'">
-                                                    <ng-container *ngFor="let category of categories">
-                                                        <mat-option [value]="category.id">
-                                                            {{category.name}}
+                                                <mat-select
+                                                    formControlName="requestPeriod"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isDetail"
+                                                    >
+                                                    <ng-container *ngFor="let request of requestp">
+                                                        <mat-option [value]="request.id">
+                                                            {{request.name}}
                                                         </mat-option>
                                                     </ng-container>
                                                 </mat-select>
@@ -503,19 +654,50 @@
                                         <div class="flex space-x-4">
                                             <mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
                                                 <mat-label>Fecha inicial de pausa</mat-label>
-                                                <input type="date" matInput [formControlName]="'dateInitPause'">
-                                                <mat-icon class="icon-size-5" matPrefix
+                                                <mat-icon
+                                                    matPrefix
+                                                    class="hidden sm:flex icon-size-5"
                                                     [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <input
+                                                    matInput
+                                                    [matDatepicker]="dateInitPausePicker"
+                                                    formControlName="dateInitPause"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isDetail"
+                                                >
+                                                <mat-datepicker-toggle
+                                                    matSuffix
+                                                    [for]="dateInitPausePicker">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #dateInitPausePicker></mat-datepicker>
                                             </mat-form-field>
                                             <mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
                                                 <mat-label>Fecha fin pausa</mat-label>
-                                                <input type="date" matInput [formControlName]="'dateEndPause'">
-                                                <mat-icon class="icon-size-5" matPrefix
+                                                <mat-icon
+                                                    matPrefix
+                                                    class="hidden sm:flex icon-size-5"
                                                     [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <input
+                                                    matInput
+                                                    [matDatepicker]="dateEndPausePicker"
+                                                    formControlName="dateEndPause"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isDetail"
+                                                >
+                                                <mat-datepicker-toggle
+                                                    matSuffix
+                                                    [for]="dateEndPausePicker">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #dateEndPausePicker></mat-datepicker>
                                             </mat-form-field>
                                             <mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
                                                 <mat-label>Total días de pausa</mat-label>
-                                                <input type="number" matInput [formControlName]="'totalPauseDays'">
+                                                <input
+                                                    type="number"
+                                                    matInput
+                                                    formControlName="totalPauseDays"
+                                                    [readonly]="isDetail"
+                                                    >
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:clock'"></mat-icon>
                                             </mat-form-field>
@@ -527,8 +709,12 @@
                                         <div class="flex space-x-4">
                                             <mat-form-field class="w-full fuse-mat-textarea flex-auto">
                                                 <mat-label>Feedback interno intelix</mat-label>
-                                                <textarea matInput [formControlName]="'internalFeedbackIntelix'"
-                                                    [rows]="3"></textarea>
+                                                <textarea
+                                                    matInput
+                                                    formControlName="internalFeedbackIntelix"
+                                                    [readonly]="isDetail"
+                                                    [rows]="3"
+                                                ></textarea>
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                             </mat-form-field>
@@ -538,9 +724,8 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <div class="flex">
-
                                         <button class="-ml-4" mat-button [color]="'warn'"
-                                            (click)="deleteSelectedProduct()">
+                                            (click)="deleteSelectedRequest()">
                                             Eliminar
                                         </button>
                                     </div>
@@ -548,17 +733,21 @@
                                     <div class="flex justify-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
                                             matStepperPrevious>
-                                            Back
+                                            Regreasar
                                         </button>
-                                        <button class="px-8" mat-flat-button [color]="'primary'"
-                                            [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
-                                            type="button" matStepperNext>
-                                            Next
+                                        <button
+                                            class="px-8"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            [disabled]="horizontalStepperForm.get('step3').invalid"
+                                            type="button"
+                                            matStepperNext
+                                        >
+                                            Siguiente
                                         </button>
                                     </div>
                                 </div>
                             </mat-step>
-
 
                             <mat-step [formGroupName]="'step4'" [stepControl]="horizontalStepperForm.get('step4')">
                                 <ng-template matStepLabel>Actualización</ng-template>
@@ -568,17 +757,27 @@
                                 <div class="flex flex-col gt-sm:flex-row">
                                     <div class="flex flex-col">
                                         <div class="flex space-x-4">
-
-
-
                                             <mat-form-field class="w-1/3">
                                                 <mat-label>Fecha de actualización</mat-label>
-                                                <input type="date" matInput [formControlName]="'updateDate'">
-                                                <mat-icon class="icon-size-5" matPrefix
+                                                <mat-icon
+                                                    matPrefix
+                                                    class="hidden sm:flex icon-size-5"
                                                     [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <input
+                                                    matInput
+                                                    [matDatepicker]="updateDatePicker"
+                                                    formControlName="updateDate"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isEDetail"
+                                                >
+
+                                                
+                                                <mat-datepicker-toggle
+                                                    matSuffix
+                                                    [for]="updateDatePicker">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #updateDatePicker></mat-datepicker>
                                             </mat-form-field>
-
-
                                         </div>
                                         <p class="my-6 font-medium">
                                             Reporte de actividades
@@ -586,15 +785,23 @@
                                         <div class="flex space-x-4">
                                             <mat-form-field class="w-1/2 fuse-mat-textarea flex-auto">
                                                 <mat-label>Actividades completadas</mat-label>
-                                                <textarea matInput [formControlName]="'deliverablesCompletedIntelix'"
-                                                    [rows]="3"></textarea>
+                                                <textarea
+                                                    matInput
+                                                    formControlName="deliverablesCompletedIntelix"
+                                                    [readonly]="isDetail"
+                                                    [rows]="3"
+                                                ></textarea>
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                             </mat-form-field>
                                             <mat-form-field class="w-1/2 fuse-mat-textarea flex-auto">
                                                 <mat-label>Actividades pendientes de intellix</mat-label>
-                                                <textarea matInput [formControlName]="'pendingActivitiesIntelix'"
-                                                    [rows]="3"></textarea>
+                                                <textarea
+                                                    matInput
+                                                    formControlName="pendingActivitiesIntelix"
+                                                    [readonly]="isDetail"
+                                                    [rows]="3">
+                                                </textarea>
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                             </mat-form-field>
@@ -606,8 +813,12 @@
                                         <div class="flex space-x-4">
                                             <mat-form-field class="w-full fuse-mat-textarea flex-auto">
                                                 <mat-label>Comentarios del cliente</mat-label>
-                                                <textarea matInput [formControlName]="'commentsClient'"
-                                                    [rows]="3"></textarea>
+                                                <textarea
+                                                    matInput
+                                                    formControlName="commentsClient"
+                                                    [readonly]="isDetail"
+                                                    [rows]="3">
+                                                </textarea>
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                             </mat-form-field>
@@ -619,7 +830,7 @@
                                     <div class="flex">
 
                                         <button class="-ml-4" mat-button [color]="'warn'"
-                                            (click)="deleteSelectedProduct()">
+                                            (click)="deleteSelectedRequest()">
                                             Eliminar
                                         </button>
                                     </div>
@@ -627,11 +838,16 @@
                                     <div class="flex justify-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
                                             matStepperPrevious>
-                                            Back
+                                            Regresar
                                         </button>
-                                        <button class="px-8" mat-flat-button [color]="'primary'"
-                                            [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
-                                            type="button" (click)="confirmSaveRequest()">
+                                        <button
+                                            class="px-8"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            [disabled]="horizontalStepperForm.get('step4').invalid"
+                                            type="button"
+                                            (click)="confirmSaveRequest()"
+                                        >
                                             Guardar
                                         </button>
                                     </div>
@@ -657,7 +873,7 @@
                                         mat-flat-button
                                         [color]="'primary'"
                                         type="button"
-                                        (click)="deleteSelectedProduct();">
+                                        (click)="deleteSelectedrequest();">
                                         Reset
                                     </button>
                                 </div>
@@ -668,7 +884,7 @@
                 </div>
             </ng-template>
 
-            <ng-template #noProducts>
+            <ng-template #noRequests>
                 <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay solicitudes!
                 </div>
             </ng-template>

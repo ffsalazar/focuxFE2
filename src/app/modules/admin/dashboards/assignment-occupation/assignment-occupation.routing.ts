@@ -7,6 +7,7 @@ import {
     RequestCategoriesResolver,
     RequestProductsResolver, RequestTagsResolver, RequestVendorsResolver
 } from "../../apps/portafolio/request/request.resolvers";
+import { CollaboratorsResolver } from "./assignment.resolvers";
 
 
 export const AssignmentOccupationRouter: Route[] = [
@@ -23,17 +24,20 @@ export const AssignmentOccupationRouter: Route[] = [
             path: '',
             pathMatch: 'full',
             redirectTo: 'partner-search'
+            
         },
         {
             path: 'partner-search',
             component: PartnerSearchComponent,
             resolve  : {
                 products  : RequestProductsResolver,
+                collaborators: CollaboratorsResolver
             }
         },
         {
             path: 'assignation',
-            component: AsignationComponent
+            component: AsignationComponent,
+            
         }]
     }
 ];

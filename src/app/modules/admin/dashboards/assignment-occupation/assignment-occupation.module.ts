@@ -57,8 +57,5 @@ import {FuseAlertModule} from "../../../../../@fuse/components/alert";
         FuseAlertModule,
         FormsModule
     ],
-    providers: [
-        AssingmentOccupationService
-    ]
 })
 export class AssignmentOccupationModule { }

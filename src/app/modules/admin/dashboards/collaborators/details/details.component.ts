@@ -120,6 +120,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 (this.collaboratorForm.get('phones') as FormArray).clear();
 
                 // Patch values to the form
+                console.log("collaborator: ", collaborator);
                 this.collaboratorForm.patchValue(collaborator);
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);

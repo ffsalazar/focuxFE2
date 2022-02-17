@@ -20,6 +20,7 @@ import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {map, startWith, takeUntil} from "rxjs/operators";
 import {Observable, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-asignation',
@@ -38,17 +39,18 @@ export class AsignationComponent implements OnInit, OnDestroy {
     project: Project = undefined;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     formFieldHelpers: string[] = [''];
-
+    tabIndex = 0;
       constructor(private _assignmentOccupationService: AssingmentOccupationService,
                   private _changeDetectorRef: ChangeDetectorRef,
-                  private _formBuilder: FormBuilder) {
+                  private _formBuilder: FormBuilder,
+                   private _router: Router,) {
 
       }
 
       ngOnInit(): void {
           this.getProject();
           this.filterEvent();
-          this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
+        //   this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
           this.collaboratorFormGroup = this._formBuilder.group({
               collaborators: this._formBuilder.array([])
           });
@@ -204,5 +206,13 @@ export class AsignationComponent implements OnInit, OnDestroy {
         const filterValue = name.toLowerCase();
         return this.collaboratorsArr.filter(option => option.name.toLowerCase().includes(filterValue));
     }
+
+     redirection(tab: string, index: number) {
+      this._assignmentOccupationService.tabIndex$.subscribe(id => {
+          if (id != null) this.tabIndex = id;
+      });
+      this.tabIndex = index;
+      this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
+  }
 
 }
