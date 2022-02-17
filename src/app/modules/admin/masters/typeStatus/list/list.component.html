@@ -25,7 +25,7 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">tipos de estados
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Tipos de estatus
                             <button
                                 class="ml-4"
                                 mat-flat-button
@@ -40,9 +40,9 @@
                                 {{typeStatusCount}}
                             </ng-container>
                             {{typeStatusCount | i18nPlural: {
-                            '=0'   : 'No hay tipos de estados',
-                            '=1'   : 'tipo de estado',
-                            'other': 'tipos de estados'
+                            '=0'   : 'No hay tipos de estatus',
+                            '=1'   : 'Tipo de estatus',
+                            'other': 'Tipos de estatus'
                         } }}
 
                         </div>
@@ -62,7 +62,7 @@
                                     matInput
                                     [formControl]="searchInputControl"
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Buscar tipo de estatus'">
+                                    [placeholder]="'Buscar Tipo de Estatus'">
 
                             </mat-form-field>
 
@@ -116,7 +116,7 @@
 
                     <!-- No typeStatus -->
                     <ng-template #noTypeStatus>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay tipos de estados!</div>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay tipos de estatus!</div>
                     </ng-template>
 
                 </div>

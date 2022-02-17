@@ -197,9 +197,9 @@ export class CommercialAreasDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar Departamento',
+            title  : 'Borrar &aacute;rea comercial',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este commercialAreao? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar esta &aacute;rea comercial? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'
