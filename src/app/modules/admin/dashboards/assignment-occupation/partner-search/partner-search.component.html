@@ -65,7 +65,7 @@
     <!--                </div>-->
 
                 <div class="relative">
-                    <ng-container *ngIf="collaborator$ | async as collaborators">
+                    <ng-container *ngIf="(collaborators$ | async) as collaborators">
                         <ng-container *ngIf="collaborators.length; else noCollaborators">
                             <ng-container *ngFor="let collaborator of collaborators; let i = index; ">
                                 <ng-container *ngIf="collaborator.isActive != 0">

@@ -50,7 +50,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
       ngOnInit(): void {
           this.getProject();
           this.filterEvent();
-          this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
+        //   this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
           this.collaboratorFormGroup = this._formBuilder.group({
               collaborators: this._formBuilder.array([])
           });

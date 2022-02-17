@@ -2,11 +2,12 @@ import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angul
 import {Activity, Collaborator, Project} from "../assignment-occupation.types";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {FormControl} from "@angular/forms";
-import {Observable, Subject} from "rxjs";
-import {map, startWith} from "rxjs/operators";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {map, startWith, takeUntil} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ActivatedRoute, Router} from "@angular/router";
+import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 
 @Component({
   selector: 'app-partner-search',
@@ -20,9 +21,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     myControlTest = new FormControl('test');
 
-    collaborator$: Observable<Collaborator[]>;
+    collaborators$: any;
 
     collaborators: Collaborator[] = [];
+
     activity: Activity[] = [];
     isLoading: boolean = false;
     filteredOptions: Observable<any[]>;
@@ -104,7 +106,18 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
       this.filterEvent();
 
       // Get the collaborators
-      this.collaborator$ = this._assignmentOccupationService.collaborators$;
+
+    //   this._assignmentOccupationService.collaborators$
+    //     .pipe(
+    //         takeUntil(this._unsubscribeAll)
+    //     ).subscribe(collaborators => {
+    //         console.log(collaborators);
+    //         this.collaborators = collaborators;
+    //     });
+
+    //this._assignmentOccupationService.getCollaborators().subscribe(response => console.log(response));
+    
+    this.collaborators$ = this._assignmentOccupationService.collaborators$;
   }
 
 
@@ -123,26 +136,26 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         return this.collaborators.filter(option => option.name.toLowerCase().includes(filterValue));
     }
 
-  getAllCollaborators(){
-        this.collaborators = this._assignmentOccupationService.getCollaboratorsJson();
-  }
+    getAllCollaborators(){
+        //this._assignmentOccupationService.getCollaborators();
+    }
 
-  getProject() {
-      this.project  = {
-          id: 150,
-          name: 'Originacion',
-          description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-          endDate: '2022-02-05',
-          initDate: '2022-10-25',
-          skills: 'Angular-SpringBoot',
-          client: {
-              id: 4,
-              name: 'Credix',
-              description: 'Entidad financiera ubicada en Costa Rica'
-          },
-          collaborators: this.collaborators
-      };
-  }
+    getProject() {
+        this.project  = {
+            id: 150,
+            name: 'Originacion',
+            description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
+            endDate: '2022-02-05',
+            initDate: '2022-10-25',
+            skills: 'Angular-SpringBoot',
+            client: {
+                id: 4,
+                name: 'Credix',
+                description: 'Entidad financiera ubicada en Costa Rica'
+            },
+            collaborators: this.collaborators
+        };
+    }
 
   getActivitys() {
       this.activity = this._assignmentOccupationService.activitys;
