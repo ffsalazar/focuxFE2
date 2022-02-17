@@ -186,7 +186,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-             // Get the categories
+
+             // Get the requests
         this._requestService.requestp$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((requestp: RequestPeriod[]) => {
@@ -197,8 +198,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
-        // Get the clients
 
+        // Get the clients
         this._requestService.clients$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((clients: Client[]) => {
@@ -209,7 +210,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+            
+        // Get the Commercial Area
         this._requestService.commerca$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((commercialArea: CommercialArea[]) => {
@@ -219,18 +221,19 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+        
+        // Get the Status
         this._requestService.status$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((status: Status[]) => {
 
                 // Update the status
                 this.status = status;
-                console.log("clients: ", this.clients);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
         
+        // Get the TypeRequest
         this._requestService.typereq$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((typeRequest: TypeRequest[]) => {
@@ -267,7 +270,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.request$ = this._requestService.requests$;
         
         this._requestService.getRequests().subscribe(response => {
-            console.log(response);
         });
 
         // Get the tags
@@ -459,6 +461,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Fill the formGroup step2
         this.step2.patchValue(request);
+        this.step2.get('responsibleRequest').setValue('Freddy Salazar');
         this.step2.get('dateRequest').setValue(request.dateRequest);
         this.step2.get('technicalArea').setValue(request.technicalArea.id);
         this.step2.get('status').setValue(request.status.id);
@@ -470,8 +473,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         
         // Fill the formGroup step4
         this.step4.patchValue(request);
-
-        console.log("form lleno: ", this.horizontalStepperForm);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -537,26 +538,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             this._changeDetectorRef.markForCheck();
         });
     }
-
-    /**
-     * Update the selected product using the form data
-     */
-    // updateSelectedRequest(): void
-    // {
-    //     // Get the product object
-    //     const product = this.selecteProductForm.getRawValue();
-
-    //     // Remove the currentImageIndex field
-    //     delete product.currentImageIndex;
-
-    //     // Update the product on the server
-    //     this._inventoryService.updateProduct(product.id, product).subscribe(() => {
-
-    //         // Show a success message
-    //         this.showFlashMessage('success');
-    //     });
-    // }
-
 
     /**
      * Update the selected request using the form data

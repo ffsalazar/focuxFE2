@@ -166,95 +166,10 @@ export class RequestService
         );
     }
 
-    
-
-    // /**
-    //  * Get products
-    //  *
-    //  *
-    //  * @param page
-    //  * @param size
-    //  * @param sort
-    //  * @param order
-    //  * @param search
-    //  */
-    // getRequest(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
-    //     Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
-    // {
-    //     console.log("entrooooo");
-    //     return this._httpClient.get<{ pagination: InventoryPagination; products: InventoryProduct[] }>('api/apps/ecommerce/inventory/products', {
-    //         params: {
-    //             page: '' + page,
-    //             size: '' + size,
-    //             sort,
-    //             order,
-    //             search
-    //         }
-    //     }).pipe(
-    //         tap((response) => {
-
-    //             console.log("response: ", response);
-    //             // this._pagination.next(response.pagination);
-    //             // this._products.next(response.products);
-
-    //             this._request.next(this.request);
-    //         })
-    //     );
-    // }
     /**
-     * Search collaborators with given query
-     *
-     * @param query
-     */
-    //  searchCollaborator(query: string): Observable<Collaborator[]>
-    //  {
-    //      return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
-    //          params: {query}
-    //      }).pipe(
-    //          tap((collaborators) => {
-    //              let collaboratorFiltered : any[]=[];
-    //              collaborators.forEach((collaborator) => {
-    //                  if (collaborator.isActive != 0){
-    //                      collaboratorFiltered.push(collaborator);
-    //                  }
-    //              });
-    //              // If the query exists...
-    //              if ( query )
-    //              {
-    //                  // Filter the collaborators
- 
-    //                  collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
-    //                  function compare(a: Collaborator, b: Collaborator) {
-    //                      if (a.name < b.name) return -1;
-    //                      if (a.name > b.name) return 1;
-    //                      // Their names are equal
-    //                      if (a.lastName < b.lastName) return -1;
-    //                      if (a.lastName > b.lastName) return 1;
- 
-    //                      return 0;
-    //                  }
-    //                  collaboratorFiltered.sort(compare);
-    //                  this._collaborators.next(collaboratorFiltered);
-    //              }else{
-    //                  function compare(a: Collaborator, b: Collaborator) {
-    //                      if (a.name < b.name) return -1;
-    //                      if (a.name > b.name) return 1;
-    //                      // Their names are equal
-    //                      if (a.lastName < b.lastName) return -1;
-    //                      if (a.lastName > b.lastName) return 1;
- 
-    //                      return 0;
-    //                 }
-    //                 collaboratorFiltered.sort(compare);
-    //                 this._collaborators.next(collaboratorFiltered);
-    //             }
- 
-    //         })
-    //     );
-    // }
-
-    /**
-     * Get request by id
+     * Get rewquest by id
+     * @param id 
+     * @returns 
      */
     getRequestById(id: number): Observable<Request>
     {
@@ -285,7 +200,7 @@ export class RequestService
     }
 
     /**
-     * 
+     * Search Request
      * @param query 
      */
     searchRequest(query: string): Observable<Request[]> {
@@ -478,59 +393,6 @@ export class RequestService
      */
     updateRequest(id: number, request: Request): Observable<any>
     {
-        console.log("updateRequest: ", request);
-
-        const newRequest = {
-            id: 6,
-            "client": {
-              "id": 1
-            },
-            "commercialArea": {
-              "id": 1
-            },
-            "typeRequest": {
-              "id": 1
-            },
-            "titleRequest": "Petición de Tesis :)",
-            "descriptionRequest": "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
-            "responsibleRequest": {
-              "id": 3
-            },
-            "priorityOrder": 1,
-            "dateRequest": "2022-02-07T04:00:00.000+00:00",
-            "dateInit": "2022-02-07T04:00:00.000+00:00",
-            "datePlanEnd": "2022-02-08T04:00:00.000+00:00",
-            "dateRealEnd": "2022-02-09T04:00:00.000+00:00",
-            "status": {
-              "id": 1
-            },
-            "completionPercentage": 30,
-            "deviationPercentage": 70,
-            "deliverablesCompletedIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
-            "pendingActivitiesIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
-            "commentsIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
-            "updateDate": "2022-02-07T04:00:00.000+00:00",
-            "commentsClient": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
-            "technicalArea": {
-              "id": 1
-            },
-            "category": {
-              "id": 1
-            },
-            "internalFeedbackIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
-            "solverGroup": {
-              "id": 1
-            },
-            "requestPeriod": {
-              "id": 1
-            },
-            "dateInitPause": "2022-02-08T04:00:00.000+00:00",
-            "dateEndPause": "2022-02-08T04:00:00.000+00:00",
-            "totalPauseDays": 1,
-            "isActive": 1,
-            "code": "asd21"
-        }
-
         return this.requests$.pipe(
             take(1),
             switchMap(requests => this._httpClient.put<Request> ('http://localhost:1616/api/v1/followup/requests/request/' + id, 
@@ -547,7 +409,6 @@ export class RequestService
                     // Update the products
                     this._requests.next(requests);
 
-                    console.log("Se actualizo");
                     this._isOpenModal.next(true);
                     // // Return the updated product
                     return updatedRequest;

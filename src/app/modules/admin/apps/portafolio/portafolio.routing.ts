@@ -18,17 +18,17 @@ export const portafolioRoutes: Route[] = [
                 path     : '',
                 component: RequestListComponent,
                 resolve  : {
-                    brands    : RequestBrandsResolver,
-                    categories: RequestCategoriesResolver,
-                    products  : RequestProductsResolver,
-                    tags      : RequestTagsResolver,
-                    vendors   : RequestVendorsResolver,
-                    clients   : RequestClientsResolver,
-                    commerc  : RequestComercAreaResolver,
-                    status: RequestStatusResolver,
-                    requestp: RequestPeriodResolver,
-                    typereq: RequestTypeResolver,
-                    areatech: TechnicalAreaResolver
+                    brands      : RequestBrandsResolver,
+                    categories  : RequestCategoriesResolver,
+                    products    : RequestProductsResolver,
+                    tags        : RequestTagsResolver,
+                    vendors     : RequestVendorsResolver,
+                    clients     : RequestClientsResolver,
+                    commerc     : RequestComercAreaResolver,
+                    status      : RequestStatusResolver,
+                    requestp    : RequestPeriodResolver,
+                    typereq     : RequestTypeResolver,
+                    areatech    : TechnicalAreaResolver
                 }
             }
         ]
