@@ -89,9 +89,6 @@ export class DepartmentsDetailsComponent implements OnInit, OnDestroy
             .subscribe((department: Department) => {
 
 
-                console.log(department)
-
-
                 // Open the drawer in case it is closed
                 this._departmentsListComponent.matDrawer.open();
 
@@ -239,15 +236,9 @@ export class DepartmentsDetailsComponent implements OnInit, OnDestroy
                 this._departmentsService.deleteDepartment(this.department)
                     .subscribe(() => {
                         // Navigate to the next department if available
-                        if ( nextDepartmentId )
-                        {
-                            this._router.navigate(['../', nextDepartmentId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

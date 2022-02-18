@@ -152,7 +152,7 @@
                     <div class="row">
                         <div class="mt-8">
                             <mat-form-field class="fuse-mat-no-subscript w-full">
-                                <mat-label>Nombres</mat-label>
+                                <mat-label>Nombre del status</mat-label>
                                 <mat-icon
                                     matPrefix
                                     class="hidden sm:flex icon-size-5"
@@ -177,8 +177,8 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
-                            <mat-select [placeholder]="status.typeStatus.name" formControlName="typeStatus" (selectionChange)="filterPositionsByTypeStatus()">
-                                <mat-option *ngFor="let statusTypes of filteredTypeStatuss" [value]="statusTypes.id">{{statusTypes.name}}</mat-option>
+                            <mat-select [placeholder]="'tipo de status'" formControlName="typeStatus" >
+                                <mat-option *ngFor="let statusTypes of filteredTypeStatuses" [value]="statusTypes.id">{{statusTypes.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>

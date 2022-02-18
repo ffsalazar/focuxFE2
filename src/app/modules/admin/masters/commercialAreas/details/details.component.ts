@@ -115,7 +115,7 @@ export class CommercialAreasDetailsComponent implements OnInit, OnDestroy
 
 
 
-        if(this.commercialArea.name === 'Nueva area comercial'){
+        if(this.commercialArea.name === 'Nueva área comercial'){
             this.editMode = true;
         }
 
@@ -239,15 +239,9 @@ export class CommercialAreasDetailsComponent implements OnInit, OnDestroy
                 this._commercialAreasService.deleteCommercialArea(this.commercialArea)
                     .subscribe(() => {
                         // Navigate to the next commercialArea if available
-                        if ( nextCommercialAreaId )
-                        {
-                            this._router.navigate(['../', nextCommercialAreaId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

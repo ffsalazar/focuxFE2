@@ -177,7 +177,7 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
-                            <mat-select [placeholder]="client.businessType.name" formControlName="businessType" (selectionChange)="filterPositionsByBusinessType()">
+                            <mat-select [placeholder]="client.businessType.name" formControlName="businessType">
                                 <mat-option *ngFor="let businessType of filteredBusinessTypes" [value]="businessType.id">{{businessType.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>

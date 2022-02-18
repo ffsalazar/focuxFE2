@@ -210,6 +210,15 @@ export class TechnicalAreasService
                     // Update the technicalArea
                     technicalAreas[index] = updatedTechnicalArea;
 
+                    function compare(a: TechnicalArea, b: TechnicalArea) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    technicalAreas.sort(compare);
+
                     // Update the technicalAreas
                     this._technicalAreas.next(technicalAreas);
 
@@ -249,6 +258,17 @@ export class TechnicalAreasService
 
                     // Update the technicalArea
                     technicalAreas[index] = updatedTechnicalArea;
+
+                    technicalAreas.splice(index,1);
+
+                    function compare(a: TechnicalArea, b: TechnicalArea) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    technicalAreas.sort(compare);
 
                     // Update the technicalAreas
                     this._technicalAreas.next(technicalAreas);

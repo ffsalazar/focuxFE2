@@ -169,7 +169,7 @@ export class CommercialAreasService
 
         {
             "code": "COD",
-            "name": "Nueva area comercial",
+            "name": "Nueva área comercial",
             "description": "Nueva descripcion",
             "isActive": 1
         }
@@ -196,7 +196,7 @@ export class CommercialAreasService
      */
     updateCommercialArea(id: number, commercialArea: CommercialArea): Observable<CommercialArea>
     {
-       console.log(JSON.stringify(commercialArea));
+
         return this.commercialAreas$.pipe(
             take(1),
             switchMap(commercialAreas => this._httpClient.put<CommercialArea>('http://localhost:1616/api/v1/followup/commercialareas/commercialarea/' + commercialArea.id,
@@ -209,6 +209,16 @@ export class CommercialAreasService
 
                     // Update the commercialArea
                     commercialAreas[index] = updatedCommercialArea;
+
+                    function compare(a: CommercialArea, b: CommercialArea) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    commercialAreas.sort(compare);
+
 
                     // Update the commercialAreas
                     this._commercialAreas.next(commercialAreas);
@@ -249,6 +259,8 @@ export class CommercialAreasService
 
                     // Update the commercialArea
                     commercialAreas[index] = updatedCommercialArea;
+
+                    commercialAreas.splice(index,1);
 
                     // Update the commercialAreas
                     this._commercialAreas.next(commercialAreas);

@@ -30,8 +30,8 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     status: Status;
     statusForm: FormGroup;
     statuses: Status[];
-    TypeStatuss: TypeStatus[];
-    filteredTypeStatuss: TypeStatus[];
+    typeStatuses: TypeStatus[];
+    filteredTypeStatuses: TypeStatus[];
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -114,13 +114,13 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the status
+        // Get the typesstatus
 
         this._statusesService.typeStatuses$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((typeStatuses: TypeStatus[]) => {
-                this.TypeStatuss = typeStatuses;
-                this.filteredTypeStatuss = typeStatuses;
+                this.typeStatuses = typeStatuses;
+                this.filteredTypeStatuses = typeStatuses;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -190,7 +190,7 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     {
         // Get the status object
         let status = this.statusForm.getRawValue();
-        status.typeStatus = this.TypeStatuss.find(value => value.id == status.typeStatus);
+        status.typeStatus = this.typeStatuses.find(value => value.id == status.typeStatus);
 
         // Update the status on the server
         console.log(status)
@@ -204,7 +204,7 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     filterPositionsByTypeStatus() {
         let TypeStatusSelected = this.statusForm.get("typeStatus").value;
 
-        this.filteredTypeStatuss = this.TypeStatuss.filter(elem => elem.id === TypeStatusSelected)
+        this.filteredTypeStatuses = this.typeStatuses.filter(elem => elem.id === TypeStatusSelected)
 
     }
 
@@ -257,15 +257,9 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
                 this._statusesService.deleteStatus(this.status)
                     .subscribe(() => {
                         // Navigate to the next status if available
-                        if ( nextStatusId )
-                        {
-                            this._router.navigate(['../', nextStatusId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

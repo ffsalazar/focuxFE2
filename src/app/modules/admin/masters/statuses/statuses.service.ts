@@ -212,12 +212,21 @@ export class StatusesService
                 status
             ).pipe(
                 map((updatedStatus) => {
-                    console.log(updatedStatus)
+
                     // Find the index of the updated status
                     const index = statuses.findIndex(item => item.id === id);
 
                     // Update the status
                     statuses[index] = updatedStatus;
+
+                    function compare(a: Status, b: Status) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    statuses.sort(compare);
 
                     // Update the statuses
                     this._statuses.next(statuses);
@@ -258,6 +267,17 @@ export class StatusesService
 
                     // Update the status
                     statuses[index] = updatedStatus;
+
+                    statuses.splice(index,1);
+
+                    function compare(a: Status, b: Status) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    statuses.sort(compare);
 
                     // Update the statuses
                     this._statuses.next(statuses);

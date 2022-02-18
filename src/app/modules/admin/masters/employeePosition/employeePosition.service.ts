@@ -223,6 +223,18 @@ export class EmployeePositionsService
                     // Update the employeePosition
                     employeePositions[index] = updatedEmployeePosition;
 
+
+
+
+                    function compare(a: EmployeePosition, b: EmployeePosition) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    employeePositions.sort(compare);
+
                     // Update the employeePositions
                     this._employeePositions.next(employeePositions);
 
@@ -262,6 +274,18 @@ export class EmployeePositionsService
 
                     // Update the employeePosition
                     employeePositions[index] = updatedEmployeePosition;
+
+                    employeePositions.splice(index,1);
+
+                    function compare(a: EmployeePosition, b: EmployeePosition) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    employeePositions.sort(compare);
+
 
                     // Update the employeePositions
                     this._employeePositions.next(employeePositions);

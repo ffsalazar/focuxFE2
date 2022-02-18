@@ -58,8 +58,8 @@ export interface Department
 export interface EmployeePosition
 {
     id: number;
-    name: String;
-    description: String;
+    name: string;
+    description: string;
     isActive: number;
     department: Department;
 }
