@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Activity, Collaborator, Project} from "../assignment-occupation.types";
+import { Activity, Collaborator, Project, Client } from "../assignment-occupation.types";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {FormControl} from "@angular/forms";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
@@ -7,7 +7,8 @@ import {map, startWith, takeUntil} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ActivatedRoute, Router} from "@angular/router";
-import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
+//import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-partner-search',
@@ -24,13 +25,35 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     collaborators$: any;
 
     collaborators: Collaborator[] = [];
+    clients: Client[] = [];
 
     activity: Activity[] = [];
     isLoading: boolean = false;
-    filteredOptions: Observable<any[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    projects: Project[] = [
+    array = [];
+
+    // Prueba autocomplate
+    //myControl = new FormControl();
+    options: string[] = ['One', 'Two', 'Three'];
+
+    // FormControls
+
+    //clientControl = new FormControl();
+
+
+    filteredOptions: Observable<string[]>;
+    filteredClients: Observable<string[]>;
+
+    filterValue = 'Hola mundo';
+    
+    filterForm: FormGroup = this._fb.group({
+        myControl: [''],
+        clientControl: ['']
+    });
+
+
+    projects: any[] = [
         {
             id: 150,
             name: 'Originacion',
@@ -88,15 +111,17 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             collaborators: this.collaborators
         }
     ];
-    project: Project = undefined;
+    project: any = undefined;
     tabIndex = 0;
 
+    prueba = [{id: 1, name: 'Dog'}, {id: 2, name: 'Cat'}];
 
   constructor(
       private _assignmentOccupationService: AssingmentOccupationService,
       private _changeDetectorRef: ChangeDetectorRef,
       private _router: Router,
       private activateRouter: ActivatedRoute,
+      private _fb: FormBuilder,
   ) { }
 
   ngOnInit(): void {
@@ -105,21 +130,81 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
       this.getAllCollaborators();
       this.filterEvent();
 
-      // Get the collaborators
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterr(value)),
+    );
 
-    //   this._assignmentOccupationService.collaborators$
-    //     .pipe(
-    //         takeUntil(this._unsubscribeAll)
-    //     ).subscribe(collaborators => {
-    //         console.log(collaborators);
-    //         this.collaborators = collaborators;
-    //     });
+    this.filteredClients = this.clientControl.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterClient(value)),
+    );
 
-    //this._assignmentOccupationService.getCollaborators().subscribe(response => console.log(response));
+    this.filterForm.valueChanges.subscribe(value => {
+        console.log(value);
+        let filteredCollaborators = [];
+
+        if ( value.myControl !== null && value.myControl !== '' ) {
+            filteredCollaborators = this.collaborators.filter(item => item.name === value.myControl );
+            console.log("filteredCollaborators: ", filteredCollaborators);
+        }
+
+        if ( value.clientControl !== null && value.clientControl !== '' ) {
+            filteredCollaborators = this.collaborators.filter(item => item?.client.name === value.clientControl );
+            console.log("filteredCollaborators: ", filteredCollaborators);
+        }
+
+    });
+    
+    this._assignmentOccupationService.collaborators$
+        .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(collaborators => {
+                this.collaborators = collaborators;
+                this.collaborators[0].client.name = "Epa";
+
+                console.log("collaborators: ", this.collaborators);
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            })
+
+    this._assignmentOccupationService.clients$
+        .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(clients => {
+                console.log("clients: ", clients);
+                this.clients = clients;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            })
     
     this.collaborators$ = this._assignmentOccupationService.collaborators$;
+    
   }
 
+    get myControl() {
+        return this.filterForm.get('myControl');
+    }
+
+    get clientControl() {
+        return this.filterForm.get('clientControl');
+    }
+
+    private _filterClient(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        let val = this.clients.map(option => option.name);
+        return val.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    private _filterr(value: string): string[] {
+        console.log("value: ", value);
+        const filterValue = value.toLowerCase();
+
+    //     return this.options.map(x => x.color).filter(option =>
+    // option.toLowerCase().includes(val.toLowerCase()));
+
+        let val = this.collaborators.map(option => option.name);
+        return val.filter(option => option.toLowerCase().includes(filterValue));
+    }
 
   filterEvent() {
       this.filteredOptions = this.myControlTest.valueChanges

@@ -17,6 +17,7 @@ export interface Collaborator {
     phones:                Phone[];
     assignation?:           string;
     progress?:              number;
+    client?:                 Client;
 }
 
 export interface EmployeePosition {
@@ -26,6 +27,16 @@ export interface EmployeePosition {
     description: string;
     isActive:    number;
     code?:       string;
+}
+
+
+export interface Client
+{
+    id: number;
+    name: string;
+    description: string;
+    isActive: number;
+    businessType: any;
 }
 
 export interface KnowledgeElement {
@@ -52,7 +63,7 @@ export interface Project {
     id: number;
     description: string;
     name: string;
-    client: Client;
+    client: any;
     skills: string;
     collaborators: Collaborator[];
     initDate: string;
@@ -61,11 +72,11 @@ export interface Project {
 
 
 
-export interface Client {
-    id: number;
-    name: string;
-    description: string;
-}
+// export interface Client {
+//     id: number;
+//     name: string;
+//     description: string;
+// }
 
 export interface Activity {
     id: number;
