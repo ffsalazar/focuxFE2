@@ -197,9 +197,9 @@ export class TypeStatusDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar tipo de estatus',
+            title  : 'Borrar Departamento',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este tipo de estatus? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este typeStatuo? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'
@@ -239,15 +239,10 @@ export class TypeStatusDetailsComponent implements OnInit, OnDestroy
                 this._typeStatusService.deleteTypeStatu(this.typeStatu)
                     .subscribe(() => {
                         // Navigate to the next typeStatu if available
-                        if ( nextTypeStatuId )
-                        {
-                            this._router.navigate(['../', nextTypeStatuId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

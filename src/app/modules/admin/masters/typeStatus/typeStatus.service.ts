@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { TypeStatu } from 'app/modules/admin/masters/typeStatus/typeStatus.types';
+import {Collaborator} from "../../dashboards/collaborators/collaborators.types";
+import {BusinessType} from "../businessType/businessTypes.types";
 
 @Injectable({
     providedIn: 'root'
@@ -210,6 +212,16 @@ export class TypeStatusService
                     // Update the typeStatu
                     typeStatus[index] = updatedTypeStatu;
 
+                    function compare(a: TypeStatu, b: TypeStatu) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    typeStatus.sort(compare);
+
+
                     // Update the typeStatus
                     this._typeStatus.next(typeStatus);
 
@@ -250,6 +262,9 @@ export class TypeStatusService
                     // Update the typeStatu
                     typeStatus[index] = updatedTypeStatu;
 
+                    // Delete the typeStatus
+                    typeStatus.splice(index, 1);
+
                     // Update the typeStatus
                     this._typeStatus.next(typeStatus);
 
@@ -285,6 +300,18 @@ export class TypeStatusService
 
                     // Update the typeStatu
                     typeStatus[index] = updatedTypeStatu;
+
+                    // Delete the typeStatus
+                    typeStatus.splice(index, 1);
+
+                    function compare(a: TypeStatu, b: TypeStatu) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    typeStatus.sort(compare);
 
                     // Update the typeStatus
                     this._typeStatus.next(typeStatus);
