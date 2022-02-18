@@ -119,8 +119,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 (this.collaboratorForm.get('phones') as FormArray).clear();
 
-                // Patch values to the form
-                console.log("collaborator: ", collaborator);
+                // Patch values to the form                
                 this.collaboratorForm.patchValue(collaborator);
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
@@ -145,6 +144,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                             })
                         );
                     });
+                    console.log(phoneNumbersFormGroups)
                 }
                 else
                 {
@@ -162,7 +162,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
                     (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
                 });
-
+                
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
 
