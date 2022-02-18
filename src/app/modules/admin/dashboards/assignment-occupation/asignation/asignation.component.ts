@@ -30,6 +30,8 @@ import { Router } from '@angular/router';
 export class AsignationComponent implements OnInit, OnDestroy {
     collaboratorFormGroup: FormGroup;
     myControlTest = new FormControl();
+    collaboratorForm = new FormControl().disabled;
+    
 
     collaborators$: Observable<Collaborator[]>;
     collaboratorsArr: Collaborator[] = [];
@@ -40,6 +42,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     formFieldHelpers: string[] = [''];
     tabIndex = 0;
+    showObservation = false;
       constructor(private _assignmentOccupationService: AssingmentOccupationService,
                   private _changeDetectorRef: ChangeDetectorRef,
                   private _formBuilder: FormBuilder,
@@ -213,6 +216,15 @@ export class AsignationComponent implements OnInit, OnDestroy {
       });
       this.tabIndex = index;
       this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
+  }
+
+  detail(){
+      if(this.showObservation=== false){
+          this.showObservation = true;
+      }else{
+          this.showObservation = false;
+      }
+      
   }
 
 }
