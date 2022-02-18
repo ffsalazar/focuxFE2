@@ -493,7 +493,7 @@
                    <div class="mt-8">
                         <div class="space-y-4">
                             <ng-container *ngFor="let phoneNumber of collaboratorForm.get('phones')['controls']; let i = index; let first = first; let last = last; trackBy: trackByFn">
-                                <ng-container *ngIf="phoneNumber.isActive != 0">
+                                <ng-container *ngIf="phoneNumber.value.isActive !== 0">
                                     <div class="relative flex">
                                         <mat-form-field class="fuse-mat-no-subscript flex-auto">
                                             <mat-label *ngIf="first">tel&eacute;fono</mat-label>
