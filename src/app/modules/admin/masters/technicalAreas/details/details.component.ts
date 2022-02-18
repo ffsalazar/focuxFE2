@@ -115,7 +115,7 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
 
 
 
-        if(this.technicalArea.name === 'Nueva &aacute;rea t&eacute;cnica'){
+        if(this.technicalArea.name === 'Nueva área técnica'){
             this.editMode = true;
         }
 
@@ -156,7 +156,7 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
      */
     toggleEditMode(editMode: boolean | null = null): void
     {
-        console.log(this.technicalAreaForm.value);
+
 
         if ( editMode === null )
         {
@@ -238,16 +238,8 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
                 this.technicalArea.isActive = 0;
                 this._technicalAreasService.deleteTechnicalArea(this.technicalArea)
                     .subscribe(() => {
-                        // Navigate to the next technicalArea if available
-                        if ( nextTechnicalAreaId )
-                        {
-                            this._router.navigate(['../', nextTechnicalAreaId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

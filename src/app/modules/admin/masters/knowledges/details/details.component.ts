@@ -239,15 +239,9 @@ export class KnowledgesDetailsComponent implements OnInit, OnDestroy
                 this._knowledgesService.deleteKnowledge(this.knowledge)
                     .subscribe(() => {
                         // Navigate to the next knowledge if available
-                        if ( nextKnowledgeId )
-                        {
-                            this._router.navigate(['../', nextKnowledgeId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);
