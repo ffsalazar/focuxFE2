@@ -239,15 +239,8 @@ export class BusinessTypesDetailsComponent implements OnInit, OnDestroy
                 this._businessTypesService.deleteBusinessType(this.businessType)
                     .subscribe(() => {
                         // Navigate to the next businessType if available
-                        if ( nextBusinessTypeId )
-                        {
-                            this._router.navigate(['../', nextBusinessTypeId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

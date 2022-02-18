@@ -219,6 +219,15 @@ export class ClientsService
                     // Update the client
                     clients[index] = updatedClient;
 
+                    function compare(a: Client, b: Client) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    clients.sort(compare);
+
                     // Update the clients
                     this._clients.next(clients);
 
@@ -258,6 +267,8 @@ export class ClientsService
 
                     // Update the client
                     clients[index] = updatedClient;
+
+                    clients.splice(index,1);
 
                     // Update the clients
                     this._clients.next(clients);
@@ -336,7 +347,7 @@ export class ClientsService
                        businessTypeFiltered.push(businessType);
                 }
                 });
-                this._clients.next(businessTypeFiltered);
+                this._businessTypes.next(businessTypeFiltered);
             })
         );
     }

@@ -209,6 +209,15 @@ export class BusinessTypesService
                     // Update the businessType
                     businessTypes[index] = updatedBusinessType;
 
+                    function compare(a: BusinessType, b: BusinessType) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    businessTypes.sort(compare);
+
                     // Update the businessTypes
                     this._businessTypes.next(businessTypes);
 
@@ -248,6 +257,8 @@ export class BusinessTypesService
 
                     // Update the businessType
                     businessTypes[index] = updatedBusinessType;
+
+                    businessTypes.splice(index,1);
 
 
                     function compare(a: BusinessType, b: BusinessType) {
