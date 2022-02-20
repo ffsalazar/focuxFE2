@@ -33,6 +33,8 @@ export class RequestService
 
     private _isOpenModal: Subject<boolean | null> = new Subject(); 
 
+    public requests: Request[];
+
     request: Request;
 
     /**
@@ -122,6 +124,14 @@ export class RequestService
     get clients$(): Observable<Client[]>
     {
         return this._clients.asObservable();
+    }
+
+    /**
+     * Setter for request
+     */
+    setRequests(requests: Request[])
+    {
+        this._requests.next(requests);
     }
 
     /**
@@ -257,6 +267,13 @@ export class RequestService
                 // Filter inactive request 
                 requests = requests.filter(item => item.isActive !== 0);
 
+                requests[0].commercialArea.name = 'TI';
+                requests[1].commercialArea.name = 'TI';
+                requests[2].commercialArea.name = 'TI';
+                
+                this.requests = requests;
+
+                
                 // Emit next value 
                 this._requests.next(requests);
             })

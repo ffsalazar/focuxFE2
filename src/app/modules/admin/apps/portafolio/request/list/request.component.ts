@@ -4,7 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { merge, Observable, Subject } from 'rxjs';
-import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, switchMap, takeUntil, startWith } from 'rxjs/operators';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
@@ -79,6 +79,20 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do']
     alert: boolean = false;
     successSave: String = "";
+
+    // Form Controls
+    filterGroupForm: FormGroup;
+
+    // Observables
+    filteredClients: Observable<string[]>;
+    filteredCommercialArea: Observable<string[]>;
+    filteredStatus: Observable<string[]>;
+
+    // variables
+    requests: Request[] = [];
+    requestsAux: Request[] = [];
+
+    /*
     /**
      * Constructor
      */
@@ -103,31 +117,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Create the selected product form
-        this.selecteProductForm = this._formBuilder.group({
-            id               : [''],
-            category         : [''],
-            name             : ['', [Validators.required]],
-            description      : [''],
-            tags             : [[]],
-            sku              : [''],
-            barcode          : [''],
-            brand            : [''],
-            vendor           : [''],
-            stock            : [''],
-            reserved         : [''],
-            cost             : [''],
-            basePrice        : [''],
-            taxPercent       : [''],
-            price            : [''],
-            weight           : [''],
-            thumbnail        : [''],
-            images           : [[]],
-            currentImageIndex: [0], // Image index that is currently being viewed
-            active           : [false]
-        });
-   
-
+        // Create the selected request form
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
                 //Info solicictud basica y compañia
@@ -174,6 +164,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }),
         });
 
+        // Create the fiterGroupForm 
+        this.filterGroupForm = this._formBuilder.group({
+            clientControl           : [],
+            commercialAreaControl   : [],
+            statusControl           : [],
+        });
+
+
+
         // Get the categories
         this._requestService.categories$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -218,6 +217,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 // Update the commercialArea
                 this.commercialArea = commercialArea;
+                this.commercialArea[0].name = "TI";
+                console.log("area comercial: ", this.commercialArea);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -229,6 +230,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 // Update the status
                 this.status = status;
+                this.status[0].name = 'nuevo status';
+                console.log("status: ", status);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -244,7 +247,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
         
-            this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
+        this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
             .subscribe((technicalArea: TechnicalArea[]) => {
 
                 // Update the technicalArea
@@ -255,6 +258,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
 
         // Get the pagination
+        
         this._inventoryService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: InventoryPagination) => {
@@ -266,10 +270,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
         
-        // Get the request
+        // Get the requests
         this.request$ = this._requestService.requests$;
         
-        this._requestService.getRequests().subscribe(response => {
+        // Get the requests
+        this._requestService.getRequests().subscribe(response => { 
+            // Filter inactive request
+            this.requests = response.filter(item => item.isActive !== 0);
+            console.log("response: ", this.requests);
+
         });
 
         // Get the tags
@@ -284,7 +293,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
@@ -298,8 +306,30 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe();
             
         this.handleChangeClients();
-        //this.disableSteps();
+        
+        // Filter the clients
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.clients)),
+        );
+        
+        // Filter the commercialArea
+        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.commercialArea)),
+        );
+
+        // Filter the status
+        this.filteredStatus = this.statusControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.status)),
+        );
+
+        this._handleChangeForm();
+
     }
+
+
 
     /**
      * After view init
@@ -384,10 +414,112 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     get step4 () {
         return this.horizontalStepperForm.get('step4');
     }
+
+    /**
+     * Getter for clientControl
+     */
+    get clientControl() {
+        return this.filterGroupForm.get('clientControl');
+    }
+
+    /**
+     * Getter for clientControl
+     */
+    get commercialAreaControl() {
+        return this.filterGroupForm.get('commercialAreaControl');
+    }
+
+    /**
+     * Getter for statusCotroln
+     */
+    get statusControl() {
+        return this.filterGroupForm.get('statusControl');
+    }
     
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+
+    private _handleChangeForm() {
+
+        // Subscribe from form's values
+        this.filterGroupForm.valueChanges.subscribe(controls => {
+            let requests: Request[] = this._requestService.requests;
+
+            // Filter requests by clients, commercialArea and status
+            requests = requests.filter(item =>
+                ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) && 
+                    (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
+                        (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase())))
+                    ));
+
+            this._requestService.setRequests(requests);
+            
+        });
+    }
+    
+    /**
+     * _filterClient
+     * @param value
+     *  
+     */
+    private _filterClient(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        let val = this.clients.map(option => option.name);
+        return val.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    /**
+     * _filterCommercialArea
+     * @param value
+     *  
+     */
+    private _filterCommercialArea(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        let val = this.commercialArea.map(option => option.name);
+        return val.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    /**
+     * _filter
+     * @param value
+     *  
+     */
+    private _filter(value: string, collection: any[]): string[] {
+        const filteredValue = value.toLowerCase();
+
+        const filteredCollection = collection.map(option => option.name);
+
+        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
+    }
+    
+    
+    /**
+     * getAmountRequestByOption
+     * @param name
+     * @param filterOption
+     *  
+     */
+    getAmountRequestByOption(name: string, filterOption: number) {
+
+        switch (filterOption) {
+            case 1:
+                return this.requests.filter(item => item?.client.name === name).length;
+                break;
+            case 2:
+                return this.requests.filter(item => item?.commercialArea.name === name).length;
+                break;
+            case 3:
+                return this.requests.filter(item => item?.status.name === name).length;
+                break;
+        
+            default:
+                break;
+        }
+    }
 
     /**
      * showDetail
