@@ -27,6 +27,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
     declarations: [
@@ -58,7 +59,8 @@ import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component
         SharedModule,
         MomentModule,
         MatMomentDateModule,
-        FuseAlertModule
+        FuseAlertModule,
+        MatAutocompleteModule,
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,

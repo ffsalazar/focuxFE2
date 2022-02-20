@@ -30,6 +30,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : ''
             },
+            {
+                id   : 'masters.portafolio.request',
+                title: 'Solicitudes',
+                type : 'basic',
+                icon : 'heroicons_outline:cash',
+                link : '/apps/portafolio/request'
+            },
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
@@ -86,12 +93,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         title: 'Estatus',
                         type : 'basic',
                         link : ''
-                    },
-                    {
-                        id   : 'masters.portafolio.request',
-                        title: 'Solicitudes',
-                        type : 'basic',
-                        link : '/apps/portafolio/request'
                     },
                     {
                         id   : 'masters.portafolio.typeStatus',

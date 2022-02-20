@@ -2,27 +2,56 @@
 
     <!-- Header -->
     <div
-        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 ">
         <!-- Loader -->
         <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
             <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
         <!-- Title -->
         <div class="text-4xl font-extrabold tracking-tight">Portafolio de Solicitudes</div>
-        <!-- Actions -->
-        <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-            <!-- Search -->
-            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
-                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                    [placeholder]="'Buscar Solicitudes'">
+        
+    </div>
+    <!-- Actions -->
+    <div style="justify-content: space-between;" class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4 border-b">
+        <!-- Search
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+            <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                [placeholder]="'Buscar Solicitudes'">
+        </mat-form-field> -->
+        <!-- Search client -->
+        <form [formGroup]="filterGroupForm">
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Cliente</mat-label>
+                <input type="text" matInput [formControl]="clientControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredClients | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
+                </mat-autocomplete>
             </mat-form-field>
-            <!-- Add request button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createRequest()">
-                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                <span class="ml-2 mr-1">Agregar</span>
-            </button>
-        </div>
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Area solucionador</mat-label>
+                <input type="text" matInput [formControl]="commercialAreaControl" [matAutocomplete]="autoCommercialArea">
+                <mat-autocomplete #autoCommercialArea="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredCommercialArea | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Estatus</mat-label>
+                <input type="text" matInput [formControl]="statusControl" [matAutocomplete]="autoStatus">
+                <mat-autocomplete #autoStatus="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredStatus | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+
+        <!-- Add request button -->
+        <button class="ml-4 mr-6" mat-flat-button [color]="'primary'" (click)="createRequest()">
+            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+            <span class="ml-2 mr-1">Agregar</span>
+        </button>
     </div>
 
     <!-- Main -->
