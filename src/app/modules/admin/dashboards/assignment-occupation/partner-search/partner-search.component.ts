@@ -31,28 +31,19 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     isLoading: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    array = [];
-
-    // Prueba autocomplate
-    //myControl = new FormControl();
-    options: string[] = ['One', 'Two', 'Three'];
-
     // FormControls
-
-    //clientControl = new FormControl();
-
+    
+    filterForm: FormGroup = this._fb.group({
+        myControl: [''],
+        requestControl: [''],
+        clientControl: ['']
+    });
 
     filteredOptions: Observable<string[]>;
     filteredClients: Observable<string[]>;
 
     filterValue = 'Hola mundo';
     
-    filterForm: FormGroup = this._fb.group({
-        myControl: [''],
-        clientControl: ['']
-    });
-
-
     projects: any[] = [
         {
             id: 150,
@@ -114,8 +105,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     project: any = undefined;
     tabIndex = 0;
 
-    prueba = [{id: 1, name: 'Dog'}, {id: 2, name: 'Cat'}];
-
   constructor(
       private _assignmentOccupationService: AssingmentOccupationService,
       private _changeDetectorRef: ChangeDetectorRef,
@@ -141,28 +130,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     );
 
     this.filterForm.valueChanges.subscribe(value => {
-        console.log(value);
         let filteredCollaborators = [];
-
-        if ( value.myControl !== null && value.myControl !== '' ) {
-            filteredCollaborators = this.collaborators.filter(item => item.name === value.myControl );
-            console.log("filteredCollaborators: ", filteredCollaborators);
-        }
-
-        if ( value.clientControl !== null && value.clientControl !== '' ) {
-            filteredCollaborators = this.collaborators.filter(item => item?.client.name === value.clientControl );
-            console.log("filteredCollaborators: ", filteredCollaborators);
-        }
-
     });
     
     this._assignmentOccupationService.collaborators$
         .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(collaborators => {
                 this.collaborators = collaborators;
-                this.collaborators[0].client.name = "Epa";
 
-                console.log("collaborators: ", this.collaborators);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             })
@@ -170,7 +145,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     this._assignmentOccupationService.clients$
         .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(clients => {
-                console.log("clients: ", clients);
                 this.clients = clients;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
