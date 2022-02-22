@@ -219,16 +219,17 @@ export class RequestTypeResolver implements Resolve<any>
     }
 }
 
-
 @Injectable({
     providedIn: 'root'
 })
-export class RequestProductsResolver implements Resolve<any>
+export class BusinessTypeResolver implements Resolve<any>
 {
     /**
      * Constructor
      */
-    constructor(private _inventoryService: InventoryService)
+    constructor(
+        private _requestService: RequestService,
+    )
     {
     }
 
@@ -242,9 +243,9 @@ export class RequestProductsResolver implements Resolve<any>
      * @param route
      * @param state
      */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
+    resolve(): Observable<TypeRequest[]>
     {
-        return this._inventoryService.getProducts();
+        return this._requestService.getBusinessType();           
     }
 }
 
@@ -307,30 +308,3 @@ export class TechnicalAreaResolver implements Resolve<any>
     }
 }
 
-@Injectable({
-    providedIn: 'root'
-})
-export class RequestVendorsResolver implements Resolve<any>
-{
-    /**
-     * Constructor
-     */
-    constructor(private _inventoryService: InventoryService)
-    {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<InventoryVendor[]>
-    {
-        return this._inventoryService.getVendors();
-    }
-}

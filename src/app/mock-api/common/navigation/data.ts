@@ -31,10 +31,24 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : ''
             },
             {
-                id   : 'masters.portafolio.request',
-                title: 'Solicitudes',
+                id   : 'dashboards.finance',
+                title: 'Asignación de Ocupación',
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
+                link : '/dashboards/assignment-occupation'
+            },
+            {
+                id   : 'dashboards.finance',
+                title: 'Gestion vacaciones',
+                type : 'basic',
+                icon : 'heroicons_outline:cash',
+                link : '/dashboards/vacations'
+            },
+            {
+                id   : 'masters.portafolio.request',
+                title: 'Portafolio de solicitudes',
+                type : 'basic',
+                icon : 'heroicons_outline:archive',
                 link : '/apps/portafolio/request'
             },
             /*{
@@ -84,7 +98,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             */{
                 id      : 'masters.portafolio',
-                title   : 'Portafolio',
+                title   : 'Maestros',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:archive',
                 children: [
