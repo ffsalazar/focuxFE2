@@ -1,7 +1,18 @@
 import { Route } from '@angular/router';
 import { RequestComponent} from "./request/request.component";
 
-import { RequestBrandsResolver, RequestCategoriesResolver, RequestClientsResolver, RequestComercAreaResolver, RequestPeriodResolver, RequestProductsResolver, RequestStatusResolver, RequestTagsResolver, RequestTypeResolver, RequestVendorsResolver, TechnicalAreaResolver } from 'app/modules/admin/apps/portafolio/request/request.resolvers';
+import {
+    RequestBrandsResolver,
+    RequestCategoriesResolver,
+    RequestClientsResolver,
+    RequestComercAreaResolver,
+    RequestPeriodResolver,
+    RequestStatusResolver,
+    RequestTagsResolver,
+    RequestTypeResolver,
+    TechnicalAreaResolver,
+    BusinessTypeResolver
+} from 'app/modules/admin/apps/portafolio/request/request.resolvers';
 import {RequestListComponent} from "./request/list/request.component";
 
 export const portafolioRoutes: Route[] = [
@@ -18,17 +29,16 @@ export const portafolioRoutes: Route[] = [
                 path     : '',
                 component: RequestListComponent,
                 resolve  : {
-                    brands      : RequestBrandsResolver,
-                    categories  : RequestCategoriesResolver,
-                    products    : RequestProductsResolver,
-                    tags        : RequestTagsResolver,
-                    vendors     : RequestVendorsResolver,
-                    clients     : RequestClientsResolver,
-                    commerc     : RequestComercAreaResolver,
-                    status      : RequestStatusResolver,
-                    requestp    : RequestPeriodResolver,
-                    typereq     : RequestTypeResolver,
-                    areatech    : TechnicalAreaResolver
+                    brands          : RequestBrandsResolver,
+                    categories      : RequestCategoriesResolver,
+                    tags            : RequestTagsResolver,
+                    clients         : RequestClientsResolver,
+                    commerc         : RequestComercAreaResolver,
+                    status          : RequestStatusResolver,
+                    requestp        : RequestPeriodResolver,
+                    typereq         : RequestTypeResolver,
+                    areatech        : TechnicalAreaResolver,
+                    businessType    : BusinessTypeResolver,
                 }
             }
         ]

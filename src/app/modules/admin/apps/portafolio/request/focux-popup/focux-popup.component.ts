@@ -21,6 +21,8 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
     isOpenModal: BehaviorSubject<Boolean>;
     isOpenModal$ = null
 
+    title: string;
+
     constructor(
         private requestService: RequestService,
 		public dialogRef: MatDialogRef<FocuxPopupComponent>,
@@ -31,6 +33,7 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.title = this.data.title == 'detail' ? 'Detalle de Solicitud' : 'Editar Solicitud';
     }
 
     ngAfterViewInit() {

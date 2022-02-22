@@ -28,6 +28,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
     declarations: [
@@ -61,6 +62,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         MatMomentDateModule,
         FuseAlertModule,
         MatAutocompleteModule,
+        MatTableModule,
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,

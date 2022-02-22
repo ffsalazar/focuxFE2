@@ -11,11 +11,10 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea  } from '../request.types';
-import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType } from '../request.types';
+import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseAlertService } from '@fuse/components/alert';
-
 
 @Component({
     selector       : 'request-list',
@@ -73,12 +72,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     status: Status[]; 
     requestp: RequestPeriod[];
     typeRequest: TypeRequest[];
-    technicalArea: TechnicalArea[]
+    technicalArea: TechnicalArea[];
+    businessType: BusinessType[];
     isEditing: boolean = false;
     isDetail: boolean = false;
     myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do']
     alert: boolean = false;
     successSave: String = "";
+    dataSource: Request[]
+    displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest', 
+    'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
     // Form Controls
     filterGroupForm: FormGroup;
@@ -87,6 +90,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     filteredClients: Observable<string[]>;
     filteredCommercialArea: Observable<string[]>;
     filteredStatus: Observable<string[]>;
+    filteredCustomerBranch: Observable<string[]>;
 
     // variables
     requests: Request[] = [];
@@ -117,6 +121,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
+
+       // Get the request
+       this.request$ = this._requestService.requests$;
+       this.request$.subscribe((valueReq: Request[]) => {
+         this.dataSource = valueReq;
+         this._changeDetectorRef.markForCheck();
+       });
+
         // Create the selected request form
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
@@ -169,9 +181,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             clientControl           : [],
             commercialAreaControl   : [],
             statusControl           : [],
+            customerBranchControl   : [],
         });
-
-
 
         // Get the categories
         this._requestService.categories$
@@ -217,8 +228,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 // Update the commercialArea
                 this.commercialArea = commercialArea;
-                this.commercialArea[0].name = "TI";
-                console.log("area comercial: ", this.commercialArea);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -230,8 +239,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 // Update the status
                 this.status = status;
-                this.status[0].name = 'nuevo status';
-                console.log("status: ", status);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -256,9 +263,18 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+        this._requestService.businessType$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((businessType: BusinessType[]) => {
+
+                console.table(businessType);
+                // Update the buninessType
+                this.businessType = businessType;
+                //Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Get the pagination
-        
         this._inventoryService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: InventoryPagination) => {
@@ -277,7 +293,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.getRequests().subscribe(response => { 
             // Filter inactive request
             this.requests = response.filter(item => item.isActive !== 0);
-            console.log("response: ", this.requests);
+            console.log(this.requests);
 
         });
 
@@ -323,6 +339,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.filteredStatus = this.statusControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filter(value, this.status)),
+        );
+
+        // Filter the status
+        this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.businessType)),
         );
 
         this._handleChangeForm();
@@ -430,10 +452,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * Getter for statusCotroln
+     * Getter for statusCotrol
      */
     get statusControl() {
         return this.filterGroupForm.get('statusControl');
+    }
+
+    /**
+     * Getter for customerBranchControl
+     */
+    get customerBranchControl() {
+        return this.filterGroupForm.get('customerBranchControl');
     }
     
     // -----------------------------------------------------------------------------------------------------
@@ -451,36 +480,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             requests = requests.filter(item =>
                 ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) && 
                     (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
-                        (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase())))
-                    ));
+                        (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase()))) &&
+                            (controls.customerBranchControl === null || ( controls.customerBranchControl.toLowerCase() === '' || item?.client?.businessType.name.toLowerCase().includes( controls.customerBranchControl.toLowerCase())))
+
+            ));
 
             this._requestService.setRequests(requests);
             
         });
-    }
-    
-    /**
-     * _filterClient
-     * @param value
-     *  
-     */
-    private _filterClient(value: string): string[] {
-        const filterValue = value.toLowerCase();
-
-        let val = this.clients.map(option => option.name);
-        return val.filter(option => option.toLowerCase().includes(filterValue));
-    }
-
-    /**
-     * _filterCommercialArea
-     * @param value
-     *  
-     */
-    private _filterCommercialArea(value: string): string[] {
-        const filterValue = value.toLowerCase();
-
-        let val = this.commercialArea.map(option => option.name);
-        return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 
     /**
@@ -515,6 +522,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             case 3:
                 return this.requests.filter(item => item?.status.name === name).length;
                 break;
+            case 4:
+                return this.requests.filter(item => item?.client.businessType.name === name).length;
+                break;
         
             default:
                 break;
@@ -528,18 +538,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     showDetail(id: number) {
 
+        console.log("showDetail");
         // If the request is already selected...
-        if ( this.selectedRequest && this.selectedRequest.id === id )
-        {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
+        // if ( this.selectedRequest && this.selectedRequest.id === id )
+        // {
+        //     // Close the details
+        //     this.closeDetails();
+        //     return;
+        // }
+
+        
+        //this._changeDetectorRef.markForCheck();
+        // this.fillDataFormWizzard(id);
 
         this.isDetail = true;
-
-        this._changeDetectorRef.markForCheck();
-        this.fillDataFormWizzard(id);
+        this.openPopup(id);
     }
 
     /**
@@ -826,20 +839,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         if ( this.isDetail || this.isEditing ) {
             this.fillDataFormWizzard(id);
         }
-        
+
+        //this.isDetail = this.isDetail ? false: true;
+
         this._requestService.open({
-            template: this.tplDetail, title: 'Editar Solicitud'
+            template: this.tplDetail, title: this.isDetail ? 'detail' : 'edit',
           },
           {width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
             if ( confirm ) {
-                
-                if ( this.isDetail ) {
-                    this.isDetail = false;
-                }
-
-                if ( this.isEditing ) {
-                    this.isEditing = false;
-                }
+            
+                this.isEditing = this.isEditing ? false: true;
+                this.isDetail = this.isDetail ? false: true;
 
                 this.selectedRequest = null;
                 

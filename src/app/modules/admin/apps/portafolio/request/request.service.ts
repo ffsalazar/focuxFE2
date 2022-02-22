@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData } from './request.types';
-import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData, BusinessType } from './request.types';
+import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent }  from './focux-popup/focux-popup.component';
 
@@ -30,7 +30,7 @@ export class RequestService
     private _requestp: BehaviorSubject<RequestPeriod[] | null> = new BehaviorSubject(null);
     private _typereq: BehaviorSubject<TypeRequest[] | null> = new BehaviorSubject(null);
     private _areatech: BehaviorSubject<TechnicalArea[] | null> = new BehaviorSubject(null);
-
+    private _businessType: BehaviorSubject<BusinessType[] | null> = new BehaviorSubject(null);
     private _isOpenModal: Subject<boolean | null> = new Subject(); 
 
     public requests: Request[];
@@ -147,17 +147,24 @@ export class RequestService
      }
 
     /**
-     * Getter for type request
+     * Getter for typeRequest
      */
     get typereq$(): Observable<TypeRequest []>{
        return this._typereq.asObservable()
     }
 
     /**
-     * Getter for type request
+     * Getter for isOpenModal
      */
     get isOpenModal$(): Observable<Boolean>{
        return this._isOpenModal.asObservable()
+    }
+
+    /**
+     * Getter for businessType
+     */
+    get businessType$(): Observable<BusinessType[]> {
+        return this._businessType.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -260,16 +267,16 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get Requests
+     */
     getRequests(): Observable<Request[]> {
         return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all').pipe(
             tap((requests) => {
 
                 // Filter inactive request 
                 requests = requests.filter(item => item.isActive !== 0);
-
-                requests[0].commercialArea.name = 'TI';
-                requests[1].commercialArea.name = 'TI';
-                requests[2].commercialArea.name = 'TI';
                 
                 this.requests = requests;
 
@@ -280,6 +287,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get Clients
+     */
     getClients(): Observable<Client[]> {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
             tap((clients) => {
@@ -289,6 +300,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get CommercialArea
+     */
     getComercArea(): Observable<CommercialArea[]> {
         return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all').pipe(
             tap((commerc) => {
@@ -298,6 +313,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get RequestPeriod
+     */
     getRequestPeriod(): Observable<RequestPeriod[]> {
         return this._httpClient.get<RequestPeriod[]>('http://localhost:1616/api/v1/followup/requestPeriod/all').pipe(
             tap((reqperiod) => {
@@ -306,7 +325,11 @@ export class RequestService
             })
         );
     }
-
+    
+    /**
+     * 
+     * Get TypeRequest
+     */
     getTypeRequest(): Observable<TypeRequest[]> {
         return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
             tap((typereq) => {
@@ -316,6 +339,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get Status
+     */
     getStatus(): Observable<Status[]> {
         return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/typestatuses/all').pipe(
             tap((status) => {
@@ -324,7 +351,11 @@ export class RequestService
             })
         );
     }
-
+    
+    /**
+     * 
+     * Get AreaTechical
+     */
     getAreaTech(): Observable<TechnicalArea[]> {
         return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all').pipe(
             tap((areatech) => {
@@ -334,7 +365,6 @@ export class RequestService
         );
     }
 
-    
     /**
      * Create product
      */
@@ -387,7 +417,12 @@ export class RequestService
             dateEndPause: '2022-02-08T04:00:00.000+00:00',
             totalPauseDays: 1,
             isActive: 1,
-            code: 'asd21'
+            code: 'asd21',
+            created: '',
+            createdby: '',
+            updated: '',
+            updatedby: '',
+            
         }
           
         return this.requests$.pipe(
@@ -477,6 +512,19 @@ export class RequestService
                     return isDeleted;
                 })
             ))
+        );
+    }
+
+    /**
+     * GetBusinessType
+     */
+    getBusinessType(): Observable<BusinessType[]>
+    {
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all/').pipe(
+            tap(businessType => {
+                
+                this._businessType.next(businessType);
+            })
         );
     }
 
