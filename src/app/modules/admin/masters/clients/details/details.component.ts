@@ -258,12 +258,12 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
                         // Navigate to the next client if available
                         if ( nextClientId )
                         {
-                            this._router.navigate(['../', nextClientId], {relativeTo: this._activatedRoute});
+                            //this._router.navigate(['../', nextClientId], {relativeTo: this._activatedRoute});
                         }
                         // Otherwise, navigate to the parent
                         else
                         {
-                            this._router.navigate(['../'], {relativeTo: this._activatedRoute});
+                            //this._router.navigate(['../'], {relativeTo: this._activatedRoute});
                         }
 
                         // Toggle the edit mode off
