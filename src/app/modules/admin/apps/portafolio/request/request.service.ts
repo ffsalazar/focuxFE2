@@ -280,7 +280,6 @@ export class RequestService
                 
                 this.requests = requests;
 
-                
                 // Emit next value 
                 this._requests.next(requests);
             })
@@ -372,7 +371,7 @@ export class RequestService
     {
         const newRequest = {
             client: {
-              id: 1
+              id: 4
             },
             commercialArea: {
               id: 1
@@ -455,13 +454,17 @@ export class RequestService
                     // Find the index of the updated product
                     const index = requests.findIndex(item => item.id === id);
 
-                    // // Update the product
+                    // Update the product
                     requests[index] = updatedRequest;
 
-                    // Update the products
+
+                    console.log("updateRequest: ", requests);
+                    // Close focuxPopup
+                    this._isOpenModal.next(true);
+
+                    // Update the requests
                     this._requests.next(requests);
 
-                    this._isOpenModal.next(true);
                     // // Return the updated product
                     return updatedRequest;
                 }),
@@ -470,13 +473,12 @@ export class RequestService
                     filter(item => item && item.id === id),
                     tap(() => {
 
+                        // Close focuxPopup
+                        this._isOpenModal.next(true);
+
                         // Update the product if it's selected
                         this._request.next(updatedRequest);
                         
-                        this._isOpenModal.next(true);
-                        //this._isOpenModal.complete();
-
-
                         // Return the updated product
                         return updatedRequest;
                     })
@@ -504,9 +506,12 @@ export class RequestService
                     // Delete the product
                     requests.splice(index, 1);
 
-                    // Update the products
-                    this._requests.next(requests);
+                    // Close focuxPopup
                     this._isOpenModal.next(false);
+
+
+                    // Update the requests
+                    this._requests.next(requests);
                     // Return the deleted status
                     
                     return isDeleted;
@@ -522,7 +527,7 @@ export class RequestService
     {
         return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all/').pipe(
             tap(businessType => {
-                
+
                 this._businessType.next(businessType);
             })
         );

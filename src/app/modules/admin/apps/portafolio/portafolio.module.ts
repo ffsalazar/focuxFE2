@@ -29,6 +29,7 @@ import { FuseAlertModule } from '@fuse/components/alert';
 import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { MatTableModule } from '@angular/material/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [
@@ -63,6 +64,7 @@ import { MatTableModule } from '@angular/material/table';
         FuseAlertModule,
         MatAutocompleteModule,
         MatTableModule,
+        MatProgressSpinnerModule
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,
