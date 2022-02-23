@@ -44,7 +44,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/vacations'
             },
-<<<<<<< HEAD
             {
                 id   : 'masters.portafolio.request',
                 title: 'Portafolio de solicitudes',
@@ -52,8 +51,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:archive',
                 link : '/apps/portafolio/request'
             },
-=======
->>>>>>> 4661ba21953e742df2c2f5ca77c3cfc82b894523
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
