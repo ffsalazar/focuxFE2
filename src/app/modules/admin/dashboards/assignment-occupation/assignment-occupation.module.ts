@@ -26,6 +26,7 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatTabsModule} from "@angular/material/tabs";
 import {FuseAlertModule} from "../../../../../@fuse/components/alert";
 import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
@@ -57,7 +58,8 @@ import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
         MatSortModule,
         MatTabsModule,
         FuseAlertModule,
-        FormsModule
+        FormsModule,
+        MatCheckboxModule
     ],
 })
 export class AssignmentOccupationModule { }

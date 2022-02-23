@@ -133,7 +133,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                     },
                     {
                         id   : 'masters.portafolio.businessType',
-                        title: 'tipo de negocio',
+                        title: 'Tipo de negocio',
                         type : 'basic',
                         link : '/masters/businessTypes'
                     }

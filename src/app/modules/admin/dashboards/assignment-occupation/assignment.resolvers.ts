@@ -25,8 +25,6 @@ export class CollaboratorsResolver implements Resolve<any>
 
     resolve(): Observable<Collaborator[]>
     {
-        console.log("Hola mundo");
-
         return this._assingmentService.getCollaborators();
     }
 }
@@ -54,3 +52,27 @@ export class ClientsResolver implements Resolve<any>
         return this._assingmentService.getClients();           
     }
 }
+// @Injectable({
+//     providedIn: 'root'
+// })
+
+// export class RecommendedResolver implements Resolve<any>
+// {
+//     /**
+//      * Constructor
+//      */
+//     constructor(
+//         private _assingmentService: AssingmentOccupationService,
+//     )
+//     {
+//     }
+
+//     // -----------------------------------------------------------------------------------------------------
+//     // @ Public methods
+//     // -----------------------------------------------------------------------------------------------------
+
+//     resolve(): Observable<Collaborator[]>
+//     {
+//         return this._assingmentService.getRecommended();           
+//     }
+//}

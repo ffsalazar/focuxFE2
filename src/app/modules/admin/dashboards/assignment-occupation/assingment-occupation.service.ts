@@ -16,6 +16,7 @@ export class AssingmentOccupationService {
     private _activitys: Activity[] = activitys;
     private _collaboratorsAssign: Collaborator[] = data;
     private _tabIndex: Subject<number> = new Subject<number>();
+    private _recommended:  BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
 
     constructor(private _httpClient: HttpClient) { }
 
@@ -36,19 +37,13 @@ export class AssingmentOccupationService {
      * Getter for collaborators
      */
     get collaborators$(): Observable<Collaborator[]> {
-
-        console.log("getCollaborators");
         return this._collaborators.asObservable();
     }
 
     /**
      * Getter for collaborators
      */
-    get clients$(): Observable<Client[]> {
-
-        return this._clients.asObservable();
-    }
-
+ 
     get collaboratorsAssign() {
         return this._collaboratorsAssign;
     }
@@ -71,7 +66,6 @@ export class AssingmentOccupationService {
      * Get Collaborators
      */
     getCollaborators(): Observable<Collaborator[]> {
-        console.log("getCollaborators 123");
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all')
             .pipe(
                 tap((collaborators) => {
@@ -91,6 +85,11 @@ export class AssingmentOccupationService {
                 })
             );
     }
+    get clients$(): Observable<Client[]> {
+
+        return this._clients.asObservable();
+    }
+
 
     get activitys(): Activity[] {
         return this._activitys;
@@ -99,4 +98,21 @@ export class AssingmentOccupationService {
     set activitys(value: Activity[]) {
         this._activitys = value;
     }
+
+    /**
+     * Get Clients
+     */
+    // getRecommended(): Observable<Collaborator[]>{
+    //     return this._httpClient.get<Collaborator[]>('/api/v1/followup/filtercollaborator/allby/request/allconditions/{requestId}')
+    //     .pipe(
+    //         tap((recommended)=>{
+    //             this._recommended.next(recommended);
+    //         })
+    //     );
+    // }
+    // get recommended$(): Observable<Collaborator[]>{
+    //     return this._recommended.asObservable();
+    // }
+
+
 }

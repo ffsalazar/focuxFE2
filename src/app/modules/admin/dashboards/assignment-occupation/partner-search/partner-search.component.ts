@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Activity, Collaborator, Project, Client } from "../assignment-occupation.types";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
-import {FormControl} from "@angular/forms";
+import {FormArray, FormControl} from "@angular/forms";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {map, startWith, takeUntil} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
@@ -37,6 +37,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         myControl: [''],
         requestControl: [''],
         clientControl: ['']
+    });
+    
+    collaboratorArrayForm: FormGroup = new FormGroup({
+        collaboratorSelected: new FormArray([])
     });
 
     filteredOptions: Observable<string[]>;
@@ -138,9 +142,17 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe(collaborators => {
                 this.collaborators = collaborators;
 
+                for(let i = 0; i < this.collaborators.length; i++){
+                    this.collaboratorSelected.push(new FormControl());
+                }
+               console.log(this.collaboratorArrayForm);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             })
+            
+    this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
+        console.log(value);
+    })
 
     this._assignmentOccupationService.clients$
         .pipe(takeUntil(this._unsubscribeAll))
@@ -153,6 +165,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     this.collaborators$ = this._assignmentOccupationService.collaborators$;
     
   }
+
+    get collaboratorSelected(){
+        return this.collaboratorArrayForm.get('collaboratorSelected') as FormArray;
+    }
 
     get myControl() {
         return this.filterForm.get('myControl');
@@ -170,7 +186,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     private _filterr(value: string): string[] {
-        console.log("value: ", value);
         const filterValue = value.toLowerCase();
 
     //     return this.options.map(x => x.color).filter(option =>
@@ -237,7 +252,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
 
     assignActivity(collaborator) {
-        console.log(collaborator);
         this._assignmentOccupationService.setCollaboratorByAssign(collaborator);
         this._assignmentOccupationService.setTabIndex(1);
     }
@@ -254,11 +268,23 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      
     
     redirection(tab: string, index: number) {
-         this.assignActivity(this.collaborators);
-      this._assignmentOccupationService.tabIndex$.subscribe(id => {
-          if (id != null) this.tabIndex = id;
-      });
-      this.tabIndex = index;
-      this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
+        this.assignActivity(this.collaborators);
+         
+       this._assignmentOccupationService.tabIndex$.subscribe(id => {
+           if (id != null) this.tabIndex = id;
+       });
+       this.tabIndex = index;
+       this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
   }
+
+  recommended(){
+    
+  }
+  selected(){
+  
+    
+    
+      
+  }
+
 }

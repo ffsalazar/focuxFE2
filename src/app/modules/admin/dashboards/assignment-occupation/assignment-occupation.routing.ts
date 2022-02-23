@@ -33,6 +33,7 @@ export const AssignmentOccupationRouter: Route[] = [
                 products  : RequestProductsResolver,
                 collaborators: CollaboratorsResolver,
                 clients: ClientsResolver,
+                //recommended : RecommendedResolver
             }
         },
         {
