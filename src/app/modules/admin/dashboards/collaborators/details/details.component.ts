@@ -119,8 +119,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 (this.collaboratorForm.get('phones') as FormArray).clear();
 
-                // Patch values to the form
-                console.log("collaborator: ", collaborator);
+                // Patch values to the form                
                 this.collaboratorForm.patchValue(collaborator);
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
@@ -145,6 +144,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                             })
                         );
                     });
+                    console.log(phoneNumbersFormGroups)
                 }
                 else
                 {
@@ -162,7 +162,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
                     (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
                 });
-
+                
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
 
@@ -189,14 +189,14 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
+
         this._collaboratorsService.clients$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((clients: Client[]) => {
-            this.clients = clients;            
+            this.clients = clients;
             // Mark for check
             this._changeDetectorRef.markForCheck();
-        });    
+        });
         // Get the country telephone codes
         this._collaboratorsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -218,9 +218,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-            
+
         this.filteredKnowledges = this.collaborator.knowledges;
-        
+
         // this.knowledges.forEach(filteredKnowledges => {
         //     let filteredKnowledge = {
         //         id : filteredKnowledges.id,
@@ -294,7 +294,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
         collaborator.client = this.clients.find(value => value.id === collaborator.client);
-        // Update the collaborator on the server        
+        // Update the collaborator on the server
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {
 
             // Toggle the edit mode off
@@ -358,15 +358,10 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._collaboratorsService.deleteCollaborator(this.collaborator)
                     .subscribe(() => {
                         // Navigate to the next collaborator if available
-                        if ( nextCollaboratorId )
-                        {
-                            this._router.navigate(['../', nextCollaboratorId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);
@@ -645,8 +640,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Mark for check
         this._changeDetectorRef.detectChanges();
     }
-    
-    activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {        
+
+    activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {
         knowledge.isActive = 1;
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
@@ -665,13 +660,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
     {
         // Remove the knowledge
-        knowledge.isActive = 0;        
+        knowledge.isActive = 0;
 
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
         // Setting status to inactive
         this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe();
-        
+
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -806,7 +801,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     }
 
     checkerKnowledges(knowledge: Knowledge): boolean {
-        let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);        
+        let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);
         return hasKnowledge !== undefined;
     };
 }

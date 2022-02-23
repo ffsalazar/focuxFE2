@@ -56,6 +56,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
         // Get the collaborators
         this.collaborators$ = this._collaboratorsService.collaborators$;
 
+
         this._collaboratorsService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborators: Collaborator[]) => {
@@ -119,6 +120,8 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
 
+
+
                 // Set the drawerMode if the given breakpoint is active
                 if ( matchingAliases.includes('lg') )
                 {
@@ -144,6 +147,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
             )
             .subscribe(() => {
                 this.createCollaborator();
+
             });
     }
 

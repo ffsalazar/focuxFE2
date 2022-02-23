@@ -36,8 +36,11 @@
                             </button></div>
 
                         <div class="ml-0.5 font-medium text-secondary">
-                            <ng-container *ngIf="collaboratorsCount > 0">
-                                {{collaboratorsCount}}
+                            <ng-container *ngIf="collaborators$ | async as collaborators">
+                                <ng-container *ngIf="collaborators.length > 0">
+                                    {{collaboratorsCount}}
+                                </ng-container>
+
                             </ng-container>
                             {{collaboratorsCount | i18nPlural: {
                             '=0'   : 'No hay colaboradores',
@@ -140,7 +143,7 @@
                                         <div class="leading-5 truncate text-secondary">{{collaborator.employeePosition.name}}</div>
                                     </div>
                                 </a>
-                            </ng-container>                               
+                            </ng-container>
                             </ng-container>
                         </ng-container>
                     </ng-container>

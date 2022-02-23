@@ -170,7 +170,7 @@ export class BusinessTypesService
 
             "name": "Nuevo tipo de negocio",
             "code":"00AA",
-            "description": "descripcion de tipo de negocio",
+            "description": "Descripcion de tipo de negocio",
             "isActive": 1
         };
         return this.businessTypes$.pipe(
@@ -208,6 +208,15 @@ export class BusinessTypesService
 
                     // Update the businessType
                     businessTypes[index] = updatedBusinessType;
+
+                    function compare(a: BusinessType, b: BusinessType) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    businessTypes.sort(compare);
 
                     // Update the businessTypes
                     this._businessTypes.next(businessTypes);
@@ -248,6 +257,8 @@ export class BusinessTypesService
 
                     // Update the businessType
                     businessTypes[index] = updatedBusinessType;
+
+                    businessTypes.splice(index,1);
 
 
                     function compare(a: BusinessType, b: BusinessType) {

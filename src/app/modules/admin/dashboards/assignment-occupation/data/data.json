@@ -1,0 +1,222 @@
+[
+    {
+        "id": 2,
+        "idFile": 280,
+        "name": "Luis Felipe",
+        "lastName": "Porte Pérez",
+        "employeePosition": {
+            "id": 2,
+            "department": {
+                "id": 1,
+                "code": "A01",
+                "name": "Aplicaciones",
+                "description": "Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.",
+                "isActive": 1
+            },
+            "name": "Analista de aplicaciones",
+            "description": "Es capaz de mantener y desrrollar programas.",
+            "isActive": 1
+        },
+        "companyEntryDate": "2018-06-25T04:00:00.000+00:00",
+        "organizationEntryDate": "2018-06-25T04:00:00.000+00:00",
+        "gender": "M",
+        "bornDate": "1989-05-22T04:00:00.000+00:00",
+        "nationality": "Venezolana",
+        "mail": "lporte@intelix.biz",
+        "isActive": 1,
+        "assignedLocation": "Intelix Principal",
+        "technicalSkills": "JAVA",
+        "assignation" : "US218 Integracion de mensajeria ws",
+        "progress": 50,
+        "activitys": [],
+        "knowledges": [],
+        "phones": []
+    },
+    {
+        "id": 3,
+        "idFile": 500,
+        "name": "Prueba Test tEST",
+        "lastName": "Test Peña Varela",
+        "employeePosition": {
+            "id": 2,
+            "department": {
+                "id": 1,
+                "code": "A01",
+                "name": "Aplicaciones",
+                "description": "Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.",
+                "isActive": 1
+            },
+            "name": "Analista de aplicaciones",
+            "description": "Es capaz de mantener y desrrollar programas.",
+            "isActive": 1
+        },
+        "companyEntryDate": "2018-05-01T04:00:00.000+00:00",
+        "organizationEntryDate": "2018-01-16T04:00:00.000+00:00",
+        "gender": "M",
+        "bornDate": "1994-03-15T04:00:00.000+00:00",
+        "nationality": "Venezolana",
+        "mail": "lpena@intelix.biz",
+        "isActive": 0,
+        "assignedLocation": "Intelix Principal",
+        "technicalSkills": "PHP",
+        "assignation": "Analisis de arquitecturas devops",
+        "progress": 100,
+        "knowledges": [],
+        "activitys": [],
+        "phones": []
+    },
+    {
+        "id": 1,
+        "idFile": 16,
+        "name": "Freddy Fernando",
+        "lastName": "Salazar Colmenares",
+        "employeePosition": {
+            "id": 1,
+            "department": {
+                "id": 1,
+                "code": "A01",
+                "name": "Aplicaciones",
+                "description": "Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.",
+                "isActive": 1
+            },
+            "name": "Líder de aplicaciones",
+            "description": "Lidera un equipo de personas, gestiona y asigna.",
+            "isActive": 1
+        },
+        "companyEntryDate": "2017-11-01T04:00:00.000+00:00",
+        "organizationEntryDate": "2021-06-01T04:00:00.000+00:00",
+        "gender": "M",
+        "bornDate": "1993-04-16T04:00:00.000+00:00",
+        "nationality": "Venezolana",
+        "mail": "fsalazar@intelix.biz",
+        "isActive": 1,
+        "assignedLocation": "Intelix Principal",
+        "assignation" : "US316 Integracion de nueva tarjeta debito",
+        "progress": 80,
+        "technicalSkills": "JAVA",
+        "knowledges": [
+            {
+                "id": 1,
+                "knowledge": {
+                    "id": 1,
+                    "description": "Lenguaje de programación utilizado en el backend.",
+                    "type": "Conocimiento",
+                    "name": "Java"
+                },
+                "level": 5
+            }
+        ],
+        "phones": [
+            {
+                "id": 1,
+                "number": "04143469317",
+                "type": "Personal"
+            }
+        ],
+        "activitys": []
+    },
+    {
+        "id": 4,
+        "idFile": 424,
+        "name": "Adriana Maria",
+        "lastName": "Duran Caceres",
+        "employeePosition": {
+            "id": 1,
+            "department": {
+                "id": 1,
+                "code": "A01",
+                "name": "Aplicaciones",
+                "description": "Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.",
+                "isActive": 1
+            },
+            "name": "Líder de aplicaciones",
+            "description": "Lidera un equipo de personas, gestiona y asigna.",
+            "isActive": 1
+        },
+        "companyEntryDate": "2020-01-20T04:00:00.000+00:00",
+        "organizationEntryDate": "2020-01-20T04:00:00.000+00:00",
+        "gender": "F",
+        "bornDate": "1998-07-25T04:00:00.000+00:00",
+        "nationality": "Venezolana",
+        "mail": "aduran@intelix.biz",
+        "isActive": 0,
+        "assignedLocation": "Intelix Principal",
+        "technicalSkills": "JAVA",
+        "knowledges": [],
+        "assignation" : "Cambio de metodos de pago en caja EPA",
+        "progress": 20,
+        "phones": [
+            {
+                "id": 2,
+                "number": "04143469317",
+                "type": "Personal"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "idFile": 16,
+        "name": "Jesús Antonio",
+        "lastName": "Pelay Rodríguez",
+        "employeePosition": {
+            "id": 2,
+            "department": {
+                "id": 1,
+                "code": "A01",
+                "name": "Aplicaciones",
+                "description": "Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.",
+                "isActive": 1
+            },
+            "name": "Analista de aplicaciones",
+            "description": "Es capaz de mantener y desrrollar programas.",
+            "isActive": 1
+        },
+        "companyEntryDate": "2017-11-01T04:00:00.000+00:00",
+        "organizationEntryDate": "2021-06-01T04:00:00.000+00:00",
+        "gender": "M",
+        "bornDate": "1993-04-16T04:00:00.000+00:00",
+        "nationality": "Venezolanas",
+        "mail": "jpelay@intelix.biz",
+        "isActive": 0,
+        "assignedLocation": "Intelix Principal",
+        "technicalSkills": "addsf",
+        "assignation" : "Incidencia en inventario Compier Mayoreo",
+        "progress": 40,
+        "knowledges": [],
+        "phones": [],
+        "activitys": []
+    },
+    {
+        "id": 5,
+        "idFile": 500,
+        "name": "Jose Alejandro",
+        "lastName": "Prueba Test",
+        "employeePosition": {
+            "id": 2,
+            "department": {
+                "id": 1,
+                "code": "A01",
+                "name": "Aplicaciones",
+                "description": "Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.",
+                "isActive": 1
+            },
+            "name": "Analista de aplicaciones",
+            "description": "Es capaz de mantener y desrrollar programas.",
+            "isActive": 1
+        },
+        "companyEntryDate": "2018-05-01T04:00:00.000+00:00",
+        "organizationEntryDate": "2018-01-16T04:00:00.000+00:00",
+        "gender": "M",
+        "bornDate": "1994-03-15T04:00:00.000+00:00",
+        "nationality": "Venezolana",
+        "mail": "lpena@intelix.biz",
+        "isActive": 1,
+        "assignedLocation": "A Lazaretto",
+        "technicalSkills": "PHP",
+        "assignation" : "Proyecto FormAccion",
+        "progress": 100,
+        "knowledges": [],
+        "phones": [],
+        "activitys": []
+    }
+]

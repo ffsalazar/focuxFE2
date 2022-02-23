@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "name": "US218 Integracion de mensajeria ws",
+        "colaboratorName": "Luis Felipe Porte Pérez",
+        "description": "Integracion de canalesbe para envio de mensaje en la aplicacion de whatsapp",
+        "progress": "70%",
+        "initDate": "2021-12-05",
+        "endDate" : "2022-02-25",
+        "blockage": false
+    },
+    {
+        "id": 2,
+        "name": "US316 Integracion de nueva tarjeta debito",
+        "colaboratorName": "Freddy Fernando Salazar Colmenares",
+        "description": "Integracion de nueva tarjeta de debito, tanto canalesbe, como los diseños para credixweb y credixapp",
+        "progress": "50%",
+        "initDate": "2021-10-20",
+        "endDate" : "2022-02-15",
+        "blockage": false
+    },
+    {
+        "id": 3,
+        "name": "Cambio de metodos de pago en caja EPA",
+        "colaboratorName": "Adriana Maria Duran Caceres",
+        "description": "Nueva integracion de metedos de pago en EPA",
+        "progress": "70%",
+        "initDate": "2021-08-30",
+        "endDate" : "2022-03-15",
+        "blockage": false
+    },
+    {
+        "id": 4,
+        "name": "Incidencia en inventario Compier Mayoreo",
+        "colaboratorName": "Jesús Antonio Pelay Rodríguez",
+        "description": "Cuando se hizo la carga masiva de inventario con la tienda mayoreo",
+        "progress": "100%",
+        "initDate": "2021-12-01",
+        "endDate" : "2022-02-04",
+        "blockage": false
+    },
+    {
+        "id": 5,
+        "name": "Proyecto FormAccion",
+        "colaboratorName": "Jose Alejandro Prueba Test",
+        "description": "Integracion de modulo inscripcion de postgrados",
+        "progress": "70%",
+        "initDate": "2021-12-05",
+        "endDate" : "2022-02-25",
+        "blockage": false
+    },
+    {
+        "id": 6,
+        "name": "Analisis de arquitecturas devops",
+        "colaboratorName": "Luis Felipe Porte Pérez",
+        "description": "Analisis sobre nueva arquitectura",
+        "progress": "70%",
+        "initDate": "2021-12-05",
+        "endDate" : "2022-02-25",
+        "blockage": false
+    }
+]

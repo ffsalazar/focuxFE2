@@ -255,6 +255,7 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
                 this.client.isActive = 0;
                 this._clientsService.deleteClient(this.client)
                     .subscribe(() => {
+<<<<<<< HEAD
                         // Navigate to the next client if available
                         if ( nextClientId )
                         {
@@ -265,6 +266,10 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
                         {
                             //this._router.navigate(['../'], {relativeTo: this._activatedRoute});
                         }
+=======
+
+                            this._router.navigate(['../'], {relativeTo: this._activatedRoute});
+>>>>>>> 4661ba21953e742df2c2f5ca77c3cfc82b894523
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

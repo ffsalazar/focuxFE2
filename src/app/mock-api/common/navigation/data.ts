@@ -44,6 +44,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/vacations'
             },
+<<<<<<< HEAD
             {
                 id   : 'masters.portafolio.request',
                 title: 'Portafolio de solicitudes',
@@ -51,6 +52,8 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:archive',
                 link : '/apps/portafolio/request'
             },
+=======
+>>>>>>> 4661ba21953e742df2c2f5ca77c3cfc82b894523
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
@@ -106,13 +109,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.status',
                         title: 'Estatus',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/statuses'
                     },
                     {
                         id   : 'masters.portafolio.typeStatus',
                         title: 'Tipo de Estatus',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/typesStatus'
                     },
                     {
                         id   : 'masters.portafolio.client',
@@ -124,17 +127,17 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.commercialArea',
                         title: 'Area Comercial',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/commercialAreas'
                     },
                     {
                         id   : 'masters.portafolio.technicalArea',
                         title: 'Area Técnica',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/technicalAreas'
                     },
                     {
                         id   : 'masters.portafolio.businessType',
-                        title: 'tipo de negocio',
+                        title: 'Tipo de negocio',
                         type : 'basic',
                         link : '/masters/businessTypes'
                     }

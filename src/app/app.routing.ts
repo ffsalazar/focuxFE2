@@ -83,7 +83,9 @@ export const appRoutes: Route[] = [
                 {path: 'crypto', loadChildren: () => import('app/modules/admin/dashboards/crypto/crypto.module').then(m => m.CryptoModule)},
                 {path: 'requestPanel', loadChildren: () => import('app/modules/admin/dashboards/requestPanel/requestPanel.module').then(m => m.RequestPanelModule)},
                 {path: 'collaborators', loadChildren: () => import('app/modules/admin/dashboards/collaborators/collaborators.module').then(m => m.CollaboratorsModule)},
-            ]},
+                {path: 'assignment-occupation', loadChildren: () => import('app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module').then(m => m.AssignmentOccupationModule)},
+                {path: 'vacations', loadChildren: () => import('app/modules/admin/dashboards/vacations/vacations.module').then(m => m.VacationsModule)}
+                ]},
 
             // Apps
             {path: 'apps', children: [
@@ -112,6 +114,10 @@ export const appRoutes: Route[] = [
                     {path: 'departments', loadChildren: () => import('app/modules/admin/masters/departments/departments.module').then(m => m.DepartmentsModule)},
                     {path: 'knowledges', loadChildren: () => import('app/modules/admin/masters/knowledges/knowledges.module').then(m => m.KnowledgesModule)},
                     {path: 'businessTypes', loadChildren: () => import('app/modules/admin/masters/businessType/businessTypes.module').then(m => m.BusinessTypesModule)},
+                    {path: 'typesStatus', loadChildren: () => import('app/modules/admin/masters/typeStatus/typeStatus.module').then(m => m.TypeStatusModule)},
+                    {path: 'technicalAreas', loadChildren: () => import('app/modules/admin/masters/technicalAreas/technicalAreas.module').then(m => m.TechnicalAreasModule)},
+                    {path: 'commercialAreas', loadChildren: () => import('app/modules/admin/masters/commercialAreas/commercialAreas.module').then(m => m.CommercialAreasModule)},
+                    {path: 'statuses', loadChildren: () => import('app/modules/admin/masters/statuses/statuses.module').then(m => m.StatusesModule)},
 
 
 
