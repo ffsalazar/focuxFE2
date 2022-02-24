@@ -118,46 +118,48 @@
                     
                     <ng-container *ngIf="(collaborators$ | async) as collaborators" [formGroup]="collaboratorArrayForm">
                         <ng-container *ngIf="collaborators.length; else noCollaborators">
-                            <ng-container *ngFor="let collaborator of collaborators | filterCollaborator: filterValue; let i = index; ">
-                                <ng-container *ngIf="collaborator.isActive != 0">
-                                    <!-- Group -->
-                                     <ng-container
-                                        *ngIf="i === 0 || collaborator.name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
-                                        <div
-                                            class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                            {{collaborator.name.charAt(0)}}
-                                        </div>
-                                    </ng-container> 
-                                    <!-- Collaborator -->
-                                    
-                                     <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
-                                        [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaborator.id,
-                                                                'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaborator.id}">
-                                    
-                                                                
-                                        <div class="flex flex-row">
-                                              <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                            <ng-container *ngIf="collaborator.avatar">
-                                                <img class="object-cover w-full h-full" [src]="collaborator.avatar"
-                                                    alt="Collaborator avatar" />
-                                            </ng-container>
-                                            <ng-container *ngIf="!collaborator.avatar">
+                                <ng-container formArrayName="collaboratorSelected">
+                                    <ng-container *ngFor="let _ of collaboratorSelected.controls; index as i; ">
+                                        <ng-container *ngIf="collaborators[i].isActive != 0">
+                                            <!-- Group -->
+                                             <ng-container
+                                                *ngIf="i === 0 || collaborators[i].name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
                                                 <div
-                                                    class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                    {{collaborator.name.charAt(0)}}
+                                                    class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
+                                                    {{collaborators[i].name.charAt(0)}}
                                                 </div>
-                                            </ng-container>
-                                        </div>
-                                            <div class="min-w-0 ml-4">
-                                                <div class="font-medium leading-5 truncate">{{collaborator.name}} {{collaborator.lastName}}</div>
-                                                <div class="leading-5 truncate text-secondary">{{collaborator.employeePosition.name}}</div>
-                                            </div>
+                                            </ng-container> 
+                                            <!-- Collaborator -->
                                             
-                                        </div>
-                                     <mat-checkbox formArrayName="collaboratorSelected" (click)="selected()"></mat-checkbox>
-                                   </span>
+                                             <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
+                                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaborators[i].id,
+                                                                        'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaborators[i].id}">
+                                            
+                                                                        
+                                                <div class="flex flex-row">
+                                                      <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                                                    <ng-container *ngIf="collaborators[i].avatar">
+                                                        <img class="object-cover w-full h-full" [src]="collaborators[i].avatar"
+                                                            alt="Collaborator avatar" />
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!collaborators[i].avatar">
+                                                        <div
+                                                            class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                            {{collaborators[i].name.charAt(0)}}
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                                    <div class="min-w-0 ml-4">
+                                                        <div class="font-medium leading-5 truncate">{{collaborators[i].name}} {{collaborators[i].lastName}}</div>
+                                                        <div class="leading-5 truncate text-secondary">{{collaborators[i].employeePosition.name}}</div>
+                                                    </div>
+                                                    
+                                                </div>
+                                             <mat-checkbox [formControlName]="i" (click)="selected()"></mat-checkbox>
+                                           </span>
+                                        </ng-container>
+                                    </ng-container>
                                 </ng-container>
-                            </ng-container>
                         </ng-container>
                     </ng-container>
                 

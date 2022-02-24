@@ -151,7 +151,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             })
             
     this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
-        console.log(value);
+        console.log("array: ", value);
     })
 
     this._assignmentOccupationService.clients$
