@@ -10,6 +10,7 @@ import { Client } from './assignment-occupation.types';
 })
 export class CollaboratorsResolver implements Resolve<any>
 {
+    
     /**
      * Constructor
      */

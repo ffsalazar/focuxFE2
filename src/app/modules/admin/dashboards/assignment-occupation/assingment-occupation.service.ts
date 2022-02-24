@@ -17,6 +17,7 @@ export class AssingmentOccupationService {
     private _collaboratorsAssign: Collaborator[] = data;
     private _tabIndex: Subject<number> = new Subject<number>();
     private _recommended:  BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    collaboratorsSelected: Collaborator[] = [];
 
     constructor(private _httpClient: HttpClient) { }
 

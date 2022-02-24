@@ -120,7 +120,7 @@
                         <ng-container *ngIf="collaborators.length; else noCollaborators">
                                 <ng-container formArrayName="collaboratorSelected">
                                     <ng-container *ngFor="let _ of collaboratorSelected.controls; index as i; ">
-                                        <ng-container *ngIf="collaborators[i].isActive != 0">
+                                        <ng-container>
                                             <!-- Group -->
                                              <ng-container
                                                 *ngIf="i === 0 || collaborators[i].name.charAt(0) !== collaborators[i - 1].name.charAt(0)">

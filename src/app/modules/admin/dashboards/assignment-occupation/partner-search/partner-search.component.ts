@@ -143,7 +143,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 this.collaborators = collaborators;
 
                 for(let i = 0; i < this.collaborators.length; i++){
-                    this.collaboratorSelected.push(new FormControl());
+                    this.collaboratorSelected.push(new FormControl(false));
                 }
                console.log(this.collaboratorArrayForm);
                 // Mark for check
@@ -152,6 +152,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             
     this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
         console.log("array: ", value);
+
+        console.log("Item: ", value.collaboratorSelected.at(0));
+
+        // Añadir colaboradores seleccionados en el FormArray
+
+        
     })
 
     this._assignmentOccupationService.clients$
