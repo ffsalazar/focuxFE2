@@ -44,6 +44,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/vacations'
             },
+            {
+                id   : 'masters.portafolio.request',
+                title: 'Portafolio de solicitudes',
+                type : 'basic',
+                icon : 'heroicons_outline:archive',
+                link : '/apps/portafolio/request'
+            },
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
@@ -91,7 +98,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             */{
                 id      : 'masters.portafolio',
-                title   : 'Portafolio',
+                title   : 'Maestros',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:archive',
                 children: [
@@ -100,12 +107,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         title: 'Estatus',
                         type : 'basic',
                         link : '/masters/statuses'
-                    },
-                    {
-                        id   : 'masters.portafolio.request',
-                        title: 'Solicitudes',
-                        type : 'basic',
-                        link : '/apps/portafolio/request'
                     },
                     {
                         id   : 'masters.portafolio.typeStatus',
