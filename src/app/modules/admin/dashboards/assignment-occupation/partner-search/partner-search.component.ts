@@ -153,12 +153,16 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
         console.log("array: ", value);
 
-        console.log("Item: ", value.collaboratorSelected.at(0));
-
         // Añadir colaboradores seleccionados en el FormArray
+        for(let i = 0; i < value.collaboratorSelected.length; i++){
+            if(value.collaboratorSelected.at(i) === true){
+                 value.collaboratorSelected[i] = this.collaborators[i];
+            }
+        }
+        this._assignmentOccupationService.collaboratorsSelected = value.collaboratorSelected;
 
-        
-    })
+        console.log("Item: ", this._assignmentOccupationService.collaboratorsSelected);
+        })
 
     this._assignmentOccupationService.clients$
         .pipe(takeUntil(this._unsubscribeAll))

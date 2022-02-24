@@ -5,6 +5,7 @@ import activitys from './data/activitys.json'
 import { Activity, Collaborator, Client } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { tap } from 'rxjs/operators';
+import { PartnerSearchComponent } from './partner-search/partner-search.component';
 
 @Injectable({
     providedIn: 'root'
@@ -25,6 +26,7 @@ export class AssingmentOccupationService {
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
+
 
     get tabIndex$(): Observable<number> {
         return this._tabIndex.asObservable();
@@ -91,6 +93,7 @@ export class AssingmentOccupationService {
         return this._clients.asObservable();
     }
 
+    
 
     get activitys(): Activity[] {
         return this._activitys;
@@ -115,5 +118,10 @@ export class AssingmentOccupationService {
     //     return this._recommended.asObservable();
     // }
 
+
+
+    getCollaboratorsSelected(){
+        return this.collaboratorsSelected;
+    }
 
 }
