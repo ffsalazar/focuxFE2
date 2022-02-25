@@ -59,7 +59,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
           
         this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
         this.request = this._assignmentOccupationService.requestSelected;
-        console.log("request: ", this.request);
+        
         if ( this.request ) {
             this.myControlTest.setValue(this.request.titleRequest);
         }

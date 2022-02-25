@@ -13,7 +13,7 @@
                                 <div class="flex flex-col">
                                 <mat-label class="font-semibold">Cliente</mat-label>
                                 <mat-form-field class="w-50 mr-6" appearance="fill"> 
-                                    <input type="text" matInput [placeholder]="'EPA'" formControlName="clientControl" [matAutocomplete]="client">
+                                    <input type="text" matInput [placeholder]="'Cliente'" formControlName="clientControl" [matAutocomplete]="client">
                                     <mat-autocomplete #client="matAutocomplete">
                                         <mat-option *ngFor="let option of filteredClients | async" [value]="option">
                                             {{option}}
@@ -28,7 +28,7 @@
                               <mat-form-field class="w-50">
                                   <input
                                     type="text"
-                                    [placeholder]="'Pedro Perez'"
+                                    [placeholder]="'Responsable'"
                                     matInput
                                     formControlName="collaboratorControl"
                                     [matAutocomplete]="autoCollaborator" >
@@ -46,7 +46,7 @@
                             <mat-label class="font-semibold">Solicitudes</mat-label>
                             <mat-form-field class="w-100" appearance="fill">
                                 <input type="text"
-                                       placeholder="Pick one"
+                                       placeholder="Solicitud"
                                        aria-label="Number"
                                        matInput
                                        formControlName="requestControl"
@@ -58,9 +58,9 @@
                                 </mat-autocomplete>
                               </mat-form-field>
                             </div>
-                              <div class="flex flex-col">
-                                <mat-form-field class="w-50 mr-6">
-                                    <mat-label>Estatus</mat-label>
+                              <div class="flex flex-col mr-6">
+                                <mat-label class="font-semibold">Estatus</mat-label>
+                                <mat-form-field class="w-50 "> 
                                     <mat-select [formControl]="statusControl">
                                         <ng-container *ngFor="let status of status$ | async">
                                             <mat-option [value]="status.id">
@@ -78,11 +78,11 @@
                
 
                 <div class="bg-card py-3 px-6 rounded shadow  flex flex-col">
-                    <mat-tab-group class="flex flex-row justify-center">
-                        <mat-tab (click)="getCollaboratorsRecommended()" label="Recomendado"></mat-tab>
-                        <mat-tab (click)="getCollaboratorsByClients()" label="Cliente"></mat-tab>
-                        <mat-tab label="Conocimiento">Conocimiento</mat-tab>
-                        <mat-tab label="Ocupacion">Ocupación</mat-tab>
+                    <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
+                        <mat-tab label="Recomendado"></mat-tab>
+                        <mat-tab label="Cliente"></mat-tab>
+                        <mat-tab label="Conocimiento"></mat-tab>
+                        <mat-tab label="Ocupacion"></mat-tab>
                     </mat-tab-group>
 
                 <div class="relative">
