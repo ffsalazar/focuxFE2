@@ -22,15 +22,18 @@ import { SharedModule } from 'app/shared/shared.module';
 import { CollaboratorsComponent } from 'app/modules/admin/dashboards/collaborators/collaborators.component';
 import { CollaboratorsDetailsComponent } from 'app/modules/admin/dashboards/collaborators/details/details.component';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
+import { FocusPopupRequestComponent} from "./details/focux-popup-request/focus-popup-request.component";
 import {collaboratorsRoutes} from "./collaborators.routing";
+import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
 
 @NgModule({
     declarations: [
         CollaboratorsComponent,
         CollaboratorsListComponent,
-        CollaboratorsDetailsComponent
+        CollaboratorsDetailsComponent,
+        FocusPopupRequestComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(collaboratorsRoutes),
         MatButtonModule,
         MatCheckboxModule,
@@ -49,7 +52,8 @@ import {collaboratorsRoutes} from "./collaborators.routing";
         MatTableModule,
         MatTooltipModule,
         FuseFindByKeyPipeModule,
-        SharedModule
+        SharedModule,
+        PriorityRequestModule
     ],
     providers   : [
         {

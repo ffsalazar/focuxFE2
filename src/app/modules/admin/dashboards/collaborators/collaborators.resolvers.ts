@@ -2,7 +2,16 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Client, Collaborator, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import {
+    Client,
+    Collaborator,
+    Country,
+    Department,
+    EmployeePosition,
+    Knowledge,
+    Ocupation,
+    Assigments
+} from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "./collaborators.service";
 
 
@@ -81,6 +90,40 @@ export class CollaboratorsCollaboratorResolver implements Resolve<any>
                    );
     }
 }
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CollaboratorsCollaboratorOcupationResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _collaboratorsService: CollaboratorsService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Assigments>
+    {
+        return this._collaboratorsService.getAssigmentByCollaboratorId(parseInt(route.paramMap.get('id')))
+
+    }
+}
+
 
 @Injectable({
     providedIn: 'root'

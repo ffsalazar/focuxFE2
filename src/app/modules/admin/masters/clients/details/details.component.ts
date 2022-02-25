@@ -255,7 +255,9 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
                 this.client.isActive = 0;
                 this._clientsService.deleteClient(this.client)
                     .subscribe(() => {
-                        this._router.navigate(['../'], {relativeTo: this._activatedRoute});
+
+                            this._router.navigate(['../'], {relativeTo: this._activatedRoute});
+
                         // Toggle the edit mode off
                         this.toggleEditMode(false);
                     });

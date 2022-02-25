@@ -4,16 +4,27 @@ import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@ang
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
-import { Subject } from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import {
+    Assigments,
+    Client,
+    Collaborator,
+    CollaboratorKnowledge,
+    Country,
+    Department,
+    EmployeePosition,
+    Knowledge,
+    Ocupation, Request
+} from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
 
 @Component({
     selector       : 'collaborators-details',
     templateUrl    : './details.component.html',
+    styleUrls: ['./details.component.scss'],
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -22,19 +33,26 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
+    @ViewChild('requestDetailsTemplate') private tplDetail: TemplateRef<any>;
 
     editMode: boolean = false;
     knowledges: Knowledge[];
     knowledgesEditMode: boolean = false;
     filteredKnowledges: CollaboratorKnowledge[] = [];
     collaborator: Collaborator;
+    request :  Request;
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
+    ocupations: Assigments;
     departments: Department[];
     filteredDepartments: Department[];
     clients:Client[];
+    ocupationGeneralPercentage:number = 0;
     filteredclients: Client[];
     countries: Country[];
+    profileTag: boolean = true;
+    ocupationTag: boolean = false;
+    vacationTag: boolean = false;
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
     private _tagsPanelOverlayRef: OverlayRef;
@@ -119,7 +137,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
                 (this.collaboratorForm.get('phones') as FormArray).clear();
 
-                // Patch values to the form                
+                // Patch values to the form
                 this.collaboratorForm.patchValue(collaborator);
 
                 this.collaboratorForm.get('department').setValue(collaborator.employeePosition.department.id);
@@ -162,7 +180,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
                     (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
                 });
-                
+
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
 
@@ -197,6 +215,16 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
+
+        //get the ocupations
+        this._collaboratorsService.ocupations$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((ocupations: Assigments) => {
+                this.ocupations = ocupations;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
         // Get the country telephone codes
         this._collaboratorsService.countries$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -236,6 +264,64 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             this.editMode = true;
         }
     }
+
+    /**
+     * openPopup
+     * @param id
+     */
+    openPopup(id: number): void  {
+
+        // Get the collaborator
+        this._collaboratorsService.getRequestById(id)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((request: any) => {
+
+
+
+                this.request={
+                    id:request.id,
+                    titleRequest:request.titleRequest,
+                    responsibleRequest:request.responsibleRequest.name,
+                    descriptionRequest:request.descriptionRequest,
+                    datePlanEnd:request.datePlanEnd,
+                    client:request.client.name,
+                    businessType:request.client.businessType.name,
+                    priorityOrder:request.priorityOrder,
+                    status:request.status.name,
+                    completionPercentage:request.completionPercentage,
+                    deviationPercentage:request.deviationPercentage
+
+                };
+                console.log(this.request)
+
+                this._collaboratorsService.open({
+                        template: this.tplDetail,title:'detail'
+                    },
+                    {width: 300, height: 300, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
+
+                });
+
+
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+
+
+
+
+
+
+    }
+
+
+    /**
+     * showDetail
+     * @param requestId
+     *
+     */
+
 
     /**
      * On destroy
@@ -281,6 +367,48 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             this.editMode = editMode;
         }
 
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Toggle Tag ocupation
+     *
+     * @param editMode
+     */
+    tagOcupation(): void
+    {
+       this.profileTag = false;
+       this.vacationTag = false;
+       this.ocupationTag =true;
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Toggle Tag profile
+     *
+     * @param editMode
+     */
+    tagVacation(): void
+    {
+        this.profileTag = false;
+        this.vacationTag = true;
+        this.ocupationTag =false;
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Toggle Tag profile
+     *
+     * @param editMode
+     */
+    tagProfile(): void
+    {
+        this.profileTag = true;
+        this.vacationTag = false;
+        this.ocupationTag = false;
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }

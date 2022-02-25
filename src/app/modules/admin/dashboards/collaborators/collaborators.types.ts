@@ -89,3 +89,43 @@ export interface BusinessType
     description: string;
     isActive: number;
 }
+
+export interface Assigments {
+    totalOcupationPercentage:number;
+    assigments : Ocupation[];
+
+}
+
+export interface Ocupation
+{
+
+
+
+    request: string;
+    requestId:number;
+    client: string;
+    id: number;
+    occupationPercentage:number;
+    assignmentStartDate:string;
+    assignmentEndDate:string;
+    code: string;
+    observations: string;
+    isActive: number;
+}
+
+export  interface Request {
+
+    id: number;
+    titleRequest:string;
+    responsibleRequest:string;
+    descriptionRequest:string;
+    datePlanEnd:string;
+    client:string;
+    businessType:string;
+    priorityOrder:number;
+    status:string;
+    completionPercentage:number;
+    deviationPercentage:number;
+
+
+}
