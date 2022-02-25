@@ -30,6 +30,8 @@ import { Router } from '@angular/router';
 export class AsignationComponent implements OnInit, OnDestroy {
     collaboratorFormGroup: FormGroup;
     myControlTest = new FormControl();
+    collaboratorForm = new FormControl().disabled;
+    
 
     collaborators$: Observable<Collaborator[]>;
     collaboratorsArr: Collaborator[] = [];
@@ -40,6 +42,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     formFieldHelpers: string[] = [''];
     tabIndex = 0;
+    showObservation = false;
+    noCollaborators = true;
+    request: any = null;
+
       constructor(private _assignmentOccupationService: AssingmentOccupationService,
                   private _changeDetectorRef: ChangeDetectorRef,
                   private _formBuilder: FormBuilder,
@@ -50,7 +56,16 @@ export class AsignationComponent implements OnInit, OnDestroy {
       ngOnInit(): void {
           this.getProject();
           this.filterEvent();
-        //   this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
+          
+        this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
+        this.request = this._assignmentOccupationService.requestSelected;
+        console.log("request: ", this.request);
+        if ( this.request ) {
+            this.myControlTest.setValue(this.request.titleRequest);
+        }
+        
+        console.log(this.collaboratorsArr);
+        
           this.collaboratorFormGroup = this._formBuilder.group({
               collaborators: this._formBuilder.array([])
           });
@@ -215,4 +230,23 @@ export class AsignationComponent implements OnInit, OnDestroy {
       this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
   }
 
+  detail(){
+      if(this.showObservation=== false){
+          this.showObservation = true;
+      }else{
+          this.showObservation = false;
+      }
+      
+  }
+  deleteItem(){
+    
+    }
+
+    noCollab(){
+        this.noCollaborators= false;
+    }
+
+
 }
+
+

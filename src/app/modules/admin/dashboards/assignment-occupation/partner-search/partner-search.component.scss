@@ -17,3 +17,22 @@
         grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
     }
 }
+
+.example-form {
+    min-width: 150px;
+    width: 100%;
+}
+
+.example-full-width {
+    width: 200px;
+}
+
+.container-filter {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    & div:nth-child(1) {
+        width: auto;
+    }
+}

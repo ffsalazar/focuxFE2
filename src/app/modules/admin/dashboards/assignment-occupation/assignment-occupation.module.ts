@@ -25,6 +25,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatTabsModule} from "@angular/material/tabs";
 import {FuseAlertModule} from "../../../../../@fuse/components/alert";
+import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
@@ -32,7 +34,8 @@ import {FuseAlertModule} from "../../../../../@fuse/components/alert";
   declarations: [
     AssignmentOccupationComponent,
     PartnerSearchComponent,
-    AsignationComponent
+    AsignationComponent,
+    FilterCollaboratorPipe
   ],
     imports: [
         CommonModule,
@@ -55,7 +58,8 @@ import {FuseAlertModule} from "../../../../../@fuse/components/alert";
         MatSortModule,
         MatTabsModule,
         FuseAlertModule,
-        FormsModule
+        FormsModule,
+        MatCheckboxModule
     ],
 })
 export class AssignmentOccupationModule { }
