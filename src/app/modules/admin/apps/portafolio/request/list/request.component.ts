@@ -23,6 +23,9 @@ import { MatTableDataSource } from '@angular/material/table';
     styles         : [
         /* language=SCSS */
         `
+            th, td{
+                text-align: center !important;
+            }
             .inventory-grid {
                 grid-template-columns: 48px auto 40px;
 

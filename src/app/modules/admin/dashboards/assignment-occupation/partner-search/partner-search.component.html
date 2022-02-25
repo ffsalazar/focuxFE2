@@ -58,9 +58,9 @@
                                 </mat-autocomplete>
                               </mat-form-field>
                             </div>
-                              <div class="flex flex-col">
-                                <mat-form-field class="w-50 mr-6">
-                                    <mat-label>Estatus</mat-label>
+                              <div class="flex flex-col mr-6">
+                                <mat-label class="font-semibold">Estatus</mat-label>
+                                <mat-form-field class="w-50 "> 
                                     <mat-select [formControl]="statusControl">
                                         <ng-container *ngFor="let status of status$ | async">
                                             <mat-option [value]="status.id">
