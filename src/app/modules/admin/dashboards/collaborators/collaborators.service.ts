@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone, Assigments } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import {DialogData, DialogOptions} from "../../apps/portafolio/request/request.types";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {FocuxPopupComponent} from "../../apps/portafolio/request/focux-popup/focux-popup.component";
+import {FocusPopupRequestComponent} from "./details/focux-popup-request/focus-popup-request.component";
 
 @Injectable({
     providedIn: 'root'
@@ -17,10 +21,14 @@ export class CollaboratorsService
     private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
     private _employeePositions: BehaviorSubject<EmployeePosition[] | null> = new BehaviorSubject(null);
     private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
+    private _ocupations:BehaviorSubject<Assigments | null> = new BehaviorSubject(null);
+    private _isOpenModal: BehaviorSubject<Boolean | null> = new BehaviorSubject(null);
+    private  _request: BehaviorSubject<Request | null> = new BehaviorSubject(null)
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(private _httpClient: HttpClient,
+                private _matDialog: MatDialog)
     {
     }
 
@@ -80,6 +88,30 @@ export class CollaboratorsService
      {
          return this._clients.asObservable();
      }
+
+    /**
+     * Getter for isOpenModal
+     */
+    get isOpenModal$(): Observable<Boolean>{
+        return this._isOpenModal.asObservable()
+    }
+
+
+    /**
+     * Getter for employeePositions
+     */
+    get ocupations$(): Observable<Assigments>
+    {
+        return this._ocupations.asObservable();
+    }
+
+    /**
+     * Getter for employeePositions
+     */
+    get request$(): Observable<Request>
+    {
+        return this._request.asObservable();
+    }
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -534,22 +566,34 @@ export class CollaboratorsService
         );
     }
 
-    getDepartments(): Observable<Department[]>
+    getRequestById(id: number): Observable<any>
     {
-        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
-            tap((departments) => {
-                let departmentsFiltered : Department[] = []
-                departments.forEach((department) => {
-                    if (department.isActive != 0){
-                        departmentsFiltered.push(department);
-                    }
-                });
+        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/requests/'+id).pipe(
+            tap((request) => {
+
+                this._request.next(request)
 
 
-                this._departments.next(departmentsFiltered);
             })
         );
     }
+
+    getDepartments(): Observable<Department[]>
+{
+    return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+        tap((departments) => {
+            let departmentsFiltered : Department[] = []
+            departments.forEach((department) => {
+                if (department.isActive != 0){
+                    departmentsFiltered.push(department);
+                }
+            });
+
+
+            this._departments.next(departmentsFiltered);
+        })
+    );
+}
 
     getEmployeePositions(): Observable<EmployeePosition[]>
     {
@@ -585,6 +629,18 @@ export class CollaboratorsService
         );
     }
 
+    getAssigmentByCollaboratorId(id: number): Observable<Assigments>
+    {
+        return this._httpClient.get<Assigments>('http://localhost:1616/api/v1/followup/collaborators/assigments/' + id).pipe(
+
+            tap((assigments) => {
+
+
+                this._ocupations.next(assigments);
+            })
+        );
+    }
+
     updatePhoneStatus(id: number, phone: Phone): Observable<Phone>
     {
         console.log(phone);
@@ -603,5 +659,15 @@ export class CollaboratorsService
                 console.log(collaboratorKnowledge);
             })
         );
+    }
+
+    open(data: DialogData, options: DialogOptions = {width: 300, minHeight: 0, height: 300, disableClose: true}, modalType: 1 | 2 = 1): Observable<boolean> {
+        const dialogRef: MatDialogRef<FocusPopupRequestComponent> = this._matDialog.open<FocusPopupRequestComponent, DialogData>(
+            FocusPopupRequestComponent,
+            {
+                data
+            }
+        );
+        return dialogRef.afterClosed();
     }
 }
