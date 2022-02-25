@@ -90,32 +90,34 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-    
-        this._assignmentOccupationService.collaborators$
-            .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(collaborators => {
-                    //this.collaborators = collaborators;
+        
 
-                    // for(let i = 0; i < collaborators.length; i++){
-                    //     this.collaboratorSelected.push(new FormControl(false));
-                    // }
-                console.log(this.collaboratorArrayForm);
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-                })
+        // this._assignmentOccupationService.collaborators$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //         .subscribe(collaborators => {
+        //             this.collaborators = collaborators;
+
+        //             for(let i = 0; i < collaborators.length; i++){
+        //                 this.collaboratorSelected.push(new FormControl(false));
+        //             }
+        //         console.log(this.collaboratorArrayForm);
+        //             Mark for check
+        //             this._changeDetectorRef.markForCheck();
+        //         })
                 
-        this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
-            console.log("array: ", value);
+        // this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
+        //     console.log("array: ", value);
 
-            console.log("Item: ", value.collaboratorSelected.at(0));
+        //     console.log("Item: ", value.collaboratorSelected.at(0));
 
-            // Añadir colaboradores seleccionados en el FormArray
+        //     Añadir colaboradores seleccionados en el FormArray
 
 
-        })
+        // })
 
         this.status$ = this._assignmentOccupationService.status$;
 
+        this._handleChangeArrayForm();
         this._getStatus();
         this._getClients();
         this._getResponsibleByClient();
@@ -156,6 +158,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         return this.filterForm.get('requestControl');
     }
 
+    // -----------------------------------------------------------------------------------------------------
+    // @ Methods
+    // -----------------------------------------------------------------------------------------------------
+
     private _getStatus() {
         this._assignmentOccupationService.getStatus()
             .subscribe(status => {
@@ -189,12 +195,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             const client = this.clients.find(item => item.name === value);
 
             if ( client ) {
-                this._assignmentOccupationService.getCollaboratorsByClient( client.id )
-                    .subscribe(collaborators => {
-                        this.collaborators = collaborators;
-                        this.collaboratorControl.setValue('');
-                        this._changeDetectorRef.markForCheck();
-                    })
+                this._getCollaboratorsByClient( client.id );
+                this._getRequestByClient( client.id );
             } else {
                 this.collaborators = [];
                 this.collaboratorControl.setValue('');
@@ -204,6 +206,30 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
     
     /**
+     * getCollaboratorsByClient
+     */
+    private _getCollaboratorsByClient(clientId: number) {
+        this._assignmentOccupationService.getCollaboratorsByClient( clientId )
+            .subscribe(collaborators => {
+                this.collaborators = collaborators;
+                this.collaboratorControl.setValue('');
+                this._changeDetectorRef.markForCheck();
+            })
+    }
+
+    /**
+     * getRequestByClient
+     */
+    private _getRequestByClient(clientId: number) {
+        this._assignmentOccupationService.getRequestByClient( clientId )
+            .subscribe(requests => {
+                this.requests = requests;
+                this.requestControl.setValue('');
+                this._changeDetectorRef.markForCheck();
+            });
+    }
+
+    /**
      * getRequestByResponsible
      */
     private _getRequestByResponsible() {
@@ -211,7 +237,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe(value => {
                 const responsible = this.collaborators.find(item => item.name === value);
 
-                console.log("responsible: ", responsible);
                 if ( responsible ) {
                     this._assignmentOccupationService.getRequestByResponsible( responsible.id )
                         .subscribe(requests => {
@@ -248,15 +273,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         if ( request ) {
             this._assignmentOccupationService.getRecommended( request.id )
                 .subscribe(collaborators => {
-                    console.log("collaborators recomme: ", collaborators);
                     this.collaboratorsRecomm = collaborators;
-                    // Clear formArray
-                    this.collaboratorSelected.clear();
-                    console.log("recomendados: ", this.collaboratorsRecomm);
-                    // Set formArray
-                    this.collaboratorsRecomm.forEach(item => {
-                        this.collaboratorSelected.push(new FormControl(false));
-                    });
+                    // Update the collaboatorsRecomm
+                    this._setCollaboratorsRecomm();
+
                     this._changeDetectorRef.markForCheck();
                 })
         } else {
@@ -269,27 +289,52 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Get collaboratorsByClient
      */
     getCollaboratorsByClients() {
-        console.log("requestControl: ", this.requestControl.value);
         const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
 
         if ( request ) {
             this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
                 .subscribe(collaborators => {
-                    console.log("collaborators recomme by clients: ", collaborators);
                     this.collaboratorsRecomm = collaborators;
-                    // Clear formArray
-                    this.collaboratorSelected.clear();
-                    console.log("recomendados: ", this.collaboratorsRecomm);
-                    // Set formArray
-                    this.collaboratorsRecomm.forEach(item => {
-                        this.collaboratorSelected.push(new FormControl(false));
-                    });
+
+                    // Update the collaboatorsRecomm
+                    this._setCollaboratorsRecomm();
+
                     this._changeDetectorRef.markForCheck();
                 })
         } else {
             this.collaboratorsRecomm = [];
             this._changeDetectorRef.markForCheck();
         }
+    }
+
+    /**
+     * Set CollaboratorsRecomm
+     */
+    private _setCollaboratorsRecomm() {
+        // Clear formArray
+        this.collaboratorSelected.clear();
+        // Set formArray
+        this.collaboratorsRecomm.forEach(item => {
+            this.collaboratorSelected.push(new FormControl(false));
+            // value.collaboratorSelected[i] = this.collaborators[i];
+
+        });
+    }
+
+    /**
+     * handle ChangeArrayForm
+     */
+    private _handleChangeArrayForm() {
+        this.collaboratorArrayForm.valueChanges.subscribe((value) => {
+            // Añadir colaboradores seleccionados en el FormArray
+            for (let i = 0; i < value.collaboratorSelected.length; i++) {
+                if ( value.collaboratorSelected.at(i) === true ){
+                    value.collaboratorSelected[i] = this.collaboratorsRecomm[i];
+                }
+            }
+
+            this._assignmentOccupationService.collaboratorsSelected = value.collaboratorSelected;
+        })
     }
 
     /**

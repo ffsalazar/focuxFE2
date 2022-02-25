@@ -5,6 +5,7 @@ import activitys from './data/activitys.json'
 import { Activity, Collaborator, Client, Status } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { tap } from 'rxjs/operators';
+import { PartnerSearchComponent } from './partner-search/partner-search.component';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,7 @@ export class AssingmentOccupationService {
     private _tabIndex: Subject<number> = new Subject<number>();
     private _recommended:  BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _status:  BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
-    collaboratorsSelected: Collaborator[] = [];
+    private _collaboratorsSelected: Collaborator[] = [];
 
     constructor(private _httpClient: HttpClient) { }
 
@@ -26,6 +27,7 @@ export class AssingmentOccupationService {
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
+
 
     get tabIndex$(): Observable<number> {
         return this._tabIndex.asObservable();
@@ -66,6 +68,27 @@ export class AssingmentOccupationService {
 
     set collaboratorsAssign(collaborators: Collaborator[]) {
         this._collaboratorsAssign = collaborators;
+    }
+
+    get clients$(): Observable<Client[]> {
+
+        return this._clients.asObservable();
+    }
+
+    get activitys(): Activity[] {
+        return this._activitys;
+    }
+
+    set activitys(value: Activity[]) {
+        this._activitys = value;
+    }
+
+    set collaboratorsSelected(collaborators: Collaborator[]) {
+        this._collaboratorsSelected = collaborators;
+    }
+
+    get collaboratorsSelected() {
+        return this._collaboratorsSelected;
     }
 
     setCollaboratorByAssign(collaborator: Collaborator) {
@@ -112,6 +135,10 @@ export class AssingmentOccupationService {
         return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId);
     }
 
+    getRequestByClient(clientId: number): Observable<any[]> {
+        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/client/' + clientId);
+    }
+
     /**
      * 
      * @param requestId 
@@ -148,19 +175,9 @@ export class AssingmentOccupationService {
                     this._status.next(status);
             }));
     }
-
-    get clients$(): Observable<Client[]> {
-
-        return this._clients.asObservable();
-    }
-
-
-    get activitys(): Activity[] {
-        return this._activitys;
-    }
-
-    set activitys(value: Activity[]) {
-        this._activitys = value;
+    
+    getCollaboratorsSelected(){
+        return this._collaboratorsSelected;
     }
 
 }

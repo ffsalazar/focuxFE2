@@ -15,66 +15,78 @@
                     </mat-form-field>
                 </div>
             </div>
-                    
-            <ng-container>
-                <div class="flex flex-col  p-3 bg-card rounded-2xl shadow overflow-hidden w-100vh">
-                    <div class="flex flex-row gt-xs:flex-row justify-between">
-                        <div class="flex flex-row gt-xs:flex-row">
-                            <div class="flex flex-col mr-6">
-                                <mat-label class="font-semibold">Colaborador</mat-label>
-                                <mat-form-field class="w-100 " appearance="fill">
-                                    <input type="text" disabled matInput [placeholder]="'Pedro Perez'" [formControl]="collaboratorForm" [matAutocomplete]="auto" >
-                                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
-                                    <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                                        <mat-option [value]="this.collaboratorName">
-                                            
-                                        </mat-option>
-                                    </mat-autocomplete> -->
-                                </mat-form-field>
+           
+        <ng-container *ngIf="collaboratorsArr.length">
+                <ng-container *ngFor="let collaborator of collaboratorsArr; index as i">
+                    <ng-container *ngIf="collaborator !== false;">
+                        <div class="flex flex-col  p-3 bg-card rounded-2xl shadow overflow-hidden w-100vh mb-8">
+                            <div class="flex flex-row gt-xs:flex-row justify-between">
+                                <div class="flex flex-row gt-xs:flex-row">
+                                    <div class="flex flex-col mr-6">
+                                        <mat-label class="font-semibold">Colaborador</mat-label>
+                                        <mat-form-field class="w-100 " appearance="fill">
+                                            <input type="text" disabled matInput [placeholder]="'Pedro Perez'" [matAutocomplete]="auto"
+                                                [value]="collaboratorsArr[i].name + ' ' +  collaboratorsArr[i].lastName">
+                                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:user-circle'">
+                                            </mat-icon>
+                                            <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                                        <mat-option [value]="this.collaboratorName">
+                                                            
+                                                        </mat-option>
+                                                    </mat-autocomplete> -->
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex flex-col ">
+                                        <mat-label class="font-semibold">Ocupación</mat-label>
+                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-20 ">
+                                            <input matInput [placeholder]="'50'"><span matSuffix>%</span>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row ">
+                                    <div class="flex flex-col ">
+                                        <mat-label class="font-semibold">Fecha Inicio: </mat-label>
+                                        <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
+                                            <input matInput [placeholder]="'mm/dd/yyyy'" [matDatepicker]="picker1">
+                                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker1></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex flex-col ">
+                                        <mat-label class="font-semibold">Fecha Fin: </mat-label>
+                                        <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
+                                            <input matInput [matDatepicker]="picker2" [placeholder]="'mm/dd/yyyy'">
+                                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker2></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row mr-6">
+                                    <button class=" min-w-10 min-h-7 h-7 px-2 leading-6 my-auto mr-4" mat-stroked-button
+                                        (click)="detail()">
+                                        <mat-icon class="icon-size-5"
+                                            [svgIcon]="showObservation !== true ? 'heroicons_solid:chevron-down' : 'heroicons_solid:chevron-up'">
+                                        </mat-icon>
+                                    </button>
+
+                                    <button (click)="deleteItem()"><img class="delete"
+                                            src="../../../../../../assets/icons/delete-icon.png"></button>
+                                </div>
                             </div>
-                            <div class="flex flex-col ">
-                                <mat-label class="font-semibold">Ocupación</mat-label>
-                                <mat-form-field [ngClass]="formFieldHelpers" class="w-20 ">
-                                    <input matInput [placeholder]="'50'"><span matSuffix>%</span>
+                            <div *ngIf="showObservation === true " class="flex flex-col mt-2">
+
+                                <mat-form-field class="fuse-mat-textarea flex-auto">
+                                    <textarea matInput [placeholder]="'Observaciones'" [rows]="1"></textarea>
+                                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                 </mat-form-field>
                             </div>
                         </div>
-                        <div class="flex flex-row ">
-                            <div class="flex flex-col ">
-                                <mat-label class="font-semibold">Fecha Inicio: </mat-label>
-                                <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
-                                    <input matInput [placeholder]="'mm/dd/yyyy'" [matDatepicker]="picker1" >
-                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker1></mat-datepicker>
-                                </mat-form-field>
-                            </div>
-                            <div class="flex flex-col ">
-                                <mat-label class="font-semibold">Fecha Fin: </mat-label>
-                                <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
-                                    <input matInput [matDatepicker]="picker2" [placeholder]="'mm/dd/yyyy'">
-                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker2></mat-datepicker>
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <div class="flex flex-row mr-6">
-                            <button class=" min-w-10 min-h-7 h-7 px-2 leading-6 my-auto mr-4" mat-stroked-button  (click)="detail()">
-                                <mat-icon class="icon-size-5"
-                                    [svgIcon]="showObservation !== true ? 'heroicons_solid:chevron-down' : 'heroicons_solid:chevron-up'">
-                                </mat-icon>
-                            </button>
-                            
-                            <button><img class="delete" src="../../../../../../assets/icons/delete-icon.png"></button>
-                        </div>
-                    </div>
-                        <div *ngIf="showObservation === true " class="flex flex-col mt-2">
-                        
-                            <mat-form-field class="fuse-mat-textarea flex-auto">
-                                <textarea matInput [placeholder]="'Observaciones'" [rows]="1"></textarea>
-                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
-                            </mat-form-field>
-                        </div> 
-                </div>
+                    </ng-container>
+            </ng-container>
+                </ng-container>
+                <!-- No collaborators Selected -->
+            <ng-container *ngIf="!collaboratorsArr.length">
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No ha seleccionado colaboradores!</div>
             </ng-container>
         <div>
     </div>

@@ -43,6 +43,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
     formFieldHelpers: string[] = [''];
     tabIndex = 0;
     showObservation = false;
+    noCollaborators = true;
+
       constructor(private _assignmentOccupationService: AssingmentOccupationService,
                   private _changeDetectorRef: ChangeDetectorRef,
                   private _formBuilder: FormBuilder,
@@ -53,7 +55,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
       ngOnInit(): void {
           this.getProject();
           this.filterEvent();
-        //   this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsJson();
+          
+          this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
+        console.log(this.collaboratorsArr);
+        
           this.collaboratorFormGroup = this._formBuilder.group({
               collaborators: this._formBuilder.array([])
           });
@@ -226,5 +231,15 @@ export class AsignationComponent implements OnInit, OnDestroy {
       }
       
   }
+  deleteItem(){
+    
+    }
+
+    noCollab(){
+        this.noCollaborators= false;
+    }
+
 
 }
+
+
