@@ -6,12 +6,12 @@
                 <div class="flex flex-col">
                     <mat-label class="font-semibold mr-6 ml-1">Solicitud</mat-label>
                     <mat-form-field class="w-140">
-                        <input type="text" [placeholder]="'US-300'" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <input type="text" [placeholder]="'US-300'" matInput [formControl]="myControlTest" readonly>
+                        <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                                 {{option.name}}
                             </mat-option>
-                        </mat-autocomplete>
+                        </mat-autocomplete> -->
                     </mat-form-field>
                 </div>
             </div>

@@ -20,6 +20,7 @@ export class AssingmentOccupationService {
     private _recommended:  BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _status:  BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
     private _collaboratorsSelected: Collaborator[] = [];
+    private _requestSelected: any = null;
 
     constructor(private _httpClient: HttpClient) { }
 
@@ -49,6 +50,20 @@ export class AssingmentOccupationService {
      */
     get recommended$(): Observable<Collaborator[]> {
         return this._recommended.asObservable();
+    }
+
+    /**
+     * Getter for requestSelected
+     */
+    get requestSelected() {
+        return this._requestSelected;
+    }
+
+    /**
+     * Setter for requestSelected
+     */
+    set requestSelected(requestSelected: any) {
+        this._requestSelected = requestSelected;
     }
 
     /**
