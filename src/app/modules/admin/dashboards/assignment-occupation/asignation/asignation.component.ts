@@ -44,6 +44,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     tabIndex = 0;
     showObservation = false;
     noCollaborators = true;
+    request: any = null;
 
       constructor(private _assignmentOccupationService: AssingmentOccupationService,
                   private _changeDetectorRef: ChangeDetectorRef,
@@ -56,7 +57,13 @@ export class AsignationComponent implements OnInit, OnDestroy {
           this.getProject();
           this.filterEvent();
           
-          this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
+        this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
+        this.request = this._assignmentOccupationService.requestSelected;
+        console.log("request: ", this.request);
+        if ( this.request ) {
+            this.myControlTest.setValue(this.request.titleRequest);
+        }
+        
         console.log(this.collaboratorsArr);
         
           this.collaboratorFormGroup = this._formBuilder.group({
