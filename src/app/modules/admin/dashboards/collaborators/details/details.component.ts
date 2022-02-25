@@ -47,6 +47,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     departments: Department[];
     filteredDepartments: Department[];
     clients:Client[];
+    leaders:Collaborator[];
     ocupationGeneralPercentage:number = 0;
     filteredclients: Client[];
     countries: Country[];
@@ -88,6 +89,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Open the drawer
         this._collaboratorsListComponent.matDrawer.open();
 
+
+
         // Create the collaborator form
         this.collaboratorForm = this._formBuilder.group({
             id          : [''],
@@ -110,7 +113,11 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             technicalSkills: [''],
             phoneNumbers: this._formBuilder.array([]),
             phones: this._formBuilder.array([]),
+            isCentralAmerican:[''],
+            leader:[[]]
         })
+
+
 
         // Get the collaborators
         this._collaboratorsService.collaborators$
@@ -144,6 +151,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
                 this.collaboratorForm.get('client').setValue(collaborator.client.id);
+                this.collaboratorForm.get('leader').setValue(collaborator.leader.id);
                 // Setup the phone numbers form array
                 const phoneNumbersFormGroups = [];
 
@@ -198,6 +206,18 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+
+        // Get the collaborator
+
+        this._collaboratorsService.leaders$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((leaders: Collaborator[]) => {
+                this.leaders = leaders;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        console.log(this.leaders)
 
         this._collaboratorsService.employeePositions$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -422,6 +442,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
         collaborator.client = this.clients.find(value => value.id === collaborator.client);
+        collaborator.leader= this.leaders.find(value => value.id === collaborator.leader);
+        collaborator.isCentralAmerican ? collaborator.isCentralAmerican = 1 : collaborator.isCentralAmerican = 0;
         // Update the collaborator on the server
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {
 

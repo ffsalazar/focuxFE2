@@ -188,6 +188,7 @@
                             </div>
                         </ng-container>
 
+
                         <!-- Address -->
                         <ng-container *ngIf="collaborator.assignedLocation">
                             <div class="flex sm:items-center">
@@ -735,6 +736,19 @@
                         </mat-form-field>
                     </div>
 
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>L&iacute;der</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
+                            <mat-select [placeholder]="collaborator.leader" formControlName="leader">
+                                <mat-option *ngFor="let lead of leaders" [value]="lead.id">{{lead.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
                     <!-- Mail -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -748,6 +762,18 @@
                                 formControlName="mail"
                                 [placeholder]="'Correo'">
                         </mat-form-field>
+                    </div>
+
+                    <div class="flex flex-col mt-8">
+                        <mat-label>Centro Am&eacute;rica</mat-label>
+                        <mat-slide-toggle
+                            [formControlName]="'isCentralAmerican'"
+                            [color]="'primary'"
+                            >
+                            {{collaboratorForm.get('isCentralAmerican').value === 1 ? 'Active' : 'Disabled'}}
+
+
+                        </mat-slide-toggle>
                     </div>
                     <!-- Phone numbers -->
                    <div class="mt-8">

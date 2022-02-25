@@ -24,6 +24,7 @@ export class CollaboratorsService
     private _ocupations:BehaviorSubject<Assigments | null> = new BehaviorSubject(null);
     private _isOpenModal: BehaviorSubject<Boolean | null> = new BehaviorSubject(null);
     private  _request: BehaviorSubject<Request | null> = new BehaviorSubject(null)
+    private _leaders: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     /**
      * Constructor
      */
@@ -50,6 +51,14 @@ export class CollaboratorsService
     get collaborators$(): Observable<Collaborator[]>
     {
         return this._collaborators.asObservable();
+    }
+
+    /**
+     * Getter for collaborators
+     */
+    get leaders$(): Observable<Collaborator[]>
+    {
+        return this._leaders.asObservable();
     }
 
     /**
@@ -669,5 +678,36 @@ export class CollaboratorsService
             }
         );
         return dialogRef.afterClosed();
+    }
+
+    /**
+     * Get collaborators
+     */
+    getLeaders(): Observable<Collaborator[]>
+    {
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
+            tap((collaborators) => {
+
+
+                let collaboratorFiltered : any[]=[];
+
+                function compare(a: Collaborator, b: Collaborator) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+                    // Their names are equal
+                    if (a.lastName < b.lastName) return -1;
+                    if (a.lastName > b.lastName) return 1;
+
+                    return 0;
+                }
+                collaborators.sort(compare);
+                collaborators.forEach((collaborator) => {
+                    if (collaborator.isActive != 0){
+                        collaboratorFiltered.push(collaborator);
+                    }
+                });
+                this._leaders.next(collaboratorFiltered);
+            })
+        );
     }
 }

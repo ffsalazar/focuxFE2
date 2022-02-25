@@ -25,6 +25,7 @@ import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collabo
 import { FocusPopupRequestComponent} from "./details/focux-popup-request/focus-popup-request.component";
 import {collaboratorsRoutes} from "./collaborators.routing";
 import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/p
         MatTooltipModule,
         FuseFindByKeyPipeModule,
         SharedModule,
-        PriorityRequestModule
+        PriorityRequestModule,
+        MatSlideToggleModule
     ],
     providers   : [
         {

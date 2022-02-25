@@ -18,6 +18,9 @@ export interface Collaborator
     file?:string | null;
     isActive: number;
     client: Client;
+    leader:Collaborator;
+    isCentralAmerican:number;
+
 }
 
 export interface Country

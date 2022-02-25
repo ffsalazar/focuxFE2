@@ -212,6 +212,34 @@ export class CollaboratorsDepartmentsResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
+export class CollaboratorsLeadersResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(private _collaboratorsService: CollaboratorsService)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Collaborator[]>
+    {
+        return this._collaboratorsService.getLeaders();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class CollaboratorsEmployeePositionResolver implements Resolve<any> {
     /**
      * Constructor
