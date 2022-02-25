@@ -1,0 +1,19 @@
+
+.tab-select {
+    // background-color: rgba(51, 65, 85, var(--tw-bg-opacity)) !important;
+    // --tw-bg-opacity: 0.1 !important;
+    background-color: #f1f5f9;
+}
+
+
+.panel-ocupation{
+    background-color: #fff;
+    margin-bottom: 24px;
+    border-radius: 8px !important;
+    transition: box-shadow .3s;
+}
+
+.panel-ocupation:hover {
+    cursor: pointer;
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
