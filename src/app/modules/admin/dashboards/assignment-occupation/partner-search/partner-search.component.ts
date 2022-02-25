@@ -9,6 +9,7 @@ import {MatSort} from "@angular/material/sort";
 import {ActivatedRoute, Router} from "@angular/router";
 //import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-partner-search',
@@ -19,6 +20,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
+    @ViewChild(MatTabGroup) private _tab: MatTabGroup;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     myControlTest = new FormControl('test');
@@ -265,6 +268,22 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Select Tab
+     */
+    selectTab() {
+        switch ( this._tab.selectedIndex ) {
+            case 0:
+                this.getCollaboratorsRecommended();
+                break;
+            case 1:
+                this.getCollaboratorsByClients();
+                break;
+        
+            default:
+                break;
+        }
+    }
+    /**
      * Get collaborators recommended
      */
     getCollaboratorsRecommended() {
@@ -293,10 +312,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
 
         if ( request ) {
+
+            
             this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;
-
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
 

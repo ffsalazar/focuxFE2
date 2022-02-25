@@ -78,11 +78,11 @@
                
 
                 <div class="bg-card py-3 px-6 rounded shadow  flex flex-col">
-                    <mat-tab-group class="flex flex-row justify-center">
-                        <mat-tab (click)="getCollaboratorsRecommended()" label="Recomendado"></mat-tab>
-                        <mat-tab (click)="getCollaboratorsByClients()" label="Cliente"></mat-tab>
-                        <mat-tab label="Conocimiento">Conocimiento</mat-tab>
-                        <mat-tab label="Ocupacion">Ocupación</mat-tab>
+                    <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
+                        <mat-tab label="Recomendado"></mat-tab>
+                        <mat-tab label="Cliente"></mat-tab>
+                        <mat-tab label="Conocimiento"></mat-tab>
+                        <mat-tab label="Ocupacion"></mat-tab>
                     </mat-tab-group>
 
                 <div class="relative">
