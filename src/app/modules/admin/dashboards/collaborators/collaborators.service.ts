@@ -225,6 +225,19 @@ export class CollaboratorsService
                 description: 'Es capaz de mantener y desrrollar programas.',
                 isActive: 1
             },
+            client:{
+                "id": 1,
+                "businessType": {
+                    "id": 2,
+                    "code": "FIN01",
+                    "name": "Financiero",
+                    "description": "Servicios Financieros, inversiones, creditos personales",
+                    "isActive": 1
+                 },
+            "name": "Credix",
+            "description": "Empresa del ramo financiero en Costa Rica",
+            "isActive": 1
+            },
             companyEntryDate: '1970-01-01T00:00:00.000+00:00',
             organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
             gender: 'M',
@@ -272,6 +285,17 @@ export class CollaboratorsService
                     // Update the collaborator
                     collaborators[index] = updatedCollaborator;
 
+                    function compare(a: Collaborator, b: Collaborator) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+                        // Their names are equal
+                        if (a.lastName < b.lastName) return -1;
+                        if (a.lastName > b.lastName) return 1;
+
+                        return 0;
+                    }
+                    collaborators.sort(compare);
+
                     // Update the collaborators
                     this._collaborators.next(collaborators);
 
@@ -311,6 +335,10 @@ export class CollaboratorsService
 
                     // Update the collaborator
                     collaborators[index] = updatedCollaborator;
+
+                    // Delete the collaborators
+                    collaborators.splice(index, 1);
+
 
                     // Update the collaborators
                     this._collaborators.next(collaborators);

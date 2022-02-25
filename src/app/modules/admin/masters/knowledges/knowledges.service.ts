@@ -209,6 +209,15 @@ export class KnowledgesService
                     // Update the knowledge
                     knowledges[index] = updatedKnowledge;
 
+                    function compare(a: Knowledge, b: Knowledge) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    knowledges.sort(compare);
+
                     // Update the knowledges
                     this._knowledges.next(knowledges);
 
@@ -248,6 +257,8 @@ export class KnowledgesService
 
                     // Update the knowledge
                     knowledges[index] = updatedKnowledge;
+
+                    knowledges.splice(index,1);
 
 
                     function compare(a: Knowledge, b: Knowledge) {

@@ -197,9 +197,9 @@ export class BusinessTypesDetailsComponent implements OnInit, OnDestroy
     {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Borrar conocimiento',
+            title  : 'Borrar tipo de negocio',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este Conocimiento? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este tipo de negocio? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'
@@ -239,15 +239,8 @@ export class BusinessTypesDetailsComponent implements OnInit, OnDestroy
                 this._businessTypesService.deleteBusinessType(this.businessType)
                     .subscribe(() => {
                         // Navigate to the next businessType if available
-                        if ( nextBusinessTypeId )
-                        {
-                            this._router.navigate(['../', nextBusinessTypeId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

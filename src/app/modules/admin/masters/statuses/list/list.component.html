@@ -1,0 +1,130 @@
+<div class="absolute inset-0 flex flex-col min-w-100 overflow-hidden">
+
+    <mat-drawer-container
+        class="flex-auto h-full bg-card dark:bg-transparent"
+        (backdropClick)="onBackdropClicked()">
+
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full md:w-160 dark:bg-gray-900"
+            [mode]="'over'"
+            [opened]="false"
+            [position]="'end'"
+            [disableClose]="true"
+            #matDrawer>
+            <router-outlet></router-outlet>
+        </mat-drawer>
+
+        <mat-drawer-content class="flex flex-col">
+
+            <!-- Main -->
+            <div class="flex-auto">
+
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
+
+                    <!-- Title -->
+                    <div>
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Estatus
+                            <button
+                                class="ml-4"
+                                mat-flat-button
+                                [color]="'primary'"
+                                (click)="createStatus()">
+                                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                <span class="ml-2 mr-1">Agregar</span>
+                            </button></div>
+
+                        <div class="ml-0.5 font-medium text-secondary">
+                            <ng-container *ngIf="statusesCount > 0">
+                                {{statusesCount}}
+                            </ng-container>
+                            {{statusesCount | i18nPlural: {
+                            '=0'   : 'No hay Estatus',
+                            '=1'   : 'estatus',
+                            'other': 'estatus'
+                        } }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Main actions -->
+                    <div class="flex items-center mt-4 sm:mt-0 md:mt-4">
+                        <!-- Search -->
+                        <div class="flex-auto">
+                            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-50">
+                                <mat-icon
+                                    class="icon-size-5"
+                                    matPrefix
+                                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                                <input
+                                    matInput
+                                    [formControl]="searchInputControl"
+                                    [autocomplete]="'off'"
+                                    [placeholder]="'Buscar Estatus'">
+
+                            </mat-form-field>
+
+
+                        </div>
+                        <!-- Add status button -->
+
+                    </div>
+                </div>
+
+                <!-- Statuses list -->
+                <div class="relative">
+                    <ng-container *ngIf="statuses$ | async as statuses">
+                        <ng-container *ngIf="statuses.length; else noStatuses">
+                            <ng-container *ngFor="let status of statuses; let i = index; trackBy: trackByFn">
+                            <ng-container *ngIf="status.isActive != 0">
+                                 <!-- Group -->
+                                 <ng-container *ngIf="i === 0 || status.name.charAt(0) !== statuses[i - 1].name.charAt(0)">
+                                    <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
+                                        {{status.name.charAt(0)}}
+                                    </div>
+                                </ng-container>
+                                <!-- Status -->
+                                <a
+                                    class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
+                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedStatus || selectedStatus.id !== status.id,
+                                                'bg-primary-50 dark:bg-hover': selectedStatus && selectedStatus.id === status.id}"
+                                    [routerLink]="['./', status.id]">
+                                    <!--<div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                                        <ng-container *ngIf="status.avatar">
+                                            <img
+                                                class="object-cover w-full h-full"
+                                                [src]="status.avatar"
+                                                alt="Status avatar"/>
+                                        </ng-container>
+                                        <ng-container *ngIf="!status.avatar">
+                                            <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                {{status.name.charAt(0)}}
+                                            </div>
+                                        </ng-container>
+                                    </div>-->
+                                    <div class="min-w-0 ml-4">
+                                        <div class="font-medium leading-5 truncate">{{status.name}} </div>
+                                        <div class="leading-5 truncate text-secondary">{{status.typeStatus.name}}</div>
+                                    </div>
+                                </a>
+                            </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+
+                    <!-- No statuses -->
+                    <ng-template #noStatuses>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay status!</div>
+                    </ng-template>
+
+                </div>
+
+            </div>
+
+        </mat-drawer-content>
+
+    </mat-drawer-container>
+
+</div>

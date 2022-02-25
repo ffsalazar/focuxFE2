@@ -4,18 +4,18 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { merge, Observable, Subject } from 'rxjs';
-import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, switchMap, takeUntil, startWith, tap } from 'rxjs/operators';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea  } from '../request.types';
-import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType } from '../request.types';
+import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseAlertService } from '@fuse/components/alert';
-
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
     selector       : 'request-list',
@@ -73,12 +73,34 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     status: Status[]; 
     requestp: RequestPeriod[];
     typeRequest: TypeRequest[];
-    technicalArea: TechnicalArea[]
+    technicalArea: TechnicalArea[];
+    businessType: BusinessType[];
     isEditing: boolean = false;
     isDetail: boolean = false;
     myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do']
     alert: boolean = false;
     successSave: String = "";
+    // dataSource: Request[]
+    displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest', 
+    'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
+
+    // Form Controls
+    filterGroupForm: FormGroup;
+
+    // Observables
+    filteredClients: Observable<string[]>;
+    filteredCommercialArea: Observable<string[]>;
+    filteredStatus: Observable<string[]>;
+    filteredCustomerBranch: Observable<string[]>;
+
+    // variables
+    requestsA: Request[] = [];
+    requestsAux: Request[] = [];
+
+    showListRequest = true;
+    dataSource = new MatTableDataSource<Request[]>();
+
+    /*
     /**
      * Constructor
      */
@@ -103,31 +125,19 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Create the selected product form
-        this.selecteProductForm = this._formBuilder.group({
-            id               : [''],
-            category         : [''],
-            name             : ['', [Validators.required]],
-            description      : [''],
-            tags             : [[]],
-            sku              : [''],
-            barcode          : [''],
-            brand            : [''],
-            vendor           : [''],
-            stock            : [''],
-            reserved         : [''],
-            cost             : [''],
-            basePrice        : [''],
-            taxPercent       : [''],
-            price            : [''],
-            weight           : [''],
-            thumbnail        : [''],
-            images           : [[]],
-            currentImageIndex: [0], // Image index that is currently being viewed
-            active           : [false]
-        });
-   
+        this.request$ = this._requestService.requests$;
 
+        this._requestService.requests$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((requests: any) => {
+                this.dataSource.data = requests;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+
+        // Create the selected request form
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
                 //Info solicictud basica y compañia
@@ -174,6 +184,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }),
         });
 
+        // Create the fiterGroupForm 
+        this.filterGroupForm = this._formBuilder.group({
+            clientControl           : [],
+            commercialAreaControl   : [],
+            statusControl           : [],
+            customerBranchControl   : [],
+        });
+
         // Get the categories
         this._requestService.categories$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -186,7 +204,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-             // Get the categories
+
+             // Get the requests
         this._requestService.requestp$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((requestp: RequestPeriod[]) => {
@@ -197,19 +216,20 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
-        // Get the clients
 
+        // Get the clients
         this._requestService.clients$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((clients: Client[]) => {
 
                 // Update the client
                 this.clients = clients;
-
+                console.table(this.clients);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+            
+        // Get the Commercial Area
         this._requestService.commerca$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((commercialArea: CommercialArea[]) => {
@@ -219,18 +239,19 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+        
+        // Get the Status
         this._requestService.status$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((status: Status[]) => {
 
                 // Update the status
                 this.status = status;
-                console.log("clients: ", this.clients);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
         
+        // Get the TypeRequest
         this._requestService.typereq$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((typeRequest: TypeRequest[]) => {
@@ -241,7 +262,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
         
-            this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
+        this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
             .subscribe((technicalArea: TechnicalArea[]) => {
 
                 // Update the technicalArea
@@ -250,6 +271,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+        this._requestService.businessType$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((businessType: BusinessType[]) => {
+
+                console.table(businessType);
+                // Update the buninessType
+                this.businessType = businessType;
+                //Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Get the pagination
         this._inventoryService.pagination$
@@ -263,11 +294,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
         
-        // Get the request
+        // Get the requests
         this.request$ = this._requestService.requests$;
         
-        this._requestService.getRequests().subscribe(response => {
-            console.log(response);
+        // Get the requests
+        this._requestService.getRequests().subscribe(response => { 
+            // Filter inactive request
+            this.requestsA = response.filter(item => item.isActive !== 0);
+            console.log(this.requestsA);
+
         });
 
         // Get the tags
@@ -282,7 +317,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
@@ -296,8 +330,36 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe();
             
         this.handleChangeClients();
-        //this.disableSteps();
+        
+        // Filter the clients
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.clients)),
+        );
+        
+        // Filter the commercialArea
+        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.commercialArea)),
+        );
+
+        // Filter the status
+        this.filteredStatus = this.statusControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.status)),
+        );
+
+        // Filter the status
+        this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, this.businessType)),
+        );
+
+        this._handleChangeForm();
+
     }
+
+
 
     /**
      * After view init
@@ -382,10 +444,106 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     get step4 () {
         return this.horizontalStepperForm.get('step4');
     }
+
+    /**
+     * Getter for clientControl
+     */
+    get clientControl() {
+        return this.filterGroupForm.get('clientControl');
+    }
+
+    /**
+     * Getter for clientControl
+     */
+    get commercialAreaControl() {
+        return this.filterGroupForm.get('commercialAreaControl');
+    }
+
+    /**
+     * Getter for statusCotrol
+     */
+    get statusControl() {
+        return this.filterGroupForm.get('statusControl');
+    }
+
+    /**
+     * Getter for customerBranchControl
+     */
+    get customerBranchControl() {
+        return this.filterGroupForm.get('customerBranchControl');
+    }
     
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+
+    private _handleChangeForm() {
+
+        // Subscribe from form's values
+        this.filterGroupForm.valueChanges.subscribe(controls => {
+            let requests: Request[] = this._requestService.requests;
+
+            // Filter requests by clients, commercialArea and status
+            requests = requests.filter(item =>
+                ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) && 
+                    (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
+                        (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase()))) &&
+                            (controls.customerBranchControl === null || ( controls.customerBranchControl.toLowerCase() === '' || item?.client?.businessType.name.toLowerCase().includes( controls.customerBranchControl.toLowerCase())))
+
+            ));
+            
+            // Set request for filter
+            this.requestsA = requests;
+
+            // Set the requests
+            this._requestService.setRequests(requests);
+
+            this._changeDetectorRef.markForCheck();
+            
+        });
+    }
+
+    /**
+     * _filter
+     * @param value
+     *  
+     */
+    private _filter(value: string, collection: any[]): string[] {
+        const filteredValue = value.toLowerCase();
+
+        const filteredCollection = collection.map(option => option.name);
+
+        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
+    }
+    
+    
+    /**
+     * getAmountRequestByOption
+     * @param name
+     * @param filterOption
+     *  
+     */
+    getAmountRequestByOption(name: string, filterOption: number) {
+
+        switch (filterOption) {
+            case 1:
+                return this.requestsA.filter(item => item?.client.name === name).length;
+                break;
+            case 2:
+                return this.requestsA.filter(item => item?.commercialArea.name === name).length;
+                break;
+            case 3:
+                return this.requestsA.filter(item => item?.status.name === name).length;
+                break;
+            case 4:
+                return this.requestsA.filter(item => item?.client.businessType.name === name).length;
+                break;
+        
+            default:
+                break;
+        }
+    }
 
     /**
      * showDetail
@@ -394,18 +552,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     showDetail(id: number) {
 
+        console.log("showDetail");
         // If the request is already selected...
-        if ( this.selectedRequest && this.selectedRequest.id === id )
-        {
-            // Close the details
-            this.closeDetails();
-            return;
-        }
+        // if ( this.selectedRequest && this.selectedRequest.id === id )
+        // {
+        //     // Close the details
+        //     this.closeDetails();
+        //     return;
+        // }
+
+        
+        //this._changeDetectorRef.markForCheck();
+        // this.fillDataFormWizzard(id);
 
         this.isDetail = true;
-
-        this._changeDetectorRef.markForCheck();
-        this.fillDataFormWizzard(id);
+        this.openPopup(id);
     }
 
     /**
@@ -423,12 +584,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Set the selected product
                 this.selectedRequest = request;
                 
-                this.fillWizzardForm(request);
+                this.setRequestForm(request);
               
-            });
-
-            this.horizontalStepperForm.get('step1').valueChanges.subscribe((res) => {
-  
             });
     }
 
@@ -448,8 +605,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * @param request
      */
 
-    fillWizzardForm(request: Request) {
-    
+    setRequestForm(request: Request) {
+        console.log("setRequestForm:", request);
         // Fill the formGroup step1
         this.step1.patchValue(request);
         this.step1.get('client').setValue(request.client.id);
@@ -459,6 +616,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Fill the formGroup step2
         this.step2.patchValue(request);
+        this.step2.get('responsibleRequest').setValue('Freddy Salazar');
         this.step2.get('dateRequest').setValue(request.dateRequest);
         this.step2.get('technicalArea').setValue(request.technicalArea.id);
         this.step2.get('status').setValue(request.status.id);
@@ -470,8 +628,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         
         // Fill the formGroup step4
         this.step4.patchValue(request);
-
-        console.log("form lleno: ", this.horizontalStepperForm);
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -517,46 +673,27 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     createRequest(): void
     {
         // Create the request
-        this._requestService.createRequest().subscribe((newRequest) => {
+        this._requestService.createRequest()
+            .subscribe((newRequest) => {
 
-            // Go to new request
-            this.selectedRequest = newRequest;
+                // Go to new request
+                this.selectedRequest = newRequest;
 
-            // Set controls id and isActive
-            this.step1.get('id').setValue(newRequest.id);
-            this.step1.get('titleRequest').setValue(newRequest.titleRequest);
-            this.step2.get('isActive').setValue(newRequest.isActive);
+                // Set controls id and isActive
+                this.step1.get('id').setValue(newRequest.id);
+                this.step1.get('titleRequest').setValue(newRequest.titleRequest);
+                this.step2.get('isActive').setValue(newRequest.isActive);
 
-            // Open modal
-            this.openPopup(newRequest.id);
+                // Open focuxPopup
+                this.openPopup(newRequest.id);
 
-            // Fill the form
-            //this.fillWizzardForm(this.selectedRequest);
+                // Fill the form
+                //this.setRequestForm(this.selectedRequest);
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
     }
-
-    /**
-     * Update the selected product using the form data
-     */
-    // updateSelectedRequest(): void
-    // {
-    //     // Get the product object
-    //     const product = this.selecteProductForm.getRawValue();
-
-    //     // Remove the currentImageIndex field
-    //     delete product.currentImageIndex;
-
-    //     // Update the product on the server
-    //     this._inventoryService.updateProduct(product.id, product).subscribe(() => {
-
-    //         // Show a success message
-    //         this.showFlashMessage('success');
-    //     });
-    // }
-
 
     /**
      * Update the selected request using the form data
@@ -600,7 +737,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     this.closeDetails();
                     this.successSave = 'La solicitud ha sido eliminada con éxito!'
                     this._fuseAlertService.show('alertBox4');
-                  
+                    
+                    this._changeDetectorRef.markForCheck();
                 });
             }
         });
@@ -667,16 +805,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 };
 
                 // Update the request on the server
-                this._requestService.updateRequest(requestNew.id, requestNew).subscribe((request) => {
-                    // Clear Wizzard
-                    this._stepper.reset();
-                    this.showFlashMessage('success');
-                    this._fuseAlertService.show('alertBox4');
-                    this.successSave = 'Solicitud actualizada con éxito!'
-                    
-                    // Close the details
-                    this.closeDetails();
-                });
+                this._requestService.updateRequest(requestNew.id, requestNew)
+                    .subscribe((request) => {
+                        // Clear Wizzard
+                        this._stepper.reset();
+                        // Show notification update request
+                        this.showFlashMessage('success');
+                        this._fuseAlertService.show('alertBox4');
+                        this.successSave = 'Solicitud actualizada con éxito!'
+                        // Close the details
+                        this.closeDetails();
+                    });
         
             }
         });
@@ -713,20 +852,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         if ( this.isDetail || this.isEditing ) {
             this.fillDataFormWizzard(id);
         }
-        
+
         this._requestService.open({
-            template: this.tplDetail, title: 'Editar Solicitud'
+            template: this.tplDetail, title: this.isDetail ? 'detail' : 'edit',
           },
           {width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
             if ( confirm ) {
-                
-                if ( this.isDetail ) {
-                    this.isDetail = false;
-                }
+            
+                if ( this.isEditing ) this.isEditing = false;
 
-                if ( this.isEditing ) {
-                    this.isEditing = false;
-                }
+                if ( this.isDetail ) this.isDetail = false;
 
                 this.selectedRequest = null;
                 

@@ -139,7 +139,7 @@ export class DepartmentsService
                 const department = departments.find(item => item.id === id) || null;
                 const department_test = departments.find(item => item.id === id);
 
-                console.log(department_test);
+
                 // Update the department
                 this._department.next(department);
 
@@ -209,6 +209,15 @@ export class DepartmentsService
                     // Update the department
                     departments[index] = updatedDepartment;
 
+                    function compare(a: Department, b: Department) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+
+
+                        return 0;
+                    }
+                    departments.sort(compare);
+
                     // Update the departments
                     this._departments.next(departments);
 
@@ -248,6 +257,8 @@ export class DepartmentsService
 
                     // Update the department
                     departments[index] = updatedDepartment;
+
+                    departments.splice(index,1);
 
                     // Update the departments
                     this._departments.next(departments);

@@ -257,15 +257,9 @@ export class EmployeePositionDetailsComponent implements OnInit, OnDestroy
                 this._employeePositionsService.deleteEmployeePosition(this.employeePosition)
                     .subscribe(() => {
                         // Navigate to the next employeePosition if available
-                        if ( nextEmployeePositionId )
-                        {
-                            this._router.navigate(['../', nextEmployeePositionId], {relativeTo: this._activatedRoute});
-                        }
-                        // Otherwise, navigate to the parent
-                        else
-                        {
+
                             this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-                        }
+
 
                         // Toggle the edit mode off
                         this.toggleEditMode(false);

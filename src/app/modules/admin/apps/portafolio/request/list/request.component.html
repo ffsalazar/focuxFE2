@@ -2,27 +2,64 @@
 
     <!-- Header -->
     <div
-        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 ">
         <!-- Loader -->
         <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
             <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
         <!-- Title -->
         <div class="text-4xl font-extrabold tracking-tight">Portafolio de Solicitudes</div>
-        <!-- Actions -->
-        <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-            <!-- Search -->
-            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
-                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                    [placeholder]="'Buscar Solicitudes'">
+        
+    </div>
+    <!-- Actions -->
+    <div style="justify-content: space-between;" class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4 border-b">
+        <!-- Search
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+            <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                [placeholder]="'Buscar Solicitudes'">
+        </mat-form-field> -->
+        <!-- Search client -->
+        <form [formGroup]="filterGroupForm">
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Ramo</mat-label>
+                <input type="text" matInput formControlName="customerBranchControl" [matAutocomplete]="autoCustomerBranch">
+                <mat-autocomplete #autoCustomerBranch="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredCustomerBranch  | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span></div></mat-option>
+                </mat-autocomplete>
             </mat-form-field>
-            <!-- Add request button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createRequest()">
-                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                <span class="ml-2 mr-1">Agregar</span>
-            </button>
-        </div>
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Cliente</mat-label>
+                <input type="text" matInput formControlName="clientControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredClients | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Area solucionador</mat-label>
+                <input type="text" matInput formControlName="commercialAreaControl" [matAutocomplete]="autoCommercialArea">
+                <mat-autocomplete #autoCommercialArea="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredCommercialArea | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Estatus</mat-label>
+                <input type="text" matInput formControlName="statusControl" [matAutocomplete]="autoStatus">
+                <mat-autocomplete #autoStatus="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredStatus | async" [value]="option">
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+
+        <!-- Add request button -->
+        <button class="ml-4 mr-6" mat-flat-button [color]="'primary'" (click)="createRequest()">
+            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+            <span class="ml-2 mr-1">Agregar</span>
+        </button>
     </div>
 
     <!-- Main -->
@@ -41,157 +78,96 @@
             </fuse-alert>
             <ng-container *ngIf="(request$ | async) as requests">
                 <ng-container *ngIf="requests.length > 0; else noRequests">
-                    <div class="grid">
-                        <!-- Header -->
-                        <div class="z-10 sticky top-0 grid grid-cols-12 gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                            matSort matSortDisableClear>
-                            <div class="hidden md:block" [mat-sort-header]="'titleRequest'">
-                                Ramo
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'client'">
-                                Compañia
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'requestPeriod'">
-                                Descripción
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'code'">
-                                Código
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'responsibleRequest'">
-                                Responsable
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'priorityOrder'">
-                                Prioridad
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'status'">
-                                Estado
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'completionPercentage'">
-                                Avance %
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'dateRealEnd'">
-                                Fecha Fin
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'deviationPercentage'">
-                                Desviación Entrega
-                            </div>
-                            <div class="hidden sm:block" [mat-sort-header]="'dateEndPause'">
-                                Días Duración
-                            </div>
-                            <!-- <div class="hidden sm:block" [mat-sort-header]="'datePlanEnd'">
-                                Días Entrega
-                            </div> -->
-                            <div class="hidden sm:block">Detalles</div>
-                        </div>
-                        <!-- Rows -->
-                        <ng-container *ngIf="(request$ | async) as requests">
-                            <ng-container *ngFor="let request of requests; trackBy: trackByFn">
-                                <div class="grid-cols-12 grid items-center gap-2 py-3 px-3 md:px-8 border-b">
-                                    <!-- SKU -->
-                                    <div class="hidden sm:block truncate">
-                                        {{request.client.name}}
-                                    </div>
+                    <div class="table-responsive">
+                        <table mat-table  [dataSource]="dataSource">
+                            <ng-container matColumnDef="id">
+                                <th mat-header-cell *matHeaderCellDef> # </th>
+                                <td mat-cell *matCellDef="let element; let i = index;"> {{ i + 1 }} </td>
+                              </ng-container>
+                            <ng-container matColumnDef="ramo">
+                                <th mat-header-cell *matHeaderCellDef>  Ramo </th>
+                                <td mat-cell *matCellDef="let element"> {{'asj'}} </td>
+                              </ng-container>
+                            <ng-container matColumnDef="client">
+                                <th mat-header-cell *matHeaderCellDef> Compañia </th>
+                                <td mat-cell *matCellDef="let element"> {{element.client.name}} </td>
+                              </ng-container>
+                           
+                              <ng-container matColumnDef="titleRequest">
+                                <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                                <td mat-cell style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:150px;" [ngClass]="'customWidthClass'"  *matCellDef="let element"> {{element.titleRequest}} </td>
+                              </ng-container>
 
-                                    <!-- Name -->
-                                    <div class="hidden sm:block truncate">
-                                        {{request.client.name}}
-                                    </div>
-
-                                    <!-- Description -->
-                                    <div class="hidden md:block truncate">
-                                        {{request.titleRequest}}
-                                    </div>
-
-                                    <!-- Code -->
-                                    <div class="hidden sm:block">
-                                        {{request.code}}
-                                    </div>
-
-                                    <!-- Responsible Request -->
-                                    <div class="hidden md:block text-center">
-                                        {{request.responsibleRequest.name}}
-                                    </div>
-
-                                    <!-- Priority Order -->
-                                    <div class="hidden sm:block text-center">
-                                        {{request.priorityOrder}}
-                                    </div>
-
-                                    <!-- Status -->
-                                    <div class="hidden sm:block">
-                                        {{request.status.name}}
-                                    </div>
-
-                                    <!-- Completion Percentage -->
-                                    <div class="hidden sm:block text-center">
-                                        {{request.completionPercentage}}
-                                    </div>
-
-                                    <!-- DateReal End -->
-                                    <div class="hidden sm:block">
-                                        {{request.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY'}}
-                                    </div>
-
-                                    <!-- Deviation Percentage -->
-                                    <div class="hidden sm:block text-center">
-                                        {{request.deviationPercentage}}
-                                    </div>
-
-                                    <!-- DateEnd Pause -->
-                                    <div class="hidden sm:block">
-                                        {{request.dateEndPause | amParse: formats | amDateFormat:'DD/MM/YYYY'}}
-                                    </div>
-
-                                    <!-- DatePlan End -->
-                                    <!-- <div class="hidden sm:block">
-                                        {{request.datePlanEnd}}
-                                    </div> -->
-                                   
-
-                                    <!-- Active -->
-                                    <!-- <div class="hidden lg:block">
-                                        <ng-container *ngIf="request.active">
-                                            <mat-icon class="text-green-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                                        </ng-container>
-                                        <ng-container *ngIf="!request.active">
-                                            <mat-icon class="text-gray-400 icon-size-5" [svgIcon]="'heroicons_solid:x'">
-                                            </mat-icon>
-                                        </ng-container>
-                                    </div> -->
-
-                                    <!-- Details button -->
-                                    <div>
+                              <ng-container matColumnDef="code">
+                                <th mat-header-cell *matHeaderCellDef> Código </th>
+                                <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+                              </ng-container>
+                             
+                              <ng-container matColumnDef="responsibleRequest">
+                                <th mat-header-cell *matHeaderCellDef> Responsable </th>
+                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest.name}} </td>
+                              </ng-container>
+    
+                              <ng-container matColumnDef="priorityOrder">
+                                <th mat-header-cell *matHeaderCellDef> Priodidad </th>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.priorityOrder}} </td>
+                              </ng-container>
+                              <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef> Estatus </th>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.status.name}} </td>
+                              </ng-container>
+    
+                              <ng-container matColumnDef="completionPercentage">
+                                <th mat-header-cell *matHeaderCellDef>  Avance % </th>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.completionPercentage}} </td>
+                              </ng-container>
+    
+                            <ng-container matColumnDef="dateRealEnd">
+                                <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
+                                <td mat-cell *matCellDef="let element"> {{element.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY'}} </td>
+                              </ng-container>
+                            
+                              <ng-container matColumnDef="deviationPercentage">
+                                <th mat-header-cell *matHeaderCellDef> Desviación Entrega </th>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.deviationPercentage}} </td>
+                              </ng-container>
+                            
+                          
+                              <ng-container matColumnDef="dateEndPause">
+                                <th mat-header-cell *matHeaderCellDef> Días Duración </th>
+                                <td mat-cell *matCellDef="let element"> {{element.dateEndPause  | amParse: formats | amDateFormat:'DD/MM/YYYY'}} </td>
+                              </ng-container>
+    
+                              <ng-container matColumnDef="Detalle">
+                                <th mat-header-cell *matHeaderCellDef> Detalles </th>
+                                <td mat-cell *matCellDef="let element">
                                         <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
-                                            (click)="showDetail(request.id)">
+                                            (click)="showDetail(element.id)">
                                             <mat-icon class="icon-size-5"
-                                                [svgIcon]="selectedRequest?.id === request.id && isDetail? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'">
+                                                [svgIcon]="selectedRequest?.id === element.id && isDetail? 'heroicons_solid:eye-off' : 'heroicons_solid:eye'">
                                             </mat-icon>
                                         </button>
                                         <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
-                                            (click)="openPopup(request.id)">
+                                            (click)="updateSelectedRequest(element.id)">
                                             <mat-icon class="icon-size-5"
                                                 [svgIcon]="'heroicons_solid:pencil'">
                                             </mat-icon>
                                         </button>
-                                    </div>
-                                </div>
-                                <div class="grid">
-                                    <ng-container *ngIf="selectedRequest?.id === request.id && isDetail">
-                                        <ng-container
-                                            *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: request}">
-                                        </ng-container>
-                                    </ng-container>
-                                </div>
-                            </ng-container>
-                        </ng-container>
+                            
+                                
+                                </td>
+                              </ng-container>
+                            <!-- DateEnd Pause -->
+                            
+                              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                          </table>
                     </div>
-
-                    <mat-paginator
+                    <!-- <mat-paginator
                         class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
                         [ngClass]="{'pointer-events-none': isLoading}" [length]="pagination.length"
                         [pageIndex]="pagination.page" [pageSize]="pagination.size" [pageSizeOptions]="[5, 10, 25, 100]"
-                        [showFirstLastButtons]="true"></mat-paginator>
+                        [showFirstLastButtons]="true"></mat-paginator> -->
 
                 </ng-container>
             </ng-container>
@@ -309,26 +285,26 @@
                                         <input
                                             matInput
                                             formControlName="customerBranch"
-                                            [readonly]="isDetail"
+                                            [readonly]="true"
                                         >
                                         <mat-icon class="icon-size-5" matPrefix
                                             [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                         <mat-error *ngIf="!step1.get('customerBranch').valid && (step1.get('customerBranch').dirty || step1.get('customerBranch').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="flex justify-between">
-                                    <button class="-ml-4" mat-button [color]="'warn'" (click)="deleteSelectedRequest()">
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
+                                    <button class="-ml-4" *ngIf="!isDetail" mat-button [color]="'warn'" (click)="deleteSelectedRequest()">
                                         Eliminar
                                     </button>
                                     <button
-                                        class="px-8"
-                                        mat-flat-button
-                                        [color]="'primary'"
-                                        [disabled]="horizontalStepperForm.get('step1').invalid"
-                                        type="button"
-                                        matStepperNext
-                                    >
-                                        Continuar
+                                            class="px-8 justify-self-end"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            [disabled]="horizontalStepperForm.get('step1').invalid"
+                                            type="button"
+                                            matStepperNext
+                                        >
+                                            Continuar
                                     </button>
                                 </div>
                             </mat-step>
@@ -570,16 +546,12 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div class="flex justify-between">
-                                    <div class="flex">
-
-                                        <button class="-ml-4" mat-button [color]="'warn'"
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
+                                    <button *ngIf="!isDetail" class="-ml-4" mat-button [color]="'warn'"
                                             (click)="deleteSelectedRequest()">
                                             Eliminar
-                                        </button>
-                                    </div>
-
-                                    <div class="flex justify-end">
+                                    </button>
+                                    <div class="justify-self-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
                                             matStepperPrevious>
                                             Regresar
@@ -722,18 +694,15 @@
                                     </div>
 
                                 </div>
-                                <div class="flex justify-between">
-                                    <div class="flex">
-                                        <button class="-ml-4" mat-button [color]="'warn'"
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
+                                    <button *ngIf="!isDetail" class="-ml-4" mat-button [color]="'warn'"
                                             (click)="deleteSelectedRequest()">
                                             Eliminar
-                                        </button>
-                                    </div>
-
-                                    <div class="flex justify-end">
+                                    </button>
+                                    <div class="justify-self-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
                                             matStepperPrevious>
-                                            Regreasar
+                                            Regresar
                                         </button>
                                         <button
                                             class="px-8"
@@ -743,10 +712,11 @@
                                             type="button"
                                             matStepperNext
                                         >
-                                            Siguiente
+                                            Continuar
                                         </button>
                                     </div>
                                 </div>
+                                
                             </mat-step>
 
                             <mat-step [formGroupName]="'step4'" [stepControl]="horizontalStepperForm.get('step4')">
@@ -826,21 +796,18 @@
                                     </div>
 
                                 </div>
-                                <div class="flex justify-between">
-                                    <div class="flex">
-
-                                        <button class="-ml-4" mat-button [color]="'warn'"
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
+                                    <button *ngIf="!isDetail" class="-ml-4" mat-button [color]="'warn'"
                                             (click)="deleteSelectedRequest()">
                                             Eliminar
-                                        </button>
-                                    </div>
-
+                                    </button>
                                     <div class="flex justify-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
                                             matStepperPrevious>
                                             Regresar
                                         </button>
                                         <button
+                                            *ngIf="!isDetail"
                                             class="px-8"
                                             mat-flat-button
                                             [color]="'primary'"
@@ -852,6 +819,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                
                             </mat-step>
 
                             <!-- <mat-step>

@@ -27,6 +27,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { MatTableModule } from '@angular/material/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [
@@ -58,7 +61,10 @@ import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component
         SharedModule,
         MomentModule,
         MatMomentDateModule,
-        FuseAlertModule
+        FuseAlertModule,
+        MatAutocompleteModule,
+        MatTableModule,
+        MatProgressSpinnerModule
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,

@@ -44,6 +44,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/vacations'
             },
+            {
+                id   : 'masters.portafolio.request',
+                title: 'Portafolio de solicitudes',
+                type : 'basic',
+                icon : 'heroicons_outline:archive',
+                link : '/apps/portafolio/request'
+            },
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
@@ -91,7 +98,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             */{
                 id      : 'masters.portafolio',
-                title   : 'Portafolio',
+                title   : 'Maestros',
                 type    : 'collapsable',
                 icon    : 'heroicons_outline:archive',
                 children: [
@@ -99,19 +106,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.status',
                         title: 'Estatus',
                         type : 'basic',
-                        link : ''
-                    },
-                    {
-                        id   : 'masters.portafolio.request',
-                        title: 'Solicitudes',
-                        type : 'basic',
-                        link : '/apps/portafolio/request'
+                        link : '/masters/statuses'
                     },
                     {
                         id   : 'masters.portafolio.typeStatus',
                         title: 'Tipo de Estatus',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/typesStatus'
                     },
                     {
                         id   : 'masters.portafolio.client',
@@ -123,13 +124,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         id   : 'masters.portafolio.commercialArea',
                         title: 'Area Comercial',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/commercialAreas'
                     },
                     {
                         id   : 'masters.portafolio.technicalArea',
                         title: 'Area Técnica',
                         type : 'basic',
-                        link : ''
+                        link : '/masters/technicalAreas'
                     },
                     {
                         id   : 'masters.portafolio.businessType',

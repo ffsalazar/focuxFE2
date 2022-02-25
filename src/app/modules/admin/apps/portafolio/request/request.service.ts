@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData } from './request.types';
-import { BusinessType, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData, BusinessType } from './request.types';
+import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent }  from './focux-popup/focux-popup.component';
 
@@ -30,8 +30,10 @@ export class RequestService
     private _requestp: BehaviorSubject<RequestPeriod[] | null> = new BehaviorSubject(null);
     private _typereq: BehaviorSubject<TypeRequest[] | null> = new BehaviorSubject(null);
     private _areatech: BehaviorSubject<TechnicalArea[] | null> = new BehaviorSubject(null);
-
+    private _businessType: BehaviorSubject<BusinessType[] | null> = new BehaviorSubject(null);
     private _isOpenModal: Subject<boolean | null> = new Subject(); 
+
+    public requests: Request[];
 
     request: Request;
 
@@ -125,6 +127,14 @@ export class RequestService
     }
 
     /**
+     * Setter for request
+     */
+    setRequests(requests: Request[])
+    {
+        this._requests.next(requests);
+    }
+
+    /**
      * Getter for request
      */
     get requestp$(): Observable<RequestPeriod []>
@@ -137,17 +147,24 @@ export class RequestService
      }
 
     /**
-     * Getter for type request
+     * Getter for typeRequest
      */
     get typereq$(): Observable<TypeRequest []>{
        return this._typereq.asObservable()
     }
 
     /**
-     * Getter for type request
+     * Getter for isOpenModal
      */
     get isOpenModal$(): Observable<Boolean>{
        return this._isOpenModal.asObservable()
+    }
+
+    /**
+     * Getter for businessType
+     */
+    get businessType$(): Observable<BusinessType[]> {
+        return this._businessType.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -166,95 +183,10 @@ export class RequestService
         );
     }
 
-    
-
-    // /**
-    //  * Get products
-    //  *
-    //  *
-    //  * @param page
-    //  * @param size
-    //  * @param sort
-    //  * @param order
-    //  * @param search
-    //  */
-    // getRequest(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
-    //     Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
-    // {
-    //     console.log("entrooooo");
-    //     return this._httpClient.get<{ pagination: InventoryPagination; products: InventoryProduct[] }>('api/apps/ecommerce/inventory/products', {
-    //         params: {
-    //             page: '' + page,
-    //             size: '' + size,
-    //             sort,
-    //             order,
-    //             search
-    //         }
-    //     }).pipe(
-    //         tap((response) => {
-
-    //             console.log("response: ", response);
-    //             // this._pagination.next(response.pagination);
-    //             // this._products.next(response.products);
-
-    //             this._request.next(this.request);
-    //         })
-    //     );
-    // }
     /**
-     * Search collaborators with given query
-     *
-     * @param query
-     */
-    //  searchCollaborator(query: string): Observable<Collaborator[]>
-    //  {
-    //      return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
-    //          params: {query}
-    //      }).pipe(
-    //          tap((collaborators) => {
-    //              let collaboratorFiltered : any[]=[];
-    //              collaborators.forEach((collaborator) => {
-    //                  if (collaborator.isActive != 0){
-    //                      collaboratorFiltered.push(collaborator);
-    //                  }
-    //              });
-    //              // If the query exists...
-    //              if ( query )
-    //              {
-    //                  // Filter the collaborators
- 
-    //                  collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
-    //                  function compare(a: Collaborator, b: Collaborator) {
-    //                      if (a.name < b.name) return -1;
-    //                      if (a.name > b.name) return 1;
-    //                      // Their names are equal
-    //                      if (a.lastName < b.lastName) return -1;
-    //                      if (a.lastName > b.lastName) return 1;
- 
-    //                      return 0;
-    //                  }
-    //                  collaboratorFiltered.sort(compare);
-    //                  this._collaborators.next(collaboratorFiltered);
-    //              }else{
-    //                  function compare(a: Collaborator, b: Collaborator) {
-    //                      if (a.name < b.name) return -1;
-    //                      if (a.name > b.name) return 1;
-    //                      // Their names are equal
-    //                      if (a.lastName < b.lastName) return -1;
-    //                      if (a.lastName > b.lastName) return 1;
- 
-    //                      return 0;
-    //                 }
-    //                 collaboratorFiltered.sort(compare);
-    //                 this._collaborators.next(collaboratorFiltered);
-    //             }
- 
-    //         })
-    //     );
-    // }
-
-    /**
-     * Get request by id
+     * Get rewquest by id
+     * @param id 
+     * @returns 
      */
     getRequestById(id: number): Observable<Request>
     {
@@ -285,7 +217,7 @@ export class RequestService
     }
 
     /**
-     * 
+     * Search Request
      * @param query 
      */
     searchRequest(query: string): Observable<Request[]> {
@@ -335,12 +267,18 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get Requests
+     */
     getRequests(): Observable<Request[]> {
         return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all').pipe(
             tap((requests) => {
 
                 // Filter inactive request 
                 requests = requests.filter(item => item.isActive !== 0);
+                
+                this.requests = requests;
 
                 // Emit next value 
                 this._requests.next(requests);
@@ -348,6 +286,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get Clients
+     */
     getClients(): Observable<Client[]> {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
             tap((clients) => {
@@ -357,6 +299,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get CommercialArea
+     */
     getComercArea(): Observable<CommercialArea[]> {
         return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all').pipe(
             tap((commerc) => {
@@ -366,6 +312,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get RequestPeriod
+     */
     getRequestPeriod(): Observable<RequestPeriod[]> {
         return this._httpClient.get<RequestPeriod[]>('http://localhost:1616/api/v1/followup/requestPeriod/all').pipe(
             tap((reqperiod) => {
@@ -374,7 +324,11 @@ export class RequestService
             })
         );
     }
-
+    
+    /**
+     * 
+     * Get TypeRequest
+     */
     getTypeRequest(): Observable<TypeRequest[]> {
         return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
             tap((typereq) => {
@@ -384,6 +338,10 @@ export class RequestService
         );
     }
 
+    /**
+     * 
+     * Get Status
+     */
     getStatus(): Observable<Status[]> {
         return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/typestatuses/all').pipe(
             tap((status) => {
@@ -392,7 +350,11 @@ export class RequestService
             })
         );
     }
-
+    
+    /**
+     * 
+     * Get AreaTechical
+     */
     getAreaTech(): Observable<TechnicalArea[]> {
         return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all').pipe(
             tap((areatech) => {
@@ -402,7 +364,6 @@ export class RequestService
         );
     }
 
-    
     /**
      * Create product
      */
@@ -410,7 +371,7 @@ export class RequestService
     {
         const newRequest = {
             client: {
-              id: 1
+              id: 4
             },
             commercialArea: {
               id: 1
@@ -455,7 +416,12 @@ export class RequestService
             dateEndPause: '2022-02-08T04:00:00.000+00:00',
             totalPauseDays: 1,
             isActive: 1,
-            code: 'asd21'
+            code: 'asd21',
+            created: '',
+            createdby: '',
+            updated: '',
+            updatedby: '',
+            
         }
           
         return this.requests$.pipe(
@@ -478,59 +444,6 @@ export class RequestService
      */
     updateRequest(id: number, request: Request): Observable<any>
     {
-        console.log("updateRequest: ", request);
-
-        const newRequest = {
-            id: 6,
-            "client": {
-              "id": 1
-            },
-            "commercialArea": {
-              "id": 1
-            },
-            "typeRequest": {
-              "id": 1
-            },
-            "titleRequest": "Petición de Tesis :)",
-            "descriptionRequest": "Description PRUEBA DESDE JSONDOC CON CAMBIOS",
-            "responsibleRequest": {
-              "id": 3
-            },
-            "priorityOrder": 1,
-            "dateRequest": "2022-02-07T04:00:00.000+00:00",
-            "dateInit": "2022-02-07T04:00:00.000+00:00",
-            "datePlanEnd": "2022-02-08T04:00:00.000+00:00",
-            "dateRealEnd": "2022-02-09T04:00:00.000+00:00",
-            "status": {
-              "id": 1
-            },
-            "completionPercentage": 30,
-            "deviationPercentage": 70,
-            "deliverablesCompletedIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES",
-            "pendingActivitiesIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS PENDING",
-            "commentsIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS",
-            "updateDate": "2022-02-07T04:00:00.000+00:00",
-            "commentsClient": "PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT",
-            "technicalArea": {
-              "id": 1
-            },
-            "category": {
-              "id": 1
-            },
-            "internalFeedbackIntelix": "PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK",
-            "solverGroup": {
-              "id": 1
-            },
-            "requestPeriod": {
-              "id": 1
-            },
-            "dateInitPause": "2022-02-08T04:00:00.000+00:00",
-            "dateEndPause": "2022-02-08T04:00:00.000+00:00",
-            "totalPauseDays": 1,
-            "isActive": 1,
-            "code": "asd21"
-        }
-
         return this.requests$.pipe(
             take(1),
             switchMap(requests => this._httpClient.put<Request> ('http://localhost:1616/api/v1/followup/requests/request/' + id, 
@@ -541,14 +454,17 @@ export class RequestService
                     // Find the index of the updated product
                     const index = requests.findIndex(item => item.id === id);
 
-                    // // Update the product
+                    // Update the product
                     requests[index] = updatedRequest;
 
-                    // Update the products
+
+                    console.log("updateRequest: ", requests);
+                    // Close focuxPopup
+                    this._isOpenModal.next(true);
+
+                    // Update the requests
                     this._requests.next(requests);
 
-                    console.log("Se actualizo");
-                    this._isOpenModal.next(true);
                     // // Return the updated product
                     return updatedRequest;
                 }),
@@ -557,13 +473,12 @@ export class RequestService
                     filter(item => item && item.id === id),
                     tap(() => {
 
+                        // Close focuxPopup
+                        this._isOpenModal.next(true);
+
                         // Update the product if it's selected
                         this._request.next(updatedRequest);
                         
-                        this._isOpenModal.next(true);
-                        //this._isOpenModal.complete();
-
-
                         // Return the updated product
                         return updatedRequest;
                     })
@@ -591,14 +506,30 @@ export class RequestService
                     // Delete the product
                     requests.splice(index, 1);
 
-                    // Update the products
-                    this._requests.next(requests);
+                    // Close focuxPopup
                     this._isOpenModal.next(false);
+
+
+                    // Update the requests
+                    this._requests.next(requests);
                     // Return the deleted status
                     
                     return isDeleted;
                 })
             ))
+        );
+    }
+
+    /**
+     * GetBusinessType
+     */
+    getBusinessType(): Observable<BusinessType[]>
+    {
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all/').pipe(
+            tap(businessType => {
+
+                this._businessType.next(businessType);
+            })
         );
     }
 

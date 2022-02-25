@@ -5,7 +5,7 @@ import {AssignmentOccupationComponent} from "./assignment-occupation.component";
 import {
     RequestBrandsResolver,
     RequestCategoriesResolver,
-    RequestProductsResolver, RequestTagsResolver, RequestVendorsResolver
+    RequestTagsResolver,
 } from "../../apps/portafolio/request/request.resolvers";
 import { CollaboratorsResolver, ClientsResolver } from "./assignment.resolvers";
 
@@ -30,7 +30,6 @@ export const AssignmentOccupationRouter: Route[] = [
             path: 'partner-search',
             component: PartnerSearchComponent,
             resolve  : {
-                products  : RequestProductsResolver,
                 collaborators: CollaboratorsResolver,
                 clients: ClientsResolver,
                 //recommended : RecommendedResolver
