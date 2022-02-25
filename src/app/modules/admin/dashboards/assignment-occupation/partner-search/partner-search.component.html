@@ -7,25 +7,8 @@
                 <div class="flex flex-auto mt-4">
                     
                     <form [formGroup]="filterForm" class="example-form">
-                        <div class="container-filter">
-                            <div style="width: 30%; margin-right: auto">
-                            <div class="flex flex-col">
-                            <mat-label class="font-semibold">Solicitudes</mat-label>
-                            <mat-form-field class="w-100" appearance="fill">
-                                <input type="text"
-                                       placeholder="Pick one"
-                                       aria-label="Number"
-                                       matInput
-                                       formControlName="myControl"
-                                       [matAutocomplete]="auto" >
-                                <mat-autocomplete #auto="matAutocomplete">
-                                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                    {{option}}
-                                  </mat-option>
-                                </mat-autocomplete>
-                              </mat-form-field>
-                            </div>
-                            </div>
+
+                        <div class="container-filter" style="display: flex; justify-content: flex-end;">
                             <div>
                                 <div class="flex flex-col">
                                 <mat-label class="font-semibold">Cliente</mat-label>
@@ -42,73 +25,64 @@
                             <div>
                             <div class="flex flex-col">
                               <mat-label class="font-semibold">Responsable</mat-label>
-                              <mat-form-field class="w-50" *ngIf="(collaborators$ | async) as collaborators">
+                              <mat-form-field class="w-50">
                                   <input
                                     type="text"
                                     [placeholder]="'Pedro Perez'"
                                     matInput
-                                    formControlName="myControl"
-                                    [matAutocomplete]="autoClient" >
-                                  <mat-autocomplete #autoClient="matAutocomplete" >
-                                      <mat-option *ngFor="let collaborator of collaborators" [value]="collaborator.name">
-                                          {{collaborator.name}}
+                                    formControlName="collaboratorControl"
+                                    [matAutocomplete]="autoCollaborator" >
+                                  <mat-autocomplete #autoCollaborator="matAutocomplete">
+                                      <mat-option *ngFor="let collaborator of filteredCollaborators" [value]="collaborator">
+                                          {{collaborator}}
                                       </mat-option>
                                   </mat-autocomplete>
                               </mat-form-field>
                             </div>
                             </div>
-                            <!-- <div>
-                                <mat-form-field class="w-50" appearance="fill">
-                                    <mat-label class="font-semibold">Conocimiento</mat-label>
-                                    <input type="text" matInput [placeholder]="'EPA'" [formControl]="myControlTest" [matAutocomplete]="auto">
-                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                            {{option?.name}}
-                                        </mat-option>
-                                    </mat-autocomplete>
+                        </div>
+                        <div class="container-filter">
+                            <div class="flex flex-col mr-6">
+                            <mat-label class="font-semibold">Solicitudes</mat-label>
+                            <mat-form-field class="w-100" appearance="fill">
+                                <input type="text"
+                                       placeholder="Pick one"
+                                       aria-label="Number"
+                                       matInput
+                                       formControlName="requestControl"
+                                       [matAutocomplete]="auto" >
+                                <mat-autocomplete #auto="matAutocomplete">
+                                  <mat-option *ngFor="let option of filteredRequest" [value]="option">
+                                    {{option}}
+                                  </mat-option>
+                                </mat-autocomplete>
+                              </mat-form-field>
+                            </div>
+                              <div class="flex flex-col">
+                                <mat-form-field class="w-50 mr-6">
+                                    <mat-label>Estatus</mat-label>
+                                    <mat-select [formControl]="status">
+                                        <ng-container *ngFor="let status of status$ | async">
+                                            <mat-option [value]="status.id">
+                                                {{status.name}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
                                 </mat-form-field>
-                            </div> -->
+                            </div>
+                            
                         </div> 
-                    </form>
-                    
-
-            
-
-                    
-                    <!-- <div class="flex flex-col">
-                    <mat-label class="font-semibold">Cliente</mat-label>
-                    <mat-form-field class="w-50 mr-6" appearance="fill">
-                        <input type="text" matInput [placeholder]="'EPA'" [formControl]="myControlTest" [matAutocomplete]="auto">
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                {{option?.name}}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                    </div>
-                    <div class="flex flex-col">
-                    <mat-label class="font-semibold">Conocimiento</mat-label>
-                    <mat-form-field class="w-50 mr-6" appearance="fill">
-                        <input type="text" matInput [placeholder]="'Java'" [formControl]="myControlTest" [matAutocomplete]="auto">
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                {{option?.name}}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                    </div> -->
-                    
+                    </form>         
                 </div>
 
                
 
                 <div class="bg-card py-3 px-6 rounded shadow  flex flex-col">
                     <mat-tab-group class="flex flex-row justify-center">
-                        <mat-tab (click)="recommended()" label="Recomendado"></mat-tab>
-                        <mat-tab label="1"></mat-tab>
-                        <mat-tab label="2"></mat-tab>
-                        <mat-tab label="3"></mat-tab>
-                        <mat-tab label="4"></mat-tab>
+                        <mat-tab (click)="getCollaboratorsRecommended()" label="Recomendado"></mat-tab>
+                        <mat-tab (click)="getCollaboratorsByClients()" label="Cliente"></mat-tab>
+                        <mat-tab label="Conocimiento">Conocimiento</mat-tab>
+                        <mat-tab label="Ocupacion">Ocupación</mat-tab>
                     </mat-tab-group>
 
     <!--                <div class="flex flex-row justify-center mb-8 w-full">-->
@@ -116,42 +90,42 @@
 
                 <div class="relative">
                     
-                    <ng-container *ngIf="(collaborators$ | async) as collaborators" [formGroup]="collaboratorArrayForm">
-                        <ng-container *ngIf="collaborators.length; else noCollaborators">
+                    <ng-container [formGroup]="collaboratorArrayForm">
+                        <ng-container *ngIf="collaboratorsRecomm.length; else noCollaborators">
                                 <ng-container formArrayName="collaboratorSelected">
                                     <ng-container *ngFor="let _ of collaboratorSelected.controls; index as i; ">
                                         <ng-container>
                                             <!-- Group -->
                                              <ng-container
-                                                *ngIf="i === 0 || collaborators[i].name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
+                                                *ngIf="i === 0 || collaboratorsRecomm[i].name.charAt(0) !== collaboratorsRecomm[i - 1].name.charAt(0)">
                                                 <div
                                                     class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                                    {{collaborators[i].name.charAt(0)}}
+                                                    {{collaboratorsRecomm[i].name.charAt(0)}}
                                                 </div>
                                             </ng-container> 
                                             <!-- Collaborator -->
                                             
                                              <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
-                                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaborators[i].id,
-                                                                        'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaborators[i].id}">
+                                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorsRecomm[i].id,
+                                                                        'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorsRecomm[i].id}">
                                             
                                                                         
                                                 <div class="flex flex-row">
                                                       <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                                    <ng-container *ngIf="collaborators[i].avatar">
-                                                        <img class="object-cover w-full h-full" [src]="collaborators[i].avatar"
+                                                    <ng-container *ngIf="collaboratorsRecomm[i].avatar">
+                                                        <img class="object-cover w-full h-full" [src]="collaboratorsRecomm[i].avatar"
                                                             alt="Collaborator avatar" />
                                                     </ng-container>
-                                                    <ng-container *ngIf="!collaborators[i].avatar">
+                                                    <ng-container *ngIf="!collaboratorsRecomm[i].avatar">
                                                         <div
                                                             class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                            {{collaborators[i].name.charAt(0)}}
+                                                            {{collaboratorsRecomm[i].name.charAt(0)}}
                                                         </div>
                                                     </ng-container>
                                                 </div>
                                                     <div class="min-w-0 ml-4">
-                                                        <div class="font-medium leading-5 truncate">{{collaborators[i].name}} {{collaborators[i].lastName}}</div>
-                                                        <div class="leading-5 truncate text-secondary">{{collaborators[i].employeePosition.name}}</div>
+                                                        <div class="font-medium leading-5 truncate">{{collaboratorsRecomm[i].name}} {{collaboratorsRecomm[i].lastName}}</div>
+                                                        <div class="leading-5 truncate text-secondary">{{collaboratorsRecomm[i].employeePosition.name}}</div>
                                                     </div>
                                                     
                                                 </div>

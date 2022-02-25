@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { Activity, Collaborator, Project, Client } from "../assignment-occupation.types";
+import { Activity, Collaborator, Project, Client, Status } from "../assignment-occupation.types";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {FormArray, FormControl} from "@angular/forms";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
@@ -19,148 +19,157 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     myControlTest = new FormControl('test');
 
     collaborators$: any;
 
     collaborators: Collaborator[] = [];
+    collaboratorsRecomm : Collaborator[] = [];
+    requests: any[] = [];
     clients: Client[] = [];
-
+    status: any[];
     activity: Activity[] = [];
     isLoading: boolean = false;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     // FormControls
+    statusControl: FormControl = new FormControl();
     
     filterForm: FormGroup = this._fb.group({
         myControl: [''],
         requestControl: [''],
-        clientControl: ['']
+        clientControl: [''],
+        collaboratorControl: [''],
     });
     
     collaboratorArrayForm: FormGroup = new FormGroup({
         collaboratorSelected: new FormArray([])
     });
 
+    // Observables
     filteredOptions: Observable<string[]>;
     filteredClients: Observable<string[]>;
+    filteredRequest: string[];
+    filteredCollaborators: string[];
+    status$: Observable<Status[]>;
 
     filterValue = 'Hola mundo';
     
-    projects: any[] = [
-        {
-            id: 150,
-            name: 'Originacion',
-            description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-            endDate: '2022-02-05',
-            initDate: '2022-10-25',
-            skills: 'Angular-SpringBoot',
-            client: {
-                id: 4,
-                name: 'Credix',
-                description: 'Entidad financiera ubicada en Costa Rica'
-            },
-            collaborators: this.collaborators
-        },
-        {
-            id: 150,
-            name: 'Originacion',
-            description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-            endDate: '2022-02-05',
-            initDate: '2022-10-25',
-            skills: 'Angular-SpringBoot',
-            client: {
-                id: 4,
-                name: 'Credix',
-                description: 'Entidad financiera ubicada en Costa Rica'
-            },
-            collaborators: this.collaborators
-        },
-    {
-        id: 150,
-        name: 'Originacion',
-        description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-        endDate: '2022-02-05',
-        initDate: '2022-10-25',
-        skills: 'Angular-SpringBoot',
-        client: {
-            id: 4,
-            name: 'Credix',
-            description: 'Entidad financiera ubicada en Costa Rica'
-        },
-        collaborators: this.collaborators
-    },
-        {
-            id: 150,
-                name: 'Originacion',
-            description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-            endDate: '2022-02-05',
-            initDate: '2022-10-25',
-            skills: 'Angular-SpringBoot',
-            client: {
-            id: 4,
-                name: 'Credix',
-                description: 'Entidad financiera ubicada en Costa Rica'
-        },
-            collaborators: this.collaborators
-        }
-    ];
-    project: any = undefined;
     tabIndex = 0;
 
-  constructor(
-      private _assignmentOccupationService: AssingmentOccupationService,
-      private _changeDetectorRef: ChangeDetectorRef,
-      private _router: Router,
-      private activateRouter: ActivatedRoute,
-      private _fb: FormBuilder,
-  ) { }
+    constructor(
+        private _assignmentOccupationService: AssingmentOccupationService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _router: Router,
+        private activateRouter: ActivatedRoute,
+        private _fb: FormBuilder,
+    ) { }
 
-  ngOnInit(): void {
-      this.getProject();
-      this.getActivitys();
-      this.getAllCollaborators();
-      this.filterEvent();
+    ngOnInit(): void {
+        this.getActivitys();
 
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterr(value)),
-    );
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterClient(value)),
+        );
 
-    this.filteredClients = this.clientControl.valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterClient(value)),
-    );
+        this.collaboratorControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterCollaborator(value)),
+            ).subscribe(value => {
+                this.filteredCollaborators = value;
+                this._changeDetectorRef.markForCheck();
+            });
 
-    this.filterForm.valueChanges.subscribe(value => {
-        let filteredCollaborators = [];
-    });
+        this.requestControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterRequest(value)),
+            ).subscribe(value => {
+                this.filteredRequest = value;
+                this._changeDetectorRef.markForCheck();
+            });
+
     
-    this._assignmentOccupationService.collaborators$
-        .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(collaborators => {
-                this.collaborators = collaborators;
+        this._assignmentOccupationService.collaborators$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(collaborators => {
+                    //this.collaborators = collaborators;
 
-                for(let i = 0; i < this.collaborators.length; i++){
-                    this.collaboratorSelected.push(new FormControl(false));
-                }
-               console.log(this.collaboratorArrayForm);
+                    // for(let i = 0; i < collaborators.length; i++){
+                    //     this.collaboratorSelected.push(new FormControl(false));
+                    // }
+                console.log(this.collaboratorArrayForm);
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                })
+                
+        this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
+            console.log("array: ", value);
+
+            console.log("Item: ", value.collaboratorSelected.at(0));
+
+            // Añadir colaboradores seleccionados en el FormArray
+
+
+        })
+
+        this.status$ = this._assignmentOccupationService.status$;
+
+        this._getStatus();
+        this._getClients();
+        this._getResponsibleByClient();
+        this._getRequestByResponsible()
+        this._getCollaboratorsByRequest();
+  } 
+
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Accessors
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * collaboratorSelected
+     */
+    get collaboratorSelected(){
+        return this.collaboratorArrayForm.get('collaboratorSelected') as FormArray;
+    }
+
+    /**
+     * clientControl
+     */
+    get clientControl() {
+        return this.filterForm.get('clientControl');
+    }
+
+    /**
+     * collaboratorControl
+     */
+    get collaboratorControl() {
+        return this.filterForm.get('collaboratorControl');
+    }
+
+    /**
+     * requestControl
+     */
+    get requestControl() {
+        return this.filterForm.get('requestControl');
+    }
+
+    private _getStatus() {
+        this._assignmentOccupationService.getStatus()
+            .subscribe(status => {
+                this.status = status;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            })
-            
-    this.collaboratorArrayForm.valueChanges.subscribe((value)=>{
-        console.log("array: ", value);
+            });
+    }
 
-        console.log("Item: ", value.collaboratorSelected.at(0));
-
-        // Añadir colaboradores seleccionados en el FormArray
-
-        
-    })
-
-    this._assignmentOccupationService.clients$
+    /**
+     * getClients
+     */
+    private _getClients() {
+        this._assignmentOccupationService.clients$
         .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(clients => {
                 this.clients = clients;
@@ -168,22 +177,125 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             })
     
-    this.collaborators$ = this._assignmentOccupationService.collaborators$;
+        //this.collaborators$ = this._assignmentOccupationService.collaborators$;
+    }
+
+    /**
+     * getResponsibleByClient
+     */
+    private _getResponsibleByClient() {
+        this.clientControl.valueChanges
+        .subscribe(value => {
+            const client = this.clients.find(item => item.name === value);
+
+            if ( client ) {
+                this._assignmentOccupationService.getCollaboratorsByClient( client.id )
+                    .subscribe(collaborators => {
+                        this.collaborators = collaborators;
+                        this.collaboratorControl.setValue('');
+                        this._changeDetectorRef.markForCheck();
+                    })
+            } else {
+                this.collaborators = [];
+                this.collaboratorControl.setValue('');
+                this._changeDetectorRef.markForCheck();
+            }
+        });
+    }
     
-  }
+    /**
+     * getRequestByResponsible
+     */
+    private _getRequestByResponsible() {
+        this.collaboratorControl.valueChanges
+            .subscribe(value => {
+                const responsible = this.collaborators.find(item => item.name === value);
 
-    get collaboratorSelected(){
-        return this.collaboratorArrayForm.get('collaboratorSelected') as FormArray;
+                console.log("responsible: ", responsible);
+                if ( responsible ) {
+                    this._assignmentOccupationService.getRequestByResponsible( responsible.id )
+                        .subscribe(requests => {
+                            console.log(requests);
+                            this.requests = requests;
+                            this.requestControl.setValue('');
+                            this._changeDetectorRef.markForCheck();
+                        })
+                } else {
+                    this.requests = [];
+                    this.requestControl.setValue('');
+                    this._changeDetectorRef.markForCheck();
+                }
+            });
     }
 
-    get myControl() {
-        return this.filterForm.get('myControl');
+    /**
+     * _getCollaboratorsByRequest
+     */
+    private _getCollaboratorsByRequest() {
+        this.requestControl.valueChanges
+            .subscribe(value => {
+                // Get recommended
+                this.getCollaboratorsRecommended();
+            });
     }
 
-    get clientControl() {
-        return this.filterForm.get('clientControl');
+    /**
+     * Get collaborators recommended
+     */
+    getCollaboratorsRecommended() {
+        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+
+        if ( request ) {
+            this._assignmentOccupationService.getRecommended( request.id )
+                .subscribe(collaborators => {
+                    console.log("collaborators recomme: ", collaborators);
+                    this.collaboratorsRecomm = collaborators;
+                    // Clear formArray
+                    this.collaboratorSelected.clear();
+                    console.log("recomendados: ", this.collaboratorsRecomm);
+                    // Set formArray
+                    this.collaboratorsRecomm.forEach(item => {
+                        this.collaboratorSelected.push(new FormControl(false));
+                    });
+                    this._changeDetectorRef.markForCheck();
+                })
+        } else {
+            this.collaboratorsRecomm = [];
+            this._changeDetectorRef.markForCheck();
+        }
     }
 
+    /**
+     * Get collaboratorsByClient
+     */
+    getCollaboratorsByClients() {
+        console.log("requestControl: ", this.requestControl.value);
+        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+
+        if ( request ) {
+            this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
+                .subscribe(collaborators => {
+                    console.log("collaborators recomme by clients: ", collaborators);
+                    this.collaboratorsRecomm = collaborators;
+                    // Clear formArray
+                    this.collaboratorSelected.clear();
+                    console.log("recomendados: ", this.collaboratorsRecomm);
+                    // Set formArray
+                    this.collaboratorsRecomm.forEach(item => {
+                        this.collaboratorSelected.push(new FormControl(false));
+                    });
+                    this._changeDetectorRef.markForCheck();
+                })
+        } else {
+            this.collaboratorsRecomm = [];
+            this._changeDetectorRef.markForCheck();
+        }
+    }
+
+    /**
+     * _filterClient
+     * @param value 
+     */
     private _filterClient(value: string): string[] {
         const filterValue = value.toLowerCase();
 
@@ -191,55 +303,29 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-    private _filterr(value: string): string[] {
+    /**
+     * _filterCollaborator
+     * @param value 
+     */
+    private _filterCollaborator(value: string): string[]{
         const filterValue = value.toLowerCase();
-
-    //     return this.options.map(x => x.color).filter(option =>
-    // option.toLowerCase().includes(val.toLowerCase()));
-
-        let val = this.collaborators.map(option => option.name);
+        const val = this.collaborators.map(option => option.name);
         return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-  filterEvent() {
-      this.filteredOptions = this.myControlTest.valueChanges
-          .pipe(
-              startWith(''),
-              map(value => (typeof value === 'string' ? value : value.name)),
-              map(name => (name ? this._filter(name) : this.collaborators.slice()))
-          )
-  }
-
-
-    private _filter(name: string): any[] {
-        const filterValue = name.toLowerCase();
-        return this.collaborators.filter(option => option.name.toLowerCase().includes(filterValue));
+    /**
+     * _filterRequest
+     * @param value 
+     */
+    private _filterRequest(value: string): string[]{
+        const filterValue = value.toLowerCase();
+        const val = this.requests.map(option => option.titleRequest);
+        return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-    getAllCollaborators(){
-        //this._assignmentOccupationService.getCollaborators();
+    getActivitys() {
+        this.activity = this._assignmentOccupationService.activitys;
     }
-
-    getProject() {
-        this.project  = {
-            id: 150,
-            name: 'Originacion',
-            description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-            endDate: '2022-02-05',
-            initDate: '2022-10-25',
-            skills: 'Angular-SpringBoot',
-            client: {
-                id: 4,
-                name: 'Credix',
-                description: 'Entidad financiera ubicada en Costa Rica'
-            },
-            collaborators: this.collaborators
-        };
-    }
-
-  getActivitys() {
-      this.activity = this._assignmentOccupationService.activitys;
-  }
 
     displayFn(data): string {
         return data && data.name ? data.name : '';
@@ -281,16 +367,16 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
        });
        this.tabIndex = index;
        this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
-  }
+    }
 
-  recommended(){
+    recommended(){
+        
+    }
+    selected(){
     
-  }
-  selected(){
-  
-    
-    
-      
-  }
+        
+        
+        
+    }
 
 }

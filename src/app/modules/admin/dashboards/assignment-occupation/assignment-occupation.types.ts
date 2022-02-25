@@ -29,6 +29,14 @@ export interface EmployeePosition {
     code?:       string;
 }
 
+export interface Status {
+    id: number,
+    typeStatus: string,
+    name: string,
+    description: string,
+    isActive: number,
+}
+
 
 export interface Client
 {

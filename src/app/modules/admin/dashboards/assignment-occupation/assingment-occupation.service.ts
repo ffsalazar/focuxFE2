@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import { Activity, Collaborator, Client } from "./assignment-occupation.types";
+import { Activity, Collaborator, Client, Status } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { tap } from 'rxjs/operators';
 
@@ -17,6 +17,7 @@ export class AssingmentOccupationService {
     private _collaboratorsAssign: Collaborator[] = data;
     private _tabIndex: Subject<number> = new Subject<number>();
     private _recommended:  BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    private _status:  BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
     collaboratorsSelected: Collaborator[] = [];
 
     constructor(private _httpClient: HttpClient) { }
@@ -39,6 +40,20 @@ export class AssingmentOccupationService {
      */
     get collaborators$(): Observable<Collaborator[]> {
         return this._collaborators.asObservable();
+    }
+
+    /**
+     * Getter for recomended$
+     */
+    get recommended$(): Observable<Collaborator[]> {
+        return this._recommended.asObservable();
+    }
+
+    /**
+     * Getter for recomended$
+     */
+    get status$(): Observable<Status[]> {
+        return this._status.asObservable();
     }
 
     /**
@@ -86,6 +101,54 @@ export class AssingmentOccupationService {
                 })
             );
     }
+    
+    getCollaboratorsByClient(clientId: number): Observable<Collaborator[]> {
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/projectleads/', {
+            params: {clientId}
+        });
+    }
+
+    getRequestByResponsible(responsibleId: number): Observable<any[]> {
+        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId);
+    }
+
+    /**
+     * 
+     * @param requestId 
+     */
+    getRecommended(requestId: number): Observable<Collaborator[]>{
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allconditions/' + requestId)
+        .pipe(
+            tap((recommended)=>{
+                this._recommended.next(recommended);
+            })
+        );
+    }
+
+    /**
+     * 
+     * @param requestId 
+     */
+    getCollaboratorsRecommendedByClient(requestId: number): Observable<Collaborator[]>{
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allclients/' + requestId)
+        .pipe(
+            tap((recommended)=>{
+                this._recommended.next(recommended);
+            })
+        );
+    }
+
+    /**
+     * 
+     */
+    getStatus(): Observable<Status[]>{
+        return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/statuses/all/')
+            .pipe(
+                tap(status => {
+                    this._status.next(status);
+            }));
+    }
+
     get clients$(): Observable<Client[]> {
 
         return this._clients.asObservable();
@@ -99,21 +162,5 @@ export class AssingmentOccupationService {
     set activitys(value: Activity[]) {
         this._activitys = value;
     }
-
-    /**
-     * Get Clients
-     */
-    // getRecommended(): Observable<Collaborator[]>{
-    //     return this._httpClient.get<Collaborator[]>('/api/v1/followup/filtercollaborator/allby/request/allconditions/{requestId}')
-    //     .pipe(
-    //         tap((recommended)=>{
-    //             this._recommended.next(recommended);
-    //         })
-    //     );
-    // }
-    // get recommended$(): Observable<Collaborator[]>{
-    //     return this._recommended.asObservable();
-    // }
-
 
 }
