@@ -146,12 +146,20 @@ export class AssingmentOccupationService {
         });
     }
 
-    getRequestByResponsible(responsibleId: number): Observable<any[]> {
-        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId);
+    getRequestByResponsible(responsibleId: number, statusId: number): Observable<any[]> {
+        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId, {
+            params: {
+                statusId
+            }
+        });
     }
 
-    getRequestByClient(clientId: number): Observable<any[]> {
-        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/client/' + clientId);
+    getRequestByClient(clientId: number, statusId: number): Observable<any[]> {
+        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/client/' + clientId, {
+            params: {
+                statusId
+            }
+        });
     }
 
     /**
