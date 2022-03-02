@@ -62,7 +62,7 @@ export class RequestService
     /**
      * Getter for knowledge
      */
-    get knowledges$(): Observable<Category[]>
+    get knowledges$(): Observable<Knowledge[]>
     {
         return this._knowledges.asObservable();
     }
