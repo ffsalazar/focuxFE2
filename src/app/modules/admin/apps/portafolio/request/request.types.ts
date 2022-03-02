@@ -166,10 +166,19 @@ export interface TechnicalArea {
 
 export interface Status {
     id:           number;
-    idTypeStatus: number;
+    typeStatus:   number;
     name:         string;
     description:  string;
     isActive:     number;
+}
+
+export interface Knowledge
+{
+    id: number;
+    type: string;
+    description: string;
+    name: string;
+    isActive: number;
 }
 
 export interface ResponsibleRequest {
