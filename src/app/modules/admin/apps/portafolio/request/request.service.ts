@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData, BusinessType } from './request.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData, BusinessType, Knowledge } from './request.types';
 import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent }  from './focux-popup/focux-popup.component';
@@ -31,6 +31,8 @@ export class RequestService
     private _typereq: BehaviorSubject<TypeRequest[] | null> = new BehaviorSubject(null);
     private _areatech: BehaviorSubject<TechnicalArea[] | null> = new BehaviorSubject(null);
     private _businessType: BehaviorSubject<BusinessType[] | null> = new BehaviorSubject(null);
+    private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
+
     private _isOpenModal: Subject<boolean | null> = new Subject(); 
 
     public requests: Request[];
@@ -55,6 +57,14 @@ export class RequestService
     get categories$(): Observable<Category[]>
     {
         return this._categories.asObservable();
+    }
+
+    /**
+     * Getter for knowledge
+     */
+    get knowledges$(): Observable<Category[]>
+    {
+        return this._knowledges.asObservable();
     }
 
     /**
@@ -179,6 +189,38 @@ export class RequestService
         return this._httpClient.get<Category[]>('http://localhost:1616/api/v1/followup/categories/all').pipe(
             tap((categories) => {
                 this._categories.next(categories);
+            })
+        );
+    }
+
+    // /**
+    //  * Get categories
+    //  */
+    // getKnowledges(): Observable<Knowledge[]>
+    // {
+    //     return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/categories/all').pipe(
+    //         tap((categories) => {
+    //             this._categories.next(categories);
+    //         })
+    //     );
+    // }
+
+
+    /**
+     * Get knowledges
+     */
+    getKnowledges(): Observable<Knowledge[]>
+    {
+        return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
+            tap((knowledges) => {
+                let knowledgesFiltered : Knowledge[] = []
+                knowledges.forEach((knowledge) => {
+                    if (knowledge.isActive != 0){
+                        knowledgesFiltered.push(knowledge);
+                    }
+                });
+                
+                this._knowledges.next(knowledgesFiltered);
             })
         );
     }
@@ -343,7 +385,7 @@ export class RequestService
      * Get Status
      */
     getStatus(): Observable<Status[]> {
-        return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/typestatuses/all').pipe(
+        return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/statuses/all').pipe(
             tap((status) => {
 
                 this._status.next(status);
@@ -371,7 +413,7 @@ export class RequestService
     {
         const newRequest = {
             client: {
-              id: 4
+              id: 1
             },
             commercialArea: {
               id: 1
@@ -390,7 +432,7 @@ export class RequestService
             datePlanEnd: '2022-02-08T04:00:00.000+00:00',
             dateRealEnd: '2022-02-09T04:00:00.000+00:00',
             status: {
-              id: 1
+              id: 6
             },
             completionPercentage: 30,
             deviationPercentage: 70,
@@ -421,7 +463,6 @@ export class RequestService
             createdby: '',
             updated: '',
             updatedby: '',
-            
         }
           
         return this.requests$.pipe(

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
@@ -12,10 +12,11 @@ import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inv
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
 import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType } from '../request.types';
-import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseAlertService } from '@fuse/components/alert';
 import { MatTableDataSource } from '@angular/material/table';
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
     selector       : 'request-list',
@@ -53,8 +54,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild(MatSort) private _sort: MatSort;
     @ViewChild('horizontalStepper') private _stepper: MatStepper;
     @ViewChild('rowDetailsTemplate') private tplDetail: TemplateRef<any>;
-    products$: Observable<InventoryProduct[]>;
+    @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
+    @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
 
+    products$: Observable<InventoryProduct[]>;
     brands: InventoryBrand[];
     filteredTags: InventoryTag[];
     flashMessage: 'success' | 'error' | null = null;
@@ -78,6 +81,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     typeRequest: TypeRequest[];
     technicalArea: TechnicalArea[];
     businessType: BusinessType[];
+    knowledges: Knowledge[];
+
     isEditing: boolean = false;
     isDetail: boolean = false;
     myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do']
@@ -114,7 +119,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         private _inventoryService: InventoryService,
         private _requestService: RequestService,
         public dialog: MatDialog,
-        private _fuseAlertService: FuseAlertService
+        private _fuseAlertService: FuseAlertService,
+        private _overlay: Overlay,
+        private _viewContainerRef: ViewContainerRef,
     )
     {
     }
@@ -134,7 +141,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((requests: any) => {
                 this.dataSource.data = requests;
-
+                console.log("request: ", requests);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -359,10 +366,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         );
 
         this._handleChangeForm();
+        this._getKnowledges();
 
     }
-
-
 
     /**
      * After view init
@@ -480,6 +486,133 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Open knowledges panel
+     */
+    openKnowledgesPanel(): void
+     {
+        //  // Create the overlay
+        //  this._knowledgesPanelOverlayRef = this._overlay.create({
+        //      backdropClass   : '',
+        //      hasBackdrop     : true,
+        //      scrollStrategy  : this._overlay.scrollStrategies.block(),
+        //      positionStrategy: this._overlay.position()
+        //          .flexibleConnectedTo(this._knowledgesPanelOrigin.nativeElement)
+        //          .withFlexibleDimensions(true)
+        //          .withViewportMargin(64)
+        //          .withLockedPosition(true)
+        //          .withPositions([
+        //              {
+        //                  originX : 'start',
+        //                  originY : 'bottom',
+        //                  overlayX: 'start',
+        //                  overlayY: 'top'
+        //              }
+        //          ])
+        //  });
+ 
+        //  // Subscribe to the attachments observable
+        //  this._knowledgesPanelOverlayRef.attachments().subscribe(() => {
+ 
+        //      // Add a class to the origin
+        //      this._renderer2.addClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
+ 
+        //      // Focus to the search input once the overlay has been attached
+        //      this._knowledgesPanelOverlayRef.overlayElement.querySelector('input').focus();
+        //  });
+ 
+        //  // Create a portal from the template
+        //  const templatePortal = new TemplatePortal(this._knowledgesPanel, this._viewContainerRef);
+ 
+        //  // Attach the portal to the overlay
+        //  this._knowledgesPanelOverlayRef.attach(templatePortal);
+ 
+        //  // Subscribe to the backdrop click
+        //  this._knowledgesPanelOverlayRef.backdropClick().subscribe(() => {
+ 
+        //      // Remove the class from the origin
+        //      this._renderer2.removeClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
+ 
+        //      // If overlay exists and attached...
+        //      if ( this._knowledgesPanelOverlayRef && this._knowledgesPanelOverlayRef.hasAttached() )
+        //      {
+        //          // Detach it
+        //          this._knowledgesPanelOverlayRef.detach();
+ 
+        //          // Reset the knowledge filter
+ 
+ 
+        //          // Toggle the edit mode off
+        //          this.knowledgesEditMode = false;
+        //      }
+ 
+        //      // If template portal exists and attached...
+        //      if ( templatePortal && templatePortal.isAttached )
+        //      {
+        //          // Detach it
+        //          templatePortal.detach();
+        //      }
+        //  });
+    }
+
+    /**
+     * Filter knowledges input key down event
+     *
+     * @param event
+     */
+    filterKnowledgesInputKeyDown(event): void
+    {
+        //  // Return if the pressed key is not 'Enter'
+        //  if ( event.key !== 'Enter' )
+        //  {
+        //      return;
+        //  }
+ 
+        //  // If there is no knowledge available...
+        //  if ( this.filteredKnowledges.length === 0 )
+        //  {
+        //     /*  TODO: this operation is not supported yet. jpelay  24/01*/
+        //      // // Create the knowledge
+        //      // this.createKnowledge(event.target.value);
+ 
+        //      // // Clear the input
+        //      // event.target.value = '';
+ 
+        //      // // Return
+        //      return;
+        //  }
+ 
+        //  // If there is a knowledge...
+        //  const Knowledge = this.filteredKnowledges[0];
+        //  const isKnowledgeApplied = this.collaborator.knowledges.find(knowledge => knowledge.knowledge.id === Knowledge.id);
+ 
+        //  // If the found knowledge is already applied to the collaborator...
+        //  if ( isKnowledgeApplied )
+        //  {
+        //      // Remove the knowledge from the collaborator
+        //      this.removeKnowledgeFromCollaborator(null);
+        //  }
+        //  else
+        //  {
+        //      // Otherwise add the knowledge to the collaborator
+        //      this.addKnowledgeToCollaborator(null);
+        //  }
+ 
+    }
+
+    /**
+     * Filter knowledges
+     *
+     * @param event
+     */
+    filterKnowledges(event): void
+    {
+        // Get the value
+        const value = event.target.value.toLowerCase();
+
+        // Filter the knowledges
+        //this.filteredKnowledges = this.knowledges.filter(knowledge => knowledge.name.toLowerCase().includes(value));
+    }
 
     private _handleChangeForm() {
 
@@ -506,7 +639,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             
         });
     }
-
+    
     /**
      * _filter
      * @param value
@@ -518,6 +651,40 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         const filteredCollection = collection.map(option => option.name);
 
         return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
+    }
+
+    private _getKnowledges() {
+        // Get the knowledges
+        this._requestService.knowledges$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((knowledges: Knowledge[]) => {
+                this.knowledges = knowledges;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    }
+
+    checkerKnowledges(knowledge: Knowledge): boolean {
+        //let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);
+        return true;
+    };
+
+    /**
+     * Toggle collaborator knowledge
+     *
+     * @param knowledge
+     */
+    toggleCollaboratorKnowledge(knowledge: Knowledge): void
+    {
+        //  let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
+        //  if (knowledgeFound) {
+        //      if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+        //      else  this.activeCollaboratorKnowledge(knowledgeFound);
+        //  }
+        //  else
+        //  {
+        //      this.addKnowledgeToCollaborator(knowledge);
+        //  }
     }
     
     
