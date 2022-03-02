@@ -30,7 +30,7 @@ import { Router } from '@angular/router';
 export class AsignationComponent implements OnInit, OnDestroy {
     collaboratorFormGroup: FormGroup;
     myControlTest = new FormControl();
-    collaboratorForm = new FormControl().disabled;
+    collaboratorForm = new FormControl();
     
 
     collaborators$: Observable<Collaborator[]>;
@@ -63,8 +63,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
         if ( this.request ) {
             this.myControlTest.setValue(this.request.titleRequest);
         }
-        
-        console.log(this.collaboratorsArr);
         
           this.collaboratorFormGroup = this._formBuilder.group({
               collaborators: this._formBuilder.array([])
@@ -238,15 +236,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
       }
       
   }
-  deleteItem(){
-    
+  deleteItem(arr, coll){
+      for(let i = 0; i< arr.length; i++){
+         if(coll === arr[i]){
+            arr[i]=false;
+         }
+      }
     }
-
-    noCollab(){
-        this.noCollaborators= false;
-    }
-
 
 }
-
-
