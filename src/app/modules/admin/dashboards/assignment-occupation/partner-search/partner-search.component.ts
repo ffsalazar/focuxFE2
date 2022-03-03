@@ -35,15 +35,17 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     status: any[];
     activity: Activity[] = [];
     isLoading: boolean = false;
+    selectedClient: Client;
+    selectedResponsible: any = null;
+    filterActive: string;
 
-    // FormControls
-    statusControl: FormControl = new FormControl();
-    
+    // FormControls    
     filterForm: FormGroup = this._fb.group({
         myControl: [''],
         requestControl: [''],
         clientControl: [''],
         collaboratorControl: [''],
+        statusControl: [''],
     });
     
     collaboratorArrayForm: FormGroup = new FormGroup({
@@ -121,10 +123,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.status$ = this._assignmentOccupationService.status$;
 
         this._handleChangeArrayForm();
+        this._handleChangeStatus();
         this._getStatus();
         this._getClients();
         this._getResponsibleByClient();
-        this._getRequestByResponsible()
+        this._handleChangeResponsible()
         this._getCollaboratorsByRequest();
   } 
 
@@ -161,9 +164,29 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         return this.filterForm.get('requestControl');
     }
 
+    /**
+     * requestControl
+     */
+    get statusControl() {
+        return this.filterForm.get('statusControl');
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Methods
     // -----------------------------------------------------------------------------------------------------
+
+    private _handleChangeStatus() {
+        this.statusControl.valueChanges
+            .subscribe(value => {
+                if ( this.selectedResponsible ) {
+                    this._getRequestByResponsible( this.selectedResponsible );
+                } else if ( this.selectedClient ) {
+                    this._getCollaboratorsByClient( this.selectedClient.id );
+                    this._getRequestByClient( this.selectedClient.id );
+                }
+                this._changeDetectorRef.markForCheck();
+            });
+    }
 
     private _getStatus() {
         this._assignmentOccupationService.getStatus()
@@ -198,9 +221,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             const client = this.clients.find(item => item.name === value);
 
             if ( client ) {
-                this._getCollaboratorsByClient( client.id );
-                this._getRequestByClient( client.id );
+                this.selectedClient = client;
+                this._getCollaboratorsByClient( this.selectedClient.id );
+                this._getRequestByClient( this.selectedClient.id );
             } else {
+                this.selectedClient = null;
                 this.collaborators = [];
                 this.collaboratorControl.setValue('');
                 this._changeDetectorRef.markForCheck();
@@ -224,7 +249,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * getRequestByClient
      */
     private _getRequestByClient(clientId: number) {
-        this._assignmentOccupationService.getRequestByClient( clientId )
+        this._assignmentOccupationService.getRequestByClient( clientId, this.statusControl.value | 8 )
             .subscribe(requests => {
                 this.requests = requests;
                 this.requestControl.setValue('');
@@ -235,25 +260,35 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     /**
      * getRequestByResponsible
      */
-    private _getRequestByResponsible() {
+    private _handleChangeResponsible() {
         this.collaboratorControl.valueChanges
             .subscribe(value => {
                 const responsible = this.collaborators.find(item => item.name === value);
 
-                if ( responsible ) {
-                    this._assignmentOccupationService.getRequestByResponsible( responsible.id )
-                        .subscribe(requests => {
-                            console.log(requests);
-                            this.requests = requests;
-                            this.requestControl.setValue('');
-                            this._changeDetectorRef.markForCheck();
-                        })
-                } else {
-                    this.requests = [];
+                if ( responsible ) {   
+                    this.selectedResponsible = responsible;
+                    this._getRequestByResponsible(this.selectedResponsible);
+                } else if ( this.selectedResponsible ) {
+                    this.selectedResponsible = null;
+                    this._getRequestByClient(this.selectedClient.id);
+                    // this.requests = [];
                     this.requestControl.setValue('');
                     this._changeDetectorRef.markForCheck();
                 }
             });
+    }
+
+    /**
+     * 
+     * @param responsible 
+     */
+    private _getRequestByResponsible(responsible: Collaborator) {
+        this._assignmentOccupationService.getRequestByResponsible( responsible.id, this.statusControl.value | 8 )
+            .subscribe(requests => {
+                this.requests = requests;
+                this.requestControl.setValue('');
+                this._changeDetectorRef.markForCheck();
+            })
     }
 
     /**
