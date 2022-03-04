@@ -11,7 +11,8 @@ import {
     RequestTagsResolver,
     RequestTypeResolver,
     TechnicalAreaResolver,
-    BusinessTypeResolver
+    BusinessTypeResolver,
+    CollaboratorResolver
 } from 'app/modules/admin/apps/portafolio/request/request.resolvers';
 import {RequestListComponent} from "./request/list/request.component";
 
@@ -39,6 +40,7 @@ export const portafolioRoutes: Route[] = [
                     typereq         : RequestTypeResolver,
                     areatech        : TechnicalAreaResolver,
                     businessType    : BusinessTypeResolver,
+                    collaborators   : CollaboratorResolver,
                 }
             }
         ]

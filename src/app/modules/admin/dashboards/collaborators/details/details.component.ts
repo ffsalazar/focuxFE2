@@ -573,6 +573,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     openKnowledgesPanel(): void
     {
+
+        console.log("openKnowledgesPanel");
         // Create the overlay
         this._knowledgesPanelOverlayRef = this._overlay.create({
             backdropClass   : '',
