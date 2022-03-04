@@ -1,17 +1,33 @@
-<div class="flex flex-col px-6 py-4 bg-white w-full">
+<div class="flex flex-col px-6 py-4 bg-gray-50 w-full">
     <div class="flex flex-col">
         <div class="flex flex-row justify-end mr-6">
+            <div class="flex flex-col">
+            <mat-label class="font-semibold">Colaborador</mat-label>
             <mat-form-field class="w-50 mr-5" appearance="fill">
-                <mat-label>Colaborador</mat-label>
-                <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
+                <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto" placeholder="Colaborador">
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                         {{option.name}}
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+            </div>
 
-            <mat-form-field class="w-50 mr-5" appearance="fill">
+            <div class="flex flex-col">
+                <mat-label class="font-semibold">Cliente</mat-label>
+                <mat-form-field class="w-50 mr-6" appearance="fill">
+                    <input type="text" matInput [placeholder]="'Cliente'" 
+                        [matAutocomplete]="client">
+                    <mat-select style="width: 15px;">
+                        <mat-autocomplete #client="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- <mat-form-field class="w-50 mr-5" appearance="fill">
                 <mat-label>Cliente</mat-label>
                 <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
@@ -19,9 +35,23 @@
                         {{option.name}}
                     </mat-option>
                 </mat-autocomplete>
-            </mat-form-field>
+            </mat-form-field> -->
 
-            <mat-form-field class="w-50 mr-5" appearance="fill">
+            <div class="flex flex-col mr-6">
+                <mat-label class="font-semibold">Actividad</mat-label>
+                <mat-form-field class="w-50 mr-5" appearance="fill">
+                    <input type="text" placeholder="Actividad" aria-label="Number" matInput 
+                        [matAutocomplete]="auto">
+                    <mat-select style="width: 15px;">
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- <mat-form-field class="w-50 mr-5" appearance="fill">
                 <mat-label>Actividad</mat-label>
                 <input type="text" matInput [formControl]="myControlTest" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
@@ -29,10 +59,10 @@
                         {{option.name}}
                     </mat-option>
                 </mat-autocomplete>
-            </mat-form-field>
+            </mat-form-field> -->
         </div>
 
-        <h4 class="font-bold text-xl mt-10">Consultar</h4>
+        <h4 class="font-bold text-xl">Períodos pendientes</h4>
 
         <div class="mt-6" *ngIf="dataSource.length > 0 && dataSource != null else noPeriodConsult">
             <table mat-table class="border-collapse border border-slate-400 w-full" [dataSource]="dataSource">

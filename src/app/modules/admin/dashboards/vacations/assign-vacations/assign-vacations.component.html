@@ -1,152 +1,143 @@
-<div class="flex flex-col px-6 py-4 bg-card w-full">
-    <div class="flex flex-row justify-between">
-        <form class="flex flex-col px-5 py-4" [formGroup]="formAssignVacation">
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight pt-2">Colaborador</span>
-                <mat-form-field class="ml-4 w-90 pr-2 pt-2">
-                    <input type="text"
-                           matInput
-                           placeholder="Colaborador"
-                           formControlName="collaborator">
-<!--                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">-->
-<!--                                 <mat-option *ngFor="let option of filteredCollaboratorsOptions | async" [value]="option">-->
-<!--                                         {{option.name}}-->
-<!--                                  </mat-option>-->
-<!--                           </mat-autocomplete>-->
-                </mat-form-field>
-            </div>
-
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight pt-2">Periodo</span>
-                <div class="w-90 mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
-                    <!-- Header -->
-                    <div class="flex items-center -my-px py-2 px-3">
-                        <div class="flex items-center flex-auto min-w-0">
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                            <input
-                                class="min-w-0 ml-2 py-1 border-0"
-                                formControlName="period"
-                                type="text"
-                                placeholder="Escriba el nombre"
-                                (input)="filterTags($event)"
-                                (keydown)="filterTagsInputKeyDown($event)"
-                                [maxLength]="50"
-                                #newTagInput>
-                        </div>
-                        <button
-                            class="ml-3 w-8 h-8 min-h-8"
-                            mat-icon-button
-                            (click)="toggleTagsEditMode()">
-                            <mat-icon
-                                *ngIf="!tagsEditMode"
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                            <mat-icon
-                                *ngIf="tagsEditMode"
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                        </button>
+<div class="flex flex-col px-6 py-4 bg-gray-50 w-full ">
+    <div class="flex flex-row justify-around w-full">
+        <form class="flex flex-row px-5 py-4 w-full justify-around" [formGroup]="formAssignVacation">
+            
+            <div class="flex flex-col">
+                <div class="flex flex-row">
+                    <div class="flex flex-col ">
+                        <mat-label class="font-medium leading-tight pt-2">Colaborador</mat-label>
+                        <mat-form-field class=" w-90 pr-2 pt-2">
+                            <input type="text" matInput placeholder="Colaborador" formControlName="collaborator">
+                            <!--                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">-->
+                            <!--                                 <mat-option *ngFor="let option of filteredCollaboratorsOptions | async" [value]="option">-->
+                            <!--                                         {{option.name}}-->
+                            <!--                                  </mat-option>-->
+                            <!--                           </mat-autocomplete>-->
+                        </mat-form-field>
                     </div>
-                    <!-- Available tags -->
-                    <div class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
-                        <!-- Tags -->
-                        <ng-container *ngIf="!tagsEditMode">
-                            <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
-                                <mat-checkbox
-                                    class="flex items-center h-10 min-h-10 px-4"
-                                    [color]="'primary'"
-                                    [checked]="selectedProduct.tags.includes(tag.id)"
-                                    (change)="toggleProductTag(tag, $event)">
-                                    {{tag.title}}
-                                </mat-checkbox>
+                
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-medium leading-tight pt-2">Periodo</span>
+                    <div class="w-90 mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden bg-white">
+                        <!-- Header -->
+                        <div class="flex items-center -my-px py-2 px-3">
+                            <div class="flex items-center flex-auto min-w-0">
+                                <mat-icon
+                                    class="icon-size-5"
+                                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                                <input
+                                    class="min-w-0 ml-2 py-1 border-0"
+                                    formControlName="period"
+                                    type="text"
+                                    placeholder="Escriba el nombre"
+                                    (input)="filterTags($event)"
+                                    (keydown)="filterTagsInputKeyDown($event)"
+                                    [maxLength]="50"
+                                    #newTagInput>
+                            </div>
+                            <button
+                                class="ml-3 w-8 h-8 min-h-8"
+                                mat-icon-button
+                                (click)="toggleTagsEditMode()">
+                                <mat-icon
+                                    *ngIf="!tagsEditMode"
+                                    class="icon-size-5"
+                                    [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                <mat-icon
+                                    *ngIf="tagsEditMode"
+                                    class="icon-size-5"
+                                    [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                            </button>
+                        </div>
+                        <!-- Available tags -->
+                        <div class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                            <!-- Tags -->
+                            <ng-container *ngIf="!tagsEditMode">
+                                <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
+                                    <mat-checkbox
+                                        class="flex items-center h-10 min-h-10 px-4"
+                                        [color]="'primary'"
+                                        [checked]="selectedProduct.tags.includes(tag.id)"
+                                        (change)="toggleProductTag(tag, $event)">
+                                        {{tag.title}}
+                                    </mat-checkbox>
+                                </ng-container>
                             </ng-container>
-                        </ng-container>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight w-40 pt-2">Cantidad de dias de los seleccionados</span>
-                <mat-form-field class="ml-4 w-90 pr-2 pt-2">
-                    <input formControlName="daysSelected" matInput placeholder="Días" value="10">
-                </mat-form-field>
-            </div>
-
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight pt-2">Dias a disfrutar</span>
-                <mat-form-field class="ml-4 w-90 pr-2 pt-2">
-                    <input formControlName="daysOfEnjoyment" matInput placeholder="Días">
-                </mat-form-field>
-            </div>
-
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight pt-2">Fecha inicio</span>
-                <mat-form-field class="w-auto"
-                                style="padding-right: 8px; width: 359px !important;"
-                                [ngClass]="formFieldHelpers">
-                    <input
-                        matInput
-                        formControlName="initDate"
-                        [matDatepicker]="picker1">
-                    <mat-datepicker-toggle
-                        matSuffix
-                        [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
-            </div>
-
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight pt-2">Fecha fin</span>
-                <mat-form-field class="w-auto"
-                                style="padding-right: 8px; width: 359px !important;"
-                                [ngClass]="formFieldHelpers">
-                    <input
-                        matInput
-                        formControlName="endDate"
-                        [matDatepicker]="picker2">
-                    <mat-datepicker-toggle
-                        matSuffix
-                        [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2></mat-datepicker>
-                </mat-form-field>
-            </div>
-
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight w-40 pt-2">Cantidad de feriados en el periodo</span>
-                <mat-form-field class="ml-4 w-90 pr-2 pt-2">
+            <div class="flex flex-col ">
+                <span class="font-medium leading-tight pt-8">Cantidad de feriados en el periodo</span>
+                <mat-form-field class=" w-90 pr-2 pt-2">
                     <input formControlName="holidays" matInput placeholder="Días">
                 </mat-form-field>
             </div>
-
-            <div class="flex flex-row justify-between">
-                <span class="font-medium leading-tight pt-4">Fecha de retorno</span>
-                <mat-form-field class="w-auto"
-                                style="padding-right: 8px; width: 359px !important;"
-                                [ngClass]="formFieldHelpers">
-                    <input
-                        matInput
-                        formControlName="dayReturnOffice"
-                        [matDatepicker]="picker3">
-                    <mat-datepicker-toggle
-                        matSuffix
-                        [for]="picker3"></mat-datepicker-toggle>
+            </div>
+            <div class="flex flex-col ml-6"> 
+            <div class="flex flex-col ml-6">
+                <div class="flex flex-col">
+                    <mat-label class="font-medium leading-tight pt-2">Cantidad de dias de los seleccionados</mat-label>
+                    <mat-form-field class=" w-90 pr-2 pt-2">
+                        <input formControlName="daysSelected" matInput placeholder="Días" value="10">
+                    </mat-form-field>
+                </div>
+            <div class="flex flex-col">
+                <span class="font-medium leading-tight pt-2">Dias a disfrutar</span>
+                <mat-form-field class="w-90 pr-2 pt-2">
+                    <input formControlName="daysOfEnjoyment" matInput placeholder="Días">
+                </mat-form-field>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-medium leading-tight ">Fecha inicio</span>
+                <mat-form-field class="w-auto pt-2" style="padding-right: 8px; width: 359px !important;" [ngClass]="formFieldHelpers">
+                    <input matInput formControlName="initDate" [matDatepicker]="picker1" placeholder="mm/dd/yyyy">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+            </div>
+            
+            <div class="flex flex-col">
+                <span class="font-medium leading-tight ">Fecha fin</span>
+                <mat-form-field class="w-auto pt-2" style="padding-right: 8px; width: 359px !important;" [ngClass]="formFieldHelpers">
+                    <input matInput formControlName="endDate" [matDatepicker]="picker2" placeholder="mm/dd/yyyy">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+            </div>
+            <div class="flex flex-col ml-6">
+                <span class="font-medium leading-tight pt-2">Fecha de retorno</span>
+                <mat-form-field class="w-auto pt-2" style="padding-right: 8px; width: 359px !important;"
+                    [ngClass]="formFieldHelpers">
+                    <input matInput formControlName="dayReturnOffice" [matDatepicker]="picker3">
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
                     <mat-datepicker #picker3></mat-datepicker>
                 </mat-form-field>
             </div>
-        </form>
+        </div>
 
-        <fuse-card
-            class="flex flex-col px-8 py-6 pb-4 min-h-5 h-40">
-            <div class="text-lg font-bold">Cantidad de dias pendientes</div>
-            <div class="mt-2 text-center text-8xl">
-               {{pendingDays < 0 ? 0 : pendingDays}}
+           
+
+            
+        <div class="flex flex-col justify-around ml-6">
+          
+           <fuse-card class="flex flex-col px-8 py-6 pb-4 h-60">
+                <div class="text-lg font-bold">Cantidad de dias pendientes</div>
+                <div class="mt-2 text-center text-8xl">
+                    {{pendingDays < 0 ? 0 : pendingDays}} </div>
+            </fuse-card>
             </div>
-        </fuse-card>
-    </div>
+            
+        </form>
+</div>
+       
+    
 
-    <div class="flex flex-row py-6 justify-center">
-        <button mat-flat-button color="warn" class="mr-4">Cancelar</button>
-        <button mat-flat-button color="primary" >Generar</button>
+    <div class="flex flex-row py-6 justify-end">
+        <button mat-stroked-button
+        style="border-color:lightgray !important;">Cancelar
+    </button>
+        <button class="ml-3" mat-flat-button color="primary" >Generar</button>
     </div>
 </div>
