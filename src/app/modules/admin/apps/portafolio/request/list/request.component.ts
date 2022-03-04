@@ -1031,6 +1031,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 //     id: 1
                 // };
 
+                console.log("resolver: ", requestNew);
                 requestNew.solverGroup = {
                     id: 1,
                 }
