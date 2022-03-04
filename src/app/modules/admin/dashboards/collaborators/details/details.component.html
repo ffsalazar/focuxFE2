@@ -114,7 +114,9 @@
                         <ng-container *ngIf="collaborator.employeePosition">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.employeePosition.name}}</div>
+                                <span class="mx-2 font-medium">Cargo</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.employeePosition.name}}</div>
                             </div>
                         </ng-container>
 
@@ -122,7 +124,9 @@
                         <ng-container *ngIf="collaborator.employeePosition">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.employeePosition.department.name}}</div>
+                                <span class="mx-2 font-medium">Departamento</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.employeePosition.department.name}}</div>
                             </div>
                         </ng-container>
 
@@ -130,7 +134,29 @@
                         <ng-container *ngIf="collaborator.client">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.client.name}}</div>
+                                <span class="mx-2 font-medium">Cliente</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.client.name}}</div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Client -->
+                        <ng-container *ngIf="collaborator.leader">
+                            <div class="flex sm:items-center">
+                                <mat-icon [svgIcon]="'heroicons_outline:user'"></mat-icon>
+                                <span class="mx-2 font-medium">L&iacute;der</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.leader.name}}</div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Client -->
+                        <ng-container *ngIf="collaborator.status">
+                            <div class="flex sm:items-center">
+                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-copy'"></mat-icon>
+                                <span class="mx-2 font-medium">Estatus</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.status.name}}</div>
                             </div>
                         </ng-container>
 
@@ -141,18 +167,20 @@
                                 <div class="min-w-0 ml-6 space-y-1">
 
                                         <div class="flex items-center leading-6">
+                                            <div
+                                                class="text-md truncate text-secondary"
+                                                *ngIf="collaborator.mail">
+                                                <span class="font-medium mr-2">E-mail</span>
+
+
+                                            </div>
                                             <a
                                                 class="hover:underline text-primary-500"
                                                 [href]="'mailto:' + collaborator.mail"
                                                 target="_blank">
                                                 {{collaborator.mail}}
                                             </a>
-                                            <div
-                                                class="text-md truncate text-secondary"
-                                                *ngIf="collaborator.mail">
-                                                <span class="mx-2">&bull;</span>
-                                                <span class="font-medium">{{collaborator.mail}}</span>
-                                            </div>
+
                                         </div>
 
                                 </div>
@@ -174,13 +202,15 @@
                                                     [style.backgroundSize]="'24px 3876px'"
                                                     [style.backgroundPosition]="getCountryByIso(phoneNumber.country).flagImagePos"></div>
                                                 <div class="sm:ml-3 font-mono">{{getCountryByIso(phoneNumber.country).code}}</div>-->
-                                                <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
+
                                                 <div
                                                     class="text-md truncate text-secondary"
                                                     *ngIf="phoneNumber">
+                                                    <span class="mx-2 font-medium">{{phoneNumber.type}}</span>
                                                     <span class="mx-2">&bull;</span>
-                                                    <span class="font-medium">{{phoneNumber.type}}</span>
+
                                                 </div>
+                                                <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
                                             </div>
                                         </ng-container>
                                     </ng-container>
@@ -193,7 +223,9 @@
                         <ng-container *ngIf="collaborator.assignedLocation">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.assignedLocation}}</div>
+                                <span class="mx-2 font-medium">Sede</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.assignedLocation}}</div>
                             </div>
                         </ng-container>
 
@@ -201,7 +233,9 @@
                         <ng-container *ngIf="collaborator.bornDate">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:cake'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.bornDate | date:'longDate'}}</div>
+                                <span class="mx-2 font-medium">Fecha de nacimiento</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.bornDate | date:'longDate'}}</div>
                             </div>
                         </ng-container>
 
@@ -209,7 +243,9 @@
                         <ng-container *ngIf="collaborator.companyEntryDate">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.companyEntryDate | date:'longDate'}}</div>
+                                <span class="mx-2 font-medium">Fecha de ingreso a la Empresa</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.companyEntryDate | date:'longDate'}}</div>
                             </div>
                         </ng-container>
 
@@ -217,7 +253,9 @@
                         <ng-container *ngIf="collaborator.organizationEntryDate">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                <div class="ml-6 leading-6">{{collaborator.organizationEntryDate | date:'longDate'}}</div>
+                                <span class="mx-2 font-medium">Fecha de ingreso a la organizaci&oacute;n</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.organizationEntryDate | date:'longDate'}}</div>
                             </div>
                         </ng-container>
 
@@ -251,7 +289,7 @@
                                         <a
                                             class="hover:underline text-primary-500 mx-2"
                                             >
-                                            {{ocupations.totalOcupationPercentage}}%
+                                            {{ocupations.totalOccupation}}%
                                         </a>
 
                                     </div>
@@ -345,7 +383,9 @@
                         <ng-container *ngIf="request.client">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
-                                <div class="ml-6 leading-6">{{request.client}}</div>
+                                <span class="mx-2 font-medium">Cliente</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{request.client}}</div>
                             </div>
                         </ng-container>
 
@@ -353,7 +393,9 @@
                         <ng-container *ngIf="request.businessType">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
-                                <div class="ml-6 leading-6">{{request.businessType}}</div>
+                                <span class="mx-2 font-medium">Tipo de negocio</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{request.businessType}}</div>
                             </div>
                         </ng-container>
 
@@ -366,11 +408,11 @@
                                     <div class="flex items-center leading-6">
 
                                         <div
-                                            class="text-md truncate text-secondary"
+                                            class=""
                                             *ngIf="request.responsibleRequest">
-                                            <span class="font-medium">{{request.responsibleRequest}}</span>
-                                            <span class="mx-2">&bull;</span>
                                             <span class="font-medium">Responsable</span>
+                                            <span class="mx-2">&bull;</span>
+                                            <span class="font-medium">{{request.responsibleRequest}}</span>
                                         </div>
                                     </div>
 
@@ -386,13 +428,14 @@
 
 
                                             <div class="flex items-center leading-6">
-                                               <div class="ml-2.5 font-mono">{{request.completionPercentage}} %</div>
                                                 <div
-                                                    class="text-md truncate text-secondary"
+                                                    class="text-md truncate"
                                                     *ngIf="request.completionPercentage">
-                                                    <span class="mx-2">&bull;</span>
                                                     <span class="font-medium">Completado</span>
+                                                    <span class="mx-2">&bull;</span>
                                                 </div>
+                                               <div class="ml-2.5 font-mono">{{request.completionPercentage}} %</div>
+
                                             </div>
 
 
@@ -409,13 +452,16 @@
 
                                     <div class="flex items-center leading-6">
 
-                                        <div class="ml-2.5 font-mono">{{request.deviationPercentage}} %</div>
                                         <div
-                                            class="text-md truncate text-secondary"
+                                            class="text-md truncate"
                                             *ngIf="request.deviationPercentage">
+                                            <span class="font-medium">Desviaci&oacute;n</span>
                                             <span class="mx-2">&bull;</span>
-                                            <span class="font-medium">desviaci&oacute;n</span>
+
                                         </div>
+
+                                        <div class="ml-2.5 font-mono">{{request.deviationPercentage}} %</div>
+
                                     </div>
 
 
@@ -435,7 +481,9 @@
                         <ng-container *ngIf="request.datePlanEnd">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                <div class="ml-6 leading-6">{{request.datePlanEnd | date:'longDate'}}</div>
+                                <span class="mx-2 font-medium">Fecha de planeada de entrega</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{request.datePlanEnd | date:'longDate'}}</div>
                             </div>
                         </ng-container>
 
@@ -711,7 +759,7 @@
                     <!-- Title -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Posición</mat-label>
+                            <mat-label>Cargo</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
@@ -742,9 +790,22 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:user'"></mat-icon>
                             <mat-select [placeholder]="collaborator.leader" formControlName="leader">
                                 <mat-option *ngFor="let lead of leaders" [value]="lead.id">{{lead.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Estatus</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:clipboard-copy'"></mat-icon>
+                            <mat-select [placeholder]="collaborator.status.name" formControlName="status">
+                                <mat-option *ngFor="let status of statuses" [value]="status.id">{{status.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -770,9 +831,6 @@
                             [formControlName]="'isCentralAmerican'"
                             [color]="'primary'"
                             >
-                            {{collaboratorForm.get('isCentralAmerican').value === 1 ? 'Active' : 'Disabled'}}
-
-
                         </mat-slide-toggle>
                     </div>
                     <!-- Phone numbers -->

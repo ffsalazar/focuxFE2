@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone, Assigments } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone, Assigments,Status } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {DialogData, DialogOptions} from "../../apps/portafolio/request/request.types";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FocuxPopupComponent} from "../../apps/portafolio/request/focux-popup/focux-popup.component";
@@ -25,6 +25,8 @@ export class CollaboratorsService
     private _isOpenModal: BehaviorSubject<Boolean | null> = new BehaviorSubject(null);
     private  _request: BehaviorSubject<Request | null> = new BehaviorSubject(null)
     private _leaders: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    private _statuses: BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
+
     /**
      * Constructor
      */
@@ -117,6 +119,14 @@ export class CollaboratorsService
     /**
      * Getter for employeePositions
      */
+    get statuses$(): Observable<Status[]>
+    {
+        return this._statuses.asObservable();
+    }
+
+    /**
+     * Getter for employeePositions
+     */
     get request$(): Observable<Request>
     {
         return this._request.asObservable();
@@ -161,10 +171,10 @@ export class CollaboratorsService
      *
      * @param query
      */
-    searchCollaborator(query: string): Observable<Collaborator[]>
+   filtersCollaborator(controls: any): Observable<Collaborator[]>
     {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
-            params: {query}
+            params: {controls}
         }).pipe(
             tap((collaborators) => {
                 let collaboratorFiltered : any[]=[];
@@ -174,11 +184,19 @@ export class CollaboratorsService
                     }
                 });
                 // If the query exists...
-                if ( query )
+                if ( controls )
                 {
+
                     // Filter the collaborators
 
-                    collaboratorFiltered = collaboratorFiltered.filter(collaborator => collaborator.name && collaborator.name.toLowerCase().includes(query.toLowerCase()));
+                    collaboratorFiltered = collaboratorFiltered.filter(collaborator =>
+                        (
+                            (controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || collaborator?.client.name.toLowerCase() == controls.clientControl.toLowerCase() )) &&
+                            (controls.searchInputControl === null || ( controls.searchInputControl.toLowerCase() === '' || collaborator?.name.toLowerCase().includes( controls.searchInputControl.toLowerCase()))) &&
+                            (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || collaborator?.status.name.toLowerCase() == controls.statusControl.toLowerCase())) &&
+                            (controls.centralAmericanControl === null || ( controls.centralAmericanControl === '' || collaborator?.isCentralAmerican == controls.centralAmericanControl))
+
+                        ));
                     function compare(a: Collaborator, b: Collaborator) {
                         if (a.name < b.name) return -1;
                         if (a.name > b.name) return 1;
@@ -638,6 +656,23 @@ export class CollaboratorsService
         );
     }
 
+    getStatuses(): Observable<Status[]>
+    {
+        return this._httpClient.get<Status[]>('http://localhost:1616/api/v1/followup/statuses/all').pipe(
+
+            tap((statuses) => {
+                let statusesFiltered : Status[] = []
+                statuses.forEach((status) => {
+                    if (status.isActive != 0 && status.typeStatus == 'Colaborador'){
+                        statusesFiltered.push(status);
+                    }
+                });
+
+                this._statuses.next(statusesFiltered);
+            })
+        );
+    }
+
     getAssigmentByCollaboratorId(id: number): Observable<Assigments>
     {
         return this._httpClient.get<Assigments>('http://localhost:1616/api/v1/followup/collaborators/assigments/' + id).pipe(
@@ -683,9 +718,9 @@ export class CollaboratorsService
     /**
      * Get collaborators
      */
-    getLeaders(): Observable<Collaborator[]>
+    getLeaders(id: number): Observable<Collaborator[]>
     {
-        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all').pipe(
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/leaders').pipe(
             tap((collaborators) => {
 
 
@@ -702,7 +737,7 @@ export class CollaboratorsService
                 }
                 collaborators.sort(compare);
                 collaborators.forEach((collaborator) => {
-                    if (collaborator.isActive != 0){
+                    if (collaborator.isActive != 0 && collaborator.id != id){
                         collaboratorFiltered.push(collaborator);
                     }
                 });

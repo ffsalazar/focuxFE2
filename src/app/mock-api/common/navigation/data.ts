@@ -109,12 +109,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         link : '/masters/statuses'
                     },
                     {
-                        id   : 'masters.portafolio.typeStatus',
-                        title: 'Tipo de Estatus',
-                        type : 'basic',
-                        link : '/masters/typesStatus'
-                    },
-                    {
                         id   : 'masters.portafolio.client',
                         title: 'Clientes',
                         type : 'basic',

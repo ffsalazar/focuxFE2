@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import {FormBuilder, FormControl} from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { Collaborator, Country } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
+import { Collaborator, Country, Status, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "../collaborators.service";
 
 
@@ -26,7 +26,9 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     collaboratorsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
     countries: Country[];
     drawerMode: 'side' | 'over';
-    searchInputControl: FormControl = new FormControl();
+    statuses: Status[];
+    clients: Client[];
+
     selectedCollaborator: Collaborator;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -39,10 +41,23 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
         private _collaboratorsService: CollaboratorsService,
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private _formBuilder: FormBuilder
     )
     {
     }
+
+    filterForm = this._formBuilder.group({
+
+        searchInputControl :  new FormControl(''),
+        centralAmericanControl : new FormControl(''),
+        statusControl          : new FormControl(''),
+        clientControl          : new FormControl('')
+
+
+    })
+
+    searchInputControl: FormControl = new FormControl();
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -66,6 +81,28 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+
+        this._collaboratorsService.statuses$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((statuses: Status[]) => {
+
+                this.statuses = statuses;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._collaboratorsService.clients$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((clients: Client[]) => {
+
+                this.clients = clients
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+
 
         // Get the collaborator
         this._collaboratorsService.collaborator$
@@ -92,13 +129,13 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
             });
 
         // Subscribe to search input field value changes
-        this.searchInputControl.valueChanges
+        this.filterForm.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
-                switchMap(query =>
+                switchMap(controls =>
 
                     // Search
-                    this._collaboratorsService.searchCollaborator(query)
+                    this._collaboratorsService.filtersCollaborator(controls)
                 )
             )
             .subscribe();

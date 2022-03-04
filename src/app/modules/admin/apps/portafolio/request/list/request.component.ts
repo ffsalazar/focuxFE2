@@ -57,10 +57,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('rowDetailsTemplate') private tplDetail: TemplateRef<any>;
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
-    
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _knowledgesPanelOverlayRef: OverlayRef;
-    
+
     filteredKnowledges: any[] = [];
     filteredTags: InventoryTag[];
     flashMessage: 'success' | 'error' | null = null;
@@ -72,7 +72,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     tags: InventoryTag[];
     tagsEditMode: boolean = false;
     horizontalStepperForm;
-    
+
     requestOriginal: Request[] = [];
     showListRequest = true;
     dataSource = new MatTableDataSource<Request[]>();
@@ -80,8 +80,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     categories: Category[];
     clients: Client[];
     bunch: BusinessType[];
-    commercialArea: CommercialArea[];  
-    status: Status[]; 
+    commercialArea: CommercialArea[];
+    status: Status[];
     requestp: RequestPeriod[];
     typeRequest: TypeRequest[];
     technicalArea: TechnicalArea[];
@@ -93,7 +93,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     alert: boolean = false;
     successSave: String = "";
     // dataSource: Request[]
-    displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest', 
+    displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest',
     'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
     // Form Controls
@@ -194,7 +194,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }),
         });
 
-        // Create the fiterGroupForm 
+        // Create the fiterGroupForm
         this.filterGroupForm = this._formBuilder.group({
             clientControl           : [],
             commercialAreaControl   : [],
@@ -235,7 +235,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-            
+
         // Get the Commercial Area
         this._requestService.commerca$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -245,7 +245,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
+
         // Get the Status
         this._requestService.status$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -255,7 +255,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
+
         // Get the TypeRequest
         this._requestService.typereq$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -266,7 +266,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
+
         this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
             .subscribe((technicalArea: TechnicalArea[]) => {
 
@@ -305,12 +305,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        
+
         // Get the requests
         this.request$ = this._requestService.requests$;
-        
+
         // Get the requests
-        this._requestService.getRequests().subscribe(response => { 
+        this._requestService.getRequests().subscribe(response => {
             // Filter inactive request
             this.requestOriginal = response.filter(item => item.isActive !== 0);
             console.log(this.requestOriginal);
@@ -333,22 +333,22 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
-                switchMap(query => 
-    
+                switchMap(query =>
+
                     // Search
                     this._requestService.searchRequest(query)
                 ),
             )
             .subscribe();
-            
+
         this.handleChangeClients();
-        
+
         // Filter the clients
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filter(value, this.clients)),
         );
-        
+
         // Filter the commercialArea
         this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
             startWith(''),
@@ -369,7 +369,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this._handleChangeForm();
         this._getKnowledges();
-        
+
     }
 
     /**
@@ -483,7 +483,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     get customerBranchControl() {
         return this.filterGroupForm.get('customerBranchControl');
     }
-    
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -512,42 +512,42 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                      }
                  ])
         });
- 
+
          // Subscribe to the attachments observable
         this._knowledgesPanelOverlayRef.attachments().subscribe(() => {
- 
+
             // Add a class to the origin
             this._renderer2.addClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
- 
+
             // Focus to the search input once the overlay has been attached
             this._knowledgesPanelOverlayRef.overlayElement.querySelector('input').focus();
         });
- 
+
          // Create a portal from the template
          const templatePortal = new TemplatePortal(this._knowledgesPanel, this._viewContainerRef);
- 
+
          // Attach the portal to the overlay
          this._knowledgesPanelOverlayRef.attach(templatePortal);
- 
+
          // Subscribe to the backdrop click
          this._knowledgesPanelOverlayRef.backdropClick().subscribe(() => {
- 
+
              // Remove the class from the origin
              this._renderer2.removeClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
- 
+
              // If overlay exists and attached...
              if ( this._knowledgesPanelOverlayRef && this._knowledgesPanelOverlayRef.hasAttached() )
              {
                  // Detach it
                  this._knowledgesPanelOverlayRef.detach();
- 
+
                  // Reset the knowledge filter
- 
- 
+
+
                  // Toggle the edit mode off
                  this.knowledgesEditMode = false;
              }
- 
+
              // If template portal exists and attached...
              if ( templatePortal && templatePortal.isAttached )
              {
@@ -569,25 +569,25 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         {
             return;
         }
- 
+
          // If there is no knowledge available...
         if ( this.filteredKnowledges.length === 0 )
         {
             /*  TODO: this operation is not supported yet. jpelay  24/01*/
              // // Create the knowledge
              // this.createKnowledge(event.target.value);
- 
+
              // // Clear the input
              // event.target.value = '';
- 
+
              // // Return
             return;
         }
- 
+
         //  // If there is a knowledge...
         //  const Knowledge = this.filteredKnowledges[0];
         //  const isKnowledgeApplied = this.collaborator.knowledges.find(knowledge => knowledge.knowledge.id === Knowledge.id);
- 
+
         //  // If the found knowledge is already applied to the collaborator...
         //  if ( isKnowledgeApplied )
         //  {
@@ -599,7 +599,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         //      // Otherwise add the knowledge to the collaborator
         //      this.addKnowledgeToCollaborator(null);
         //  }
- 
+
     }
 
     /**
@@ -618,7 +618,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Handle Change Form
-     * 
+     *
      */
     private _handleChangeForm() {
         // Subscribe from form's values
@@ -627,13 +627,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
             // Filter requests by clients, commercialArea and status
             requests = requests.filter(item =>
-                ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) && 
+                ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) &&
                     (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
                         (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase()))) &&
                             (controls.customerBranchControl === null || ( controls.customerBranchControl.toLowerCase() === '' || item?.client?.businessType.name.toLowerCase().includes( controls.customerBranchControl.toLowerCase())))
 
             ));
-            
+
             // Set request for filter
             this.requestOriginal = requests;
 
@@ -641,14 +641,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             this._requestService.setRequests(requests);
 
             this._changeDetectorRef.markForCheck();
-            
+
         });
     }
-    
+
     /**
      * _filter
      * @param value
-     *  
+     *
      */
     private _filter(value: string, collection: any[]): string[] {
         const filteredValue = value.toLowerCase();
@@ -660,7 +660,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Get Knowledges
-     * 
+     *
      */
     private _getKnowledges() {
         // Get the knowledges
@@ -674,8 +674,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * checkerKnowledges
-     * 
-     * @param knowledge 
+     *
+     * @param knowledge
      */
     checkerKnowledges(knowledge: Knowledge): boolean {
         let hasKnowledge = this.selectedRequest.knowledges.find(selectedKnowledge => selectedKnowledge.knowledge.id === knowledge.id && selectedKnowledge.isActive);
@@ -694,13 +694,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             knowledge: knowledge,
             isActive: 1
         }
- 
+
          // Add the knowledge
          this.selectedRequest.knowledges.unshift(newKnowledge);
- 
+
          // Update the collaborator form
          this.step2.get('knowledges').patchValue(this.selectedRequest.knowledges);
- 
+
          // Mark for check
          this._changeDetectorRef.detectChanges();
     }
@@ -723,8 +723,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
      /**
       * Active collaborator the knowledge
-      * 
-      * @param knowledge 
+      *
+      * @param knowledge
       */
      activeCollaboratorKnowledge(knowledge: any) {
         knowledge.isActive = 1;
@@ -754,12 +754,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             this.addKnowledgeToCollaborator(knowledge);
         }
     }
-    
+
     /**
      * getAmountRequestByOption
      * @param name
      * @param filterOption
-     *  
+     *
      */
     getAmountRequestByOption(name: string, filterOption: number) {
         switch (filterOption) {
@@ -775,7 +775,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             case 4:
                 return this.requestOriginal.filter(item => item?.client.businessType.name === name).length;
                 break;
-        
+
             default:
                 break;
         }
@@ -783,8 +783,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * showDetail
-     * @param requestId 
-     *  
+     * @param requestId
+     *
      */
     showDetail(id: number) {
         this.isDetail = true;
@@ -809,7 +809,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * Disable steps controls 
+     * Disable steps controls
      */
     disableSteps() {
         Object.keys(this.step1.controls).forEach(key => {
@@ -841,7 +841,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Fill the formGroup step3
         this.step3.patchValue(request);
         this.step3.get('requestPeriod').setValue(request.requestPeriod.id);
-        
+
         // Fill the formGroup step4
         this.step4.patchValue(request);
 
@@ -913,13 +913,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Update the selected request using the form data
-     * @param requestId 
+     * @param requestId
      */
     updateSelectedRequest(requestId: number) {
         this.isEditing = true;
         this.openPopup(requestId);
     }
-    
+
     /**
      * Delete the selected product using the form data
      */
@@ -932,7 +932,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             actions: {
                 confirm: {
                     label: 'Eliminar solicitud',
-          
+
                 }
             }
         });
@@ -953,7 +953,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     this.closeDetails();
                     this.successSave = 'La solicitud ha sido eliminada con éxito!'
                     this._fuseAlertService.show('alertBox4');
-                    
+
                     this._changeDetectorRef.markForCheck();
                 });
             }
@@ -961,8 +961,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * 
-     * @param name 
+     *
+     * @param name
      */
     dismissFuse(name){
        this._fuseAlertService.dismiss(name);
@@ -971,7 +971,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Confirm Save Request
-     * 
+     *
      */
     confirmSaveRequest(): void
     {
@@ -1040,15 +1040,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                         // Close the details
                         this.closeDetails();
                     });
-        
+
             }
         });
     }
 
     /**
      * Show Flash Message
-     * 
-     * @param type 
+     *
+     * @param type
      */
     showFlashMessage(type: 'success' | 'error'): void
     {
@@ -1068,14 +1068,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }, 3000);
     }
 
-    
+
     /**
      * openPopup
-     * 
-     * @param id 
+     *
+     * @param id
      */
     openPopup(id: number): void  {
-        
+
         if ( this.isDetail || this.isEditing ) {
             this.fillDataFormWizzard(id);
         }
@@ -1085,13 +1085,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
           },
           {width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
             if ( confirm ) {
-            
+
                 if ( this.isEditing ) this.isEditing = false;
 
                 if ( this.isDetail ) this.isDetail = false;
 
                 this.selectedRequest = null;
-                
+
                 this._changeDetectorRef.markForCheck();
             }
         });

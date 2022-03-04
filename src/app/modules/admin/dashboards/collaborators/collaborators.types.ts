@@ -20,6 +20,7 @@ export interface Collaborator
     client: Client;
     leader:Collaborator;
     isCentralAmerican:number;
+    status: Status;
 
 }
 
@@ -94,7 +95,7 @@ export interface BusinessType
 }
 
 export interface Assigments {
-    totalOcupationPercentage:number;
+    totalOccupation:number;
     assigments : Ocupation[];
 
 }
@@ -131,4 +132,13 @@ export  interface Request {
     deviationPercentage:number;
 
 
+}
+
+export interface Status
+{
+    id: number;
+    name: string;
+    description: string;
+    isActive: number;
+    typeStatus: string;
 }
