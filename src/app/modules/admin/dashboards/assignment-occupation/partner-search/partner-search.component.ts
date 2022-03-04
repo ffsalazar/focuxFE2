@@ -46,6 +46,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         clientControl: [''],
         collaboratorControl: [''],
         statusControl: [''],
+        selectControl: ['']
     });
     
     collaboratorArrayForm: FormGroup = new FormGroup({
