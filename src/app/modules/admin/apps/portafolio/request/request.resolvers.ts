@@ -6,7 +6,7 @@ import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inv
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
 import {RequestListComponent} from "./list/request.component";
 import { RequestService } from './request.service';
-import { CommercialArea, Request, Status, Client, Category, RequestPeriod, TypeRequest, TechnicalArea } from './request.types';
+import { CommercialArea, Request, Status, Client, Category, RequestPeriod, TypeRequest, TechnicalArea, Collaborator } from './request.types';
 
 @Injectable({
     providedIn: 'root'
@@ -305,6 +305,37 @@ export class TechnicalAreaResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TechnicalArea[]>
     {
         return this._requestService.getAreaTech();           
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CollaboratorResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(): Observable<Collaborator[]>
+    {
+        return this._requestService.getCollaborators();           
     }
 }
 

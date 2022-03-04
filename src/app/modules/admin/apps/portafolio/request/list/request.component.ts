@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,12 +11,13 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType } from '../request.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType, Collaborator } from '../request.types';
 import { Client, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseAlertService } from '@fuse/components/alert';
 import { MatTableDataSource } from '@angular/material/table';
-import { Overlay } from '@angular/cdk/overlay';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 
 @Component({
     selector       : 'request-list',
@@ -56,9 +57,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('rowDetailsTemplate') private tplDetail: TemplateRef<any>;
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
-
-    products$: Observable<InventoryProduct[]>;
-    brands: InventoryBrand[];
+    
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _knowledgesPanelOverlayRef: OverlayRef;
+    
+    filteredKnowledges: any[] = [];
     filteredTags: InventoryTag[];
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
@@ -69,9 +72,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     tags: InventoryTag[];
     tagsEditMode: boolean = false;
     horizontalStepperForm;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
-    request$: any;
     
+    requestOriginal: Request[] = [];
+    showListRequest = true;
+    dataSource = new MatTableDataSource<Request[]>();
+    knowledgesEditMode: boolean = false;
     categories: Category[];
     clients: Client[];
     bunch: BusinessType[];
@@ -82,10 +87,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     technicalArea: TechnicalArea[];
     businessType: BusinessType[];
     knowledges: Knowledge[];
-
+    collaborators: Collaborator[];
     isEditing: boolean = false;
     isDetail: boolean = false;
-    myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do']
     alert: boolean = false;
     successSave: String = "";
     // dataSource: Request[]
@@ -100,13 +104,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     filteredCommercialArea: Observable<string[]>;
     filteredStatus: Observable<string[]>;
     filteredCustomerBranch: Observable<string[]>;
-
-    // variables
-    requestsA: Request[] = [];
-    requestsAux: Request[] = [];
-
-    showListRequest = true;
-    dataSource = new MatTableDataSource<Request[]>();
+    knowledgeControl: FormControl = new FormControl();
+    request$: any;
 
     /*
     /**
@@ -122,6 +121,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         private _fuseAlertService: FuseAlertService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
+        private _renderer2: Renderer2
     )
     {
     }
@@ -141,7 +141,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((requests: any) => {
                 this.dataSource.data = requests;
-                console.log("request: ", requests);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -162,17 +161,18 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }),
             step2: this._formBuilder.group({
                 //Planificación de solicitud
-                solverGroup         : ['Freddy Salazar', [Validators.required]],
+                solverGroup         : ['', [Validators.required]],
                 priorityOrder       : ['', [Validators.required]],
                 category            : ['', [Validators.required]],
                 dateInit            : ['', [Validators.required]],
                 dateRealEnd         : ['', [Validators.required]],
                 datePlanEnd         : ['', [Validators.required]],
                 isActive            : ['1', [Validators.required]],
-                responsibleRequest  : ['Freddy Salazar', [Validators.required]],
+                responsibleRequest  : ['', [Validators.required]],
                 dateRequest         : ['', [Validators.required]],
                 status              : [''],
                 technicalArea       : ['', [Validators.required]],
+                knowledges     : [[]],
             }),
             step3: this._formBuilder.group({
                 //Periodo de pausa
@@ -206,7 +206,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.categories$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((categories: Category[]) => {
-
                 // Update the categories
                 this.categories = categories;
 
@@ -219,7 +218,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.requestp$
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((requestp: RequestPeriod[]) => {
-
             // Update the requestp
             this.requestp = requestp;
 
@@ -231,7 +229,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.clients$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((clients: Client[]) => {
-
                 // Update the client
                 this.clients = clients;
                 console.table(this.clients);
@@ -243,7 +240,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.commerca$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((commercialArea: CommercialArea[]) => {
-
                 // Update the commercialArea
                 this.commercialArea = commercialArea;
                 // Mark for check
@@ -254,7 +250,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.status$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((status: Status[]) => {
-
                 // Update the status
                 this.status = status;
                 // Mark for check
@@ -284,10 +279,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.businessType$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((businessType: BusinessType[]) => {
-
-                console.table(businessType);
                 // Update the buninessType
                 this.businessType = businessType;
+                //Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
+        this._requestService.collaborators$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((collaborators: Collaborator[]) => {
+                // Update the collaborators
+                this.collaborators = collaborators;
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -310,8 +312,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Get the requests
         this._requestService.getRequests().subscribe(response => { 
             // Filter inactive request
-            this.requestsA = response.filter(item => item.isActive !== 0);
-            console.log(this.requestsA);
+            this.requestOriginal = response.filter(item => item.isActive !== 0);
+            console.log(this.requestOriginal);
 
         });
 
@@ -367,7 +369,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this._handleChangeForm();
         this._getKnowledges();
-
+        
     }
 
     /**
@@ -490,69 +492,69 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * Open knowledges panel
      */
     openKnowledgesPanel(): void
-     {
-        //  // Create the overlay
-        //  this._knowledgesPanelOverlayRef = this._overlay.create({
-        //      backdropClass   : '',
-        //      hasBackdrop     : true,
-        //      scrollStrategy  : this._overlay.scrollStrategies.block(),
-        //      positionStrategy: this._overlay.position()
-        //          .flexibleConnectedTo(this._knowledgesPanelOrigin.nativeElement)
-        //          .withFlexibleDimensions(true)
-        //          .withViewportMargin(64)
-        //          .withLockedPosition(true)
-        //          .withPositions([
-        //              {
-        //                  originX : 'start',
-        //                  originY : 'bottom',
-        //                  overlayX: 'start',
-        //                  overlayY: 'top'
-        //              }
-        //          ])
-        //  });
+    {
+        // Create the overlay
+        this._knowledgesPanelOverlayRef = this._overlay.create({
+             backdropClass   : '',
+             hasBackdrop     : true,
+             scrollStrategy  : this._overlay.scrollStrategies.block(),
+             positionStrategy: this._overlay.position()
+                 .flexibleConnectedTo(this._knowledgesPanelOrigin.nativeElement)
+                 .withFlexibleDimensions(true)
+                 .withViewportMargin(64)
+                 .withLockedPosition(true)
+                 .withPositions([
+                     {
+                         originX : 'start',
+                         originY : 'bottom',
+                         overlayX: 'start',
+                         overlayY: 'top'
+                     }
+                 ])
+        });
  
-        //  // Subscribe to the attachments observable
-        //  this._knowledgesPanelOverlayRef.attachments().subscribe(() => {
+         // Subscribe to the attachments observable
+        this._knowledgesPanelOverlayRef.attachments().subscribe(() => {
  
-        //      // Add a class to the origin
-        //      this._renderer2.addClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
+            // Add a class to the origin
+            this._renderer2.addClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
  
-        //      // Focus to the search input once the overlay has been attached
-        //      this._knowledgesPanelOverlayRef.overlayElement.querySelector('input').focus();
-        //  });
+            // Focus to the search input once the overlay has been attached
+            this._knowledgesPanelOverlayRef.overlayElement.querySelector('input').focus();
+        });
  
-        //  // Create a portal from the template
-        //  const templatePortal = new TemplatePortal(this._knowledgesPanel, this._viewContainerRef);
+         // Create a portal from the template
+         const templatePortal = new TemplatePortal(this._knowledgesPanel, this._viewContainerRef);
  
-        //  // Attach the portal to the overlay
-        //  this._knowledgesPanelOverlayRef.attach(templatePortal);
+         // Attach the portal to the overlay
+         this._knowledgesPanelOverlayRef.attach(templatePortal);
  
-        //  // Subscribe to the backdrop click
-        //  this._knowledgesPanelOverlayRef.backdropClick().subscribe(() => {
+         // Subscribe to the backdrop click
+         this._knowledgesPanelOverlayRef.backdropClick().subscribe(() => {
  
-        //      // Remove the class from the origin
-        //      this._renderer2.removeClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
+             // Remove the class from the origin
+             this._renderer2.removeClass(this._knowledgesPanelOrigin.nativeElement, 'panel-opened');
  
-        //      // If overlay exists and attached...
-        //      if ( this._knowledgesPanelOverlayRef && this._knowledgesPanelOverlayRef.hasAttached() )
-        //      {
-        //          // Detach it
-        //          this._knowledgesPanelOverlayRef.detach();
+             // If overlay exists and attached...
+             if ( this._knowledgesPanelOverlayRef && this._knowledgesPanelOverlayRef.hasAttached() )
+             {
+                 // Detach it
+                 this._knowledgesPanelOverlayRef.detach();
  
-        //          // Reset the knowledge filter
+                 // Reset the knowledge filter
  
  
-        //          // Toggle the edit mode off
-        //          this.knowledgesEditMode = false;
-        //      }
+                 // Toggle the edit mode off
+                 this.knowledgesEditMode = false;
+             }
  
-        //      // If template portal exists and attached...
-        //      if ( templatePortal && templatePortal.isAttached )
-        //      {
-        //          // Detach it
-        //          templatePortal.detach();
-        //      }
-        //  });
+             // If template portal exists and attached...
+             if ( templatePortal && templatePortal.isAttached )
+             {
+                 // Detach it
+                 templatePortal.detach();
+             }
+         });
     }
 
     /**
@@ -562,25 +564,25 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     filterKnowledgesInputKeyDown(event): void
     {
-        //  // Return if the pressed key is not 'Enter'
-        //  if ( event.key !== 'Enter' )
-        //  {
-        //      return;
-        //  }
+        // Return if the pressed key is not 'Enter'
+        if ( event.key !== 'Enter' )
+        {
+            return;
+        }
  
-        //  // If there is no knowledge available...
-        //  if ( this.filteredKnowledges.length === 0 )
-        //  {
-        //     /*  TODO: this operation is not supported yet. jpelay  24/01*/
-        //      // // Create the knowledge
-        //      // this.createKnowledge(event.target.value);
+         // If there is no knowledge available...
+        if ( this.filteredKnowledges.length === 0 )
+        {
+            /*  TODO: this operation is not supported yet. jpelay  24/01*/
+             // // Create the knowledge
+             // this.createKnowledge(event.target.value);
  
-        //      // // Clear the input
-        //      // event.target.value = '';
+             // // Clear the input
+             // event.target.value = '';
  
-        //      // // Return
-        //      return;
-        //  }
+             // // Return
+            return;
+        }
  
         //  // If there is a knowledge...
         //  const Knowledge = this.filteredKnowledges[0];
@@ -614,8 +616,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         //this.filteredKnowledges = this.knowledges.filter(knowledge => knowledge.name.toLowerCase().includes(value));
     }
 
+    /**
+     * Handle Change Form
+     * 
+     */
     private _handleChangeForm() {
-
         // Subscribe from form's values
         this.filterGroupForm.valueChanges.subscribe(controls => {
             let requests: Request[] = this._requestService.requests;
@@ -630,7 +635,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             ));
             
             // Set request for filter
-            this.requestsA = requests;
+            this.requestOriginal = requests;
 
             // Set the requests
             this._requestService.setRequests(requests);
@@ -653,21 +658,83 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     }
 
+    /**
+     * Get Knowledges
+     * 
+     */
     private _getKnowledges() {
         // Get the knowledges
-        this._requestService.knowledges$
+        this._requestService.getKnowledges()
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((knowledges: Knowledge[]) => {
                 this.knowledges = knowledges;
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
     }
 
+    /**
+     * checkerKnowledges
+     * 
+     * @param knowledge 
+     */
     checkerKnowledges(knowledge: Knowledge): boolean {
-        //let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);
-        return true;
+        let hasKnowledge = this.selectedRequest.knowledges.find(selectedKnowledge => selectedKnowledge.knowledge.id === knowledge.id && selectedKnowledge.isActive);
+        return hasKnowledge !== undefined;
     };
+
+    /**
+     * Add knowledge to the collaborator
+     *
+     * @param knowledge
+     */
+    addKnowledgeToCollaborator(knowledge: Knowledge): void
+    {
+         // TODO: we need to add logic for levels here
+        let newKnowledge: any = {
+            knowledge: knowledge,
+            isActive: 1
+        }
+ 
+         // Add the knowledge
+         this.selectedRequest.knowledges.unshift(newKnowledge);
+ 
+         // Update the collaborator form
+         this.step2.get('knowledges').patchValue(this.selectedRequest.knowledges);
+ 
+         // Mark for check
+         this._changeDetectorRef.detectChanges();
+    }
+
+    /**
+     * Remove knowledge from the collaborator
+     *
+     * @param knowledge
+     */
+     removeKnowledgeFromCollaborator(knowledge: any): void
+     {
+        // Remove the knowledge
+         knowledge.isActive = 0;
+        ///const knowledgeIndex = this.selectedRequest.knowledges.find(item => item.knowledge.id === knowledge.knowledge.id);
+        //this.selectedRequest.knowledges[knowledgeIndex].isActive = 0;
+
+         // Mark for check
+         this._changeDetectorRef.markForCheck();
+     }
+
+     /**
+      * Active collaborator the knowledge
+      * 
+      * @param knowledge 
+      */
+     activeCollaboratorKnowledge(knowledge: any) {
+        knowledge.isActive = 1;
+
+        const knowledgeIndex = this.selectedRequest.knowledges.find(item => item.knowledge.id === knowledge.knowledge.id);
+        this.selectedRequest.knowledges[knowledgeIndex - 1].isActive = 1;
+
+        // Mark for check
+        this._changeDetectorRef.detectChanges();
+    }
 
     /**
      * Toggle collaborator knowledge
@@ -676,17 +743,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     toggleCollaboratorKnowledge(knowledge: Knowledge): void
     {
-        //  let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
-        //  if (knowledgeFound) {
-        //      if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
-        //      else  this.activeCollaboratorKnowledge(knowledgeFound);
-        //  }
-        //  else
-        //  {
-        //      this.addKnowledgeToCollaborator(knowledge);
-        //  }
+        let knowledgeFound = this.selectedRequest.knowledges.find(selectedKnowledge => selectedKnowledge.knowledge.id == knowledge.id);
+
+        if (knowledgeFound) {
+            if (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+            else  this.activeCollaboratorKnowledge(knowledgeFound);
+        }
+        else
+        {
+            this.addKnowledgeToCollaborator(knowledge);
+        }
     }
-    
     
     /**
      * getAmountRequestByOption
@@ -695,19 +762,18 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *  
      */
     getAmountRequestByOption(name: string, filterOption: number) {
-
         switch (filterOption) {
             case 1:
-                return this.requestsA.filter(item => item?.client.name === name).length;
+                return this.requestOriginal.filter(item => item?.client.name === name).length;
                 break;
             case 2:
-                return this.requestsA.filter(item => item?.commercialArea.name === name).length;
+                return this.requestOriginal.filter(item => item?.commercialArea.name === name).length;
                 break;
             case 3:
-                return this.requestsA.filter(item => item?.status.name === name).length;
+                return this.requestOriginal.filter(item => item?.status.name === name).length;
                 break;
             case 4:
-                return this.requestsA.filter(item => item?.client.businessType.name === name).length;
+                return this.requestOriginal.filter(item => item?.client.businessType.name === name).length;
                 break;
         
             default:
@@ -721,20 +787,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *  
      */
     showDetail(id: number) {
-
-        console.log("showDetail");
-        // If the request is already selected...
-        // if ( this.selectedRequest && this.selectedRequest.id === id )
-        // {
-        //     // Close the details
-        //     this.closeDetails();
-        //     return;
-        // }
-
-        
-        //this._changeDetectorRef.markForCheck();
-        // this.fillDataFormWizzard(id);
-
         this.isDetail = true;
         this.openPopup(id);
     }
@@ -746,37 +798,30 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     fillDataFormWizzard(requestId: number): void
     {
-    
         // Get the request by id
         this._requestService.getRequestById( requestId )
             .subscribe((request) => {
-
                 // Set the selected product
                 this.selectedRequest = request;
-                
+                this.filterKnowledges = request.knowledges;
                 this.setRequestForm(request);
-              
             });
     }
 
     /**
      * Disable steps controls 
      */
-
     disableSteps() {
         Object.keys(this.step1.controls).forEach(key => {
             this.step1.controls[key].disable();
         });
     }
 
-
     /**
      * Fill Wizzard form
      * @param request
      */
-
     setRequestForm(request: Request) {
-        console.log("setRequestForm:", request);
         // Fill the formGroup step1
         this.step1.patchValue(request);
         this.step1.get('client').setValue(request.client.id);
@@ -786,12 +831,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Fill the formGroup step2
         this.step2.patchValue(request);
-        this.step2.get('responsibleRequest').setValue('Freddy Salazar');
+        this.step2.get('responsibleRequest').setValue(request.responsibleRequest.id);
         this.step2.get('dateRequest').setValue(request.dateRequest);
         this.step2.get('technicalArea').setValue(request.technicalArea.id);
         this.step2.get('status').setValue(request.status.id);
         this.step2.get('category').setValue(request.category.id);
-        this.step2.get('solverGroup').setValue(request.solverGroup.name + ' ' + request.solverGroup.lastName);
+        this.step2.get('solverGroup').setValue(request.solverGroup.id);
+
         // Fill the formGroup step3
         this.step3.patchValue(request);
         this.step3.get('requestPeriod').setValue(request.requestPeriod.id);
@@ -848,7 +894,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 // Go to new request
                 this.selectedRequest = newRequest;
-
+                this.selectedRequest.knowledges = [];
                 // Set controls id and isActive
                 this.step1.get('id').setValue(newRequest.id);
                 this.step1.get('titleRequest').setValue(newRequest.titleRequest);
@@ -923,6 +969,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
 
+    /**
+     * Confirm Save Request
+     * 
+     */
     confirmSaveRequest(): void
     {
         // Open the confirmation dialog
@@ -962,13 +1012,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 requestNew.category = this.categories.find(item => item.id === requestNew.category);
                 requestNew.status = this.status.find(item => item.id === requestNew.status);
                 requestNew.requestPeriod = this.requestp.find(item => item.id === requestNew.requestPeriod);
+                requestNew.knowledges = this.selectedRequest.knowledges;
+                requestNew.responsibleRequest = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
+                //requestNew.solverGroup = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
+                //requestNew.technicalArea = this.technicalArea.find(item => item.id === requestNew.technicalArea);
+                // requestNew.responsibleRequest = {
+                //     id: 1
+                // };
+
                 requestNew.solverGroup = {
-                    id: 1
-                };
-          
-                requestNew.responsibleRequest = {
-                    id: 1
-                };
+                    id: 1,
+                }
 
                 requestNew.technicalArea = {
                     id: 1
@@ -992,7 +1046,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * Show flash message
+     * Show Flash Message
+     * 
+     * @param type 
      */
     showFlashMessage(type: 'success' | 'error'): void
     {
@@ -1015,6 +1071,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     
     /**
      * openPopup
+     * 
      * @param id 
      */
     openPopup(id: number): void  {

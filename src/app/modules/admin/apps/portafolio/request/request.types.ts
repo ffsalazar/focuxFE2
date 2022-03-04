@@ -32,6 +32,7 @@ export interface Request{
     totalPauseDays: number,
     typeRequest: TypeRequest,
     updateDate: Date,
+    knowledges: any;
 
 }
 
