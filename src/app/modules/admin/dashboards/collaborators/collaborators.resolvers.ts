@@ -10,7 +10,8 @@ import {
     EmployeePosition,
     Knowledge,
     Ocupation,
-    Assigments
+    Assigments,
+    Status
 } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "./collaborators.service";
 
@@ -233,7 +234,7 @@ export class CollaboratorsLeadersResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Collaborator[]>
     {
-        return this._collaboratorsService.getLeaders();
+        return this._collaboratorsService.getLeaders(parseInt(route.paramMap.get('id')));
     }
 }
 
@@ -315,5 +316,33 @@ export class CollaboratorsClientResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Client[]>
     {
         return this._collaboratorsService.getClients();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CollaboratorsStatusResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(private _collaboratorsService: CollaboratorsService)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Status[]>
+    {
+        return this._collaboratorsService.getStatuses();
     }
 }

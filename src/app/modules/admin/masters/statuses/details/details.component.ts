@@ -71,7 +71,7 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
             name: [''],
             description: [''],
             isActive: [''],
-            typeStatus: [[]]
+            typeStatus: ['']
         })
 
         // Get the statuses
@@ -105,7 +105,7 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
                 // Patch values to the form
                 this.statusForm.patchValue(status);
 
-                this.statusForm.get('typeStatus').setValue(status.typeStatus.id);
+                this.statusForm.get('typeStatus').setValue(status.typeStatus);
 
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
@@ -190,7 +190,7 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     {
         // Get the status object
         let status = this.statusForm.getRawValue();
-        status.typeStatus = this.typeStatuses.find(value => value.id == status.typeStatus);
+
 
         // Update the status on the server
         console.log(status)

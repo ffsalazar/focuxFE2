@@ -58,7 +58,7 @@
                     <ng-container *ngIf="status.typeStatus">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
-                            <div class="ml-6 leading-6">{{status.typeStatus.name}}</div>
+                            <div class="ml-6 leading-6">{{status.typeStatus}}</div>
                         </div>
                     </ng-container>
 
@@ -178,7 +178,7 @@
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
                             <mat-select [placeholder]="'tipo de status'" formControlName="typeStatus" >
-                                <mat-option *ngFor="let statusTypes of filteredTypeStatuses" [value]="statusTypes.id">{{statusTypes.name}}</mat-option>
+                                <mat-option *ngFor="let statusTypes of filteredTypeStatuses" [value]="statusTypes.name">{{statusTypes.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>

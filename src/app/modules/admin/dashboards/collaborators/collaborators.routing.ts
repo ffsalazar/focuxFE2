@@ -10,7 +10,10 @@ import {
     CollaboratorsDepartmentsResolver,
     CollaboratorsEmployeePositionResolver,
     CollaboratorsKnowledgesResolver,
-    CollaboratorsClientResolver, CollaboratorsCollaboratorOcupationResolver, CollaboratorsLeadersResolver
+    CollaboratorsClientResolver,
+    CollaboratorsCollaboratorOcupationResolver,
+    CollaboratorsLeadersResolver,
+    CollaboratorsStatusResolver
 } from "./collaborators.resolvers";
 
 
@@ -27,7 +30,9 @@ export const collaboratorsRoutes: Route[] = [
                 component: CollaboratorsListComponent,
                 resolve  : {
                     tasks    : CollaboratorsResolver,
-                    countries: CollaboratorsCountriesResolver
+                    countries: CollaboratorsCountriesResolver,
+                    status: CollaboratorsStatusResolver,
+                    clients:CollaboratorsClientResolver
                 },
                 children : [
                     {
@@ -40,7 +45,8 @@ export const collaboratorsRoutes: Route[] = [
                             employeePositions: CollaboratorsEmployeePositionResolver,
                             clients: CollaboratorsClientResolver,
                             ocupations:CollaboratorsCollaboratorOcupationResolver,
-                            leaders:CollaboratorsLeadersResolver
+                            leaders:CollaboratorsLeadersResolver,
+                            status: CollaboratorsStatusResolver
                         },
                         canDeactivate: [CanDeactivateCollaboratorsDetails]
                     }

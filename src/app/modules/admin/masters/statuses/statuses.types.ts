@@ -12,5 +12,5 @@ export interface Status
     name: string;
     description: string;
     isActive: number;
-   typeStatus: TypeStatus;
+   typeStatus: string;
 }

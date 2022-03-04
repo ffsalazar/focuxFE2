@@ -16,7 +16,8 @@ import {
     Department,
     EmployeePosition,
     Knowledge,
-    Ocupation, Request
+    Ocupation, Request,
+    Status
 } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
@@ -44,6 +45,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     collaboratorForm: FormGroup;
     collaborators: Collaborator[];
     ocupations: Assigments;
+    statuses: Status[];
     departments: Department[];
     filteredDepartments: Department[];
     clients:Client[];
@@ -114,7 +116,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             phoneNumbers: this._formBuilder.array([]),
             phones: this._formBuilder.array([]),
             isCentralAmerican:[''],
-            leader:[[]]
+            leader:[[]],
+            status: [[]]
         })
 
 
@@ -151,7 +154,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.collaboratorForm.get('client').setValue(collaborator.client.id);
                 this.collaboratorForm.get('employeePosition').setValue(collaborator.employeePosition.id);
                 this.collaboratorForm.get('client').setValue(collaborator.client.id);
-                this.collaboratorForm.get('leader').setValue(collaborator.leader.id);
+                if(collaborator.leader){
+                    this.collaboratorForm.get('leader').setValue(collaborator.leader.id);
+                }
+
+                this.collaboratorForm.get('status').setValue(collaborator.status.id);
+
                 // Setup the phone numbers form array
                 const phoneNumbersFormGroups = [];
 
@@ -217,7 +225,14 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        console.log(this.leaders)
+        this._collaboratorsService.statuses$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((statuses: Status[]) => {
+               this.statuses = statuses
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
 
         this._collaboratorsService.employeePositions$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -442,7 +457,11 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
         collaborator.client = this.clients.find(value => value.id === collaborator.client);
-        collaborator.leader= this.leaders.find(value => value.id === collaborator.leader);
+        if(collaborator.leader){
+            collaborator.leader= this.leaders.find(value => value.id === collaborator.leader);
+        }
+
+        collaborator.status= this.statuses.find(value => value.id === collaborator.status);
         collaborator.isCentralAmerican ? collaborator.isCentralAmerican = 1 : collaborator.isCentralAmerican = 0;
         // Update the collaborator on the server
         this._collaboratorsService.updateCollaborator(collaborator.id, collaborator).subscribe(() => {

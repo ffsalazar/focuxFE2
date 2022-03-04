@@ -172,13 +172,7 @@ export class StatusesService
         // Generate a new status
         const newStatus = {
 
-                "typeStatus": {
-                    "id": 1,
-                    "code": "SOLICITUD_ESTATUS",
-                    "name": "Solicitud estatus",
-                    "description": "Tipos de estatus que maneja una solicitud",
-                    "isActive": 1
-                },
+            "typeStatus": "nuevo Tipo",
             "name": "Nuevo Status",
             "description": "Nueva descripcion",
             "isActive": 1
