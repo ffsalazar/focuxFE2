@@ -106,6 +106,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     filteredCustomerBranch: Observable<string[]>;
     knowledgeControl: FormControl = new FormControl();
     request$: any;
+    priority: any[] = [{
+        id: 1,
+        description: 'Alta',
+    }, {
+        id: 2,
+        description: 'Media',
+    },
+    {
+        id: 3,
+        description: 'Baja',
+    }];
 
     /*
     /**

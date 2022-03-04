@@ -228,14 +228,9 @@
                                     Datos de la solicitud
                                 </p>
                                 <!-- <app-request-step-one></app-request-step-one> -->
-                                <div class="flex space-x-4">
-<<<<<<< HEAD
+                                <div class="flex space-x-4">                                    
                                     <mat-form-field class="w-full">
-                                        <mat-label>Solicitud</mat-label>
-=======
-                                    <mat-form-field class="w-1/3">
                                         <mat-label>Titulo de la Solicitud</mat-label>
->>>>>>> 3d6c8c853dbdd3bbab961f0e1b8173c836fe564b
                                         <input
                                             matInput
                                             formControlName="titleRequest"
@@ -264,6 +259,7 @@
                                             </ng-container>
                                         </mat-select>
                                         <mat-error *ngIf="!step1.get('typeRequest').valid && (step1.get('typeRequest').dirty || step1.get('typeRequest').touched)">El campo es obligatorio</mat-error>
+                                    
                                     </mat-form-field>
                                     <mat-form-field class="w-1/2">
                                         <mat-label>Código de solicitud</mat-label>
@@ -279,22 +275,22 @@
                                     </mat-form-field>
                                 </div>
                             
-                                         <div class="flex space-x-4">
-                                            <mat-form-field class="w-full fuse-mat-textarea flex-auto">
-                                                <mat-label>Descripción de solicitud</mat-label>
-                                                <textarea
-                                                    matInput
-                                                    formControlName="descriptionRequest"
-                                                    [readonly]="isDetail"
-                                                    [rows]="3"
-                                                ></textarea>
-                                                <mat-icon class="icon-size-5" matPrefix
-                                                    [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
-                                                    <mat-error
-                                                        *ngIf="!step1.get('descriptionRequest').valid && (step1.get('descriptionRequest').dirty || step1.get('descriptionRequest').touched)">
-                                                        El campo es obligatorio</mat-error>
-                                            </mat-form-field>
-                                        </div>
+                                <div class="flex space-x-4">
+                                    <mat-form-field class="w-full fuse-mat-textarea flex-auto">
+                                        <mat-label>Descripción de solicitud</mat-label>
+                                        <textarea
+                                            matInput
+                                            formControlName="descriptionRequest"
+                                            [readonly]="isDetail"
+                                            [rows]="3"
+                                        ></textarea>
+                                        <mat-icon class="icon-size-5" matPrefix
+                                            [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="!step1.get('descriptionRequest').valid && (step1.get('descriptionRequest').dirty || step1.get('descriptionRequest').touched)">
+                                                El campo es obligatorio</mat-error>
+                                    </mat-form-field>
+                                </div>
                             
                                 
                                 <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
@@ -369,9 +365,11 @@
                                         <mat-select
                                             formControlName="priorityOrder"
                                             [readonly]="isDetail">
-                                        <mat-option>
-                                            
-                                        </mat-option>
+                                        <ng-container *ngFor="let item of priority">
+                                            <mat-option [value]="item.id">
+                                                {{ item.description }}
+                                            </mat-option>
+                                        </ng-container>
                                          </mat-select>
                                         <mat-icon class="icon-size-5" matPrefix
                                             [svgIcon]="'heroicons_solid:document-text'">
@@ -398,99 +396,6 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div class="flex space-x-4">
-                                    <div class="flex flex-wrap items-center -m-1.5 mt-6">
-                                        <mat-label class="w-full font-medium">Conocimiento</mat-label>
-                                        <!-- Knowledges -->
-                                        <ng-container *ngIf="selectedRequest?.knowledges.length > 0">
-                                            <ng-container *ngFor="let requestKnowledge of selectedRequest.knowledges">
-                                                <ng-container *ngIf="requestKnowledge.isActive != 0">
-                                                    <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                        <span class="text-md font-medium whitespace-nowrap">{{requestKnowledge.knowledge.name}}</span>
-                                                    </div>
-                                                </ng-container>
-                                            </ng-container>
-                                        </ng-container>
-                                        <!-- Knowledges panel and its button -->
-                                        <div
-                                            class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 cursor-pointer text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                                            (click)="openKnowledgesPanel()"
-                                            #knowledgesPanelOrigin>
-                                    
-                                            <ng-container *ngIf="selectedRequest?.knowledges.length > 0">
-                                                <mat-icon
-                                                    class="icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
-                                            </ng-container>
-                                    
-                                            <ng-container *ngIf="selectedRequest?.knowledges.length === 0">
-                                                <mat-icon
-                                                    class="icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
-                                            </ng-container>
-                                    
-                                            <!-- Knowledges panel -->
-                                            <ng-template #knowledgesPanel>
-                                                <div class="w-60 rounded border shadow-md bg-card">
-                                                    <!-- Knowledges panel header -->
-                                                    <div class="flex items-center m-3 mr-2">
-                                                        <div class="flex items-center">
-                                                            <mat-icon
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                                                            <div class="ml-2">
-                                                                <input
-                                                                    class="w-full min-w-0 py-1 border-0"
-                                                                    type="text"
-                                                                    placeholder="Ingrese habilidad"
-                                                                    (input)="filterKnowledges($event)"
-                                                                    (keydown)="filterKnowledgesInputKeyDown($event)"
-                                                                    [maxLength]="30"
-                                                                    #newKnowledgeInput>
-                                                            </div>
-                                                        </div>
-                                                        <button
-                                                            class="ml-1"
-                                                            mat-icon-button
-                                                            (click)="toggleKnowledgesEditMode()">
-                                                            <mat-icon
-                                                                *ngIf="!knowledgesEditMode"
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                                            <mat-icon
-                                                                *ngIf="knowledgesEditMode"
-                                                                class="icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                    <div
-                                                        class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
-                                                        <!-- Knowledges-->
-                                                        <ng-container *ngIf="!knowledgesEditMode">
-                                                            <ng-container *ngFor="let knowledge of knowledges; trackBy: trackByFn">
-                                                                <div
-                                                                    class="flex items-center h-10 min-h-10 px-4 cursor-pointer hover:bg-hover"
-                                                                    (click)="toggleCollaboratorKnowledge(knowledge)"
-                                                                    matRipple>
-                                                                    <mat-checkbox
-                                                                        class="flex items-center h-10 min-h-10 pointer-events-none"
-                                                                        [checked]="checkerKnowledges(knowledge)"
-                                                                        [color]="'primary'"
-                                                                        [disableRipple]="true">
-                                                                    </mat-checkbox>
-                                                                    <div class="ml-1">{{knowledge.name}}</div>
-                                                                </div>
-                                                            </ng-container>
-                                                        </ng-container>
-                                                    </div>
-                                                </div>
-                                            </ng-template>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <p class="my-6 font-medium">
                                     Equipo asignado para atender solicitud
                                 </p>
@@ -514,47 +419,34 @@
                                     
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Responsable</mat-label>
-                                        <mat-select
-                                            formControlName="responsibleRequest"
-                                            [readonly]="isDetail"
-                                            [disabled]="isDetail"
-                                        >
-                                            <ng-container *ngFor="let collaborator of collaborators">
-                                                <mat-option [value]="collaborator.id">
-                                                    {{collaborator.name}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
-                                        <!-- <input
+                                        <input
                                             matInput
                                             formControlName="responsibleRequest"
                                             [readonly]="isDetail"
                                         >
                                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
-                                        </mat-icon> -->
+                                        </mat-icon>
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Grupo solucionador</mat-label>
-                                        <mat-select
-                                            formControlName="solverGroup"
-                                            [readonly]="isDetail"
-                                            [disabled]="isDetail"
-                                        >
-                                            <ng-container *ngFor="let collaborator of collaborators">
-                                                <mat-option [value]="collaborator.id">
-                                                    {{collaborator.name}}
+                                        <!-- <mat-select formControlName="solverGroup">
+                                            <ng-container *ngFor="let category of categories">
+                                                <mat-option [value]="category.id">
+                                                    {{category.name}}
                                                 </mat-option>
+
                                             </ng-container>
-                                        </mat-select>
-                                        <!-- <input
+
+                                        </mat-select> -->
+                                        <input
                                             matInput
                                             formControlName="solverGroup"
                                             [readonly]="isDetail"
                                             
                                         >
                                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
-                                        </mat-icon> -->
+                                        </mat-icon>
                                     </mat-form-field>
                                     <div class="w-1/3">
                                         <span class="mb-px font-medium leading-tight">Colaborador</span>
