@@ -26,7 +26,7 @@
                 <input type="text" matInput formControlName="customerBranchControl" [matAutocomplete]="autoCustomerBranch">
                 <mat-autocomplete #autoCustomerBranch="matAutocomplete">
                     <mat-option *ngFor="let option of filteredCustomerBranch  | async" [value]="option">
-                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span></div></mat-option>
                 </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="w-50 mr-6" appearance="fill">
@@ -34,7 +34,7 @@
                 <input type="text" matInput formControlName="clientControl" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let option of filteredClients | async" [value]="option">
-                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
                 </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="w-50 mr-6" appearance="fill">
@@ -42,7 +42,7 @@
                 <input type="text" matInput formControlName="commercialAreaControl" [matAutocomplete]="autoCommercialArea">
                 <mat-autocomplete #autoCommercialArea="matAutocomplete">
                     <mat-option *ngFor="let option of filteredCommercialArea | async" [value]="option">
-                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
                 </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="w-50 mr-6" appearance="fill">
@@ -50,7 +50,7 @@
                 <input type="text" matInput formControlName="statusControl" [matAutocomplete]="autoStatus">
                 <mat-autocomplete #autoStatus="matAutocomplete">
                     <mat-option *ngFor="let option of filteredStatus | async" [value]="option">
-                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
                 </mat-autocomplete>
             </mat-form-field>
         </form>
@@ -180,19 +180,57 @@
                     <form class="p-2 bg-card shadow rounded overflow-hidden" [formGroup]="horizontalStepperForm">
                         <mat-horizontal-stepper [linear]="true" #horizontalStepper class="m-auto" [ngClass]="[isDetail ? 'w-3/4' : 'w-full']">
                        
-                            <mat-step
-                                [formGroupName]="'step1'"
+                            <mat-step [formGroupName]="'step1'"
                                 [stepControl]="horizontalStepperForm.get('step1')"
                                 #horizontalStepperStep1
                             >
                                 <ng-template matStepLabel>Solicitud cliente</ng-template>
-                                <p class="my-6 font-medium">
+                                <p class="my-4 font-medium">
+                                    Datos de la Compañía
+                                </p>
+                                <div class="flex space-x-4">
+                                    <mat-form-field class="w-1/3">
+                                        <mat-label>Cliente</mat-label>
+                                        <mat-select formControlName="client" [readonly]="isDetail" [disabled]="isDetail">
+                                            <ng-container *ngFor="let client of clients">
+                                                <mat-option [value]="client.id">
+                                                    {{client.name}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error *ngIf="!step1.get('client').valid && (step1.get('client').dirty || step1.get('client').touched)">El
+                                            campo es obligatorio</mat-error>
+                                    </mat-form-field>
+                                
+                                    <mat-form-field class="w-1/3">
+                                        <mat-label>Área Comercial</mat-label>
+                                        <mat-select formControlName="commercialArea" [readonly]="isDetail" [disabled]="isDetail">
+                                            <ng-container *ngFor="let area of commercialArea">
+                                                <mat-option [value]="area.id">
+                                                    {{area.name}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error
+                                            *ngIf="!step1.get('commercialArea').valid && (step1.get('commercialArea').dirty || step1.get('commercialArea').touched)">
+                                            El campo es obligatorio</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-1/3">
+                                        <mat-label>Ramo cliente</mat-label>
+                                        <input matInput formControlName="customerBranch" [readonly]="true">
+                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
+                                        <mat-error
+                                            *ngIf="!step1.get('customerBranch').valid && (step1.get('customerBranch').dirty || step1.get('customerBranch').touched)">
+                                            El campo es obligatorio</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <p class="my-4 font-medium">
                                     Datos de la solicitud
                                 </p>
                                 <!-- <app-request-step-one></app-request-step-one> -->
-                                <div class="flex space-x-4">
+                                <div class="flex space-x-4">                                    
                                     <mat-form-field class="w-full">
-                                        <mat-label>Solicitud</mat-label>
+                                        <mat-label>Titulo de la Solicitud</mat-label>
                                         <input
                                             matInput
                                             formControlName="titleRequest"
@@ -221,6 +259,7 @@
                                             </ng-container>
                                         </mat-select>
                                         <mat-error *ngIf="!step1.get('typeRequest').valid && (step1.get('typeRequest').dirty || step1.get('typeRequest').touched)">El campo es obligatorio</mat-error>
+                                    
                                     </mat-form-field>
                                     <mat-form-field class="w-1/2">
                                         <mat-label>Código de solicitud</mat-label>
@@ -235,66 +274,25 @@
                                         <mat-error *ngIf="!step1.get('code').valid && (step1.get('code').dirty || step1.get('code').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                 </div>
+                            
                                 <div class="flex space-x-4">
-                                    <mat-form-field class="w-full">
+                                    <mat-form-field class="w-full fuse-mat-textarea flex-auto">
                                         <mat-label>Descripción de solicitud</mat-label>
-                                        <input
+                                        <textarea
                                             matInput
                                             formControlName="descriptionRequest"
                                             [readonly]="isDetail"
-                                        >
+                                            [rows]="3"
+                                        ></textarea>
                                         <mat-icon class="icon-size-5" matPrefix
                                             [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
-                                        <mat-error *ngIf="!step1.get('descriptionRequest').valid && (step1.get('descriptionRequest').dirty || step1.get('descriptionRequest').touched)">El campo es obligatorio</mat-error>
+                                            <mat-error
+                                                *ngIf="!step1.get('descriptionRequest').valid && (step1.get('descriptionRequest').dirty || step1.get('descriptionRequest').touched)">
+                                                El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                 </div>
-                                <p class="my-6 font-medium">
-                                    Datos de la Compañía
-                                </p>
-                                <div class="flex space-x-4">
-                                    <mat-form-field class="w-1/3">
-                                        <mat-label>Cliente</mat-label>
-                                        <mat-select
-                                            formControlName="client"
-                                            [readonly]="isDetail"
-                                            [disabled]="isDetail"
-                                        >
-                                            <ng-container *ngFor="let client of clients">
-                                                <mat-option [value]="client.id">
-                                                    {{client.name}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
-                                        <mat-error *ngIf="!step1.get('client').valid && (step1.get('client').dirty || step1.get('client').touched)">El campo es obligatorio</mat-error>
-                                    </mat-form-field>
-
-                                    <mat-form-field class="w-1/3">
-                                        <mat-label>Área Comercial</mat-label>
-                                        <mat-select
-                                            formControlName="commercialArea"
-                                            [readonly]="isDetail"
-                                            [disabled]="isDetail"
-                                        >
-                                            <ng-container *ngFor="let area of commercialArea">
-                                                <mat-option [value]="area.id">
-                                                    {{area.name}}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
-                                        <mat-error *ngIf="!step1.get('commercialArea').valid && (step1.get('commercialArea').dirty || step1.get('commercialArea').touched)">El campo es obligatorio</mat-error>
-                                    </mat-form-field>
-                                    <mat-form-field class="w-1/3">
-                                        <mat-label>Ramo cliente</mat-label>
-                                        <input
-                                            matInput
-                                            formControlName="customerBranch"
-                                            [readonly]="true"
-                                        >
-                                        <mat-icon class="icon-size-5" matPrefix
-                                            [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
-                                        <mat-error *ngIf="!step1.get('customerBranch').valid && (step1.get('customerBranch').dirty || step1.get('customerBranch').touched)">El campo es obligatorio</mat-error>
-                                    </mat-form-field>
-                                </div>
+                            
+                                
                                 <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
                                     <button class="-ml-4" *ngIf="!isDetail" mat-button [color]="'warn'" (click)="deleteSelectedRequest()">
                                         Eliminar
@@ -312,8 +310,7 @@
                                 </div>
                             </mat-step>
 
-                            <mat-step
-                                [formGroupName]="'step2'"
+                            <mat-step [formGroupName]="'step2'"
                                 [stepControl]="horizontalStepperForm.get('step2')"
                                 #horizontalStepperStep2
                             >
@@ -365,11 +362,15 @@
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Prioridad</mat-label>
-                                        <input
-                                            matInput
+                                        <mat-select
                                             formControlName="priorityOrder"
-                                            [readonly]="isDetail"
-                                        >
+                                            [readonly]="isDetail">
+                                        <ng-container *ngFor="let item of priority">
+                                            <mat-option [value]="item.id">
+                                                {{ item.description }}
+                                            </mat-option>
+                                        </ng-container>
+                                         </mat-select>
                                         <mat-icon class="icon-size-5" matPrefix
                                             [svgIcon]="'heroicons_solid:document-text'">
                                         </mat-icon>
@@ -394,7 +395,6 @@
 
                                     </mat-form-field>
                                 </div>
-
                                 <div class="flex space-x-4">
                                     <div class="flex flex-wrap items-center -m-1.5 mt-6">
                                         <mat-label class="w-full font-medium">Conocimiento</mat-label>
@@ -487,7 +487,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <p class="my-6 font-medium">
                                     Equipo asignado para atender solicitud
                                 </p>
@@ -522,36 +521,27 @@
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
-                                        <!-- <input
-                                            matInput
-                                            formControlName="responsibleRequest"
-                                            [readonly]="isDetail"
-                                        >
-                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
-                                        </mat-icon> -->
                                     </mat-form-field>
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Grupo solucionador</mat-label>
-                                        <mat-select
-                                            formControlName="solverGroup"
-                                            [readonly]="isDetail"
-                                            [disabled]="isDetail"
-                                        >
-                                            <ng-container *ngFor="let collaborator of collaborators">
-                                                <mat-option [value]="collaborator.id">
-                                                    {{collaborator.name}}
+                                        <!-- <mat-select formControlName="solverGroup">
+                                            <ng-container *ngFor="let category of categories">
+                                                <mat-option [value]="category.id">
+                                                    {{category.name}}
                                                 </mat-option>
+
                                             </ng-container>
-                                        </mat-select>
-                                        <!-- <input
+
+                                        </mat-select> -->
+                                        <input
                                             matInput
                                             formControlName="solverGroup"
                                             [readonly]="isDetail"
                                             
                                         >
                                         <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
-                                        </mat-icon> -->
+                                        </mat-icon>
                                     </mat-form-field>
                                     <div class="w-1/3">
                                         <span class="mb-px font-medium leading-tight">Colaborador</span>
@@ -618,7 +608,7 @@
                                         <mat-datepicker #dateInitPicker></mat-datepicker>
                                     </mat-form-field>
 
-                                    <mat-form-field class="w-1/3">
+                                    <mat-form-field *ngIf="!tagsEditMode" class="w-1/3">
                                         <mat-label>Fecha de Culminación</mat-label>
                                         <mat-icon
                                             matPrefix
@@ -682,7 +672,7 @@
                                 </div>
                             </mat-step>
 
-                            <mat-step [formGroupName]="'step3'" [stepControl]="horizontalStepperForm.get('step3')">
+                            <mat-step *ngIf="!tagsEditMode" [formGroupName]="'step3'" [stepControl]="horizontalStepperForm.get('step3')">
                                 <ng-template matStepLabel>Progreso</ng-template>
                                 <p class="my-6 font-medium">
                                     Indicadores de progreso
@@ -830,7 +820,7 @@
                                 
                             </mat-step>
 
-                            <mat-step [formGroupName]="'step4'" [stepControl]="horizontalStepperForm.get('step4')">
+                            <mat-step *ngIf="!tagsEditMode" [formGroupName]="'step4'" [stepControl]="horizontalStepperForm.get('step4')">
                                 <ng-template matStepLabel>Actualización</ng-template>
                                 <p class="my-6 font-medium">
                                     Avances de la solicitud

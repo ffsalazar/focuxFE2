@@ -1,19 +1,26 @@
-<div class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full ">
+<div class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
 
     
 
     <div class="w-full">
             <div class="flex flex-col">
-                <div class="flex flex-auto mt-4">
+                <div class="flex flex-auto mt-4 mb-8">
                     
                     <form [formGroup]="filterForm" class="example-form">
 
-                        <div class="container-filter" style="display: flex; justify-content: flex-end;">
+                        <div class="container-filter w-full" style="display: flex;">
                             <div>
                                 <div class="flex flex-col">
                                 <mat-label class="font-semibold">Cliente</mat-label>
+<<<<<<< HEAD
                                 <mat-form-field class="w-50 mr-6" appearance="fill"> 
                                     <input type="text" matInput [placeholder]="'Cliente'" formControlName="clientControl" [matAutocomplete]="client" >
+=======
+                                <mat-form-field class="w-80 mr-6" appearance="fill"> 
+                                    
+                                    <input type="text" matInput [placeholder]="'Cliente'" formControlName="clientControl" [matAutocomplete]="client">
+                                    <mat-select style="width: 15px;">
+>>>>>>> 1c74009eeea10e98c6c9387d2e3fd628fa1949bf
                                     <mat-autocomplete #client="matAutocomplete">
                                         <mat-option *ngFor="let option of filteredClients | async" [value]="option">
                                             {{option}}
@@ -24,9 +31,9 @@
                                 </div>
                             </div>
                             <div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-col mr-6">
                               <mat-label class="font-semibold">Responsable</mat-label>
-                              <mat-form-field class="w-50">
+                              <mat-form-field class="w-80">
                                   <input
                                     type="text"
                                     [placeholder]="'Responsable'"
@@ -42,10 +49,26 @@
                               </mat-form-field>
                             </div>
                             </div>
+                            <div class="container-filter">
+                                <div class="flex flex-col mr-6">
+                                    <mat-label class="font-semibold">Estatus</mat-label>
+                                    <mat-form-field class="w-80 ">
+                                        <mat-select [formControl]="statusControl">
+                                            <ng-container *ngFor="let status of status$ | async">
+                                                <mat-option [value]="status.id">
+                                                    {{status.name}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            
+                            </div>
+                           
                         </div>
-                        <div class="container-filter">
-                            <div class="flex flex-col mr-6">
+                        <div class="flex flex-col mr-6">
                             <mat-label class="font-semibold">Solicitudes</mat-label>
+<<<<<<< HEAD
                             <mat-form-field class="w-100" appearance="fill">
                                 <input type="text"
                                        placeholder="Solicitud"
@@ -75,6 +98,20 @@
                             </div>
                             
                         </div> 
+=======
+                            <mat-form-field class="" style="width: 1010px;" appearance="fill">
+                                <input type="text" placeholder="Solicitud" aria-label="Number" matInput formControlName="requestControl"
+                                    [matAutocomplete]="auto">
+                                <mat-select style="width: 15px;">
+                                    <mat-autocomplete #auto="matAutocomplete">
+                                        <mat-option *ngFor="let option of filteredRequest" [value]="option">
+                                            {{option}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+>>>>>>> 1c74009eeea10e98c6c9387d2e3fd628fa1949bf
                     </form>         
                 </div>
 
