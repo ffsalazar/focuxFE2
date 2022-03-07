@@ -18,6 +18,7 @@ import { FuseAlertService } from '@fuse/components/alert';
 import { MatTableDataSource } from '@angular/material/table';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { DateValidator } from './validation-date';
 
 @Component({
     selector       : 'request-list',
@@ -176,7 +177,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 priorityOrder       : ['', [Validators.required]],
                 category            : ['', [Validators.required]],
                 dateInit            : ['', [Validators.required]],
-                dateRealEnd         : ['', [Validators.required]],
+                dateRealEnd         : ['', []],
                 datePlanEnd         : ['', [Validators.required]],
                 isActive            : ['1', [Validators.required]],
                 responsibleRequest  : ['', [Validators.required]],
@@ -203,7 +204,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 updateDate                      : [''],
                 commentsClient                  : [''],
             }),
-        });
+        }, {Validator: DateValidator});
 
         // Create the fiterGroupForm
         this.filterGroupForm = this._formBuilder.group({
@@ -1061,25 +1062,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     createNewRequest(request: any) {
 
-        console.log("request new: ", request);
-
-        request.requestPeriod = this.requestp[0];
+        request.requestPeriod = {
+            id: 1,
+        };
  
         this._requestService.createRequest(request)
             .subscribe((newRequest) => {
                 // Go to new request
                 this.selectedRequest = newRequest;
                 this.selectedRequest.knowledges = [];
-                // Set controls id and isActive
-                // this.step1.get('id').setValue(newRequest.id);
-                // this.step1.get('titleRequest').setValue(newRequest.titleRequest);
-                // this.step2.get('isActive').setValue(newRequest.isActive);
-
-                // Open focuxPopup
-                //this.openPopup(newRequest.id);
-
-                // Fill the form
-                //this.setRequestForm(this.selectedRequest);
                 
                 // Show Notification and close modal
                 this.showNotificationAndCloseModal('Solicitud creada con éxito!');
