@@ -190,7 +190,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 completionPercentage        : [''],
                 deviationPercentage         : [''],
                 internalFeedbackIntelix     : [''],
-                requestPeriod             : [''],
+                requestPeriod               : [''],
                 dateInitPause               : [''],
                 dateEndPause                : [''],
                 totalPauseDays              : [''],
@@ -231,7 +231,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         .subscribe((requestp: RequestPeriod[]) => {
             // Update the requestp
             this.requestp = requestp;
-
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
@@ -628,7 +627,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * Handle Change Form
+     * Handle change form
      *
      */
     private _handleChangeForm() {
@@ -895,31 +894,59 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
-     * Create request
+     * Open popup
+     *
+     * @param id
      */
-    createRequest(): void
-    {
-        // Create the request
-        this._requestService.createRequest()
-            .subscribe((newRequest) => {
+     openPopup(id: number = 1): void  {
 
-                // Go to new request
-                this.selectedRequest = newRequest;
-                this.selectedRequest.knowledges = [];
-                // Set controls id and isActive
-                this.step1.get('id').setValue(newRequest.id);
-                this.step1.get('titleRequest').setValue(newRequest.titleRequest);
-                this.step2.get('isActive').setValue(newRequest.isActive);
+        let actionOption;
 
-                // Open focuxPopup
-                this.openPopup(newRequest.id);
+        if ( this.isDetail || this.isEditing ) {
+            // Set the form wizzard
+            this.fillDataFormWizzard(id);
 
-                // Fill the form
-                //this.setRequestForm(this.selectedRequest);
+            if ( this.isDetail ) actionOption = 'detail';
+            else actionOption = 'editing';
+        } else {
+            actionOption = 'create';
+        }
+
+        this._requestService.open({
+            template: this.tplDetail, title: actionOption,
+          },
+          {width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
+            if ( confirm ) {
+
+                if ( this.isEditing ) this.isEditing = false;
+
+                if ( this.isDetail ) this.isDetail = false;
+
+                // Set selected request to null
+                this.selectedRequest = null;
+
+                // Set form wizzard
+                this._stepper.reset();
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            });
+            }
+        });
+    }
+
+    /**
+     * Create request
+     * 
+     */
+    createRequest(): void
+    {
+
+        this.selectedRequest = {
+            knowledges: []
+        }
+
+        // Open popup
+        this.openPopup();
     }
 
     /**
@@ -979,6 +1006,99 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
        this._fuseAlertService.dismiss(name);
     }
 
+    /**
+     * Show Flash Message
+     *
+     * @param type
+     */
+    showFlashMessage(type: 'success' | 'error'): void {
+        // Show the message
+        this.flashMessage = type;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+
+        // Hide it after 3 seconds
+        setTimeout(() => {
+
+            this.flashMessage = null;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, 3000);
+    }
+
+    /**
+     * Show the nofication and close modal
+     * 
+     * @param message 
+     */
+     showNotificationAndCloseModal(message: string) {
+        // Clear Wizzard
+        this._stepper.reset();
+
+        // Set the isActive as 1
+        this.step2.get('isActive').setValue('1');
+
+        // Show notification update request
+        this.showFlashMessage('success');
+        this._fuseAlertService.show('alertBox4');
+        
+        // Set message the notification
+        this.successSave = message;
+
+        // Close the details
+        this.closeDetails();
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     *  Create the new request
+     * 
+     * @param request
+     */
+    createNewRequest(request: any) {
+
+        console.log("request new: ", request);
+
+        request.requestPeriod = this.requestp[0];
+ 
+        this._requestService.createRequest(request)
+            .subscribe((newRequest) => {
+                // Go to new request
+                this.selectedRequest = newRequest;
+                this.selectedRequest.knowledges = [];
+                // Set controls id and isActive
+                // this.step1.get('id').setValue(newRequest.id);
+                // this.step1.get('titleRequest').setValue(newRequest.titleRequest);
+                // this.step2.get('isActive').setValue(newRequest.isActive);
+
+                // Open focuxPopup
+                //this.openPopup(newRequest.id);
+
+                // Fill the form
+                //this.setRequestForm(this.selectedRequest);
+                
+                // Show Notification and close modal
+                this.showNotificationAndCloseModal('Solicitud creada con éxito!');
+
+            });
+    }
+
+    /**
+     * Update the request
+     * 
+     * @param request 
+     */
+    updateRequest(request: any) {
+        this._requestService.updateRequest(request.id, request)
+            .subscribe((request) => {
+                // Show Notification and close modal
+                this.showNotificationAndCloseModal('Solicitud actualizada con éxito!');
+            });
+    }
 
     /**
      * Confirm Save Request
@@ -1040,71 +1160,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     id: 1
                 };
 
-                // Update the request on the server
-                this._requestService.updateRequest(requestNew.id, requestNew)
-                    .subscribe((request) => {
-                        // Clear Wizzard
-                        this._stepper.reset();
-                        // Show notification update request
-                        this.showFlashMessage('success');
-                        this._fuseAlertService.show('alertBox4');
-                        this.successSave = 'Solicitud actualizada con éxito!'
-                        // Close the details
-                        this.closeDetails();
-                    });
 
-            }
-        });
-    }
+                if ( !this.isEditing ) {
+                    // Create the request on the server
+                    this.createNewRequest(requestNew);
+                } else {
+                    // Update the request on the server
+                    this.updateRequest(requestNew);
+                }
+                
 
-    /**
-     * Show Flash Message
-     *
-     * @param type
-     */
-    showFlashMessage(type: 'success' | 'error'): void
-    {
-        // Show the message
-        this.flashMessage = type;
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-
-        // Hide it after 3 seconds
-        setTimeout(() => {
-
-            this.flashMessage = null;
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        }, 3000);
-    }
-
-
-    /**
-     * openPopup
-     *
-     * @param id
-     */
-    openPopup(id: number): void  {
-
-        if ( this.isDetail || this.isEditing ) {
-            this.fillDataFormWizzard(id);
-        }
-
-        this._requestService.open({
-            template: this.tplDetail, title: this.isDetail ? 'detail' : 'edit',
-          },
-          {width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
-            if ( confirm ) {
-
-                if ( this.isEditing ) this.isEditing = false;
-
-                if ( this.isDetail ) this.isDetail = false;
-
-                this.selectedRequest = null;
-
-                this._changeDetectorRef.markForCheck();
             }
         });
     }

@@ -454,71 +454,21 @@ export class RequestService
     /**
      * Create product
      */
-    createRequest(): Observable<Request>
-    {
-        const newRequest = {
-            client: {
-              id: 1
-            },
-            commercialArea: {
-              id: 1
-            },
-            typeRequest: {
-              id: 1
-            },
-            titleRequest: 'Nueva solicitud',
-            descriptionRequest: 'Description PRUEBA DESDE JSONDOC CON CAMBIOS',
-            responsibleRequest: {
-              id: 3
-            },
-            priorityOrder: 1,
-            dateRequest: '2022-02-07T04:00:00.000+00:00',
-            dateInit: '2022-02-07T04:00:00.000+00:00',
-            datePlanEnd: '2022-02-08T04:00:00.000+00:00',
-            dateRealEnd: '2022-02-09T04:00:00.000+00:00',
-            status: {
-              id: 6
-            },
-            completionPercentage: 30,
-            deviationPercentage: 70,
-            deliverablesCompletedIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS DELIVERABLES',
-            pendingActivitiesIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS PENDING',
-            commentsIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS',
-            updateDate: '2022-02-07T04:00:00.000+00:00',
-            commentsClient: 'PRUEBA DESDE JSONDOC CON CAMBIOS COMMENTS CLIENT',
-            technicalArea: {
-              id: 1
-            },
-            category: {
-              id: 1
-            },
-            internalFeedbackIntelix: 'PRUEBA DESDE JSONDOC CON CAMBIOS INTERNAL FEEDBACK',
-            solverGroup: {
-              id: 1
-            },
-            requestPeriod: {
-              id: 1
-            },
-            dateInitPause: '2022-02-08T04:00:00.000+00:00',
-            dateEndPause: '2022-02-08T04:00:00.000+00:00',
-            totalPauseDays: 1,
-            isActive: 1,
-            code: 'asd21',
-            created: '',
-            createdby: '',
-            updated: '',
-            updatedby: '',
-        }
-          
+    createRequest(request: Request): Observable<Request>
+    { 
         return this.requests$.pipe(
             take(1),
-            switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', newRequest).pipe(
+            switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', request).pipe(
                 map((newRequest) => {
                     this._requests.next([newRequest, ...requests]);
-                   
+                    
                     return newRequest;
                 })
-            ))
+            )),
+            tap(requestNew => {
+                // Close focuxPopup
+                this._isOpenModal.next(true);
+            })
         );
     }
 
@@ -543,8 +493,6 @@ export class RequestService
                     // Update the product
                     requests[index] = updatedRequest;
 
-
-                    console.log("updateRequest: ", requests);
                     // Close focuxPopup
                     this._isOpenModal.next(true);
 

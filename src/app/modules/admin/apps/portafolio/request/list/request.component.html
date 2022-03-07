@@ -293,8 +293,13 @@
                                 </div>
                             
                                 
-                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
-                                    <button class="-ml-4" *ngIf="!isDetail" mat-button [color]="'warn'" (click)="deleteSelectedRequest()">
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': isEditing ? 'row' : 'row-reverse'}">
+                                    <button
+                                        *ngIf="isEditing"
+                                        class="-ml-4"
+                                        mat-button [color]="'warn'"
+                                        (click)="deleteSelectedRequest()"
+                                    >
                                         Eliminar
                                     </button>
                                     <button
@@ -647,10 +652,15 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
-                                    <button *ngIf="!isDetail" class="-ml-4" mat-button [color]="'warn'"
-                                            (click)="deleteSelectedRequest()">
-                                            Eliminar
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': isEditing ? 'row' : 'row-reverse'}">
+                                    <button
+                                        *ngIf="isEditing"
+                                        class="-ml-4"
+                                        mat-button
+                                        [color]="'warn'"
+                                        (click)="deleteSelectedRequest()"
+                                    >
+                                        Eliminar
                                     </button>
                                     <div class="justify-self-end">
                                         <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
@@ -664,15 +674,16 @@
                                             [disabled]="horizontalStepperForm.get('step2').invalid"
                                             type="button"
                                             matStepperNext
+                                            (click)="isEditing || isDetail ? null : confirmSaveRequest()"
                                         >
-                                            Continuar
+                                            {{ isEditing || isDetail ? 'Continuar' : 'Guardar' }}
                                         </button>
                                     </div>
 
                                 </div>
                             </mat-step>
 
-                            <mat-step *ngIf="!tagsEditMode" [formGroupName]="'step3'" [stepControl]="horizontalStepperForm.get('step3')">
+                            <mat-step *ngIf="isEditing || isDetail" [formGroupName]="'step3'" [stepControl]="horizontalStepperForm.get('step3')">
                                 <ng-template matStepLabel>Progreso</ng-template>
                                 <p class="my-6 font-medium">
                                     Indicadores de progreso
@@ -795,7 +806,7 @@
                                     </div>
 
                                 </div>
-                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': isEditing ? 'row' : 'row-reverse'}">
                                     <button *ngIf="!isDetail" class="-ml-4" mat-button [color]="'warn'"
                                             (click)="deleteSelectedRequest()">
                                             Eliminar
@@ -820,7 +831,7 @@
                                 
                             </mat-step>
 
-                            <mat-step *ngIf="!tagsEditMode" [formGroupName]="'step4'" [stepControl]="horizontalStepperForm.get('step4')">
+                            <mat-step *ngIf="isEditing || isDetail" [formGroupName]="'step4'" [stepControl]="horizontalStepperForm.get('step4')">
                                 <ng-template matStepLabel>Actualización</ng-template>
                                 <p class="my-6 font-medium">
                                     Avances de la solicitud
@@ -897,7 +908,7 @@
                                     </div>
 
                                 </div>
-                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': !isDetail ? 'row' : 'row-reverse'}">
+                                <div [ngClass]="['flex justify-between']" [ngStyle]="{'flex-direction': isEditing ? 'row' : 'row-reverse'}">
                                     <button *ngIf="!isDetail" class="-ml-4" mat-button [color]="'warn'"
                                             (click)="deleteSelectedRequest()">
                                             Eliminar
