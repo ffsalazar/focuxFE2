@@ -456,8 +456,6 @@ export class RequestService
      */
     createRequest(request: Request): Observable<Request>
     {   
-        request.dateRealEnd = request.datePlanEnd;
-        
         return this.requests$.pipe(
             take(1),
             switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', request).pipe(
