@@ -487,7 +487,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         const confirmation = this._fuseConfirmationService.open({
             title  : 'Borrar Colaborador',
             message: '\n' +
-                '¿Estás seguro de que deseas eliminar este collaboratoro? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar este colaborador? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar'
