@@ -10,17 +10,19 @@ import {
 import {
     Activity,
     Collaborator,
+    CollaboratorOcupation,
     EmployeePosition,
     KnowledgeElement,
     Phone,
     Project
 } from "../assignment-occupation.types";
-import {Form, FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {Form, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {map, startWith, takeUntil} from "rxjs/operators";
 import {Observable, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import { Router } from '@angular/router';
+import { DateValidator } from './date-validation';
 
 @Component({
   selector: 'app-asignation',
@@ -46,6 +48,11 @@ export class AsignationComponent implements OnInit, OnDestroy {
     noCollaborators = true;
     request: any = null;
 
+    // Form Array
+    formOcupation: FormGroup = this._formBuilder.group({
+        collaboratorOccupation: this._formBuilder.array([])
+    });
+
       constructor(private _assignmentOccupationService: AssingmentOccupationService,
                   private _changeDetectorRef: ChangeDetectorRef,
                   private _formBuilder: FormBuilder,
@@ -56,8 +63,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
       ngOnInit(): void {
           this.getProject();
           this.filterEvent();
-          
+          this._handleChangeformOccupation();
         this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
+
+        // Set the form ocupation
+        this._setFormOcupation();
+
         this.request = this._assignmentOccupationService.requestSelected;
         
         if ( this.request ) {
@@ -65,8 +76,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
         }
         
           this.collaboratorFormGroup = this._formBuilder.group({
-              collaborators: this._formBuilder.array([])
+                collaborators: this._formBuilder.array([])
           });
+
+
           this.collaborators$ = this._assignmentOccupationService.collaborators$;
           this.collaborators$.subscribe(collaborators => {
               const collaboratorsFormGroups = [];
@@ -102,6 +115,60 @@ export class AsignationComponent implements OnInit, OnDestroy {
               }
           });
       }
+    
+    
+    /**
+     * Handle change form occupation
+     * 
+     */
+    private _handleChangeformOccupation() {
+        console.log("handleChangeFormOccupation");
+        this.formOcupation.valueChanges
+            .subscribe(values => {
+                console.log("values: ", values);
+                console.log("formOccupation: ", this.formOcupation);
+            });
+        this.collaboratorOccupation.valueChanges
+            .subscribe(response => {
+                console.log(response);
+            })
+    }
+
+    /**
+     * Set the form Ocupation
+     * 
+     */
+    private _setFormOcupation() {
+        console.log("collaboratorArr: ", this.collaboratorsArr);
+        this.collaboratorsArr.forEach(item => {
+
+            if ( item ) {
+                let collaboratorOccupation: FormGroup = this._formBuilder.group({
+                    id          : [''],
+                    name        : ['', Validators.required],
+                    occupation   : ['', [Validators.required, Validators.maxLength(100)]],
+                    observation : [''],
+                    dateInit    : ['', Validators.required],
+                    dateEnd     : ['', Validators.required],
+                }, {validator: DateValidator});
+                
+                // Initial default value
+                collaboratorOccupation.get('id').setValue(item.id);
+                collaboratorOccupation.get('name').setValue(item.name);
+                
+                // Add collaboratorOcupation to formOcupation
+                this.collaboratorOccupation.push(collaboratorOccupation);
+            }
+        });
+
+        console.log("formOcupation: ", this.formOcupation);
+
+
+    }
+
+    get collaboratorOccupation() {
+        return this.formOcupation.get('collaboratorOccupation') as FormArray;
+    }
 
         /**
          * On destroy

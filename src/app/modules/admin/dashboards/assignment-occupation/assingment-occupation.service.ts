@@ -22,6 +22,13 @@ export class AssingmentOccupationService {
     private _collaboratorsSelected: Collaborator[] = [];
     private _requestSelected: any = null;
 
+    selectedFiltered: any = {
+        client: '',
+        responsible: '',
+        status: '',
+        request: '',
+    };
+
     constructor(private _httpClient: HttpClient) { }
 
 

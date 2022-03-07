@@ -75,6 +75,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getActivitys();
 
+        if ( this._assignmentOccupationService.selectedFiltered.client !== '' ) {
+            this.clientControl.setValue(this._assignmentOccupationService.selectedFiltered.client);
+            this.collaboratorControl.setValue(this._assignmentOccupationService.selectedFiltered.responsible);
+            this.statusControl.setValue(this._assignmentOccupationService.selectedFiltered.status);
+            this.requestControl.setValue(this._assignmentOccupationService.selectedFiltered.request);
+        }
+
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filterClient(value)),
@@ -120,6 +127,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
 
         // })
+
+        this._assignmentOccupationService.getCollaborators()
+            .subscribe(response => {
+                console.log("response: ", response);
+                this.collaboratorsRecomm = response;
+                this._setCollaboratorsRecomm();
+            })
 
         this.status$ = this._assignmentOccupationService.status$;
 
@@ -179,6 +193,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _handleChangeStatus() {
         this.statusControl.valueChanges
             .subscribe(value => {
+                this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
+
                 if ( this.selectedResponsible ) {
                     this._getRequestByResponsible( this.selectedResponsible );
                 } else if ( this.selectedClient ) {
@@ -191,7 +207,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     private _getStatus() {
         this._assignmentOccupationService.getStatus()
-            .subscribe(status => {
+            .subscribe((status: Status[]) => {
                 this.status = status;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -223,6 +239,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
             if ( client ) {
                 this.selectedClient = client;
+                this._assignmentOccupationService.selectedFiltered.client = client.name;
                 this._getCollaboratorsByClient( this.selectedClient.id );
                 this._getRequestByClient( this.selectedClient.id );
             } else {
@@ -268,6 +285,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
                 if ( responsible ) {   
                     this.selectedResponsible = responsible;
+                    this._assignmentOccupationService.selectedFiltered.responsible = responsible.name;
                     this._getRequestByResponsible(this.selectedResponsible);
                 } else if ( this.selectedResponsible ) {
                     this.selectedResponsible = null;
@@ -327,6 +345,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         if ( request ) {
             this._assignmentOccupationService.requestSelected = request;
+            this._assignmentOccupationService.selectedFiltered.request = request.titleRequest;
             this._assignmentOccupationService.getRecommended( request.id )
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;

@@ -16,17 +16,18 @@
                 </div>
             </div>
            
-        <ng-container *ngIf="collaboratorsArr.length">
-                <ng-container *ngFor="let collaborator of collaboratorsArr; index as i">
+        <ng-container [formGroup]="formOcupation" *ngIf="collaboratorsArr.length">
+            <ng-container formArrayName="collaboratorOccupation">
+                <ng-container *ngFor="let collaborator of collaboratorOccupation.controls; index as i">
                     <ng-container *ngIf="collaborator !== false;">
-                        <div class="flex flex-col  p-3 bg-card rounded-2xl shadow overflow-hidden w-100vh mb-8">
+                        <div [formGroupName]="i" class="flex flex-col  p-3 bg-card rounded-2xl shadow overflow-hidden w-100vh mb-8">
                             <div class="flex flex-row gt-xs:flex-row justify-between">
                                 <div class="flex flex-row gt-xs:flex-row">
                                     <div class="flex flex-col mr-6">
                                         <mat-label class="font-semibold">Colaborador</mat-label>
                                         <mat-form-field class="w-100 " appearance="fill">
-                                            <input type="text" matInput [placeholder]="'Pedro Perez'" [matAutocomplete]="auto"
-                                                [value]="collaboratorsArr[i].name + ' ' +  collaboratorsArr[i].lastName" readonly>
+                                            <input type="text" matInput formControlName="name" [placeholder]="'Pedro Perez'" [matAutocomplete]="auto"
+                                                 readonly>
                                             <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:user-circle'">
                                             </mat-icon>
                                             <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
@@ -39,7 +40,8 @@
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Ocupación</mat-label>
                                         <mat-form-field [ngClass]="formFieldHelpers" class="w-20 ">
-                                            <input matInput [placeholder]="'50'"><span matSuffix>%</span>
+                                            <input formControlName="occupation" matInput [placeholder]="'50'"><span matSuffix>%</span>
+                                            <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -47,17 +49,20 @@
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Fecha Inicio: </mat-label>
                                         <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
-                                            <input matInput [placeholder]="'mm/dd/yyyy'" [matDatepicker]="picker1">
+                                            <input formControlName="dateInit" matInput [placeholder]="'mm/dd/yyyy'" [matDatepicker]="picker1">
                                             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                             <mat-datepicker #picker1></mat-datepicker>
+                                            <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('dateInit').valid && (formOcupation.get('collaboratorOccupation').at(i).get('dateInit').dirty || formOcupation.get('collaboratorOccupation').at(i).get('dateInit').touched)">El campo es obligatorio</mat-error>
                                         </mat-form-field>
                                     </div>
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Fecha Fin: </mat-label>
                                         <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
-                                            <input matInput [matDatepicker]="picker2" [placeholder]="'mm/dd/yyyy'">
+                                            <input formControlName="dateEnd" matInput [matDatepicker]="picker2" [placeholder]="'mm/dd/yyyy'">
                                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                             <mat-datepicker #picker2></mat-datepicker>
+                                            <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('dateEnd').valid && (formOcupation.get('collaboratorOccupation').at(i).get('dateEnd').dirty || formOcupation.get('collaboratorOccupation').at(i).get('dateEnd').touched)">El campo es obligatorio</mat-error>
+                                            <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).hasError('dates')">La fecha debe ser menor a fecha inicio</mat-error>
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -76,13 +81,15 @@
                             <div *ngIf="showObservation === true " class="flex flex-col mt-2">
 
                                 <mat-form-field class="fuse-mat-textarea flex-auto">
-                                    <textarea matInput [placeholder]="'Observaciones'" [rows]="1"></textarea>
+                                    <textarea formControlName="observation" matInput [placeholder]="'Observaciones'" [rows]="1"></textarea>
                                     <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                 </mat-form-field>
                             </div>
                         </div>
                     </ng-container>
             </ng-container>
+            </ng-container>
+                
                 </ng-container>
                 <!-- No collaborators Selected -->
             <ng-container *ngIf="!collaboratorsArr.length">
