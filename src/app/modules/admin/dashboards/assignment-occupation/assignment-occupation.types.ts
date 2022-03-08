@@ -46,6 +46,18 @@ export interface CollaboratorOcupation {
     dateEnd: string,
 }
 
+
+export interface AssignationOccupation {
+    occupationPercentage: number,
+    assignmentStartDate: string,
+    assignmentEndDate: string,
+    code: string,
+    observations: string,
+    isActive: 1,
+    request: any,
+    collaborator: any
+}
+
 export interface Client
 {
     id: number;

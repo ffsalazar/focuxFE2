@@ -128,12 +128,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         // })
 
-        this._assignmentOccupationService.getCollaborators()
-            .subscribe(response => {
-                console.log("response: ", response);
-                this.collaboratorsRecomm = response;
-                this._setCollaboratorsRecomm();
-            })
+        // this._assignmentOccupationService.getCollaborators()
+        //     .subscribe(response => {
+        //         console.log("response: ", response);
+        //         this.collaboratorsRecomm = response;
+        //         this._setCollaboratorsRecomm();
+        //     })
 
         this.status$ = this._assignmentOccupationService.status$;
 
@@ -349,6 +349,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             this._assignmentOccupationService.getRecommended( request.id )
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;
+                    console.log("Recomendados: ", collaborators);
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
 
@@ -372,6 +373,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;
+                    console.log("Por cliente: ", this.collaborators);
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
 

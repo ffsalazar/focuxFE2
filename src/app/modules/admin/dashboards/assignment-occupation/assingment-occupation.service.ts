@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import { Activity, Collaborator, Client, Status } from "./assignment-occupation.types";
+import { Activity, Collaborator, Client, Status, AssignationOccupation } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { tap } from 'rxjs/operators';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
@@ -208,6 +208,18 @@ export class AssingmentOccupationService {
     
     getCollaboratorsSelected(){
         return this._collaboratorsSelected;
+    }
+
+    /**
+     * Save collaborator's assignation occupation
+     * 
+     * @param assignationOcupation 
+     *
+     */
+    saveAssignationOccupation(assignationOcupation: AssignationOccupation): Observable<any> {
+        return this._httpClient.post<any>('http://localhost:1616/api/v1/followup/occupationassignments/save', {
+            assignationOcupation,
+        });
     }
 
 }
