@@ -49,7 +49,7 @@
                 </div>
             </div>
             <!-- Tabs ASSIGNMENT-OCCUPATION -->
-            <div class="flex flex-row">
+            <!--<div class="flex flex-row">
                 <div
                     class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(248, 250, 252, 1) mr-2"
                     [class.tab-select]="tabIndex === 0"
@@ -57,6 +57,7 @@
                     <div class="flex items-center">
                         <div class="overflow-hidden">
                             <div class="font-medium leading-6 truncate" (click)="redirection('partner-search', 0)" >Busqueda de colaborador</div>
+                            <app-a></app-a>
                         </div>
                     </div>
                 </div>
@@ -67,11 +68,24 @@
                     <div class="flex items-center">
                         <div class="overflow-hidden">
                             <div class="font-medium leading-6 truncate" (click)="redirection('assignation', 1)" >Asignación</div>
+                            <app-b></app-b>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
+
+            
+
         </div>
+        <mat-tab-group (selectedTabChange)="selectTab()">
+            <mat-tab label="Busqueda de colaborador">
+                <app-partner-search></app-partner-search>
+            </mat-tab>
+            <mat-tab label="Asignación">
+                <app-asignation></app-asignation>
+            </mat-tab>
+        </mat-tab-group>
     </div>
-    <router-outlet></router-outlet>
+    
+
 </div>

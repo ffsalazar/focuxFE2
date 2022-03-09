@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import { Activity, Collaborator, Client, Status } from "./assignment-occupation.types";
+import { Activity, Collaborator, Client, Status, AssignationOccupation } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { tap } from 'rxjs/operators';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
@@ -13,6 +13,7 @@ import { PartnerSearchComponent } from './partner-search/partner-search.componen
 export class AssingmentOccupationService {
 
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    private _collaboratorSelected: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
     private _activitys: Activity[] = activitys;
     private _collaboratorsAssign: Collaborator[] = data;
@@ -21,6 +22,14 @@ export class AssingmentOccupationService {
     private _status:  BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
     private _collaboratorsSelected: Collaborator[] = [];
     private _requestSelected: any = null;
+    private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
+
+    selectedFiltered: any = {
+        client: '',
+        responsible: '',
+        status: '',
+        request: '',
+    };
 
     constructor(private _httpClient: HttpClient) { }
 
@@ -65,6 +74,27 @@ export class AssingmentOccupationService {
     set requestSelected(requestSelected: any) {
         this._requestSelected = requestSelected;
     }
+
+    /**
+     * Getter for ollaboratorSelected
+     */
+    get collaboratorSelected$() {
+        return this._collaboratorSelected.asObservable();
+    }
+
+    /**
+     * Getter for ollaboratorSelected
+     */
+    get collaboratorSelectedRemove$() {
+        return this._collaboratorSelectedRemove.asObservable();
+    }
+
+    // /**
+    //  * Setter for requestSelected
+    //  */
+    // set requestSelected(requestSelected: any) {
+    //     this._requestSelected = requestSelected;
+    // }
 
     /**
      * Getter for recomended$
@@ -146,6 +176,24 @@ export class AssingmentOccupationService {
         });
     }
 
+    /**
+     * Set collaborator selected
+     * 
+     */
+    setCollaboratorSelected(): void {
+        // Update collaborators selected
+        this._collaboratorSelected.next(this.collaboratorsSelected);
+    }
+
+    /**
+     * Remove collaborator selected
+     * 
+     */
+    removeCollaboratorSelected(collaboratorId: number): void {
+        // Remove collaborators selected
+        this._collaboratorSelectedRemove.next(collaboratorId);
+    }
+
     getRequestByResponsible(responsibleId: number, statusId: number): Observable<any[]> {
         return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId, {
             params: {
@@ -201,6 +249,18 @@ export class AssingmentOccupationService {
     
     getCollaboratorsSelected(){
         return this._collaboratorsSelected;
+    }
+
+    /**
+     * Save collaborator's assignation occupation
+     * 
+     * @param assignationOcupation 
+     *
+     */
+    saveAssignationOccupation(assignationOcupation: AssignationOccupation): Observable<any> {
+        return this._httpClient.post<any>('http://localhost:1616/api/v1/followup/occupationassignments/save',
+            assignationOcupation,
+        );
     }
 
 }
