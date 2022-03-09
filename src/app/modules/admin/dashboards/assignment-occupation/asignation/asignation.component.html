@@ -15,7 +15,7 @@
                 <div class="flex flex-col">
                     <mat-label class="font-semibold mr-6 ml-1">Solicitud</mat-label>
                     <mat-form-field class=""style="width: 1010px;">
-                        <input type="text" [placeholder]="'US-300'" matInput [formControl]="myControlTest" readonly>
+                        <input type="text" [placeholder]="'US-300'" matInput [value]="request?.titleRequest || ''" readonly>
                         <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                                 {{option.name}}

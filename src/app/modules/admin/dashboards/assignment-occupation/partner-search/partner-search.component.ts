@@ -137,6 +137,23 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         this.status$ = this._assignmentOccupationService.status$;
 
+        this._assignmentOccupationService.collaboratorSelectedRemove$
+            .subscribe(index => {
+                // Find collaborator selected for remove
+                // for (let i = 0; i < this.collaboratorSelected.length; i++) {
+                //     if ( this.collaboratorSelected.at(i) && this.collaboratorSelected.at(i).id === collaboratorId ) {
+                //         this.collaboratorSelected.removeAt(i);
+                //     }
+                // }
+            console.log("index:", index);
+                if ( index !== null ) {
+                    this.collaboratorSelected.at(index).setValue(false);
+
+                }
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
         this._handleChangeArrayForm();
         this._handleChangeStatus();
         this._getStatus();
@@ -201,6 +218,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     this._getCollaboratorsByClient( this.selectedClient.id );
                     this._getRequestByClient( this.selectedClient.id );
                 }
+                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
     }
@@ -352,7 +370,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     console.log("Recomendados: ", collaborators);
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
-
+                    // Mark for check
                     this._changeDetectorRef.markForCheck();
                 })
         } else {
@@ -368,15 +386,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
 
         if ( request ) {
-
-            
             this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;
                     console.log("Por cliente: ", this.collaborators);
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
-
+                    // Mark for check
                     this._changeDetectorRef.markForCheck();
                 })
         } else {
@@ -405,6 +421,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _handleChangeArrayForm() {
         this.collaboratorArrayForm.valueChanges.subscribe((value) => {
             // Añadir colaboradores seleccionados en el FormArray
+            console.log("value: ", this.collaboratorSelected.value);
             for (let i = 0; i < value.collaboratorSelected.length; i++) {
                 if ( value.collaboratorSelected.at(i) === true ){
                     value.collaboratorSelected[i] = this.collaboratorsRecomm[i];
@@ -412,6 +429,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             }
 
             this._assignmentOccupationService.collaboratorsSelected = value.collaboratorSelected;
+            //this._assignmentOccupationService.setCollaboratorSelected();
         })
     }
 

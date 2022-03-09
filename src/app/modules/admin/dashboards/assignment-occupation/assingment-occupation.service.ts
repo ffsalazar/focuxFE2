@@ -13,6 +13,7 @@ import { PartnerSearchComponent } from './partner-search/partner-search.componen
 export class AssingmentOccupationService {
 
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    private _collaboratorSelected: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
     private _activitys: Activity[] = activitys;
     private _collaboratorsAssign: Collaborator[] = data;
@@ -21,6 +22,7 @@ export class AssingmentOccupationService {
     private _status:  BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
     private _collaboratorsSelected: Collaborator[] = [];
     private _requestSelected: any = null;
+    private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
 
     selectedFiltered: any = {
         client: '',
@@ -72,6 +74,27 @@ export class AssingmentOccupationService {
     set requestSelected(requestSelected: any) {
         this._requestSelected = requestSelected;
     }
+
+    /**
+     * Getter for ollaboratorSelected
+     */
+    get collaboratorSelected$() {
+        return this._collaboratorSelected.asObservable();
+    }
+
+    /**
+     * Getter for ollaboratorSelected
+     */
+    get collaboratorSelectedRemove$() {
+        return this._collaboratorSelectedRemove.asObservable();
+    }
+
+    // /**
+    //  * Setter for requestSelected
+    //  */
+    // set requestSelected(requestSelected: any) {
+    //     this._requestSelected = requestSelected;
+    // }
 
     /**
      * Getter for recomended$
@@ -151,6 +174,24 @@ export class AssingmentOccupationService {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/projectleads/', {
             params: {clientId}
         });
+    }
+
+    /**
+     * Set collaborator selected
+     * 
+     */
+    setCollaboratorSelected(): void {
+        // Update collaborators selected
+        this._collaboratorSelected.next(this.collaboratorsSelected);
+    }
+
+    /**
+     * Remove collaborator selected
+     * 
+     */
+    removeCollaboratorSelected(collaboratorId: number): void {
+        // Remove collaborators selected
+        this._collaboratorSelectedRemove.next(collaboratorId);
     }
 
     getRequestByResponsible(responsibleId: number, statusId: number): Observable<any[]> {

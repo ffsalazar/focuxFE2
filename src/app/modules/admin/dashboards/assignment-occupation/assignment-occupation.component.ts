@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {Router} from "@angular/router";
 import {AssingmentOccupationService} from "./assingment-occupation.service";
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-assignment-occupation',
@@ -9,19 +10,32 @@ import {AssingmentOccupationService} from "./assingment-occupation.service";
 })
 export class AssignmentOccupationComponent implements OnInit {
 
+	@ViewChild(MatTabGroup) private _tab: MatTabGroup;
+
     tabIndex = 0;
 
-  constructor(private _router: Router,
-              private _assingmentOccupationService: AssingmentOccupationService) { }
+  	constructor(
+		private _router: Router,
+        private _assingmentOccupationService: AssingmentOccupationService) {
+		}
 
-  ngOnInit(): void {
-  }
+	ngOnInit(): void {
+	}
 
-  redirection(tab: string, index: number) {
-      this._assingmentOccupationService.tabIndex$.subscribe(id => {
-          if (id != null) this.tabIndex = id;
-      });
-      this.tabIndex = index;
-      this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
-  }
+  /**
+     * Select Tab
+     */
+    selectTab() {
+        switch ( this._tab.selectedIndex ) {
+            case 0:
+                //this.getCollaboratorsRecommended();
+                break;
+            case 1:
+                this._assingmentOccupationService.setCollaboratorSelected();
+                break;
+        
+            default:
+                break;
+        }
+    }
 }
