@@ -7,20 +7,25 @@ import {
     OnDestroy,
     OnInit, ViewChildren
 } from '@angular/core';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { FuseAlertService } from '@fuse/components/alert';
 import {
     Activity,
     Collaborator,
+    CollaboratorOcupation,
     EmployeePosition,
     KnowledgeElement,
     Phone,
-    Project
+    Project,
+    AssignationOccupation,
 } from "../assignment-occupation.types";
-import {Form, FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {Form, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {map, startWith, takeUntil} from "rxjs/operators";
 import {Observable, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import { Router } from '@angular/router';
+import { DateValidator } from './date-validation';
 
 @Component({
   selector: 'app-asignation',
@@ -32,9 +37,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
     myControlTest = new FormControl();
     collaboratorForm = new FormControl();
     
-
+    successSave: string;
+    flashMessage: 'success' | 'error' | null = null;
     collaborators$: Observable<Collaborator[]>;
-    collaboratorsArr: Collaborator[] = [];
+    collaboratorsArr: any[] = [];
     collaboratorAsigned = false;
     filteredOptions: Observable<any[]>;
     filteredCollaboratorsOptions: Observable<any[]>;
@@ -46,93 +52,119 @@ export class AsignationComponent implements OnInit, OnDestroy {
     noCollaborators = true;
     request: any = null;
 
-      constructor(private _assignmentOccupationService: AssingmentOccupationService,
-                  private _changeDetectorRef: ChangeDetectorRef,
-                  private _formBuilder: FormBuilder,
-                   private _router: Router,) {
+    // Form Array
+    formOcupation: FormGroup = this._formBuilder.group({
+        collaboratorOccupation: this._formBuilder.array([])
+    });
+
+    constructor(
+        private _assignmentOccupationService: AssingmentOccupationService,
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _fuseAlertService: FuseAlertService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _formBuilder: FormBuilder,
+        private _router: Router,) {
 
       }
 
       ngOnInit(): void {
-          this.getProject();
-          this.filterEvent();
-          
-        this.collaboratorsArr = this._assignmentOccupationService.getCollaboratorsSelected();
-        this.request = this._assignmentOccupationService.requestSelected;
+          // Handle change from occupation form
+        this._handleChangeformOccupation();
+
+        this._assignmentOccupationService.collaboratorSelected$
+            .subscribe(collaboratorSelected => {
+                // Set collaborator selected
+                this.collaboratorsArr = collaboratorSelected || [];
+
+                // Set the form ocupation
+                this._setFormOcupation();
+
+                // Set request selected
+                this.request = this._assignmentOccupationService.requestSelected;
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+
         
         if ( this.request ) {
             this.myControlTest.setValue(this.request.titleRequest);
         }
         
           this.collaboratorFormGroup = this._formBuilder.group({
-              collaborators: this._formBuilder.array([])
-          });
-          this.collaborators$ = this._assignmentOccupationService.collaborators$;
-          this.collaborators$.subscribe(collaborators => {
-              const collaboratorsFormGroups = [];
-              (this.collaboratorFormGroup.get('collaborators') as FormArray).clear();
-              if (collaborators && collaborators.length > 0) {
-
-                  collaborators.forEach( collaborator => {
-                        collaboratorsFormGroups.push(
-                            this._formBuilder.group({
-                                name: [collaborator.name],
-                                assignation: [collaborator.assignation],
-                                progress: [collaborator.progress]
-                            })
-                        );
-                  });
-
-
-                  collaboratorsFormGroups
-                      .forEach( collaboratorForm => (this.collaboratorFormGroup.get('collaborators') as FormArray).push(collaboratorForm));
-
-                    // this.collaboratorFormGroup.controls.collaborators
-                    //     .patchValue(this._formBuilder.array(collaborators.map( value => this.addingCollaboratorsToForm(value))));
-
-                    this._changeDetectorRef.markForCheck();
-              } else {
-                  collaboratorsFormGroups.push(
-                      this._formBuilder.group({
-                          name: [''],
-                          assignation: [''],
-                          progress: [0]
-                      })
-                  )
-              }
+                collaborators: this._formBuilder.array([])
           });
       }
+    
+    
+    /**
+     * Handle change form occupation
+     * 
+     */
+    private _handleChangeformOccupation() {
 
-        /**
-         * On destroy
-         */
-        ngOnDestroy(): void
-        {
-            // Unsubscribe from all subscriptions
-            this._unsubscribeAll.next();
-            this._unsubscribeAll.complete();
-        }
+        this.formOcupation.valueChanges
+            .subscribe(values => {
+                console.log("values: ", values);
+                console.log("formOccupation: ", this.formOcupation);
+            });
+        this.collaboratorOccupation.valueChanges
+            .subscribe(response => {
+                console.log(response);
+            })
+    }
 
-        get collaborators() {
-            return this.collaboratorFormGroup.controls['collaborators'] as FormArray;
-        }
+    /**
+     * Set the form Ocupation
+     * 
+     */
+    private _setFormOcupation() {
+        if ( this.collaboratorsArr ) {
+            this.collaboratorOccupation.clear();
+            this.collaboratorsArr.forEach(item => {
 
-        getProject() {
-            this.project  = {
-                id: 150,
-                name: 'Originacion',
-                description: 'Aplicacion realizada como api rest con Angular8+ y Spring boot',
-                endDate: '2022-02-05',
-                initDate: '2022-10-25',
-                skills: 'Angular-SpringBoot',
-                client: {
-                    id: 4,
-                    name: 'Credix',
-                    description: 'Entidad financiera ubicada en Costa Rica'
-                },
-                collaborators: this.collaboratorsArr
-            };
+                if ( item ) {
+                    let collaboratorOccupation: FormGroup = this._formBuilder.group({
+                        id              : [''],
+                        name            : ['', Validators.required],
+                        occupation      : ['', [Validators.required, Validators.maxLength(100)]],
+                        observation     : [''],
+                        dateInit        : ['', Validators.required],
+                        dateEnd         : ['', Validators.required],
+                        isCollapse      : [false],
+                    }, {validator: DateValidator});
+                    
+                    // Initial default value
+                    collaboratorOccupation.get('id').setValue(item.id);
+                    collaboratorOccupation.get('name').setValue(item.name);
+                    // Add collaboratorOcupation to formOcupation
+                    this.collaboratorOccupation.push(collaboratorOccupation);
+                }
+            });
+
+            // Handle event from array form
+            this._handleChangeArrayForm();
         }
+        
+    }
+
+    get collaboratorOccupation() {
+        return this.formOcupation.get('collaboratorOccupation') as FormArray;
+    }
+
+    /**
+        * On destroy
+        */
+    ngOnDestroy(): void
+    {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+    }
+
+    get collaborators() {
+        return this.collaboratorFormGroup.controls['collaborators'] as FormArray;
+    }
 
 
     displayFn(data): string {
@@ -143,65 +175,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
     removeCollaborator(collaborator) {
         this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
     }
-
-    removeField(index: number): void
-    {
-        // Get form array for phone numbers
-        const collaboratorsFormArray = this.collaboratorFormGroup.get('collaborators') as FormArray;
-        //const collaborator = collaboratorsFormArray.at(index).value
-        //collaborator.isActive = 0;
-        // Remove the phone number field
-        collaboratorsFormArray.removeAt(index);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-
-        //this._collaboratorsService.updatePhoneStatus(id, phone).subscribe();
-    }
-
-    /**
-     * Add an empty phone number field
-     */
-    addcollaboratorField(): void
-    {
-        // Create an empty phone number form group
-        const collaboratorsFormGroup = this._formBuilder.group({
-            name: [''],
-            assignation: [''],
-            progress: [0]
-        });
-
-        // Add the phone number form group to the phoneNumbers form array
-        (this.collaboratorFormGroup.get('collaborators') as FormArray).push(collaboratorsFormGroup);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    filterEvent() {
-        this.filteredOptions = this.myControlTest.valueChanges
-            .pipe(
-                startWith(''),
-                map(value => (typeof value === 'string' ? value : value.name)),
-                map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
-            );
-        // this.filteredCollaboratorsOptions = this.collaboratorFormGroup?.controls.collaborators.valueChanges
-        //     .pipe(
-        //         startWith(''),
-        //         map(value => (typeof value === 'string' ? value : value.name)),
-        //         map(name => (name ? this._filter(name) : this.collaboratorsArr.slice()))
-        //     );
-    }
-
-
-    addingCollaboratorsToForm(collaborator: Collaborator): FormGroup {
-            return this._formBuilder.group({
-               name: collaborator.name,
-               assignation: collaborator.assignation,
-               progress: collaborator.progress
-            });
-    }
-
 
     /**
      * Track by function for ngFor loops
@@ -220,28 +193,124 @@ export class AsignationComponent implements OnInit, OnDestroy {
         return this.collaboratorsArr.filter(option => option.name.toLowerCase().includes(filterValue));
     }
 
-     redirection(tab: string, index: number) {
+    redirection(tab: string, index: number) {
       this._assignmentOccupationService.tabIndex$.subscribe(id => {
           if (id != null) this.tabIndex = id;
       });
       this.tabIndex = index;
       this._router.navigate(['dashboards/assignment-occupation/index/' + tab]).then();
-  }
-
-  detail(){
-      if(this.showObservation=== false){
-          this.showObservation = true;
-      }else{
-          this.showObservation = false;
-      }
-      
-  }
-  deleteItem(arr, coll){
-      for(let i = 0; i< arr.length; i++){
-         if(coll === arr[i]){
-            arr[i]=false;
-         }
-      }
     }
 
+    /**
+     * Show Flash Message
+     *
+     * @param type
+     */
+    showFlashMessage(type: 'success' | 'error', message: string): void
+    {
+        // Show the message
+        this.flashMessage = type;
+
+        this._fuseAlertService.show('alertBox4');
+        // Set message title
+        this.successSave = message;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+
+        // Hide it after 3 seconds
+        setTimeout(() => {
+
+            this.flashMessage = null;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, 3000);
+    }
+
+    /**
+     *
+     * @param name
+     */
+    dismissFuse(name){
+       this._fuseAlertService.dismiss(name);
+    }
+    
+    /**
+     * Delete the selected product using the form data
+     */
+    deleteAssignationOcupation(i: number): void
+    {
+        // Open the confirmation dialog
+        const confirmation = this._fuseConfirmationService.open({
+            title  : 'Eliminar asignación',
+            message: '¿Seguro que quiere eliminar la asignación?',
+            actions: {
+                confirm: {
+                    label: 'Eliminar asignación',
+
+                }
+            }
+        });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+            // If the confirm button pressed...
+            if ( result === 'confirmed' )
+            {
+                const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
+                
+                if ( collaboratorIndex != null ) {
+                    this._assignmentOccupationService.removeCollaboratorSelected(collaboratorIndex);
+                    // remove form group from collaborator occupation
+                    this.collaboratorOccupation.removeAt(i);
+                    // Show notification update request
+                    this.showFlashMessage('success', 'Asignación eliminada con éxito');
+                }
+
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            }
+        });
+    }
+
+    saveAssignationOccupation() {
+        const assignation = this.formOcupation.getRawValue();
+
+        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+            const assignationOccupation: AssignationOccupation = {
+                occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
+                assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
+                assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
+                code: this.request.code,
+                observations: this.collaboratorOccupation.at(i).get('observation').value,
+                isActive: 1,
+                request: {
+                    id: this.request.id,
+                },
+                collaborator: {
+                    id: this.collaboratorOccupation.at(i).get('id').value
+                },
+            };
+
+            this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
+                .subscribe(response => {
+                    console.log("response: ", response);
+                });
+        }
+    }
+
+    private _handleChangeArrayForm(){
+        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+
+            this.collaboratorOccupation.at(i).statusChanges
+                .subscribe(value => {
+                    if ( value === 'VALID' ){
+                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    }
+                })
+
+        }
+    }
 }

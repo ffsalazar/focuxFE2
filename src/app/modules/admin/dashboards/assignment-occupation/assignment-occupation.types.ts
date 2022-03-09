@@ -37,6 +37,26 @@ export interface Status {
     isActive: number,
 }
 
+export interface CollaboratorOcupation {
+    id: number,
+    name: string,
+    ocupation: number,
+    observation: string,
+    dateInit: string,
+    dateEnd: string,
+}
+
+
+export interface AssignationOccupation {
+    occupationPercentage: number,
+    assignmentStartDate: string,
+    assignmentEndDate: string,
+    code: string,
+    observations: string,
+    isActive: 1,
+    request: any,
+    collaborator: any
+}
 
 export interface Client
 {
