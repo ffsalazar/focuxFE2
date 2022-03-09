@@ -232,9 +232,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.clients$
         .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(clients => {
+                clients.sort(this.sortArray);
                 this.clients = clients;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
+                
             })
     
         //this.collaborators$ = this._assignmentOccupationService.collaborators$;
@@ -512,5 +514,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         
         
     }
+    sortArray(x, y) {
+    if (x.name < y.name) {return -1; }
+    if (x.name > y.name) {return 1; }
+    return 0;
+  }
 
 }

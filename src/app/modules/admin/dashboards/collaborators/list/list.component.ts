@@ -108,7 +108,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
         this._collaboratorsService.clients$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((clients: Client[]) => {
-
+                clients.sort(this.sortArray);
                 this.clients = clients
 
                 // Mark for check
@@ -253,4 +253,10 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+    sortArray(x, y) {
+    if (x.name < y.name) {return -1; }
+    if (x.name > y.name) {return 1; }
+    return 0;
+  }
+
 }

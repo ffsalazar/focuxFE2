@@ -249,6 +249,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((clients: Client[]) => {
                 // Update the client
+                clients.sort(this.sortArray);
                 this.clients = clients;
                 console.table(this.clients);
                 // Mark for check
@@ -383,7 +384,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Filter the status
         this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
             startWith(''),
-            map(value => this._filter(value, this.businessType)),
+            map(value => this._filter(value, this.businessType.sort(this.sortArray))),
         );
 
         this._handleChangeForm();
@@ -507,6 +508,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+     /**
+     * Sort Array 
+     */
+    sortArray(x, y) {
+    if (x.name < y.name) {return -1; }
+    if (x.name > y.name) {return 1; }
+    return 0;
+  }
     /**
      * Open knowledges panel
      */
