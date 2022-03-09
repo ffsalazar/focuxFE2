@@ -26,32 +26,36 @@
                 <input type="text" matInput formControlName="customerBranchControl" [matAutocomplete]="autoCustomerBranch">
                 <mat-autocomplete #autoCustomerBranch="matAutocomplete">
                     <mat-option *ngFor="let option of filteredCustomerBranch  | async" [value]="option">
-                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span></div></mat-option>
                 </mat-autocomplete>
+                <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
             </mat-form-field>
             <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Cliente</mat-label>
                 <input type="text" matInput formControlName="clientControl" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let option of filteredClients | async" [value]="option">
-                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
                 </mat-autocomplete>
+                <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
             </mat-form-field>
             <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Area solucionador</mat-label>
                 <input type="text" matInput formControlName="commercialAreaControl" [matAutocomplete]="autoCommercialArea">
                 <mat-autocomplete #autoCommercialArea="matAutocomplete">
                     <mat-option *ngFor="let option of filteredCommercialArea | async" [value]="option">
-                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
                 </mat-autocomplete>
+                <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
             </mat-form-field>
             <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Estatus</mat-label>
                 <input type="text" matInput formControlName="statusControl" [matAutocomplete]="autoStatus">
                 <mat-autocomplete #autoStatus="matAutocomplete">
                     <mat-option *ngFor="let option of filteredStatus | async" [value]="option">
-                        <div style="display: flex; justify-content: space-around"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
                 </mat-autocomplete>
+                <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
             </mat-form-field>
         </form>
 

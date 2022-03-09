@@ -8,6 +8,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatRippleModule} from "@angular/material/core";
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {RouterModule} from "@angular/router";
 import {RequestPanelRoutes} from "../requestPanel/requestPanel.routing";
 import {AssignmentOccupationRouter} from "./assignment-occupation.routing";
@@ -44,6 +45,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
         MatButtonModule,
         MatMenuModule,
         MatRippleModule,
+        MatProgressBarModule,
         RouterModule.forChild(AssignmentOccupationRouter),
         MatFormFieldModule,
         MatInputModule,

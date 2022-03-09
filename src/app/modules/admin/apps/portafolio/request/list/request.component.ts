@@ -28,6 +28,14 @@ import { TemplatePortal } from '@angular/cdk/portal';
             th, td{
                 text-align: center !important;
             }
+           
+           .mat-form-field.mat-form-field-appearance-fill
+            .mat-form-field-wrapper
+            .mat-form-field-flex {
+                padding-right: 2px !important;
+            }
+
+
             .inventory-grid {
                 grid-template-columns: 48px auto 40px;
 

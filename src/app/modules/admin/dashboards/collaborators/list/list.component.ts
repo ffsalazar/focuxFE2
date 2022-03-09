@@ -13,6 +13,19 @@ import {CollaboratorsService} from "../collaborators.service";
 @Component({
     selector       : 'collaborators-list',
     templateUrl    : './list.component.html',
+    styles         : [
+            /* language=SCSS */
+            `
+            #header{
+                .mat-form-field.mat-form-field-appearance-fill
+                .mat-form-field-wrapper
+                .mat-form-field-flex {
+                    padding-right: 16px !important;
+                }
+            }
+            
+            `
+        ],
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
