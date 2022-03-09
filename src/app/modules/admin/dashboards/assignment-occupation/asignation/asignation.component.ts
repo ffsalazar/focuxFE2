@@ -146,8 +146,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
             this._handleChangeArrayForm();
         }
         
-
-        console.log("formOcupation: ", this.formOcupation);
     }
 
     get collaboratorOccupation() {
@@ -296,8 +294,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 },
             };
 
-            console.log("Data a enviar");
-            console.log(assignationOccupation);
             this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
                 .subscribe(response => {
                     console.log("response: ", response);

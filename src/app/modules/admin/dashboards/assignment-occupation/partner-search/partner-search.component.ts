@@ -139,13 +139,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         this._assignmentOccupationService.collaboratorSelectedRemove$
             .subscribe(index => {
-                // Find collaborator selected for remove
-                // for (let i = 0; i < this.collaboratorSelected.length; i++) {
-                //     if ( this.collaboratorSelected.at(i) && this.collaboratorSelected.at(i).id === collaboratorId ) {
-                //         this.collaboratorSelected.removeAt(i);
-                //     }
-                // }
-            console.log("index:", index);
                 if ( index !== null ) {
                     this.collaboratorSelected.at(index).setValue(false);
 

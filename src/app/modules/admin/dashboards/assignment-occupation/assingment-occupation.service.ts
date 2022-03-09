@@ -258,9 +258,9 @@ export class AssingmentOccupationService {
      *
      */
     saveAssignationOccupation(assignationOcupation: AssignationOccupation): Observable<any> {
-        return this._httpClient.post<any>('http://localhost:1616/api/v1/followup/occupationassignments/save', {
+        return this._httpClient.post<any>('http://localhost:1616/api/v1/followup/occupationassignments/save',
             assignationOcupation,
-        });
+        );
     }
 
 }
