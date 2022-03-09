@@ -308,6 +308,9 @@ export class CollaboratorsService
             technicalSkills: '',
             knowledges: [],
             phones: [],
+            status: {
+                id: 9
+            }
         };
         return this.collaborators$.pipe(
             take(1),
