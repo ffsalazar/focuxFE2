@@ -179,9 +179,7 @@ export class CollaboratorsService
             tap((collaborators) => {
                 let collaboratorFiltered : any[]=[];
                 collaborators.forEach((collaborator) => {
-                    if (collaborator.isActive != 0){
-                        collaboratorFiltered.push(collaborator);
-                    }
+                    collaboratorFiltered.push(collaborator);                    
                 });
                 // If the query exists...
                 if ( controls )
