@@ -28,10 +28,6 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {FuseAlertModule} from "../../../../../@fuse/components/alert";
 import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { AComponent } from './a/a.component';
-import { BComponent } from './b/b.component';
-
-
 
 @NgModule({
   declarations: [
@@ -39,8 +35,6 @@ import { BComponent } from './b/b.component';
     PartnerSearchComponent,
     AsignationComponent,
     FilterCollaboratorPipe,
-    AComponent,
-    BComponent
   ],
     imports: [
         CommonModule,
