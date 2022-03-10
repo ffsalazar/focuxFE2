@@ -21,6 +21,7 @@ export class AssignmentOccupationComponent implements OnInit {
 
 	ngOnInit(): void {
         this.handleEventSavedOccupation();
+        this.handleEventChangeTabs();
 	}
 
   /**
@@ -40,7 +41,15 @@ export class AssignmentOccupationComponent implements OnInit {
         }
     }
 
+    handleEventChangeTabs() {
+
+    }
+
     handleEventSavedOccupation() {
-        
+        this._assingmentOccupationService.tabIndex$
+            .subscribe((value) => {
+                console.log("tab: ", value);
+                this._tab.selectedIndex = 0;
+            });
     }
 }

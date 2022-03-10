@@ -26,7 +26,7 @@ import {Observable, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import { Router } from '@angular/router';
 import { DateValidator } from './date-validation';
-
+import { limitOccupation } from '../partner-search/limit-occupation';
 @Component({
   selector: 'app-asignation',
   templateUrl: './asignation.component.html',
@@ -104,9 +104,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     private _handleChangeformOccupation() {
 
         this.formOcupation.valueChanges
-            .subscribe(values => {
-                console.log("values: ", values);
-                console.log("formOccupation: ", this.formOcupation);
+            .subscribe(() => {
             });
         this.collaboratorOccupation.valueChanges
             .subscribe(response => {
@@ -122,12 +120,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
         if ( this.collaboratorsArr ) {
             this.collaboratorOccupation.clear();
             this.collaboratorsArr.forEach(item => {
-
+                
                 if ( item ) {
                     let collaboratorOccupation: FormGroup = this._formBuilder.group({
-                        id              : [''],
+                        id              : [item.id],
                         name            : ['', Validators.required],
-                        occupation      : ['', [Validators.required, Validators.maxLength(100)]],
+                        occupation      : ['', [Validators.required, Validators.maxLength(100), limitOccupation(item.occupationPercentage)]],
                         observation     : [''],
                         dateInit        : ['', Validators.required],
                         dateEnd         : ['', Validators.required],
@@ -141,7 +139,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     this.collaboratorOccupation.push(collaboratorOccupation);
                 }
             });
-
+            console.log("item: ", this.collaboratorsArr);
+            console.log("collaboratorOccupation: ", this.collaboratorOccupation.value);
             // Handle event from array form
             this._handleChangeArrayForm();
         }
@@ -150,6 +149,14 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     get collaboratorOccupation() {
         return this.formOcupation.get('collaboratorOccupation') as FormArray;
+    }
+
+    calculatePercentageReal (collaboratorAssignation) {
+        const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === collaboratorAssignation.id));
+        
+        if ( collaboratorAssignation ) {
+            return Number(collaboratorAssignation.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage);
+        }
     }
 
     /**
@@ -170,7 +177,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
     displayFn(data): string {
         return data && data.name ? data.name : '';
     }
-
 
     removeCollaborator(collaborator) {
         this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
@@ -262,6 +268,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
                 
                 if ( collaboratorIndex != null ) {
+                    // remove collaborator from collaboratorsArr
+                    this.collaboratorsArr.splice(collaboratorIndex, 1);
+                    // Emit index the collaborator
                     this._assignmentOccupationService.removeCollaboratorSelected(collaboratorIndex);
                     // remove form group from collaborator occupation
                     this.collaboratorOccupation.removeAt(i);
@@ -323,6 +332,11 @@ export class AsignationComponent implements OnInit, OnDestroy {
                         .subscribe(response => {
                             // Show notification update request
                             this.showFlashMessage('success', 'Asignación guardada con éxito');
+                            // Set time out for change tab
+                            setTimeout(() => {
+                                this._router.navigate(['dashboards/assignment-occupation/index']);
+                                //this._assignmentOccupationService.setTabIndex(1);
+                            }, 2000); 
                         });
 
                 }

@@ -393,6 +393,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;
+                    console.log("Por cliente: ", this.collaboratorsRecomm);
                     console.log("Por cliente: ", this.collaborators);
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
@@ -401,6 +402,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 })
         } else {
             this.collaboratorsRecomm = [];
+            // Mark for check
             this._changeDetectorRef.markForCheck();
         }
     }
@@ -423,6 +425,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 })
         } else {
             this.collaboratorsRecomm = [];
+            // Mark for check
             this._changeDetectorRef.markForCheck();
         }
     }
@@ -446,6 +449,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 })
         } else {
             this.collaboratorsRecomm = [];
+            // Mark for check
             this._changeDetectorRef.markForCheck();
         }
     }
@@ -462,6 +466,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             // value.collaboratorSelected[i] = this.collaborators[i];
 
         });
+
+        console.log("collaboratorsSelect: ", this.collaboratorSelected.value);
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
     /**
@@ -470,7 +478,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _handleChangeArrayForm() {
         this.collaboratorArrayForm.valueChanges.subscribe((value) => {
             // Añadir colaboradores seleccionados en el FormArray
-            console.log("value: ", this.collaboratorSelected.value);
             for (let i = 0; i < value.collaboratorSelected.length; i++) {
                 if ( value.collaboratorSelected.at(i) === true ){
                     value.collaboratorSelected[i] = this.collaboratorsRecomm[i];

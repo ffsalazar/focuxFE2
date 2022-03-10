@@ -19,7 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DateValidator } from './validation-date';
-
+import { MatSelect } from '@angular/material/select';
 @Component({
     selector       : 'request-list',
     templateUrl    : './request.component.html',
@@ -66,9 +66,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('rowDetailsTemplate') private tplDetail: TemplateRef<any>;
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
-
+    @ViewChild('matselect') a: MatSelect;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _knowledgesPanelOverlayRef: OverlayRef;
+
+    toppings = new FormControl();
+
+    toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
 
     filteredKnowledges: any[] = [];
     filteredTags: InventoryTag[];
@@ -156,7 +160,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnInit(): void
     {
         this.request$ = this._requestService.requests$;
-
+        
         this._requestService.requests$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((requests: any) => {
@@ -389,14 +393,23 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this._handleChangeForm();
         this._getKnowledges();
+        
+        this.toppings.valueChanges.subscribe((respon) => {
+            console.log("respon: ", respon);
+        })
 
+        this.toppings.setValue(['Hola mundo']);
+        this._changeDetectorRef.markForCheck();
     }
 
     /**
      * After view init
      */
     ngAfterViewInit(): void
-    {
+    {   
+        //this.toppings.setValue('Extra cheese');
+        console.log(this.toppings.value);
+        console.log("mat-select: ", this.a);
         if ( this._sort && this._paginator )
         {
             // Set the initial sort
