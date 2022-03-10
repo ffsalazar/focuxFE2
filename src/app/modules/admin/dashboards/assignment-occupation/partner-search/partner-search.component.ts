@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 //import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
+import { FuseAlertService } from '@fuse/components/alert';
 
 @Component({
   selector: 'app-partner-search',
@@ -61,12 +62,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     status$: Observable<Status[]>;
 
     filterValue = 'Hola mundo';
-    
+    successSave: string = '';
     tabIndex = 0;
+    flashMessage: string = '';
 
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
         private _changeDetectorRef: ChangeDetectorRef,
+        private _fuseAlertService: FuseAlertService,
         private _router: Router,
         private activateRouter: ActivatedRoute,
         private _fb: FormBuilder,
@@ -345,6 +348,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             case 1:
                 this.getCollaboratorsByClients();
                 break;
+            case 2:
+                this.getCollaboratorRecommendedByKnowledge();
+                break;
+            case 3:
+                this.getCollaboratorRecommendedByFree();
+                break;
         
             default:
                 break;
@@ -385,6 +394,51 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 .subscribe(collaborators => {
                     this.collaboratorsRecomm = collaborators;
                     console.log("Por cliente: ", this.collaborators);
+                    // Update the collaboatorsRecomm
+                    this._setCollaboratorsRecomm();
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                })
+        } else {
+            this.collaboratorsRecomm = [];
+            this._changeDetectorRef.markForCheck();
+        }
+    }
+
+    /**
+     * Get collaboratorsByClient
+     */
+    getCollaboratorRecommendedByKnowledge() {
+        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+
+        if ( request ) {
+            this._assignmentOccupationService.getCollaboratorRecommendedByKnowledge( request.id )
+                .subscribe(collaborators => {
+                    this.collaboratorsRecomm = collaborators;
+                    console.log("Por conocimiento: ", this.collaborators);
+                    // Update the collaboatorsRecomm
+                    this._setCollaboratorsRecomm();
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                })
+        } else {
+            this.collaboratorsRecomm = [];
+            this._changeDetectorRef.markForCheck();
+        }
+    }
+
+    /**
+     * Get collaboratorsByClient
+     */
+    getCollaboratorRecommendedByFree() {
+        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+
+        if ( request ) {
+            this._assignmentOccupationService.getCollaboratorRecommendedByFree( request.id )
+                .subscribe(collaborators => {
+                    this.collaboratorsRecomm = collaborators;
+                    console.log("por conocimento: ", this.collaborators);
+
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
                     // Mark for check
@@ -459,6 +513,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 
+    validateCollaborator() {
+        if ( this.requests.length <= 0 ) {
+            this.showFlashMessage('error', 'No hay solicitudes para este cliente');
+        }
+    }
+
     getActivitys() {
         this.activity = this._assignmentOccupationService.activitys;
     }
@@ -466,6 +526,38 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     displayFn(data): string {
         return data && data.name ? data.name : '';
     }
+
+    /**
+     *
+     * @param name
+     */
+    dismissFuse(name){
+        this.successSave = 'No hay solicitudes para este cliente';
+        this._fuseAlertService.dismiss(name);
+    }
+
+    showFlashMessage(type: 'success' | 'error' | 'info', message: string): void
+    {
+        // Show the message
+        this.flashMessage = 'info';
+
+        this._fuseAlertService.show('alertBox4');
+        // Set message title
+        this.successSave = message;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+
+        // Hide it after 3 seconds
+        setTimeout(() => {
+
+            this.flashMessage = null;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, 3000);
+    }
+
 
     /**
      * Track by function for ngFor loops

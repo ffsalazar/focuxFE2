@@ -222,13 +222,39 @@ export class AssingmentOccupationService {
             })
         );
     }
-
+     	
     /**
      * 
      * @param requestId 
      */
     getCollaboratorsRecommendedByClient(requestId: number): Observable<Collaborator[]>{
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allclients/' + requestId)
+        .pipe(
+            tap((recommended)=>{
+                this._recommended.next(recommended);
+            })
+        );
+    }
+
+    /**
+     * 
+     * @param requestId 
+     */
+    getCollaboratorRecommendedByKnowledge(requestId: number): Observable<Collaborator[]>{
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/knowledgeclient/' + requestId)
+        .pipe(
+            tap((recommended)=>{
+                this._recommended.next(recommended);
+            })
+        );
+    }
+    
+    /**
+     * 
+     * @param requestId 
+     */
+    getCollaboratorRecommendedByFree(requestId: number): Observable<Collaborator[]>{
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/free/' + requestId)
         .pipe(
             tap((recommended)=>{
                 this._recommended.next(recommended);
