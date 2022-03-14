@@ -62,10 +62,10 @@
                             </div>
                            
                         </div>
-                        <div class="flex flex-col mr-6">
+                        <div class="flex flex-col mr-6" >
                             <mat-label class="font-semibold">Solicitudes</mat-label>
                             <mat-form-field (click)="validateCollaborator()" class="" style="width: 1010px;" appearance="fill">
-                                <input type="text" placeholder="Solicitud" aria-label="Number" matInput formControlName="requestControl"
+                                <input matTooltip="No hay solicitudes" [matTooltipDisabled]="filteredRequest.length > 0" [matTooltipClass]="'matTooltipCustom'"  type="text" placeholder="Solicitud" aria-label="Number" matInput formControlName="requestControl"
                                     [matAutocomplete]="auto">
                                 
                                     <mat-autocomplete #auto="matAutocomplete">
@@ -78,7 +78,7 @@
                         </div>
                     </form>         
                 </div>
-                <fuse-alert
+                <!-- <fuse-alert
                     [type]="'success'" 
                     [dismissible]="true"
                     [dismissed]="true"
@@ -86,7 +86,7 @@
                     (click)="dismissFuse('alertBox4')"
                     >
                         <span fuseAlertTitle>{{successSave}}</span>
-                </fuse-alert>
+                </fuse-alert> -->
                
 
                 <div class="bg-card py-3 px-6 rounded shadow  flex flex-col">
@@ -159,12 +159,12 @@
                                                 <mat-progress-bar
                                                     class="mt-3 rounded-full w-60"
                                                     [mode]="'determine'"
-                                                    [color]="collaboratorsRecomm[i].occupationPercentage >= 100 ? 'warn' : 'primary'"
+                                                    [color]="collaboratorsRecomm[i].occupationPercentage >= 100 ? 'primary' : 'warn'"
                                                     [value]="collaboratorsRecomm[i].occupationPercentage"
                                                 >
                                                 </mat-progress-bar>
                                                 </div>
-                                             <mat-checkbox [formControlName]="i" (click)="selected()"></mat-checkbox>
+                                             <mat-checkbox [formControlName]="i"></mat-checkbox>
                                             </div>
                                            </span>
                                         </ng-container>

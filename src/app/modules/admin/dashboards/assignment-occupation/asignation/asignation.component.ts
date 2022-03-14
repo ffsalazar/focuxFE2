@@ -147,11 +147,47 @@ export class AsignationComponent implements OnInit, OnDestroy {
         
     }
 
+    /**
+     * Handle change from array form 
+     *
+     */
+    private _handleChangeArrayForm(){
+        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+
+            this.collaboratorOccupation.at(i).statusChanges
+                .subscribe(value => {
+                    if ( value === 'VALID' ){
+                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    }
+                })
+
+            this.collaboratorOccupation.at(i).valueChanges
+                .subscribe(value => {
+                    // if ( value === 'VALID' ){
+                    //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    // }
+
+                    const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
+
+                    if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
+                        this.collaboratorOccupation.at(i).get('occupation').setValue('');
+                    }
+                })
+            
+            
+
+        }
+    }
+
     get collaboratorOccupation() {
         return this.formOcupation.get('collaboratorOccupation') as FormArray;
     }
 
-    calculatePercentageReal (collaboratorAssignation) {
+    /**
+     * Get calculate percentage real
+     *
+     */
+    calculatePercentageReal(collaboratorAssignation) {
         const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === collaboratorAssignation.id));
         
         if ( collaboratorAssignation ) {
@@ -160,8 +196,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
     }
 
     /**
-        * On destroy
-        */
+    * On destroy
+    */
     ngOnDestroy(): void
     {
         // Unsubscribe from all subscriptions
@@ -335,7 +371,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                             // Set time out for change tab
                             setTimeout(() => {
                                 this._router.navigate(['dashboards/assignment-occupation/index']);
-                                //this._assignmentOccupationService.setTabIndex(1);
+                                this._assignmentOccupationService.setTabIndex(1);
                             }, 2000); 
                         });
 
@@ -344,16 +380,4 @@ export class AsignationComponent implements OnInit, OnDestroy {
         }
     }
 
-    private _handleChangeArrayForm(){
-        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-
-            this.collaboratorOccupation.at(i).statusChanges
-                .subscribe(value => {
-                    if ( value === 'VALID' ){
-                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
-                    }
-                })
-
-        }
-    }
 }

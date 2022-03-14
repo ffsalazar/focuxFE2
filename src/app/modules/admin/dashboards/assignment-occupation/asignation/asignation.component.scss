@@ -18,6 +18,15 @@
     height: 24px;
 }
 
+:host::ng-deep.mat-progress-bar {
+    margin-top: 0px !important;
+}
+
+.occupation-total {
+    font-size: 12px !important;
+    margin-top: -11px;
+}
+
 :host ::ng-deep.mat-stroked-button {
     border-color: lightgray !important;
 }
