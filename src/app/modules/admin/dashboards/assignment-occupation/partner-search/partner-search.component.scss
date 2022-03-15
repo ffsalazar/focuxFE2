@@ -18,6 +18,45 @@
     }
 }
 
+.matTooltipCustom {
+    max-width: 200px !important;
+    color: white !important;
+    font-size: 18px !important;
+    left: 0px !important;
+    margin-left: 10px;
+    margin-top: 4px !important;
+    background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;;
+}
+
+// ::ng-deep .tooltip {
+//     background-color: red;
+//     color: blue;
+//     font-size: 20px;
+//   }
+
+//   .my-custom-tooltip {
+//     max-width: 200px !important;
+//     background-color: red;
+//     color: blue;
+//     font-size: 20px;
+//   }
+
+
+//   ::ng-deep .matTooltipCustom{
+//     // white-space: pre-line;
+//     // width: 1500px;
+//     // width: fit-content;
+//     max-width: 300px !important;
+//     white-space: pre-wrap;
+//     font-size: 17px;
+//   }
+
+// ::ng-deep .mat-tooltip-component {
+//     .mat-tooltip.tooltip {
+//         color: blue !important;
+//     }
+// } 
+
 .example-form {
     min-width: 150px;
     width: 100%;

@@ -26,7 +26,7 @@ import {Observable, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import { Router } from '@angular/router';
 import { DateValidator } from './date-validation';
-
+import { limitOccupation } from '../partner-search/limit-occupation';
 @Component({
   selector: 'app-asignation',
   templateUrl: './asignation.component.html',
@@ -104,9 +104,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     private _handleChangeformOccupation() {
 
         this.formOcupation.valueChanges
-            .subscribe(values => {
-                console.log("values: ", values);
-                console.log("formOccupation: ", this.formOcupation);
+            .subscribe(() => {
             });
         this.collaboratorOccupation.valueChanges
             .subscribe(response => {
@@ -122,12 +120,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
         if ( this.collaboratorsArr ) {
             this.collaboratorOccupation.clear();
             this.collaboratorsArr.forEach(item => {
-
+                
                 if ( item ) {
                     let collaboratorOccupation: FormGroup = this._formBuilder.group({
-                        id              : [''],
+                        id              : [item.id],
                         name            : ['', Validators.required],
-                        occupation      : ['', [Validators.required, Validators.maxLength(100)]],
+                        occupation      : ['', [Validators.required, Validators.maxLength(100), limitOccupation(item.occupationPercentage)]],
                         observation     : [''],
                         dateInit        : ['', Validators.required],
                         dateEnd         : ['', Validators.required],
@@ -136,16 +134,49 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     
                     // Initial default value
                     collaboratorOccupation.get('id').setValue(item.id);
-                    collaboratorOccupation.get('name').setValue(item.name);
+                    collaboratorOccupation.get('name').setValue(item.name + ' ' + item.lastName);
                     // Add collaboratorOcupation to formOcupation
                     this.collaboratorOccupation.push(collaboratorOccupation);
                 }
             });
-
+            console.log("item: ", this.collaboratorsArr);
+            console.log("collaboratorOccupation: ", this.collaboratorOccupation.value);
             // Handle event from array form
             this._handleChangeArrayForm();
         }
         
+    }
+
+    /**
+     * Handle change from array form 
+     *
+     */
+    private _handleChangeArrayForm(){
+        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+
+            this.collaboratorOccupation.at(i).statusChanges
+                .subscribe(value => {
+                    if ( value === 'VALID' ){
+                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    }
+                })
+
+            this.collaboratorOccupation.at(i).valueChanges
+                .subscribe(value => {
+                    // if ( value === 'VALID' ){
+                    //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    // }
+
+                    const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
+
+                    if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
+                        this.collaboratorOccupation.at(i).get('occupation').setValue('');
+                    }
+                })
+            
+            
+
+        }
     }
 
     get collaboratorOccupation() {
@@ -153,8 +184,20 @@ export class AsignationComponent implements OnInit, OnDestroy {
     }
 
     /**
-        * On destroy
-        */
+     * Get calculate percentage real
+     *
+     */
+    calculatePercentageReal(collaboratorAssignation) {
+        const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === collaboratorAssignation.id));
+        
+        if ( collaboratorAssignation ) {
+            return Number(collaboratorAssignation.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage);
+        }
+    }
+
+    /**
+    * On destroy
+    */
     ngOnDestroy(): void
     {
         // Unsubscribe from all subscriptions
@@ -170,7 +213,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
     displayFn(data): string {
         return data && data.name ? data.name : '';
     }
-
 
     removeCollaborator(collaborator) {
         this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
@@ -262,6 +304,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
                 
                 if ( collaboratorIndex != null ) {
+                    // remove collaborator from collaboratorsArr
+                    this.collaboratorsArr.splice(collaboratorIndex, 1);
+                    // Emit index the collaborator
                     this._assignmentOccupationService.removeCollaboratorSelected(collaboratorIndex);
                     // remove form group from collaborator occupation
                     this.collaboratorOccupation.removeAt(i);
@@ -272,6 +317,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
+
+            //this._assignmentOccupationService.collaboratorSelectedRemove$.unsubscribe();
+            //this.confirmUpdate$.unsubscribe();
         });
     }
 
@@ -294,23 +342,42 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 },
             };
 
-            this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
-                .subscribe(response => {
-                    console.log("response: ", response);
-                });
-        }
-    }
-
-    private _handleChangeArrayForm(){
-        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-
-            this.collaboratorOccupation.at(i).statusChanges
-                .subscribe(value => {
-                    if ( value === 'VALID' ){
-                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+            const confirmation = this._fuseConfirmationService.open({
+                    title  : 'Guardar asignación',
+                    message: '¿Seguro que quiere guardar la asignación?',
+                    icon: {
+                        show: true,
+                        name: "heroicons_outline:check",
+                        color: "primary"
+                    },
+                    actions: {
+                        confirm: {
+                            label: 'Guardar asignación',
+                            color: 'primary'
+                        }
                     }
-                })
+                });
 
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+                // If the confirm button pressed...
+                if ( result === 'confirmed' )
+                {
+                    this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
+                        .subscribe(response => {
+                            // Show notification update request
+                            this.showFlashMessage('success', 'Asignación guardada con éxito');
+                            // Set time out for change tab
+                            setTimeout(() => {
+                                this._router.navigate(['dashboards/assignment-occupation/index']);
+                                this._assignmentOccupationService.setTabIndex(1);
+                            }, 2000); 
+                        });
+
+                }
+            });
         }
     }
+
 }
