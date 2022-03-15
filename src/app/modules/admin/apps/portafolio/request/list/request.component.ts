@@ -181,14 +181,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }),
             step2: this._formBuilder.group({
                 //Planificación de solicitud
-                solverGroup         : ['', [Validators.required]],
-                priorityOrder       : ['', [Validators.required]],
+                solverGroup         : ['1', [Validators.required]],
+                priorityOrder       : ['1', [Validators.required]],
                 category            : ['', [Validators.required]],
                 dateInit            : ['', [Validators.required]],
-                dateRealEnd         : ['', []],
                 datePlanEnd         : ['', [Validators.required]],
                 isActive            : ['1', [Validators.required]],
-                responsibleRequest  : ['', [Validators.required]],
+                responsibleRequest  : ['1', [Validators.required]],
                 dateRequest         : ['', [Validators.required]],
                 status              : [''],
                 technicalArea       : ['', [Validators.required]],
@@ -211,6 +210,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 pendingActivitiesIntelix        : [''],
                 updateDate                      : [''],
                 commentsClient                  : [''],
+                dateRealEnd                     : [''],
             }),
         }, {Validator: DateValidator});
 
