@@ -8,6 +8,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Collaborator, Country, Status, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "../collaborators.service";
+import {MatOption} from "@angular/material/core";
 
 
 @Component({
@@ -23,7 +24,7 @@ import {CollaboratorsService} from "../collaborators.service";
                     padding-right: 16px !important;
                 }
             }
-            
+
             `
         ],
     encapsulation  : ViewEncapsulation.None,
@@ -41,9 +42,13 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     drawerMode: 'side' | 'over';
     statuses: Status[];
     clients: Client[];
+    leaders: Collaborator[];
 
     selectedCollaborator: Collaborator;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    @ViewChild('allSelectedClients') private allSelectedClients: MatOption;
+    @ViewChild('allSelectedStatuses') private allSelectedStatuses: MatOption;
+    @ViewChild('allSelectedLeaders') private allSelectedLeaders: MatOption;
 
     /**
      * Constructor
@@ -63,6 +68,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     filterForm = this._formBuilder.group({
 
         searchInputControl :  new FormControl(''),
+        leaderControl          : new FormControl(''),
         centralAmericanControl : new FormControl(''),
         statusControl          : new FormControl(''),
         clientControl          : new FormControl('')
@@ -91,8 +97,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
 
                 this.collaboratorsCount = collaborators.length;
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+
             });
 
         this._collaboratorsService.statuses$
@@ -106,17 +111,24 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
             });
 
         this._collaboratorsService.clients$
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((clients: Client[]) => {
+            clients.sort(this.sortArray);
+            this.clients = clients
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+
+        this._collaboratorsService.leaders$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((clients: Client[]) => {
-                clients.sort(this.sortArray);
-                this.clients = clients
+            .subscribe((leaders: Collaborator[]) => {
+                leaders.sort(this.sortArray);
+                this.leaders = leaders;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
-
-
         // Get the collaborator
         this._collaboratorsService.collaborator$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -209,6 +221,30 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    toggleAllSelectionClients() {
+        if (this.allSelectedClients.selected) {
+            this.filterForm.controls.clientControl.patchValue([...this.clients.map(item => item.name), 0]);
+        } else {
+            this.filterForm.controls.clientControl.patchValue([]);
+        }
+    }
+
+    toggleAllSelectionStatuses() {
+        if (this.allSelectedStatuses.selected) {
+            this.filterForm.controls.statusControl.patchValue([...this.statuses.map(item => item.name), 0]);
+        } else {
+            this.filterForm.controls.statusControl.patchValue([]);
+        }
+    }
+
+    toggleAllSelectionLeaders() {
+        if (this.allSelectedLeaders.selected) {
+            this.filterForm.controls.leaderControl.patchValue([...this.leaders.map(item => item.id), 0]);
+        } else {
+            this.filterForm.controls.leaderControl.patchValue([]);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------

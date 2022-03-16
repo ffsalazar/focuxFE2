@@ -1,6 +1,7 @@
 export interface Collaborator
 {
     id: number;
+    idFile:number;
     avatar?: string | null;
     background?: string | null;
     name: string;
@@ -18,7 +19,7 @@ export interface Collaborator
     file?:string | null;
     isActive: number;
     client: Client;
-    leader:Collaborator;
+    leader?:Collaborator;
     isCentralAmerican:number;
     status: Status;
 
