@@ -68,28 +68,38 @@
                                     [placeholder]="'Buscar Colaborador'">
 
                             </mat-form-field>
-                            <mat-form-field class="w-1/3 pr-2 pt-2">
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
                                 <mat-label>Cliente</mat-label>
-                                <mat-select [formControlName]="'clientControl'">
+                                <mat-select [formControlName]="'clientControl'" multiple="multiple">
                                     <ng-container>
-                                        <mat-option [value]=null>Sin Filtro</mat-option>
-                                        <mat-option *ngFor="let client of clients" [value]="client.name">{{client.name}}</mat-option>
+                                        <mat-option #allSelectedClients (click)="toggleAllSelectionClients()" [value]="0">All</mat-option>
+                                        <mat-option *ngFor="let client of clients" [value]="client.name">{{client.name}} </mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
-                           
 
-                            <mat-form-field class="w-1/3 pr-2 pt-2">
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
+                                <mat-label>L&iacute;der</mat-label>
+                                <mat-select [formControlName]="'leaderControl'" multiple="multiple">
+                                    <ng-container>
+                                        <mat-option #allSelectedLeaders (click)="toggleAllSelectionLeaders()" [value]="0">All</mat-option>
+                                        <mat-option *ngFor="let leader of leaders" [value]="leader.id">{{leader.name}} </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+
+
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
                                 <mat-label>Estatus</mat-label>
-                                <mat-select  [formControlName]="'statusControl'" >
+                                <mat-select  [formControlName]="'statusControl'" multiple="multiple">
                                     <ng-container >
-                                        <mat-option [value]=null>Sin Filtro</mat-option>
+                                        <mat-option #allSelectedStatuses (click)="toggleAllSelectionStatuses()" [value]="0">All</mat-option>
                                         <mat-option *ngFor="let status of statuses" [value]="status.name">{{status.name}}</mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
 
-                            <mat-form-field class="w-1/3 pr-2 pt-2">
+                            <mat-form-field class="w-1/4 pr-2 pt-2">
                                 <mat-label>Localidad</mat-label>
                                 <mat-select [formControlName]="'centralAmericanControl'">
                                     <ng-container>
@@ -99,7 +109,7 @@
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
-                           
+
 
                         </div>
                         <!-- Add collaborator button -->
@@ -111,7 +121,7 @@
                 <div class="relative">
                     <ng-container *ngIf="collaborators$ | async as collaborators">
                         <ng-container *ngIf="collaborators.length; else noCollaborators">
-                            <ng-container *ngFor="let collaborator of collaborators; let i = index; trackBy: trackByFn">
+                            <ng-container  *ngFor="let collaborator of collaborators; let i = index; trackBy: trackByFn">
                             <ng-container>
                                  <!-- Group -->
                                  <ng-container *ngIf="i === 0 || collaborator.name.charAt(0) !== collaborators[i - 1].name.charAt(0)">
@@ -119,6 +129,7 @@
                                         {{collaborator.name.charAt(0)}}
                                     </div>
                                 </ng-container>
+
                                 <!-- Collaborator -->
                                 <a
                                     class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"

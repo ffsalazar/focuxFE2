@@ -32,7 +32,8 @@ export const collaboratorsRoutes: Route[] = [
                     tasks    : CollaboratorsResolver,
                     countries: CollaboratorsCountriesResolver,
                     status: CollaboratorsStatusResolver,
-                    clients:CollaboratorsClientResolver
+                    clients:CollaboratorsClientResolver,
+                    leaders:CollaboratorsLeadersResolver,
                 },
                 children : [
                     {

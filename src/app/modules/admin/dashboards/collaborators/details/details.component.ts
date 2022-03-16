@@ -99,25 +99,26 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             idFile      : [''],
             avatar      : [null],
             name        : ['',[Validators.required]],
-            mail        : [''],
-            lastName    : [''],
+            mail        : ['',[Validators.required]],
+            lastName    : ['',[Validators.required]],
             nationality : [''],
-            department : [''],
-            employeePosition : [[]],
-            client: [[]],
-            companyEntryDate : [''],
-            organizationEntryDate : [''],
-            gender       : [''],
-            bornDate     : [''],
-            assignedLocation : [''],
-            knowledges         : [[]],
+            department : ['',[Validators.required]],
+            employeePosition : [[],[Validators.required]],
+            client: [[],[Validators.required]],
+            companyEntryDate : ['',[Validators.required]],
+            organizationEntryDate : ['',[Validators.required]],
+            gender       : ['',[Validators.required]],
+            bornDate     : ['',[Validators.required]],
+            assignedLocation : ['',[Validators.required]],
+            knowledges         : [[],[Validators.required]],
             isActive: [''],
             technicalSkills: [''],
             phoneNumbers: this._formBuilder.array([]),
             phones: this._formBuilder.array([]),
             isCentralAmerican:[''],
             leader:[[]],
-            status: [[]]
+            status: [[],[Validators.required]]
+
         })
 
 
@@ -192,13 +193,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                     );
                 }
 
-                // Add the phone numbers form groups to the phone numbers form array
-                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
-                    (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
-                });
+
 
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
+
+
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -281,6 +281,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+        if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
+            this.editMode = true;
+            this.collaboratorForm.reset();
+            this.collaboratorForm.get('id').setValue(this.collaborator.id);
+            this.collaboratorForm.get('idFile').setValue(this.collaborator.idFile);
+        }
+
 
         this.filteredKnowledges = this.collaborator.knowledges;
 
@@ -295,9 +302,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         //     this.filteredKnowledges.push(filteredKnowledge);
         // });
 
-        if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
-            this.editMode = true;
-        }
+
     }
 
     /**
@@ -327,7 +332,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                     deviationPercentage:request.deviationPercentage
 
                 };
-                console.log(this.request)
+                console.log(request)
 
                 this._collaboratorsService.open({
                         template: this.tplDetail,title:'detail'
@@ -836,7 +841,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
         // Setting status to inactive
-        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe();
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.knowledge.id, knowledge).subscribe();
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
