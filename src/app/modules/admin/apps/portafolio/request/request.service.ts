@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData, BusinessType, Knowledge, Collaborator } from './request.types';
+import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, DialogOptions, DialogData, BusinessType, Knowledge, Collaborator, Department } from './request.types';
 import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent }  from './focux-popup/focux-popup.component';
@@ -33,6 +33,7 @@ export class RequestService
     private _businessType: BehaviorSubject<BusinessType[] | null> = new BehaviorSubject(null);
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
     private _isOpenModal: Subject<boolean | null> = new Subject(); 
 
     public requests: Request[];
@@ -65,6 +66,14 @@ export class RequestService
     get knowledges$(): Observable<Knowledge[]>
     {
         return this._knowledges.asObservable();
+    }
+
+    /**
+     * Getter for departments
+     */
+    get departments$(): Observable<Department[]>
+    {
+        return this._departments.asObservable();
     }
 
     /**
@@ -196,6 +205,18 @@ export class RequestService
         return this._httpClient.get<Category[]>('http://localhost:1616/api/v1/followup/categories/all').pipe(
             tap((categories) => {
                 this._categories.next(categories);
+            })
+        );
+    }
+
+    /**
+     * 
+     * @returns
+     */
+    getDepartments() {
+        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+            tap((departments) => {
+                this._departments.next(departments);
             })
         );
     }
