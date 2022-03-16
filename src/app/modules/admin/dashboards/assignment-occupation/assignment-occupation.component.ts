@@ -20,6 +20,7 @@ export class AssignmentOccupationComponent implements OnInit {
 		}
 
 	ngOnInit(): void {
+        this.handleEventSavedOccupation();
 	}
 
   /**
@@ -37,5 +38,9 @@ export class AssignmentOccupationComponent implements OnInit {
             default:
                 break;
         }
+    }
+
+    handleEventSavedOccupation() {
+        
     }
 }

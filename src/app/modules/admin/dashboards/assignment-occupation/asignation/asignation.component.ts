@@ -136,7 +136,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     
                     // Initial default value
                     collaboratorOccupation.get('id').setValue(item.id);
-                    collaboratorOccupation.get('name').setValue(item.name);
+                    collaboratorOccupation.get('name').setValue(item.name + ' ' + item.lastName);
                     // Add collaboratorOcupation to formOcupation
                     this.collaboratorOccupation.push(collaboratorOccupation);
                 }
@@ -272,6 +272,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
+
+            //this._assignmentOccupationService.collaboratorSelectedRemove$.unsubscribe();
+            //this.confirmUpdate$.unsubscribe();
         });
     }
 
@@ -294,10 +297,36 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 },
             };
 
-            this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
-                .subscribe(response => {
-                    console.log("response: ", response);
+            const confirmation = this._fuseConfirmationService.open({
+                    title  : 'Guardar asignación',
+                    message: '¿Seguro que quiere guardar la asignación?',
+                    icon: {
+                        show: true,
+                        name: "heroicons_outline:check",
+                        color: "primary"
+                    },
+                    actions: {
+                        confirm: {
+                            label: 'Guardar asignación',
+                            color: 'primary'
+                        }
+                    }
                 });
+
+        // Subscribe to the confirmation dialog closed action
+        confirmation.afterClosed().subscribe((result) => {
+
+                // If the confirm button pressed...
+                if ( result === 'confirmed' )
+                {
+                    this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
+                        .subscribe(response => {
+                            // Show notification update request
+                            this.showFlashMessage('success', 'Asignación guardada con éxito');
+                        });
+
+                }
+            });
         }
     }
 
