@@ -77,6 +77,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 this.collaboratorsArr = collaboratorSelected || [];
 
                 // Set the form ocupation
+                console.log("entrooo");
                 this._setFormOcupation();
 
                 // Set request selected
@@ -139,7 +140,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     this.collaboratorOccupation.push(collaboratorOccupation);
                 }
             });
-            console.log("item: ", this.collaboratorsArr);
             console.log("collaboratorOccupation: ", this.collaboratorOccupation.value);
             // Handle event from array form
             this._handleChangeArrayForm();

@@ -187,19 +187,22 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.statusControl.valueChanges
             .subscribe(value => {
                 console.log("id status: ", value);
-                this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
+                if ( value ) {
+                    this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
 
-                if ( this.selectedResponsible ) {
-                    // Get all request by responsible
-                    this._getRequestByResponsible( this.selectedResponsible );
-                } else if ( this.selectedClient ) {
-                    // Get all collaborators by client
-                    this._getCollaboratorsByClient( this.selectedClient.id );
-                    // Get all request by client
-                    this._getRequestByClient( this.selectedClient.id );
+                    if ( this.selectedResponsible ) {
+                        // Get all request by responsible
+                        this._getRequestByResponsible( this.selectedResponsible );
+                    } else if ( this.selectedClient ) {
+                        // Get all collaborators by client
+                        this._getCollaboratorsByClient( this.selectedClient.id );
+                        // Get all request by client
+                        this._getRequestByClient( this.selectedClient.id );
+                    }
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+                
             });
     }
 
