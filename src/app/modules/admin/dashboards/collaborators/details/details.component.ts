@@ -110,7 +110,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             gender       : ['',[Validators.required]],
             bornDate     : ['',[Validators.required]],
             assignedLocation : ['',[Validators.required]],
-            knowledges         : [[],[Validators.required]],
+            knowledges         : [[]],
             isActive: [''],
             technicalSkills: [''],
             phoneNumbers: this._formBuilder.array([]),
