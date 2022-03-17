@@ -179,20 +179,27 @@ export class CollaboratorsService
             tap((collaborators) => {
                 let collaboratorFiltered : any[]=[];
                 collaborators.forEach((collaborator) => {
-                    collaboratorFiltered.push(collaborator);                    
+                    //console.log(collaborator.leader.id)
+                    collaboratorFiltered.push(collaborator);
                 });
                 // If the query exists...
                 if ( controls )
                 {
 
+                    console.log(controls)
+
                     // Filter the collaborators
 
                     collaboratorFiltered = collaboratorFiltered.filter(collaborator =>
+
                         (
-                            (controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || collaborator?.client.name.toLowerCase() == controls.clientControl.toLowerCase() )) &&
-                            (controls.searchInputControl === null || ( controls.searchInputControl.toLowerCase() === '' || collaborator?.name.toLowerCase().includes( controls.searchInputControl.toLowerCase()))) &&
-                            (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || collaborator?.status.name.toLowerCase() == controls.statusControl.toLowerCase())) &&
-                            (controls.centralAmericanControl === null || ( controls.centralAmericanControl === '' || collaborator?.isCentralAmerican == controls.centralAmericanControl))
+                            (controls.clientControl.length > 0 ? controls.clientControl.includes( collaborator?.client.name) : true)  &&
+                            (controls.statusControl.length > 0 ? controls.statusControl.includes( collaborator?.status.name) : true) &&
+                            (controls.leaderControl.length && collaborator.leader !== null ? controls.leaderControl.includes( collaborator?.leader.id ) : true) &&
+
+                            (controls.centralAmericanControl === null || ( controls.centralAmericanControl === '' || collaborator?.isCentralAmerican == controls.centralAmericanControl)) &&
+
+                            (controls.searchInputControl === null || ( controls.searchInputControl.toLowerCase() === '' || collaborator?.name.toLowerCase().includes( controls.searchInputControl.toLowerCase())))
 
                         ));
                     function compare(a: Collaborator, b: Collaborator) {
@@ -238,7 +245,7 @@ export class CollaboratorsService
                 const collaborator = collaborators.find(item => item.id === id) || null;
                 const collaborator_test = collaborators.find(item => item.id === id);
 
-                console.log(collaborator_test);
+
                 // Update the collaborator
                 this._collaborator.next(collaborator);
 
@@ -299,7 +306,7 @@ export class CollaboratorsService
             organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
             gender: 'M',
             bornDate: '1970-01-01T00:00:00.000+00:00',
-            nationality: 'Venezolana',
+            nationality: 've',
             mail: '' ,
             isActive: 1,
             assignedLocation: 'Intelix Principal',
@@ -738,7 +745,7 @@ export class CollaboratorsService
                 }
                 collaborators.sort(compare);
                 collaborators.forEach((collaborator) => {
-                    if (collaborator.isActive != 0 && collaborator.id != id){
+                    if (collaborator.isActive != 0 && collaborator.id != id && collaborator.status.name == 'Activo'){
                         collaboratorFiltered.push(collaborator);
                     }
                 });

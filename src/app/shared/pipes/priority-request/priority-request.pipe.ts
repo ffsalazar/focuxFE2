@@ -11,17 +11,17 @@ export class PriorityRequestPipe implements PipeTransform {
       switch (value) {
 
           case 1:{
-           descriptionPriority = "Prioridad Alta";
+           descriptionPriority = "Alta";
            break;
           }
 
           case 2:{
-              descriptionPriority = "Prioridad Media";
+              descriptionPriority = "Media";
               break;
           }
 
           case 3:{
-              descriptionPriority = "Prioridad Baja";
+              descriptionPriority = "Baja";
               break;
           }
 

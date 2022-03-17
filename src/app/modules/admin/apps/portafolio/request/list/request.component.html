@@ -90,7 +90,7 @@
                               </ng-container>
                             <ng-container matColumnDef="ramo">
                                 <th mat-header-cell *matHeaderCellDef>  Ramo </th>
-                                <td mat-cell *matCellDef="let element"> {{'asj'}} </td>
+                                <td mat-cell *matCellDef="let element"> {{element.client?.businessType.name}} </td>
                               </ng-container>
                             <ng-container matColumnDef="client">
                                 <th mat-header-cell *matHeaderCellDef> Compañia </th>
@@ -109,12 +109,12 @@
                              
                               <ng-container matColumnDef="responsibleRequest">
                                 <th mat-header-cell *matHeaderCellDef> Responsable </th>
-                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest.name}} </td>
+                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest?.name || '-'}} </td>
                               </ng-container>
     
                               <ng-container matColumnDef="priorityOrder">
                                 <th mat-header-cell *matHeaderCellDef> Priodidad </th>
-                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.priorityOrder}} </td>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.priorityOrder | priorityRequest}} </td>
                               </ng-container>
                               <ng-container matColumnDef="status">
                                 <th mat-header-cell *matHeaderCellDef> Estatus </th>
@@ -123,23 +123,23 @@
     
                               <ng-container matColumnDef="completionPercentage">
                                 <th mat-header-cell *matHeaderCellDef>  Avance % </th>
-                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.completionPercentage}} </td>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.completionPercentage ? element.completionPercentage: '-'}} </td>
                               </ng-container>
     
                             <ng-container matColumnDef="dateRealEnd">
                                 <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
-                                <td mat-cell *matCellDef="let element"> {{element.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY'}} </td>
+                                <td mat-cell *matCellDef="let element"> {{ (element.dateRealEnd ? ( element.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY' ) : '-') }} </td>
                               </ng-container>
                             
                               <ng-container matColumnDef="deviationPercentage">
                                 <th mat-header-cell *matHeaderCellDef> Desviación Entrega </th>
-                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.deviationPercentage}} </td>
+                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.deviationPercentage ? element.deviationPercentage : '-'}} </td>
                               </ng-container>
                             
                           
                               <ng-container matColumnDef="dateEndPause">
                                 <th mat-header-cell *matHeaderCellDef> Días Duración </th>
-                                <td mat-cell *matCellDef="let element"> {{element.dateEndPause  | amParse: formats | amDateFormat:'DD/MM/YYYY'}} </td>
+                                <td mat-cell *matCellDef="let element"> {{ (element.dateEndPause ? (element.dateEndPause | amParse: formats | amDateFormat:'DD/MM/YYYY' ) : '-')}} </td>
                               </ng-container>
     
                               <ng-container matColumnDef="Detalle">
@@ -517,7 +517,7 @@
                                         <mat-error *ngIf="!step2.get('technicalArea').valid && (step2.get('technicalArea').dirty || step2.get('technicalArea').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                     
-                                    <mat-form-field class="w-1/3">
+                                    <mat-form-field *ngIf="isEditing" class="w-1/3">
                                         <mat-label>Responsable</mat-label>
                                         <mat-select
                                             formControlName="responsibleRequest"
@@ -534,29 +534,19 @@
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Grupo solucionador</mat-label>
-                                        <!-- <mat-select formControlName="solverGroup">
-                                            <ng-container *ngFor="let category of categories">
-                                                <mat-option [value]="category.id">
-                                                    {{category.name}}
+                                         <mat-select
+                                            formControlName="solverGroup">
+                                            <ng-container *ngFor="let department of departments">
+                                                <mat-option [value]="department.id">
+                                                    {{department.name}}
                                                 </mat-option>
-
                                             </ng-container>
-
-                                        </mat-select> -->
-                                        <input
-                                            matInput
-                                            formControlName="solverGroup"
-                                            [readonly]="isDetail"
-                                            
-                                        >
-                                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:view-grid'">
-                                        </mat-icon>
+                                        </mat-select> 
                                     </mat-form-field>
-                                    <div class="w-1/3">
+                                    <!-- <div class="w-1/3">
                                         <span class="mb-px font-medium leading-tight">Colaborador</span>
                                         <div
                                             class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
-                                            <!-- Header -->
                                             <div class="flex items-center -my-px py-2 px-3">
                                                 <div class="flex items-center flex-auto min-w-0">
                                                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:search'">
@@ -570,10 +560,8 @@
                                                         #newTagInput>
                                                 </div>
                                             </div>
-                                            <!-- Available tags -->
                                             <div
                                                 class="h-20 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
-                                                <!-- Tags -->
                                                 <ng-container *ngIf="!tagsEditMode">
                                                     <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
 
@@ -588,7 +576,7 @@
                                                 </ng-container>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     
                                 </div>
                                
@@ -618,24 +606,7 @@
                                         <mat-error *ngIf="!step2.get('dateInit').valid && (step2.get('dateInit').dirty || step2.get('dateInit').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
 
-                                    <mat-form-field *ngIf="isEditing || isDetail" class="w-1/3">
-                                        <mat-label>Fecha de Culminación</mat-label>
-                                        <mat-icon
-                                            matPrefix
-                                            class="hidden sm:flex icon-size-5"
-                                            [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-                                        <input
-                                            matInput
-                                            [matDatepicker]="dateRealEndPicker"
-                                            formControlName="dateRealEnd"
-                                            [readonly]="isDetail"
-                                            [disabled]="isDetail">
-                                            <mat-datepicker-toggle
-                                                matSuffix
-                                                [for]="dateRealEndPicker">
-                                            </mat-datepicker-toggle>
-                                            <mat-datepicker #dateRealEndPicker></mat-datepicker>
-                                    </mat-form-field>
+                                    
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Fecha de Compromiso</mat-label>
@@ -844,7 +815,7 @@
                                 </p>
                                 <div class="flex flex-col gt-sm:flex-row">
                                     <div class="flex flex-col">
-                                        <div class="flex space-x-4">
+                                        <div class="flex space-x-4" style="justify-content: space-between;">
                                             <mat-form-field class="w-1/3">
                                                 <mat-label>Fecha de actualización</mat-label>
                                                 <mat-icon
@@ -865,6 +836,25 @@
                                                     [for]="updateDatePicker">
                                                 </mat-datepicker-toggle>
                                                 <mat-datepicker #updateDatePicker></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <mat-form-field *ngIf="isEditing || isDetail" class="w-1/3">
+                                                <mat-label>Fecha de Culminación</mat-label>
+                                                <mat-icon
+                                                    matPrefix
+                                                    class="hidden sm:flex icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <input
+                                                    matInput
+                                                    [matDatepicker]="dateRealEndPicker"
+                                                    formControlName="dateRealEnd"
+                                                    [readonly]="isDetail"
+                                                    [disabled]="isDetail">
+                                                    <mat-datepicker-toggle
+                                                        matSuffix
+                                                        [for]="dateRealEndPicker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #dateRealEndPicker></mat-datepicker>
                                             </mat-form-field>
                                         </div>
                                         <p class="my-6 font-medium">
@@ -895,7 +885,7 @@
                                             </mat-form-field>
                                         </div>
 
-                                        <p class="my-6 font-medium">
+                                        <!-- <p class="my-6 font-medium">
                                             Feedback cliente
                                         </p>
                                         <div class="flex space-x-4">
@@ -910,7 +900,7 @@
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                             </mat-form-field>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                 </div>

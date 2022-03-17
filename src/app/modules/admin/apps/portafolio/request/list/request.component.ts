@@ -11,7 +11,7 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
-import { CommercialArea, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType, Collaborator } from '../request.types';
+import { CommercialArea, Department, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType, Collaborator } from '../request.types';
 import { Client, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseAlertService } from '@fuse/components/alert';
@@ -101,6 +101,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     businessType: BusinessType[];
     knowledges: Knowledge[];
     collaborators: Collaborator[];
+    departments: Department[];
     isEditing: boolean = false;
     isDetail: boolean = false;
     alert: boolean = false;
@@ -185,16 +186,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }),
             step2: this._formBuilder.group({
                 //Planificación de solicitud
-                solverGroup         : ['', [Validators.required]],
-                priorityOrder       : ['', [Validators.required]],
+                solverGroup         : ['1', [Validators.required]],
+                priorityOrder       : ['1', [Validators.required]],
                 category            : ['', [Validators.required]],
                 dateInit            : ['', [Validators.required]],
-                dateRealEnd         : ['', []],
                 datePlanEnd         : ['', [Validators.required]],
                 isActive            : ['1', [Validators.required]],
-                responsibleRequest  : ['', [Validators.required]],
+                responsibleRequest  : ['1', [Validators.required]],
                 dateRequest         : ['', [Validators.required]],
-                status              : [''],
+                status              : ['', [Validators.required]],
                 technicalArea       : ['', [Validators.required]],
                 knowledges     : [[]],
             }),
@@ -215,6 +215,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 pendingActivitiesIntelix        : [''],
                 updateDate                      : [''],
                 commentsClient                  : [''],
+                dateRealEnd                     : [''],
             }),
         }, {Validator: DateValidator});
 
@@ -255,7 +256,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the client
                 clients.sort(this.sortArray);
                 this.clients = clients;
-                console.table(this.clients);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -276,6 +276,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe((status: Status[]) => {
                 // Update the status
                 this.status = status;
+                const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
+
+                this.step2.get('status').setValue(statusId);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -290,7 +293,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+        
+        // Get the Area technical
         this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
             .subscribe((technicalArea: TechnicalArea[]) => {
 
@@ -300,6 +304,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+        // Get the businessType
         this._requestService.businessType$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((businessType: BusinessType[]) => {
@@ -308,7 +313,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+        
+        // Get the collaborators
         this._requestService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((collaborators: Collaborator[]) => {
@@ -317,12 +323,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+        
+        // Get the departments
+        this._requestService.departments$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((departments: Department[]) => {
+                // Update the departments
+                this.departments = departments;
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         // Get the pagination
         this._inventoryService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: InventoryPagination) => {
-
                 // Update the pagination
                 this.pagination = pagination;
 
@@ -337,7 +352,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.getRequests().subscribe(response => {
             // Filter inactive request
             this.requestOriginal = response.filter(item => item.isActive !== 0);
-            console.log(this.requestOriginal);
 
         });
 
@@ -1165,27 +1179,23 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 requestNew.status = this.status.find(item => item.id === requestNew.status);
                 requestNew.requestPeriod = this.requestp.find(item => item.id === requestNew.requestPeriod);
                 requestNew.knowledges = this.selectedRequest.knowledges;
-                requestNew.responsibleRequest = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
-                //requestNew.solverGroup = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
+                requestNew.solverGroup = this.departments.find(item => item.id === requestNew.solverGroup);
                 //requestNew.technicalArea = this.technicalArea.find(item => item.id === requestNew.technicalArea);
+
                 // requestNew.responsibleRequest = {
                 //     id: 1
                 // };
-
-                console.log("resolver: ", requestNew);
-                requestNew.solverGroup = {
-                    id: 1,
-                }
 
                 requestNew.technicalArea = {
                     id: 1
                 };
 
-
                 if ( !this.isEditing ) {
+                    requestNew.responsibleRequest = '';
                     // Create the request on the server
                     this.createNewRequest(requestNew);
                 } else {
+                    requestNew.responsibleRequest = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
                     // Update the request on the server
                     this.updateRequest(requestNew);
                 }
