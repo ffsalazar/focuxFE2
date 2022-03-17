@@ -123,7 +123,7 @@
     
                               <ng-container matColumnDef="completionPercentage">
                                 <th mat-header-cell *matHeaderCellDef>  Avance % </th>
-                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.completionPercentage ? element.completionPercentage: '-'}} </td>
+                                <td mat-cell class="th-center" *matCellDef="let element" [ngStyle]="{'color': element.completionPercentage >= 100 ? '#0d9488' : ''}"> {{element.completionPercentage ? element.completionPercentage: '-'}} </td>
                               </ng-container>
     
                             <ng-container matColumnDef="dateRealEnd">
@@ -133,7 +133,7 @@
                             
                               <ng-container matColumnDef="deviationPercentage">
                                 <th mat-header-cell *matHeaderCellDef> Desviación Entrega </th>
-                                <td mat-cell class="th-center" *matCellDef="let element"> {{element.deviationPercentage ? element.deviationPercentage : '-'}} </td>
+                                <td mat-cell class="th-center" *matCellDef="let element" [ngStyle]="{'color': element.deviationPercentage > 20 ? '#FC4F4F' : ''}"> {{element.deviationPercentage ? element.deviationPercentage : '-'}} </td>
                               </ng-container>
                             
                           
