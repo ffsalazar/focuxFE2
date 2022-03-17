@@ -179,7 +179,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                             })
                         );
                     });
-                    console.log(phoneNumbersFormGroups)
+
                 }
                 else
                 {
@@ -192,6 +192,11 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                         })
                     );
                 }
+
+                // Add the phone numbers form groups to the phone numbers form array
+                phoneNumbersFormGroups.forEach((phoneNumbersFormGroup) => {
+                    (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
+                });
 
 
 
@@ -285,7 +290,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             this.editMode = true;
             this.collaboratorForm.reset();
             this.collaboratorForm.get('id').setValue(this.collaborator.id);
-            this.collaboratorForm.get('idFile').setValue(this.collaborator.idFile);
+
         }
 
 
