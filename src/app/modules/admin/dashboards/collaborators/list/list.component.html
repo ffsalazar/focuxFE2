@@ -83,7 +83,7 @@
                                 <mat-select [formControlName]="'leaderControl'" multiple="multiple">
                                     <ng-container>
                                         <mat-option #allSelectedLeaders (click)="toggleAllSelectionLeaders()" [value]="0">All</mat-option>
-                                        <mat-option *ngFor="let leader of leaders" [value]="leader.id">{{leader.name}} </mat-option>
+                                        <mat-option *ngFor="let leader of leaders" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase}} {{leader.lastName.split(' ')[0] | titlecase}} </mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>

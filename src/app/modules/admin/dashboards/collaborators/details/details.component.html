@@ -113,6 +113,17 @@
 
 
                         <!-- Role in the company -->
+                        <ng-container *ngIf="collaborator.idFile">
+                            <div class="flex sm:items-center">
+                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-list'"></mat-icon>
+                                <span class="mx-2 font-medium">Ficha</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.idFile}}</div>
+                            </div>
+                        </ng-container>
+
+
+                        <!-- Role in the company -->
                         <ng-container *ngIf="collaborator.employeePosition">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
@@ -148,7 +159,7 @@
                                 <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
                                 <span class="mx-2 font-medium">L&iacute;der</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.leader.name.split('')[0] | titlecase}} {{collaborator.leader.lastName.split('')[0] | titlecase}}</div>
+                                <div class="ml-2 leading-6">{{collaborator.leader.name.split(' ')[0] | titlecase}} {{collaborator.leader.lastName.split(' ')[0] | titlecase}}</div>
                             </div>
                         </ng-container>
 
