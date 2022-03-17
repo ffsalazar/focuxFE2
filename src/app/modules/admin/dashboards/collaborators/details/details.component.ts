@@ -21,6 +21,7 @@ import {
 } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
+import {setValue} from "@ngneat/transloco";
 
 @Component({
     selector       : 'collaborators-details',
@@ -290,7 +291,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             this.editMode = true;
             this.collaboratorForm.reset();
             this.collaboratorForm.get('id').setValue(this.collaborator.id);
-
+            (this.collaboratorForm.get('phones') as FormArray).removeAt(0);
+            this.collaboratorForm.get('knowledges').setValue(this.collaborator.knowledges);
         }
 
 
