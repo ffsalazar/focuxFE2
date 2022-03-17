@@ -82,7 +82,7 @@ export class AssingmentOccupationService {
     /**
      * Getter for ollaboratorSelected
      */
-    get collaboratorSelected$() {
+    get collaboratorSelected$(): Observable<Collaborator[]> {
         return this._collaboratorSelected.asObservable();
     }
 
@@ -224,8 +224,6 @@ export class AssingmentOccupationService {
      */
     getRecommended(requestId: number): Observable<Collaborator[]>{
         /** spinner starts on init */
-
-        console.log("requestId: ", requestId);
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allconditions/' + requestId)
@@ -244,10 +242,15 @@ export class AssingmentOccupationService {
      * @param requestId 
      */
     getCollaboratorsRecommendedByClient(requestId: number): Observable<Collaborator[]>{
-        console.log("requestId: ", requestId);
+        /** spinner starts on init */
+        this._loadingSpinnerService.startLoading();
+
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allclients/' + requestId)
         .pipe(
-            tap((recommended)=>{
+            tap((recommended) => {
+                /** spinner ends after 5 seconds */
+                this._loadingSpinnerService.stopLoading();
+
                 this._recommended.next(recommended);
             })
         );
@@ -258,10 +261,17 @@ export class AssingmentOccupationService {
      * @param requestId 
      */
     getCollaboratorRecommendedByKnowledge(requestId: number): Observable<Collaborator[]>{
+        /** spinner starts on init */
+        this._loadingSpinnerService.startLoading();
+
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/knowledgeclient/' + requestId)
         .pipe(
-            tap((recommended)=>{
+            tap((recommended) => {
+                /** spinner ends after 5 seconds */
+                this._loadingSpinnerService.stopLoading();
+
                 this._recommended.next(recommended);
+                
             })
         );
     }
@@ -271,9 +281,15 @@ export class AssingmentOccupationService {
      * @param requestId 
      */
     getCollaboratorRecommendedByFree(requestId: number): Observable<Collaborator[]>{
+        /** spinner starts on init */
+        this._loadingSpinnerService.startLoading();
+
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/free/' + requestId)
         .pipe(
-            tap((recommended)=>{
+            tap((recommended) => {
+                /** spinner ends after 5 seconds */
+                this._loadingSpinnerService.stopLoading();
+
                 this._recommended.next(recommended);
             })
         );

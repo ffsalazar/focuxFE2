@@ -72,20 +72,23 @@ export class AsignationComponent implements OnInit, OnDestroy {
         this._handleChangeformOccupation();
 
         this._assignmentOccupationService.collaboratorSelected$
-            .subscribe(collaboratorSelected => {
-                // Set collaborator selected
-                this.collaboratorsArr = collaboratorSelected || [];
+            .pipe(
+                map(collaboratorSelected => collaboratorSelected))
+                    .subscribe(collaboratorSelected => {
+                        // Set collaborator selected
+                        let aux = collaboratorSelected || [];
+                        
+                        this.collaboratorsArr = [...aux];
 
-                // Set the form ocupation
-                console.log("entrooo");
-                this._setFormOcupation();
+                        // Set the form ocupation
+                        this._setFormOcupation();
 
-                // Set request selected
-                this.request = this._assignmentOccupationService.requestSelected;
+                        // Set request selected
+                        this.request = this._assignmentOccupationService.requestSelected;
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+                        // Mark for check
+                        this._changeDetectorRef.markForCheck();
+                    });
 
         
         if ( this.request ) {
@@ -307,7 +310,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     // remove collaborator from collaboratorsArr
                     this.collaboratorsArr.splice(collaboratorIndex, 1);
                     // Emit index the collaborator
-                    this._assignmentOccupationService.removeCollaboratorSelected(collaboratorIndex);
+                    this._assignmentOccupationService.removeCollaboratorSelected(this._assignmentOccupationService.collaboratorsSelected[collaboratorIndex].id);
+                    // remove collaborator from collaboratorSelected
+                    this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
                     // remove form group from collaborator occupation
                     this.collaboratorOccupation.removeAt(i);
                     // Show notification update request

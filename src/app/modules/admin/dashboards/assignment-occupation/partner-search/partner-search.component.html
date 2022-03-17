@@ -102,8 +102,8 @@
                     <ng-container [formGroup]="collaboratorArrayForm">
                         <ng-container *ngIf="collaboratorsRecomm.length; else noCollaborators">
                                 <ng-container formArrayName="collaboratorSelected">
-                                    <ng-container *ngFor="let _ of collaboratorSelected.controls; index as i; ">
-                                        <ng-container>
+                                    <ng-container *ngFor="let collaborator of collaboratorSelected.controls; index as i; ">
+                                        <ng-container [formGroupName]="i">
                                             <!-- Group -->
                                              <ng-container
                                                 *ngIf="i === 0 || collaboratorsRecomm[i].name.charAt(0) !== collaboratorsRecomm[i - 1].name.charAt(0)">
@@ -164,7 +164,7 @@
                                                 >
                                                 </mat-progress-bar>
                                                 </div>
-                                             <mat-checkbox [formControlName]="i"></mat-checkbox>
+                                             <mat-checkbox formControlName="checked"></mat-checkbox>
                                             </div>
                                            </span>
                                         </ng-container>

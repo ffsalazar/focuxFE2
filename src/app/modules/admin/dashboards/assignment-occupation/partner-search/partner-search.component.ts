@@ -11,6 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { FuseAlertService } from '@fuse/components/alert';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-partner-search',
@@ -102,17 +103,26 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.status$ = this._assignmentOccupationService.status$;
 
         this._assignmentOccupationService.collaboratorSelectedRemove$
-            .subscribe(index => {
-                if ( index !== null ) {
-                    this.collaboratorSelected.at(index).setValue(false);
-
+            .subscribe(collaboratorId => {
+                if ( collaboratorId !== null ) {
+                    //this.collaboratorSelected.at(index).setValue(false);
+                    //this._checkCollaboratorsSelected();
+                    
+                    for (let i = 0; i < this.collaboratorSelected.length; i++) {
+                        if ( this.collaboratorSelected.at(i).value.id === collaboratorId ) {
+                            this.collaboratorSelected.at(i).setValue({
+                                id: collaboratorId,
+                                checked: false,
+                            });
+                        }   
+                    }
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
         this._handleEventSavedOccupation();
-        this._handleChangeArrayForm();
+        //this._handleChangeArrayForm();
         this._handleChangeStatus();
         this._getStatus();
         this._getClients();
@@ -170,7 +180,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe((value) => {
                 this.selectedResponsible = null;
                 this.selectedClient = null;
-
+                this._assignmentOccupationService.collaboratorsSelected = [];
+                // Clear form array of collaborator selected
+                this.collaboratorSelected.clear();
                 this.filterForm.setValue({
                     myControl: '',
                     requestControl: '',
@@ -186,7 +198,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _handleChangeStatus() {
         this.statusControl.valueChanges
             .subscribe(value => {
-                console.log("id status: ", value);
                 if ( value ) {
                     this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
 
@@ -210,7 +221,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.getStatus()
             .subscribe((status: Status[]) => {
                 this.status = status;
-                console.log("status: ", this.status);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -224,6 +234,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.clients$
         .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(clients => {
+                clients.sort(this._sortArray);
                 this.clients = clients;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -456,6 +467,24 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Check collaborators Selected
+     * 
+     */
+    private _checkCollaboratorsSelected() {
+        console.log(this._assignmentOccupationService.collaboratorsSelected);
+        for(let i = 0; i < this.collaboratorSelected.length; i++) {
+            const collaboratorSelected = this._assignmentOccupationService.collaboratorsSelected.find(item => item.id === this.collaboratorSelected.at(i).value.id);
+            
+            if ( collaboratorSelected ) {
+                this.collaboratorSelected.at(i).setValue({
+                    id: this.collaboratorSelected.at(i).value.id,
+                    checked: true,
+                });
+            }
+        }
+    }
+
+    /**
      * Set CollaboratorsRecomm
      */
     private _setCollaboratorsRecomm() {
@@ -463,10 +492,17 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.collaboratorSelected.clear();
         // Set formArray
         this.collaboratorsRecomm.forEach(item => {
-            this.collaboratorSelected.push(new FormControl(false));
+            // Create form group of collaborator
+            const collaboratorGroup = this._fb.group({
+                id: [item.id],
+                checked: [false],
+            });
+            this.collaboratorSelected.push(collaboratorGroup);
             // value.collaboratorSelected[i] = this.collaborators[i];
 
         });
+        this._checkCollaboratorsSelected();
+        this._handleChangeArrayForm();
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -475,17 +511,24 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * handle ChangeArrayForm
      */
     private _handleChangeArrayForm() {
-        this.collaboratorArrayForm.valueChanges.subscribe((value) => {
-            // Añadir colaboradores seleccionados en el FormArray
-            for (let i = 0; i < value.collaboratorSelected.length; i++) {
-                if ( value.collaboratorSelected.at(i) === true ){
-                    value.collaboratorSelected[i] = this.collaboratorsRecomm[i];
-                }
-            }
+        this.collaboratorsRecomm.forEach((item, index) => {
+            this.collaboratorSelected.at(index).valueChanges
+                .subscribe((collaborator) => {
+                    //find if collaborator already selected
+                    const collaboratorIndex = this._assignmentOccupationService.collaboratorsSelected.findIndex(item => item.id === collaborator.id);
 
-            this._assignmentOccupationService.collaboratorsSelected = value.collaboratorSelected;
-            //this._assignmentOccupationService.setCollaboratorSelected();
-        })
+                    // If has collaborator
+                    if ( collaboratorIndex >= 0 ) {
+                        // delete collaborator from collaborator selected
+                        this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
+                    } else {
+                        // add collaborator to collaborator selected
+                        this._assignmentOccupationService.collaboratorsSelected.push(item);
+                    }
+
+                });
+                
+        });
     }
 
     /**
@@ -587,11 +630,18 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
-     
-    sortArray(x, y) {
+    
+    /**
+     * Sort array
+     * 
+     * @param x 
+     * @param y 
+     * @returns 
+     */
+    private _sortArray(x, y): number {
         if (x.name < y.name) {return -1; }
         if (x.name > y.name) {return 1; }
-    return 0;
+        return 0;
     }
 
 }
