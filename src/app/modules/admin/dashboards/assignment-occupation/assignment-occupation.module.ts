@@ -28,7 +28,6 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {FuseAlertModule} from "../../../../../@fuse/components/alert";
 import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +35,6 @@ import { EditAssignmentComponent } from './edit-assignment/edit-assignment.compo
     PartnerSearchComponent,
     AsignationComponent,
     FilterCollaboratorPipe,
-    EditAssignmentComponent,
   ],
     imports: [
         CommonModule,
