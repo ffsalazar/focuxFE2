@@ -21,15 +21,53 @@
         </mat-form-field> -->
         <!-- Search client -->
         <form [formGroup]="filterGroupForm">
-            <mat-form-field class="w-50 mr-6" appearance="fill">
+            <!-- <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Ramo</mat-label>
                 <input type="text" matInput formControlName="customerBranchControl" [matAutocomplete]="autoCustomerBranch">
                 <mat-autocomplete #autoCustomerBranch="matAutocomplete">
                     <mat-option *ngFor="let option of filteredCustomerBranch  | async" [value]="option">
-                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-between">
+                            <mat-checkbox></mat-checkbox>
+                            <span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 4) }}</span>
+                        </div>
+                        
+                    </mat-option>
                 </mat-autocomplete>
                 <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+            </mat-form-field> -->
+
+            <mat-form-field class="w-50 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Ramo</mat-label>
+                <input
+                  type="text"
+                  placeholder="Select Users"
+                  aria-label="Select Users"
+                  matInput
+                  [matAutocomplete]="auto"
+                  [formControl]="customerBranchControl"
+                />
+                <mat-icon *ngIf="filterGroupForm.get('customerBranchControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
+              
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="let user of filteredCustomerBranch | async"
+                  [value]="selectedUsers"
+                >
+                  <div (click)="optionClicked($event, user)">
+                    <mat-checkbox
+                      [checked]="user.selected"
+                      (change)="toggleSelection(user)"
+                      (click)="$event.stopPropagation()"
+                    >
+                      {{ user.name }}
+                    </mat-checkbox>
+                    <span>0</span>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
+
+              
             <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Cliente</mat-label>
                 <input type="text" matInput formControlName="clientControl" [matAutocomplete]="auto">
