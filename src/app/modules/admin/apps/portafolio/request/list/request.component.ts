@@ -20,6 +20,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DateValidator } from './validation-date';
 import { MatSelect } from '@angular/material/select';
+//import { MatInput } from '@angular/material';
 
 export class User {
     constructor(
@@ -78,6 +79,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
     @ViewChild('matselect') a: MatSelect;
+    @ViewChild('inputBranch') inputBranch: ElementRef<any>;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _knowledgesPanelOverlayRef: OverlayRef;
 
@@ -143,67 +146,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         description: 'Baja',
     }];
 
-
-    userControl = new FormControl('');
-    filteredUsers: Observable<User[]>;
     lastFilter: string = '';
     businessTypeSelected = [];
-
-    users = [
-        new User('Misha', 'Arnold'),
-        new User('Felix', 'Godines'),
-        new User('Odessa', 'Thorton'),
-        new User('Julianne', 'Gills'),
-        new User('Virgil', 'Hommel'),
-        new User('Justa', 'Betts'),
-        new User('Keely', 'Millington'),
-        new User('Blanca', 'Winzer'),
-        new User('Alejandrina', 'Pallas'),
-        new User('Rosy', 'Tippins'),
-        new User('Winona', 'Kerrick'),
-        new User('Reynaldo', 'Orchard'),
-        new User('Shawn', 'Counce'),
-        new User('Shemeka', 'Wittner'),
-        new User('Sheila', 'Sak'),
-        new User('Zola', 'Rodas'),
-        new User('Dena', 'Heilman'),
-        new User('Concepcion', 'Pickrell'),
-        new User('Marylynn', 'Berthiaume'),
-        new User('Howard', 'Lipton'),
-        new User('Maxine', 'Amon'),
-        new User('Iliana', 'Steck'),
-        new User('Laverna', 'Cessna'),
-        new User('Brittany', 'Rosch'),
-        new User('Esteban', 'Ohlinger'),
-        new User('Myron', 'Cotner'),
-        new User('Geri', 'Donner'),
-        new User('Minna', 'Ryckman'),
-        new User('Yi', 'Grieco'),
-        new User('Lloyd', 'Sneed'),
-        new User('Marquis', 'Willmon'),
-        new User('Lupita', 'Mattern'),
-        new User('Fernande', 'Shirk'),
-        new User('Eloise', 'Mccaffrey'),
-        new User('Abram', 'Hatter'),
-        new User('Karisa', 'Milera'),
-        new User('Bailey', 'Eno'),
-        new User('Juliane', 'Sinclair'),
-        new User('Giselle', 'Labuda'),
-        new User('Chelsie', 'Hy'),
-        new User('Catina', 'Wohlers'),
-        new User('Edris', 'Liberto'),
-        new User('Harry', 'Dossett'),
-        new User('Yasmin', 'Bohl'),
-        new User('Cheyenne', 'Ostlund'),
-        new User('Joannie', 'Greenley'),
-        new User('Sherril', 'Colin'),
-        new User('Mariann', 'Frasca'),
-        new User('Sena', 'Henningsen'),
-        new User('Cami', 'Ringo'),
-      ];
-    
-      selectedUsers: any[] = new Array<User>();
-
+    selectedBranch: BusinessType[] = [];
+    selectedClients: Client[] = [];
+    selectedCommercialArea: CommercialArea[] = [];
       
     /*
     /**
@@ -390,6 +337,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                         ...item
                     }
                 });
+
+                console.log("businessTypeSelected: ", this.businessTypeSelected);
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -452,7 +401,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 switchMap(query =>
-
                     // Search
                     this._requestService.searchRequest(query)
                 ),
@@ -462,10 +410,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.handleChangeClients();
 
         // Filter the clients
-        this.filteredClients = this.clientControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value, this.clients)),
-        );
+        // this.filteredClients = this.clientControl.valueChanges.pipe(
+        //     startWith(''),
+        //     map(value => this._filter(value, this.clients)),
+        // );
 
         // Filter the commercialArea
         this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
@@ -485,15 +433,22 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         //     map(value => this._filter(value, this.businessType.sort(this.sortArray))),
         // );
 
-        this.filteredCustomerBranch = this.userControl.valueChanges.pipe(
+        this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
             startWith(''),
             map((value) => (typeof value === 'string' ? value : this.lastFilter)),
-            map((filter) => this.filter(filter))
-          );
+            map((filter) => this.filter(filter, this.businessType))
+        );
+
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.clients))
+        );
 
         this._handleChangeForm();
         this._getKnowledges();
-        
+        //this._getClientsByBusinessType();
+
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -625,68 +580,103 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     // }
 
-    filter(filter: string): any[] {
+    private _getClientsByBusinessType() {
+
+        let businessTypes = [];
+
+        // Create array of bussinessTypes ids
+        this.selectedBranch.forEach(item => {
+            businessTypes.push(item.id);
+        });
+
+        // Get clients by bussinessTypes
+        this._requestService.getClientsByBusinessType(businessTypes)
+            .subscribe(clients => {
+                // Update array the clients
+                this.clients = clients;
+                // Notify to clientControl
+                this.clientControl.setValue('');
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    }
+
+    /**
+     * _filter
+     * @param value
+     *
+     */
+     private _filter(value: string, collection: any[]): string[] {
+        const filteredValue = value.toLowerCase();
+        const filteredCollection = collection.map(option => option.name);
+        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
+    }
+    
+    filter(filter: string, collection: any[]): any[] {
         this.lastFilter = filter;
         if (filter) {
-          return this.businessType.filter((option) => {
-            return (
-              option.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0
-            );
-          });
+            return collection.filter((option) => {
+                return (option.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
+            });
         } else {
-          return this.businessType.slice();
+            return collection.slice();
         }
-      }
-    
-      displayFn(value: User[] | string): string | undefined {
-        let displayValue: string;
-        if (Array.isArray(value)) {
-          value.forEach((user, index) => {
-            if (index === 0) {
-              displayValue = user.firstname + ' ' + user.lastname;
-            } else {
-              displayValue += ', ' + user.firstname + ' ' + user.lastname;
-            }
-          });
-        } else {
-          displayValue = value;
-        }
-        return displayValue;
     }
+    
+    //   displayFn(value: User[] | string): string | undefined {
+    //     let displayValue: string;
+    //     if (Array.isArray(value)) {
+    //       value.forEach((user, index) => {
+    //         if (index === 0) {
+    //           displayValue = user.firstname + ' ' + user.lastname;
+    //         } else {
+    //           displayValue += ', ' + user.firstname + ' ' + user.lastname;
+    //         }
+    //       });
+    //     } else {
+    //       displayValue = value;
+    //     }
+    //     return displayValue;
+    // }
+    
 
     optionClicked(event: Event, user: any) {
         event.stopPropagation();
-        this.toggleSelection(user);
-      }
+        this.toggleSelection(user, this.selectedBranch);
+    }
     
-      toggleSelection(user: any) {
-        user.selected = !user.selected;
-        if (user.selected) {
-          this.selectedUsers.push(user);
+    toggleSelection(selectedFilter: any, collection: any) {
+        selectedFilter.selected = !selectedFilter.selected;
+        if ( selectedFilter.selected ) {
+            //this.selectedBranch.push(selectedFilter);
+            collection.push(selectedFilter);
         } else {
-          const i = this.selectedUsers.findIndex(
-            (value) =>
-              value.name === user.name
-          );
-          this.selectedUsers.splice(i, 1);
+            //const a = collection.findIndex((value) => value.name === user.name);
+            const i = collection.findIndex((value) => value.name === selectedFilter.name);
+            collection.splice(i, 1);
         }
-        
-        console.log("selectedUSers: ", this.selectedUsers);
-        //this.userControl.setValue('', {emitEvent: false});
-      }
+        this._getClientsByBusinessType();
+    }
 
-      restartingList() {
-        this.userControl.setValue('', {emitEvent: true});
-      }
+    restartingList() {
+        this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: true});
+        this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true,emitEvent: true});
+        this.inputBranch.nativeElement.focus();
+    }
 
      /**
-     * Sort Array 
-     */
-    sortArray(x, y) {
-    if (x.name < y.name) {return -1; }
-    if (x.name > y.name) {return 1; }
-    return 0;
-  }
+      * Sort Array
+      * 
+      * @param x 
+      * @param y 
+      * @returns 
+      */
+    sortArray(x: any, y: any) {
+        if (x.name < y.name) {return -1; }
+        if (x.name > y.name) {return 1; }
+        return 0;
+    }
+
     /**
      * Open knowledges panel
      */
@@ -823,38 +813,23 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Subscribe from form's values
         this.filterGroupForm.valueChanges.subscribe(controls => {
             let requests: Request[] = this._requestService.requests;
-
+            
             // Filter requests by clients, commercialArea and status
             requests = requests.filter(item =>
                 ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) &&
                     (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
                         (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase()))) &&
-                            (controls.customerBranchControl === null || ( controls.customerBranchControl.toLowerCase() === '' || item?.client?.businessType.name.toLowerCase().includes( controls.customerBranchControl.toLowerCase())))
+                            ((this.selectedBranch.find(businessType => businessType.name.includes(item?.client.businessType.name)) || this.selectedBranch.length <= 0 ))
 
             ));
-
             // Set request for filter
             this.requestOriginal = requests;
-
             // Set the requests
             this._requestService.setRequests(requests);
-
+            // Mark for check
             this._changeDetectorRef.markForCheck();
 
         });
-    }
-
-    /**
-     * _filter
-     * @param value
-     *
-     */
-    private _filter(value: string, collection: any[]): string[] {
-        const filteredValue = value.toLowerCase();
-
-        const filteredCollection = collection.map(option => option.name);
-
-        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     }
 
     /**

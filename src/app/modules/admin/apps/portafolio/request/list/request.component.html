@@ -39,30 +39,31 @@
             <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Ramo</mat-label>
                 <input
+                  #inputBranch
                   type="text"
                   placeholder="Select Users"
                   aria-label="Select Users"
                   matInput
-                  [matAutocomplete]="auto"
+                  [matAutocomplete]="autoCustomerBranch"
                   [formControl]="customerBranchControl"
                 />
-                <mat-icon *ngIf="filterGroupForm.get('customerBranchControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('customerBranchControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
               
-              <mat-autocomplete #auto="matAutocomplete">
+              <mat-autocomplete #autoCustomerBranch="matAutocomplete">
                 <mat-option
-                  *ngFor="let user of filteredCustomerBranch | async"
+                  *ngFor="let branch of filteredCustomerBranch | async"
                   [value]="selectedUsers"
                 >
-                  <div (click)="optionClicked($event, user)">
+                  <div (click)="optionClicked($event, branch)" style="display: flex; justify-content: space-between;">
                     <mat-checkbox
-                      [checked]="user.selected"
-                      (change)="toggleSelection(user)"
+                      [checked]="branch.selected"
+                      (change)="toggleSelection(branch, selectedBranch)"
                       (click)="$event.stopPropagation()"
                     >
-                      {{ user.name }}
+                      {{ branch.name }}
                     </mat-checkbox>
-                    <span>0</span>
+                    <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
                   </div>
                 </mat-option>
               </mat-autocomplete>
