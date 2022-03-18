@@ -28,6 +28,8 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {FuseAlertModule} from "../../../../../@fuse/components/alert";
 import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { NgxSpinnerModule } from "ngx-spinner";
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
         MatTabsModule,
         FuseAlertModule,
         FormsModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        NgxSpinnerModule,
+        MatTooltipModule,
     ],
      providers   : [
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }

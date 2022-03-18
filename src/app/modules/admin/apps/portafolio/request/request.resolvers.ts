@@ -6,7 +6,7 @@ import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inv
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
 import {RequestListComponent} from "./list/request.component";
 import { RequestService } from './request.service';
-import { CommercialArea, Request, Status, Client, Category, RequestPeriod, TypeRequest, TechnicalArea, Collaborator } from './request.types';
+import { CommercialArea, Request, Status, Client, Category, RequestPeriod, TypeRequest, TechnicalArea, Collaborator, Department } from './request.types';
 
 @Injectable({
     providedIn: 'root'
@@ -336,6 +336,37 @@ export class CollaboratorResolver implements Resolve<any>
     resolve(): Observable<Collaborator[]>
     {
         return this._requestService.getCollaborators();           
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DepartmentResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _requestService: RequestService,
+        private _router: Router
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(): Observable<Department[]>
+    {
+        return this._requestService.getDepartments();           
     }
 }
 

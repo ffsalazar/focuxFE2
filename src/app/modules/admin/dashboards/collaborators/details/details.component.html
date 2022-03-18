@@ -110,6 +110,19 @@
 
                 <div class="flex flex-col pt-6 space-y-8 border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-100" >
                     <ng-container *ngIf="profileTag">
+
+
+                        <!-- Role in the company -->
+                        <ng-container *ngIf="collaborator.idFile">
+                            <div class="flex sm:items-center">
+                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-list'"></mat-icon>
+                                <span class="mx-2 font-medium">Ficha</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.idFile}}</div>
+                            </div>
+                        </ng-container>
+
+
                         <!-- Role in the company -->
                         <ng-container *ngIf="collaborator.employeePosition">
                             <div class="flex sm:items-center">
@@ -121,7 +134,7 @@
                         </ng-container>
 
                         <!-- Department -->
-                        <ng-container *ngIf="collaborator.employeePosition">
+                        <ng-container *ngIf="collaborator.employeePosition.department">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
                                 <span class="mx-2 font-medium">Departamento</span>
@@ -140,23 +153,48 @@
                             </div>
                         </ng-container>
 
-                        <!-- Client -->
+                        <!-- leader -->
                         <ng-container *ngIf="collaborator.leader">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:user'"></mat-icon>
+                                <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
                                 <span class="mx-2 font-medium">L&iacute;der</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.leader.name}}</div>
+                                <div class="ml-2 leading-6">{{collaborator.leader.name.split(' ')[0] | titlecase}} {{collaborator.leader.lastName.split(' ')[0] | titlecase}}</div>
                             </div>
                         </ng-container>
 
-                        <!-- Client -->
+                        <!-- Status -->
                         <ng-container *ngIf="collaborator.status">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-copy'"></mat-icon>
                                 <span class="mx-2 font-medium">Estatus</span>
                                 <span class="mx-2">&bull;</span>
                                 <div class="ml-2 leading-6">{{collaborator.status.name}}</div>
+                            </div>
+                        </ng-container>
+                        <!-- Gender -->
+                        <ng-container *ngIf="collaborator.gender">
+                            <div class="flex sm:items-center">
+                                <mat-icon [svgIcon]="'heroicons_outline:user'"></mat-icon>
+                                <span class="mx-2 font-medium">Sexo</span>
+                                <span class="mx-2">&bull;</span>
+                                <div class="ml-2 leading-6">{{collaborator.gender == 'M' ? 'Masculino' : 'Femenino'}}</div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Nationality -->
+                        <ng-container *ngIf="collaborator.nationality">
+                            <div class="flex sm:items-center">
+                                <mat-icon [svgIcon]="'heroicons_outline:map'"></mat-icon>
+                                <span class="mx-2 font-medium">Nacionalidad</span>
+                                <span class="mx-2">&bull;</span>
+                                <span
+                                    class="sm:flex w-6 h-4 mr-1 overflow-hidden"
+                                    [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                    [style.backgroundSize]="'24px 3876px'"
+                                    [style.backgroundPosition]="getCountryByIso(collaborator.nationality).flagImagePos"></span>
+
+
                             </div>
                         </ng-container>
 
@@ -582,7 +620,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Name -->
                     <div class="row">
                         <div class="mt-8">
@@ -612,6 +649,77 @@
                                     formControlName="lastName"
                                     [placeholder]="'Apellidos'"
                                     [spellcheck]="false">
+                            </mat-form-field>
+                        </div>
+                        <!-- Last Name -->
+                        <div class="mt-4" *ngIf="collaborator.idFile == 0">
+                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                                <mat-label>Ficha</mat-label>
+                                <mat-icon
+                                    matPrefix
+                                    class="hidden sm:flex icon-size-5"
+                                    [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                                <input
+                                    type="number"
+                                    matInput
+                                    formControlName="idFile">
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mt-4 fuse-mat-no-subscript w-full">
+                            <mat-label>Sexo</mat-label>
+                        </div>
+                        <div class="mt-4">
+                            <mat-radio-group class="fuse-mat-no-subscript w-full"
+                                 formControlName="gender"
+                                [color]="'primary'"
+                                [value]="'M'">
+                                <mat-radio-button
+                                    class="mx-2"
+                                    [value]="'M'">
+                                    Masculino
+                                </mat-radio-button>
+                                <mat-radio-button
+                                    class="mx-2"
+                                    [value]="'F'">
+                                    Femenino
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+                        <!-- Company -->
+                        <div class="mt-8">
+                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                                <mat-label>Nacionalidad</mat-label>
+
+                                <mat-select
+                                    matPrefix
+                                    formControlName="nationality">
+                                    <mat-select-trigger>
+                                                    <span class="flex items-center">
+                                                        <span
+                                                            class="sm:flex w-6 h-4 mr-1 overflow-hidden"
+                                                            [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                                            [style.backgroundSize]="'24px 3876px'"
+                                                            [style.backgroundPosition]="getCountryByIso(collaboratorForm.get('nationality')['value'] ? collaboratorForm.get('nationality')['value'] : 've').flagImagePos"></span>
+                                                        <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso(collaboratorForm.get('nationality')['value'] ? collaboratorForm.get('nationality')['value'] : 've').name}}</span>
+                                                    </span>
+                                    </mat-select-trigger>
+                                    <ng-container *ngFor="let country of countries; trackBy: trackByFn">
+                                        <mat-option [value]="country.iso">
+                                                        <span class="flex items-center">
+                                                            <span
+                                                                class="w-6 h-4 overflow-hidden"
+                                                                [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                                                [style.backgroundSize]="'24px 3876px'"
+                                                                [style.backgroundPosition]="country.flagImagePos"></span>
+                                                            <span class="ml-2">{{country.name}}</span>
+
+                                                        </span>
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
                             </mat-form-field>
                         </div>
                     </div>
@@ -792,7 +900,7 @@
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:user'"></mat-icon>
                             <mat-select [placeholder]="collaborator.leader" formControlName="leader">
-                                <mat-option *ngFor="let lead of leaders" [value]="lead.id">{{lead.name}}</mat-option>
+                                <mat-option *ngFor="let lead of leaders" [value]="lead.id">{{lead.name.split(' ')[0] | titlecase}} {{lead.lastName.split(' ')[0] | titlecase}}  </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>

@@ -21,6 +21,7 @@ import {
 } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
+import {setValue} from "@ngneat/transloco";
 
 @Component({
     selector       : 'collaborators-details',
@@ -99,17 +100,17 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             idFile      : [''],
             avatar      : [null],
             name        : ['',[Validators.required]],
-            mail        : [''],
-            lastName    : [''],
+            mail        : ['',[Validators.required]],
+            lastName    : ['',[Validators.required]],
             nationality : [''],
-            department : [''],
-            employeePosition : [[]],
-            client: [[]],
-            companyEntryDate : [''],
-            organizationEntryDate : [''],
-            gender       : [''],
-            bornDate     : [''],
-            assignedLocation : [''],
+            department : ['',[Validators.required]],
+            employeePosition : [[],[Validators.required]],
+            client: [[],[Validators.required]],
+            companyEntryDate : ['',[Validators.required]],
+            organizationEntryDate : ['',[Validators.required]],
+            gender       : ['',[Validators.required]],
+            bornDate     : ['',[Validators.required]],
+            assignedLocation : ['',[Validators.required]],
             knowledges         : [[]],
             isActive: [''],
             technicalSkills: [''],
@@ -117,7 +118,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             phones: this._formBuilder.array([]),
             isCentralAmerican:[''],
             leader:[[]],
-            status: [[]]
+            status: [[],[Validators.required]]
+
         })
 
 
@@ -178,7 +180,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                             })
                         );
                     });
-                    console.log(phoneNumbersFormGroups)
+
                 }
                 else
                 {
@@ -197,8 +199,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                     (this.collaboratorForm.get('phones') as FormArray).push(phoneNumbersFormGroup);
                 });
 
+
+
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
+
+
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -281,6 +287,14 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
+        if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
+            this.editMode = true;
+            this.collaboratorForm.reset();
+            this.collaboratorForm.get('id').setValue(this.collaborator.id);
+            (this.collaboratorForm.get('phones') as FormArray).removeAt(0);
+            this.collaboratorForm.get('knowledges').setValue(this.collaborator.knowledges);
+        }
+
 
         this.filteredKnowledges = this.collaborator.knowledges;
 
@@ -295,9 +309,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         //     this.filteredKnowledges.push(filteredKnowledge);
         // });
 
-        if(this.collaborator.name === 'Nuevo' && this.collaborator.lastName === 'Colaborador'){
-            this.editMode = true;
-        }
+
     }
 
     /**
@@ -327,7 +339,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                     deviationPercentage:request.deviationPercentage
 
                 };
-                console.log(this.request)
+                console.log(request)
 
                 this._collaboratorsService.open({
                         template: this.tplDetail,title:'detail'
@@ -836,7 +848,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Update the collaborator form
         this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
         // Setting status to inactive
-        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe();
+        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.knowledge.id, knowledge).subscribe();
 
         // Mark for check
         this._changeDetectorRef.markForCheck();

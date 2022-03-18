@@ -30,6 +30,7 @@ import { FocuxPopupComponent } from './request/focux-popup/focux-popup.component
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { MatTableModule } from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
 
 @NgModule({
     declarations: [
@@ -64,7 +65,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         FuseAlertModule,
         MatAutocompleteModule,
         MatTableModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        PriorityRequestModule,
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,
