@@ -7,7 +7,7 @@ import {TranslocoModule} from "@ngneat/transloco";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatMenuModule} from "@angular/material/menu";
-import {MatRippleModule} from "@angular/material/core";
+import {MatRippleModule, MAT_DATE_LOCALE} from "@angular/material/core";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {RouterModule} from "@angular/router";
 import {RequestPanelRoutes} from "../requestPanel/requestPanel.routing";
@@ -65,5 +65,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
         NgxSpinnerModule,
         MatTooltipModule,
     ],
+     providers   : [
+        { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
+    ]
 })
 export class AssignmentOccupationModule { }

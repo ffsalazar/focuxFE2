@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatRippleModule } from '@angular/material/core';
+import { MatRippleModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -70,6 +70,9 @@ import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/p
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,
+    ],
+      providers   : [
+        { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ]
 })
 export class PortafolioModule

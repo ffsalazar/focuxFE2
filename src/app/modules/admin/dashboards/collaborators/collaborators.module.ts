@@ -26,6 +26,7 @@ import { FocusPopupRequestComponent} from "./details/focux-popup-request/focus-p
 import {collaboratorsRoutes} from "./collaborators.routing";
 import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MAT_DATE_LOCALE} from '@angular/material/core';
 
 @NgModule({
     declarations: [
@@ -71,7 +72,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
                     monthYearA11yLabel: 'MMMM YYYY'
                 }
             }
-        }
+        },
+        { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ]
 })
 export class CollaboratorsModule
