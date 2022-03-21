@@ -1367,7 +1367,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 };
 
                 if ( !this.isEditing ) {
-                    requestNew.responsibleRequest = '';
+                    requestNew.responsibleRequest = null;
                     // Create the request on the server
                     this.createNewRequest(requestNew);
                 } else {
