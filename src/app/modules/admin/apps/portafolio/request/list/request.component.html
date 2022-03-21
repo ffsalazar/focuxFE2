@@ -20,7 +20,7 @@
                 [placeholder]="'Buscar Solicitudes'">
         </mat-form-field> -->
         <!-- Search client -->
-        <form [formGroup]="filterGroupForm">
+        <form [formGroup]="filterGroupForm" class="w-full">
             <!-- <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Ramo</mat-label>
                 <input type="text" matInput formControlName="customerBranchControl" [matAutocomplete]="autoCustomerBranch">
@@ -36,7 +36,7 @@
                 <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
             </mat-form-field> -->
 
-            <mat-form-field class="w-50 mr-6" appearance="fill">
+            <mat-form-field class="w-1/5 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Ramo</mat-label>
                 <input
                   #inputBranch
@@ -50,35 +50,98 @@
                 <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('customerBranchControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
               
-              <mat-autocomplete #autoCustomerBranch="matAutocomplete">
+            <mat-autocomplete #autoCustomerBranch="matAutocomplete">
+            <mat-option
+                *ngFor="let branch of filteredCustomerBranch | async"
+                [value]="selectedUsers"
+            >
+                <div (click)="optionClicked($event, branch, selectedBranch, 'branch')" style="display: flex; justify-content: space-between;">
+                <mat-checkbox
+                    [checked]="branch.selected"
+                    (change)="toggleSelection(branch, selectedBranch, 'branch')"
+                    (click)="$event.stopPropagation()"
+                >
+                    {{ branch.name }}
+                </mat-checkbox>
+                <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
+                </div>
+            </mat-option>
+            </mat-autocomplete>
+
+            <mat-form-field class="w-1/5 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Cliente</mat-label>
+                <input
+                  type="text"
+                  placeholder="Select Users"
+                  aria-label="Select Users"
+                  matInput
+                  [matAutocomplete]="autoClient"
+                  [formControl]="clientControl"
+                />
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
+            </mat-form-field>
+              
+              <mat-autocomplete #autoClient="matAutocomplete">
                 <mat-option
-                  *ngFor="let branch of filteredCustomerBranch | async"
+                  *ngFor="let client of filteredClients | async"
                   [value]="selectedUsers"
                 >
-                  <div (click)="optionClicked($event, branch)" style="display: flex; justify-content: space-between;">
+                  <div (click)="optionClicked($event, client, selectedClient, 'client')" style="display: flex; justify-content: space-between;">
                     <mat-checkbox
-                      [checked]="branch.selected"
-                      (change)="toggleSelection(branch, selectedBranch)"
-                      (click)="$event.stopPropagation()"
+                        [checked]="client.selected"
+                        (change)="toggleSelection(client, selectedClient, 'client')"
+                        (click)="$event.stopPropagation()"
                     >
-                      {{ branch.name }}
+                      {{ client.name }}
                     </mat-checkbox>
-                    <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
+                    <span>{{ getAmountRequestByOption(client.name, 1) }}</span>
                   </div>
                 </mat-option>
               </mat-autocomplete>
 
               
-            <mat-form-field class="w-50 mr-6" appearance="fill">
+            <!-- <mat-form-field class="w-50 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Cliente</mat-label>
                 <input type="text" matInput formControlName="clientControl" [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let option of filteredClients | async" [value]="option">
-                        <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 1) }}</span></div></mat-option>
+                        <div style="display: flex; justify-content: space-between"><span>{{option.name}}</span> <span>{{ getAmountRequestByOption(option.name, 1) }}</span></div></mat-option>
                 </mat-autocomplete>
                 <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+            </mat-form-field> -->
+
+            <mat-form-field class="w-1/5 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Area solucionador</mat-label>
+                <input
+                  type="text"
+                  placeholder="Select Users"
+                  aria-label="Select Users"
+                  matInput
+                  [matAutocomplete]="autoCommercialArea"
+                  [formControl]="commercialAreaControl"
+                />
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('commercialAreaControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
-            <mat-form-field class="w-50 mr-6" appearance="fill">
+              
+              <mat-autocomplete #autoCommercialArea="matAutocomplete">
+                <mat-option
+                  *ngFor="let area of filteredCommercialArea | async"
+                  [value]="selectedUsers"
+                >
+                  <div (click)="optionClicked($event, area, selectedCommercialArea, 'area')" style="display: flex; justify-content: space-between;">
+                    <mat-checkbox
+                        [checked]="area.selected"
+                        (change)="toggleSelection(area, selectedCommercialArea, 'area')"
+                        (click)="$event.stopPropagation()"
+                    >
+                      {{ area.name }}
+                    </mat-checkbox>
+                    <span>{{ getAmountRequestByOption(area.name, 2) }}</span>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
+
+            <!-- <mat-form-field class="w-1/5 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Area solucionador</mat-label>
                 <input type="text" matInput formControlName="commercialAreaControl" [matAutocomplete]="autoCommercialArea">
                 <mat-autocomplete #autoCommercialArea="matAutocomplete">
@@ -86,8 +149,39 @@
                         <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 2) }}</span></div></mat-option>
                 </mat-autocomplete>
                 <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+            </mat-form-field> -->
+            <mat-form-field class="w-1/5 mr-6" appearance="fill">
+                <mat-label class="font-semibold">Estatus</mat-label>
+                <input
+                  type="text"
+                  placeholder="Select Users"
+                  aria-label="Select Users"
+                  matInput
+                  [matAutocomplete]="autoStatus"
+                  [formControl]="statusControl"
+                />
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('statusControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
-            <mat-form-field class="w-50 mr-6" appearance="fill">
+              
+              <mat-autocomplete #autoStatus="matAutocomplete">
+                <mat-option
+                  *ngFor="let status of filteredStatus | async"
+                  [value]="selectedUsers"
+                >
+                  <div (click)="optionClicked($event, status, selectedStatus, 'status')" style="display: flex; justify-content: space-between;">
+                    <mat-checkbox
+                        [checked]="status.selected"
+                        (change)="toggleSelection(status, selectedStatus, 'status')"
+                        (click)="$event.stopPropagation()"
+                    >
+                      {{ status.name }}
+                    </mat-checkbox>
+                    <span>{{ getAmountRequestByOption(status.name, 3) }}</span>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
+              
+            <!-- <mat-form-field class="w-1/5 mr-6" appearance="fill">
                 <mat-label class="font-semibold">Estatus</mat-label>
                 <input type="text" matInput formControlName="statusControl" [matAutocomplete]="autoStatus">
                 <mat-autocomplete #autoStatus="matAutocomplete">
@@ -95,7 +189,7 @@
                         <div style="display: flex; justify-content: space-between"><span>{{option}}</span> <span>{{ getAmountRequestByOption(option, 3) }}</span></div></mat-option>
                 </mat-autocomplete>
                 <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
-            </mat-form-field>
+            </mat-form-field> -->
         </form>
 
         <!-- Add request button -->

@@ -64,6 +64,8 @@ export class User {
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
             }
+
+
         `
     ],
     encapsulation  : ViewEncapsulation.None,
@@ -149,8 +151,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     lastFilter: string = '';
     businessTypeSelected = [];
     selectedBranch: BusinessType[] = [];
-    selectedClients: Client[] = [];
+    selectedClient: Client[] = [];
     selectedCommercialArea: CommercialArea[] = [];
+    selectedStatus: Status[] = [];
       
     /*
     /**
@@ -253,7 +256,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe((categories: Category[]) => {
                 // Update the categories
                 this.categories = categories;
-
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -276,6 +278,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the client
                 clients.sort(this.sortArray);
                 this.clients = clients;
+
+                // Map for clients
+                // this.clientSelected = this.clients.map(item => {
+                //     return {
+                //         selected: false,
+                //         ...item
+                //     }
+                // });
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -331,6 +342,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the buninessType
                 this.businessType = businessType;
 
+                // Map for bussinessType
                 this.businessTypeSelected = this.businessType.map(item => {
                     return {
                         selected: false,
@@ -338,7 +350,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     }
                 });
 
-                console.log("businessTypeSelected: ", this.businessTypeSelected);
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -445,6 +456,18 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             map((filter) => this.filter(filter, this.clients))
         );
 
+        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.commercialArea))
+        );
+
+        this.filteredStatus = this.statusControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.status))
+        );
+
         this._handleChangeForm();
         this._getKnowledges();
         //this._getClientsByBusinessType();
@@ -458,9 +481,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngAfterViewInit(): void
     {   
-        //this.toppings.setValue('Extra cheese');
-        console.log(this.toppings.value);
-        console.log("mat-select: ", this.a);
         if ( this._sort && this._paginator )
         {
             // Set the initial sort
@@ -580,17 +600,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     // }
 
+    /**
+     * Get clients by bussinessType
+     * 
+     */
     private _getClientsByBusinessType() {
-
-        let businessTypes = [];
-
-        // Create array of bussinessTypes ids
-        this.selectedBranch.forEach(item => {
-            businessTypes.push(item.id);
-        });
-
         // Get clients by bussinessTypes
-        this._requestService.getClientsByBusinessType(businessTypes)
+        this._requestService.getClientsByBusinessType(this.selectedBranch.map(item => item.id))
             .subscribe(clients => {
                 // Update array the clients
                 this.clients = clients;
@@ -599,6 +615,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+    }
+
+    private _getBusinessTypeByClient(clientSelected) {
+        
     }
 
     /**
@@ -612,6 +632,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     }
     
+    /**
+     * Filter
+     * 
+     * @param filter 
+     * @param collection 
+     * @returns 
+     */
     filter(filter: string, collection: any[]): any[] {
         this.lastFilter = filter;
         if (filter) {
@@ -639,38 +666,68 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     return displayValue;
     // }
     
-
-    optionClicked(event: Event, user: any) {
+    /**
+     * Option clicked
+     * 
+     * @param event 
+     * @param selectedItem 
+     */
+    optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
         event.stopPropagation();
-        this.toggleSelection(user, this.selectedBranch);
+        this.toggleSelection(selectedItem, selectedCollection, option);
     }
     
-    toggleSelection(selectedFilter: any, collection: any) {
+    /**
+     * Toggle Selection
+     * 
+     * @param selectedFilter 
+     * @param collection 
+     */
+    toggleSelection(selectedFilter: any, selectedCollection: BusinessType[] | Client[], option: string) {
         selectedFilter.selected = !selectedFilter.selected;
         if ( selectedFilter.selected ) {
             //this.selectedBranch.push(selectedFilter);
-            collection.push(selectedFilter);
+            selectedCollection.push(selectedFilter);
         } else {
             //const a = collection.findIndex((value) => value.name === user.name);
-            const i = collection.findIndex((value) => value.name === selectedFilter.name);
-            collection.splice(i, 1);
+            const i = selectedCollection.findIndex((value) => value.name === selectedFilter.name);
+            selectedCollection.splice(i, 1);
         }
-        this._getClientsByBusinessType();
+        
+        // Select action option
+        switch( option ) {
+            case 'branch':
+                this._getClientsByBusinessType();
+                break;
+            case 'client':
+                this.clientControl.setValue('');
+                break;
+            case 'area':
+                this.commercialAreaControl.setValue('');
+                break;
+            case 'status':
+                this.statusControl.setValue('');
+                break;
+        }
     }
 
+    /**
+     * Restarting list
+     * 
+     */
     restartingList() {
         this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: true});
         this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true,emitEvent: true});
         this.inputBranch.nativeElement.focus();
     }
 
-     /**
-      * Sort Array
-      * 
-      * @param x 
-      * @param y 
-      * @returns 
-      */
+    /**
+     * Sort Array
+     * 
+     * @param x 
+     * @param y 
+     * @returns 
+     */
     sortArray(x: any, y: any) {
         if (x.name < y.name) {return -1; }
         if (x.name > y.name) {return 1; }
@@ -813,15 +870,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Subscribe from form's values
         this.filterGroupForm.valueChanges.subscribe(controls => {
             let requests: Request[] = this._requestService.requests;
-            
             // Filter requests by clients, commercialArea and status
             requests = requests.filter(item =>
-                ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) &&
-                    (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
-                        (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase()))) &&
+                (((this.selectedClient.find(client => client.name.includes(item?.client.name)) || this.selectedClient.length <= 0)) &&
+                    ((this.selectedCommercialArea.find(area => area.name.includes(item?.commercialArea.name)) || this.selectedCommercialArea.length <= 0)) &&
+                        ((this.selectedStatus.find(status => status.name.includes(item?.status.name)) || this.selectedStatus.length <= 0)) &&
                             ((this.selectedBranch.find(businessType => businessType.name.includes(item?.client.businessType.name)) || this.selectedBranch.length <= 0 ))
 
             ));
+            
             // Set request for filter
             this.requestOriginal = requests;
             // Set the requests
