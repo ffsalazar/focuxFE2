@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -20,17 +20,9 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DateValidator } from './validation-date';
 import { MatSelect } from '@angular/material/select';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 //import { MatInput } from '@angular/material';
-
-export class User {
-    constructor(
-      public firstname: string,
-      public lastname: string,
-      public selected?: boolean
-    ) {
-      if (selected === undefined) selected = false;
-    }
-  }
 
 @Component({
     selector       : 'request-list',
@@ -46,6 +38,13 @@ export class User {
             .mat-form-field-wrapper
             .mat-form-field-flex {
                 padding-right: 2px !important;
+            }
+            
+            .checkbox-all {
+                padding: 0 16px;
+                height: 48px;
+                display: flex !important;
+                align-items: center;
             }
 
 
@@ -81,7 +80,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
     @ViewChild('matselect') a: MatSelect;
-    @ViewChild('inputBranch') inputBranch: ElementRef<any>;
+    @ViewChild('inputBranch', {read: MatInput}) inputBranch: MatInput;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _knowledgesPanelOverlayRef: OverlayRef;
@@ -154,10 +153,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     selectedClient: Client[] = [];
     selectedCommercialArea: CommercialArea[] = [];
     selectedStatus: Status[] = [];
-    
+    clientSelected = [];
+    commercialAreaSelected = [];
+    statusSelected = [];
     isActive: boolean = true;
     selectedItem: any = null;
-    allComplete: boolean = false;
+    allCompleteBusinessType: boolean = false;
+    allCompleteClient: boolean = false;
+    allCompleteCommercialArea: boolean = false;
+    allCompleteStatus: boolean = false;
 
     /*
     /**
@@ -284,12 +288,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this.clients = clients;
 
                 // Map for clients
-                // this.clientSelected = this.clients.map(item => {
-                //     return {
-                //         selected: false,
-                //         ...item
-                //     }
-                // });
+                this.clientSelected = this.clients.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -301,6 +305,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe((commercialArea: CommercialArea[]) => {
                 // Update the commercialArea
                 this.commercialArea = commercialArea;
+                
+                // Map for clients
+                this.commercialAreaSelected = this.commercialArea.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -312,6 +325,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the status
                 this.status = status;
                 const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
+
+                // Map for bussinessType
+                this.statusSelected = this.status.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
 
                 this.step2.get('status').setValue(statusId);
                 // Mark for check
@@ -426,53 +447,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.handleChangeClients();
 
-        // Filter the clients
-        // this.filteredClients = this.clientControl.valueChanges.pipe(
-        //     startWith(''),
-        //     map(value => this._filter(value, this.clients)),
-        // );
-
-        // Filter the commercialArea
-        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value, this.commercialArea)),
-        );
-
-        // Filter the status
-        this.filteredStatus = this.statusControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value, this.status)),
-        );
-
-        // Filter the status
-        // this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
-        //     startWith(''),
-        //     map(value => this._filter(value, this.businessType.sort(this.sortArray))),
-        // );
-
-        this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
-            startWith(''),
-            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
-            map((filter) => this.filter(filter, this.businessType))
-        );
-
-        this.filteredClients = this.clientControl.valueChanges.pipe(
-            startWith(''),
-            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
-            map((filter) => this.filter(filter, this.clients))
-        );
-
-        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
-            startWith(''),
-            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
-            map((filter) => this.filter(filter, this.commercialArea))
-        );
-
-        this.filteredStatus = this.statusControl.valueChanges.pipe(
-            startWith(''),
-            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
-            map((filter) => this.filter(filter, this.status))
-        );
+        this.filteredCustomerBranch = this._handleFilterSubscription(this.customerBranchControl, this.businessTypeSelected);
+        
+        this.filteredClients = this._handleFilterSubscription(this.clientControl, this.clientSelected);
+        
+        this.filteredCommercialArea = this._handleFilterSubscription(this.commercialAreaControl, this.commercialAreaSelected);
+        
+        this.filteredStatus = this._handleFilterSubscription(this.statusControl, this.statusSelected);
 
         this._handleChangeForm();
         this._getKnowledges();
@@ -606,13 +587,29 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     // }
 
+
+    /**
+     * Handle filter subscription
+     * 
+     * @param control 
+     * @param collection 
+     * @returns 
+     */
+    private _handleFilterSubscription(control: AbstractControl, collection: any): Observable<any> {
+        return control.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, collection))
+        );
+    }
+
     /**
      * Get clients by bussinessType
      * 
      */
     private _getClientsByBusinessType() {
         // Get clients by bussinessTypes
-        this._requestService.getClientsByBusinessType(this.selectedBranch.map(item => item.id))
+        this._requestService.getClientsByBusinessType(this.businessTypeSelected.filter(item => item.selected).map(item => item.id))
             .subscribe(clients => {
                 // Update array the clients
                 this.clients = clients;
@@ -671,62 +668,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     }
     //     return displayValue;
     // }
-    
-    /**
-     * Option clicked
-     * 
-     * @param event 
-     * @param selectedItem 
-     */
-    optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
-        event.stopPropagation();
-        this.toggleSelection(selectedItem, selectedCollection, option);
-    }
-    
-    /**
-     * Toggle Selection
-     * 
-     * @param selectedFilter 
-     * @param collection 
-     */
-    toggleSelection(selectedFilter: any, selectedCollection: BusinessType[] | Client[], option: string) {
-        selectedFilter.selected = !selectedFilter.selected;
-        if ( selectedFilter.selected ) {
-            //this.selectedBranch.push(selectedFilter);
-            console.log("toggle añadir: ", selectedFilter);
-            selectedCollection.push(selectedFilter);
-        } else {
-            //const a = collection.findIndex((value) => value.name === user.name);
-            const i = selectedCollection.findIndex((value) => value.name === selectedFilter.name);
-            selectedCollection.splice(i, 1);
-        }
-        
-        // Select action option
-        switch( option ) {
-            case 'branch':
-                this._getClientsByBusinessType();
-                break;
-            case 'client':
-                this.clientControl.setValue('');
-                break;
-            case 'area':
-                this.commercialAreaControl.setValue('');
-                break;
-            case 'status':
-                this.statusControl.setValue('');
-                break;
-        }
-    }
-
-    /**
-     * Restarting list
-     * 
-     */
-    restartingList() {
-        this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: true});
-        this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true,emitEvent: true});
-        this.inputBranch.nativeElement.focus();
-    }
 
     /**
      * Sort Array
@@ -736,8 +677,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * @returns 
      */
     sortArray(x: any, y: any) {
-        if (x.name < y.name) {return -1; }
-        if (x.name > y.name) {return 1; }
+        if ( x.name < y.name ) {return -1; }
+        if ( x.name > y.name ) {return 1; }
         return 0;
     }
 
@@ -879,10 +820,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             let requests: Request[] = this._requestService.requests;
             // Filter requests by clients, commercialArea and status
             requests = requests.filter(item =>
-                (((this.selectedClient.find(client => client.name.includes(item?.client.name)) || this.selectedClient.length <= 0)) &&
-                    ((this.selectedCommercialArea.find(area => area.name.includes(item?.commercialArea.name)) || this.selectedCommercialArea.length <= 0)) &&
-                        ((this.selectedStatus.find(status => status.name.includes(item?.status.name)) || this.selectedStatus.length <= 0)) &&
-                            ((this.selectedBranch.find(businessType => businessType.name.includes(item?.client.businessType.name)) || this.selectedBranch.length <= 0 ))
+                (((this.clientSelected.find(client => client.selected && client.name.includes(item?.client.name)) || this.clientSelected.every(client => !client.selected))) &&
+                    ((this.commercialAreaSelected.find(area => area.selected && area.name.includes(item?.commercialArea.name)) || this.commercialAreaSelected.every(area => !area.selected))) &&
+                        ((this.statusSelected.find(status => status.selected && status.name.includes(item?.status.name)) || this.statusSelected.every(status => !status.selected))) &&
+                            ((this.businessTypeSelected.find(businessType => businessType.selected && businessType.name.includes(item?.client.businessType.name)) || this.businessTypeSelected.every(businessType => !businessType.selected ) ))
 
             ));
             
@@ -1399,9 +1340,68 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         return item.id || index;
     }
 
-    test(selectedItem) {
-        console.log("Test");
+    /**
+     * Option clicked
+     * 
+     * @param event 
+     * @param selectedItem 
+     */
+     optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
+        event.stopPropagation();
+        this.toggleSelection(selectedItem, selectedCollection, option);
+    }
+    
+    handleChangeCheckbox(option: string) {
+        // Select action option
+        switch( option ) {
+            case 'branch':
+                this._getClientsByBusinessType();
+                break;
+            case 'client':
+                this.clientControl.setValue('');
+                break;
+            case 'area':
+                this.commercialAreaControl.setValue('');
+                break;
+            case 'status':
+                this.statusControl.setValue('');
+                break;
+        }
+    }
+    /**
+     * Toggle Selection
+     * 
+     * @param selectedFilter 
+     * @param collection 
+     */
+    toggleSelection(selectedFilter: any, selectedCollection: BusinessType[] | Client[], option: string) {
+        // change status the selected
+        selectedFilter.selected = !selectedFilter.selected;
+        // update all as complete
+        this.updateAllComplete(option);
         
+        // Handle change from checkbox
+        this.handleChangeCheckbox(option);
+        
+    }
+
+    /**
+     * Restarting list
+     * 
+     */
+    restartingList() {
+        this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: false});
+        this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true, emitEvent: true});
+        ///this.inputBranch.nativeElement.focus();
+        this.inputBranch.focus();
+    }
+
+    /**
+     * Update selected item
+     * 
+     * @param selectedItem 
+     */
+    updateSelectedItem(selectedItem: any) {
         if ( this.selectedItem ) {
             this.selectedItem = null;
         } else {
@@ -1409,24 +1409,93 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }
     }
 
-    selectOnlyItem(item: any) {
-        console.log("selectedBranch: ", this.selectedBranch);
-        this.selectedBranch = [...this.selectedBranch.filter(element => element.name === item.name)];
-        this.selectedBranch.push(item);
-        // this.businessType = this.businessType.map(e => e.selected);
-        // Mark for selectedBranch
+    /**
+     * Select only one item
+     * 
+     * @param selectedItem 
+     */
+    selectOnlyItem(selectedItem: any) {
+        selectedItem.selected = true;
+
+        this.businessTypeSelected.forEach((item) => {
+            if ( item.name !== selectedItem.name ) {
+                item.selected = false;
+            }
+        });
+        //event.stopPropagation();
     }
 
+    /**
+     * Check item
+     * 
+     * @param item 
+     * @param collection 
+     * @returns 
+     */
     checkItem(item: any, collection: any) {
-        console.log("collection edwdad: ", collection);
         return collection.find(element => element.name === item.name) === undefined ? false: true;
     }
 
-    setAll(completed: boolean) {
-        this.allComplete = completed;
-        if ( this.selectedBranch.length < 0 ) {
-        return;
+    /**
+     * Set all as selected
+     * 
+     * @param completed 
+     */
+    setAll(completed: boolean, collection: any, option: string) {
+        
+        // Select action option
+        switch( option ) {
+            case 'branch':
+                this.allCompleteBusinessType = completed;
+                break;
+            case 'client':
+                this.allCompleteClient = completed;
+                break;
+            case 'area':
+                this.allCompleteCommercialArea = completed;
+                break;
+            case 'status':
+                this.allCompleteStatus = completed;
+                break;
         }
-       //this.task.subtasks.forEach(t => (t.completed = completed));
+
+        collection.forEach(item => item.selected = completed);
+        this.customerBranchControl.setValue('');
+    }
+
+    /**
+     * Some complete
+     * 
+     * @returns
+     */
+    someComplete(collection: any, allComplete: boolean): boolean {
+        return collection.filter(item => item.selected).length > 0 && !allComplete;
+    }
+    
+    /**
+     * Update all as complete
+     * 
+     */
+    updateAllComplete(option: string) {
+
+        switch( option ) {
+            case 'branch':
+                this.allCompleteBusinessType = this.businessTypeSelected != null && this.businessTypeSelected.every(item => item.selected);
+
+                break;
+            case 'client':
+                this.allCompleteClient = this.clientSelected != null && this.clientSelected.every(item => item.selected);
+                break;
+            case 'area':
+                this.allCompleteCommercialArea = this.commercialAreaSelected != null && this.commercialAreaSelected.every(item => item.selected);
+                break;
+            case 'status':
+                this.allCompleteStatus = this.statusSelected != null && this.statusSelected.every(item => item.selected);
+
+                break;
+        }
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 }

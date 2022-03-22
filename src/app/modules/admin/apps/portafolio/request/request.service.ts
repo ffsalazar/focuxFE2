@@ -240,7 +240,6 @@ export class RequestService
     getKnowledges(): Observable<Knowledge[]>
     {
 
-        console.log("geTknowledge");
         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
             tap((knowledges) => {
                 let knowledgesFiltered : Knowledge[] = []
@@ -249,8 +248,6 @@ export class RequestService
                         knowledgesFiltered.push(knowledge);
                     }
                 });
-
-                console.log("knowledgesFiltered: ", knowledgesFiltered);
                 
                 this._knowledges.next(knowledgesFiltered);
             })
@@ -596,7 +593,6 @@ export class RequestService
         let params = new HttpParams();
         params = params.append('bussinessTypes', businessTypesId.join(','));
 
-        console.log("params: ", params);
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/bussinesstype', {
             params
         }).pipe(
