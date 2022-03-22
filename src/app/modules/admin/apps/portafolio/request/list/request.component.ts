@@ -154,7 +154,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     selectedClient: Client[] = [];
     selectedCommercialArea: CommercialArea[] = [];
     selectedStatus: Status[] = [];
-      
+    
+    isActive: boolean = true;
+    selectedItem: any = null;
+    allComplete: boolean = false;
+
     /*
     /**
      * Constructor
@@ -349,6 +353,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                         ...item
                     }
                 });
+
+                this.businessType = [...this.businessTypeSelected];
 
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -687,6 +693,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         selectedFilter.selected = !selectedFilter.selected;
         if ( selectedFilter.selected ) {
             //this.selectedBranch.push(selectedFilter);
+            console.log("toggle añadir: ", selectedFilter);
             selectedCollection.push(selectedFilter);
         } else {
             //const a = collection.findIndex((value) => value.name === user.name);
@@ -1390,5 +1397,36 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     trackByFn(index: number, item: any): any
     {
         return item.id || index;
+    }
+
+    test(selectedItem) {
+        console.log("Test");
+        
+        if ( this.selectedItem ) {
+            this.selectedItem = null;
+        } else {
+            this.selectedItem = selectedItem;
+        }
+    }
+
+    selectOnlyItem(item: any) {
+        console.log("selectedBranch: ", this.selectedBranch);
+        this.selectedBranch = [...this.selectedBranch.filter(element => element.name === item.name)];
+        this.selectedBranch.push(item);
+        // this.businessType = this.businessType.map(e => e.selected);
+        // Mark for selectedBranch
+    }
+
+    checkItem(item: any, collection: any) {
+        console.log("collection edwdad: ", collection);
+        return collection.find(element => element.name === item.name) === undefined ? false: true;
+    }
+
+    setAll(completed: boolean) {
+        this.allComplete = completed;
+        if ( this.selectedBranch.length < 0 ) {
+        return;
+        }
+       //this.task.subtasks.forEach(t => (t.completed = completed));
     }
 }

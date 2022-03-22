@@ -49,21 +49,33 @@
                 />
                 <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('customerBranchControl').value !== ''" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
-              
+            
             <mat-autocomplete #autoCustomerBranch="matAutocomplete">
+                <!-- <mat-checkbox class="example-margin"
+                  [checked]="allComplete"
+                  [color]="task.color"
+                  [indeterminate]="someComplete()"
+                  (change)="setAll($event.checked)">
+                    {{task.name}}
+                </mat-checkbox> -->
             <mat-option
                 *ngFor="let branch of filteredCustomerBranch | async"
                 [value]="selectedUsers"
             >
                 <div (click)="optionClicked($event, branch, selectedBranch, 'branch')" style="display: flex; justify-content: space-between;">
                 <mat-checkbox
-                    [checked]="branch.selected"
+                    [checked]="checkItem(branch, selectedBranch)"
                     (change)="toggleSelection(branch, selectedBranch, 'branch')"
                     (click)="$event.stopPropagation()"
+                    [color]="'primary'"
                 >
                     {{ branch.name }}
                 </mat-checkbox>
-                <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
+                <div class="w-full text-right" (mouseover)="test(branch)" *ngIf="!(branch.name === selectedItem?.name)">
+                    <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
+                </div>
+                <div class="w-full text-right" (mouseleave)="test()" (click)="selectOnlyItem(branch)" *ngIf="branch.name === selectedItem?.name">
+                    <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i></div>
                 </div>
             </mat-option>
             </mat-autocomplete>
@@ -91,6 +103,7 @@
                         [checked]="client.selected"
                         (change)="toggleSelection(client, selectedClient, 'client')"
                         (click)="$event.stopPropagation()"
+                        [color]="'primary'"
                     >
                       {{ client.name }}
                     </mat-checkbox>
@@ -133,6 +146,7 @@
                         [checked]="area.selected"
                         (change)="toggleSelection(area, selectedCommercialArea, 'area')"
                         (click)="$event.stopPropagation()"
+                        [color]="'primary'"
                     >
                       {{ area.name }}
                     </mat-checkbox>
@@ -173,6 +187,7 @@
                         [checked]="status.selected"
                         (change)="toggleSelection(status, selectedStatus, 'status')"
                         (click)="$event.stopPropagation()"
+                        [color]="'primary'"
                     >
                       {{ status.name }}
                     </mat-checkbox>
