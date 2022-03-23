@@ -725,7 +725,7 @@
                                         >
                                             <ng-container *ngFor="let collaborator of collaborators">
                                                 <mat-option [value]="collaborator.id">
-                                                    {{collaborator.name}}
+                                                    {{collaborator.name + ' ' + collaborator.lastName}}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
