@@ -35,6 +35,9 @@ import { MatSelect } from '@angular/material/select';
             .mat-form-field-flex {
                 padding-right: 2px !important;
             }
+            .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix{
+                padding-right: 4px !important;
+            }
 
 
             .inventory-grid {

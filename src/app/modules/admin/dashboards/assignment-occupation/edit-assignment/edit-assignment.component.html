@@ -1,0 +1,136 @@
+<div style="justify-content: space-between;" class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4 border-b">
+    <!-- Search
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+            <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                [placeholder]="'Buscar Solicitudes'">
+        </mat-form-field> -->
+    <!-- Search client -->
+    <form [formGroup]="filterForm" class="example-form">
+        <div class="container-filter w-full" style="display: flex;">
+            <div>
+                <div class="flex flex-col">
+                    <mat-label class="font-semibold">Cliente</mat-label>
+                    <mat-form-field class="w-80 mr-6" appearance="fill">
+        
+                        <input type="text" matInput [placeholder]="'Cliente'" formControlName="clientControl"
+                            [matAutocomplete]="client">
+        
+                        <mat-autocomplete #client="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredClients | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div>
+                <div class="flex flex-col mr-6">
+                    <mat-label class="font-semibold">Responsable</mat-label>
+                    <mat-form-field class="w-80">
+                        <input type="text" [placeholder]="'Responsable'" matInput formControlName="collaboratorControl"
+                            [matAutocomplete]="autoCollaborator">
+        
+                        <mat-autocomplete #autoCollaborator="matAutocomplete">
+                            <mat-option *ngFor="let collaborator of filteredCollaborators" [value]="collaborator">
+                                {{collaborator}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="container-filter">
+                <div class="flex flex-col mr-6">
+                    <mat-label class="font-semibold">Actividad</mat-label>
+                    <mat-form-field class="w-80 ">
+                        <mat-select style="padding-right: 16px;" [formControl]="">
+                            <ng-container  >
+                                <mat-option *ngFor="let collaborator of filteredCollaborators" [value]="collaborator">
+                                    {{collaborator}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+        
+            </div>
+        </div>
+</form>
+    <!-- Add request button -->
+    <button class="ml-4 mr-6" mat-flat-button [color]="'primary'" >
+        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+        <span class="ml-2 mr-1">Agregar</span>
+    </button>
+</div>
+    <ng-container >
+        <ng-container >
+            <div class="table-responsive">
+                <table mat-table [dataSource]="">
+                    <ng-container matColumnDef="cliente">
+                        <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                        <td mat-cell *matCellDef="let element; let i = index;"> {{ i + 1 }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="recurso">
+                        <th mat-header-cell *matHeaderCellDef> Recurso </th>
+                        <td mat-cell *matCellDef="let element"> {{'asj'}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="actividad">
+                        <th mat-header-cell *matHeaderCellDef> Actividad </th>
+                        <td mat-cell *matCellDef="let element"> {{element.client.name}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="%">
+                        <th mat-header-cell *matHeaderCellDef> % Asignado </th>
+                        <td mat-cell style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:150px;"
+                            [ngClass]="'customWidthClass'" *matCellDef="let element"> {{element.titleRequest}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="fechaFinal">
+                        <th mat-header-cell *matHeaderCellDef> Fecha de Finalización </th>
+                        <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="dias">
+                        <th mat-header-cell *matHeaderCellDef> Días</th>
+                        <td mat-cell *matCellDef="let element"> {{element.responsibleRequest.name}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="ocupacion">
+                        <th mat-header-cell *matHeaderCellDef> Ocupación </th>
+                        <td mat-cell class="th-center" *matCellDef="let element"> {{element.priorityOrder}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="detalle">
+                        <th mat-header-cell *matHeaderCellDef> Detalles </th>
+                        <td mat-cell *matCellDef="let element">
+                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                (click)="showDetail(element.id)">
+                                <mat-icon class="icon-size-5"
+                                    [svgIcon]="selectedRequest?.id === element.id && isDetail? 'heroicons_solid:eye-off' : 'heroicons_solid:eye'">
+                                </mat-icon>
+                            </button>
+                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                (click)="updateSelectedRequest(element.id)">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil'">
+                                </mat-icon>
+                            </button>
+    
+    
+                        </td>
+                    </ng-container>
+                    <!-- DateEnd Pause -->
+    
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+            <!-- <mat-paginator
+                            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                            [ngClass]="{'pointer-events-none': isLoading}" [length]="pagination.length"
+                            [pageIndex]="pagination.page" [pageSize]="pagination.size" [pageSizeOptions]="[5, 10, 25, 100]"
+                            [showFirstLastButtons]="true"></mat-paginator> -->
+    
+        </ng-container>
+    </ng-container>

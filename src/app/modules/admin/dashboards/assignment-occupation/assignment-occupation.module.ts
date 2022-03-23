@@ -30,6 +30,7 @@ import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgxSpinnerModule } from "ngx-spinner";
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     PartnerSearchComponent,
     AsignationComponent,
     FilterCollaboratorPipe,
+    EditAssignmentComponent,
   ],
     imports: [
         CommonModule,
