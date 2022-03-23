@@ -657,7 +657,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      */
      private _filter(value: string, collection: any[]): string[] {
-         console.log("collection: ", collection);
         const filteredValue = value.toLowerCase();
         const filteredCollection = collection.map(option => option.name);
         return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
@@ -1379,11 +1378,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.toggleSelection(selectedItem, selectedCollection, option);
     }
     
+    /**
+     * Handle change the checkbox
+     * 
+     * @param option 
+     */
     handleChangeCheckbox(option: string) {
         // Select action option
         switch( option ) {
             case 'branch':
-                console.log("branch");
                 this._getClientsByBusinessType();
                 break;
             case 'client':
@@ -1479,7 +1482,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         switch( option ) {
             case 'branch':
                 this.allCompleteBusinessType = completed;
-                this.customerBranchControl.setValue('');
+                this.handleChangeCheckbox(option)
                 break;
             case 'client':
                 this.allCompleteClient = completed;
@@ -1508,8 +1511,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
     
     /**
-     * Update all as complete
+     * Update all complete
      * 
+     * @param option 
      */
     updateAllComplete(option: string) {
 
