@@ -65,8 +65,8 @@
                 *ngFor="let branch of filteredCustomerBranch | async"
                 [value]="selectedUsers"
             >
-                <div style="display: flex; justify-content: space-between;">
-                    <div (click)="optionClicked($event, branch, selectedBranch, 'branch')">
+                <div class="flex" style="justify-content: space-between;">
+                    <div class="w-50 text-md" (click)="optionClicked($event, branch, selectedBranch, 'branch')">
                         <mat-checkbox
                             [checked]="branch.selected"
                             (change)="toggleSelection(branch, selectedBranch, 'branch')"
@@ -76,10 +76,10 @@
                             {{ branch.name }}
                         </mat-checkbox>
                     </div>
-                    <div class="w-full text-right" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
+                    <div class="w-50 text-right" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
                         <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
                     </div>
-                    <div class="w-full text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch)" *ngIf="branch.name === selectedItem?.name">
+                    <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
                         <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
                     </div>
                 </div>
@@ -115,8 +115,8 @@
                   *ngFor="let client of filteredClients | async"
                   [value]="selectedUsers"
                 >
-                    <div style="display: flex; justify-content: space-between;">
-                        <div (click)="optionClicked($event, client, clientSelected, 'client')">
+                    <div class="flex" style="justify-content: space-between;">
+                        <div class="w-50 text-md" (click)="optionClicked($event, client, clientSelected, 'client')">
                             <mat-checkbox
                                 [checked]="client.selected"
                                 (change)="toggleSelection(client, clientSelected, 'client')"
@@ -126,10 +126,10 @@
                             {{ client.name }}
                             </mat-checkbox>
                         </div>
-                        <div class="w-full text-right" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
+                        <div class="w-50 text-right" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
                             <span>{{ getAmountRequestByOption(client.name, 1) }}</span>
                         </div>
-                        <div class="w-full text-right" (mouseleave)="updateSelectedItem()" (change)="selectOnlyItem(client)" *ngIf="client.name === selectedItem?.name">
+                        <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
                             <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
                         </div>
                     </div>
@@ -165,8 +165,8 @@
                   *ngFor="let area of filteredCommercialArea | async"
                   [value]="selectedUsers"
                 >
-                <div style="display: flex; justify-content: space-between;">
-                    <div (click)="optionClicked($event, area, commercialAreaSelected, 'area')">
+                <div class="flex" style="justify-content: space-between;">
+                    <div class="w-50 text-md" (click)="optionClicked($event, area, commercialAreaSelected, 'area')">
                         <mat-checkbox
                             [checked]="area.selected"
                             (change)="toggleSelection(area, commercialAreaSelected, 'area')"
@@ -176,10 +176,10 @@
                           {{ area.name }}
                         </mat-checkbox>
                     </div>
-                    <div class="w-full text-right" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
+                    <div class="w-50 text-right" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
                         <span>{{ getAmountRequestByOption(area.name, 2) }}</span>
                     </div>
-                    <div class="w-full text-right" (mouseleave)="updateSelectedItem()" (change)="selectOnlyItem(area)" *ngIf="area.name === selectedItem?.name">
+                    <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
                         <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
                     </div>
                 </div>
@@ -225,8 +225,8 @@
                   *ngFor="let status of filteredStatus | async"
                   [value]="selectedUsers"
                 >
-                <div style="display: flex; justify-content: space-between;">
-                    <div (click)="optionClicked($event, status, selectedStatus, 'status')" style="display: flex; justify-content: space-between;">
+                <div class="flex" style="justify-content: space-between;">
+                    <div class="w-50 text-md" (click)="optionClicked($event, status, selectedStatus, 'status')">
                         <mat-checkbox
                             [checked]="status.selected"
                             (change)="toggleSelection(status, selectedStatus, 'status')"
@@ -236,10 +236,10 @@
                           {{ status.name }}
                         </mat-checkbox>
                       </div>
-                        <div class="w-full text-right" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
+                        <div class="w-50 text-right" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
                             <span>{{ getAmountRequestByOption(status.name, 3) }}</span>
                         </div>
-                        <div class="w-full text-right" (mouseleave)="updateSelectedItem()" (change)="selectOnlyItem(status)" *ngIf="status.name === selectedItem?.name">
+                        <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
                             <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
                         </div>
                 </div>

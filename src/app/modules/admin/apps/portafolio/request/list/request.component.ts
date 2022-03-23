@@ -446,14 +446,30 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe();
 
         this.handleChangeClients();
+        
+        this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.businessTypeSelected))
+        );
 
-        this.filteredCustomerBranch = this._handleFilterSubscription(this.customerBranchControl, this.businessTypeSelected);
-        
-        this.filteredClients = this._handleFilterSubscription(this.clientControl, this.clientSelected);
-        
-        this.filteredCommercialArea = this._handleFilterSubscription(this.commercialAreaControl, this.commercialAreaSelected);
-        
-        this.filteredStatus = this._handleFilterSubscription(this.statusControl, this.statusSelected);
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.clientSelected))
+        );
+
+        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.commercialAreaSelected))
+        );
+
+        this.filteredStatus = this.statusControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.statusSelected))
+        );
 
         this._handleChangeForm();
         this._getKnowledges();
@@ -612,7 +628,18 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._requestService.getClientsByBusinessType(this.businessTypeSelected.filter(item => item.selected).map(item => item.id))
             .subscribe(clients => {
                 // Update array the clients
+                clients.sort(this.sortArray);
+
                 this.clients = clients;
+
+                // Map for clients
+                this.clientSelected = this.clients.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
                 // Notify to clientControl
                 this.clientControl.setValue('');
                 // Mark for check
@@ -630,6 +657,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      */
      private _filter(value: string, collection: any[]): string[] {
+         console.log("collection: ", collection);
         const filteredValue = value.toLowerCase();
         const filteredCollection = collection.map(option => option.name);
         return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
@@ -1346,7 +1374,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * @param event 
      * @param selectedItem 
      */
-     optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
+    optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
         event.stopPropagation();
         this.toggleSelection(selectedItem, selectedCollection, option);
     }
@@ -1355,6 +1383,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Select action option
         switch( option ) {
             case 'branch':
+                console.log("branch");
                 this._getClientsByBusinessType();
                 break;
             case 'client':
@@ -1414,10 +1443,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * 
      * @param selectedItem 
      */
-    selectOnlyItem(selectedItem: any) {
+    selectOnlyItem(selectedItem: any, collection: any) {
         selectedItem.selected = true;
 
-        this.businessTypeSelected.forEach((item) => {
+        collection.forEach((item) => {
             if ( item.name !== selectedItem.name ) {
                 item.selected = false;
             }
@@ -1443,24 +1472,30 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     setAll(completed: boolean, collection: any, option: string) {
         
+        // Mark as completed all elements
+        collection.forEach(item => item.selected = completed);
+
         // Select action option
         switch( option ) {
             case 'branch':
                 this.allCompleteBusinessType = completed;
+                this.customerBranchControl.setValue('');
                 break;
             case 'client':
                 this.allCompleteClient = completed;
-                break;
+                this.clientControl.setValue('');
+            break;
             case 'area':
                 this.allCompleteCommercialArea = completed;
+                this.commercialAreaControl.setValue('');
                 break;
             case 'status':
                 this.allCompleteStatus = completed;
+                this.statusControl.setValue('');
                 break;
         }
 
-        collection.forEach(item => item.selected = completed);
-        this.customerBranchControl.setValue('');
+        
     }
 
     /**
