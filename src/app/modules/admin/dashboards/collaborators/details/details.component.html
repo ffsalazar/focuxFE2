@@ -948,7 +948,7 @@
                                 <ng-container *ngIf="phoneNumber.value.isActive !== 0">
                                     <div class="relative flex">
                                         <mat-form-field class="fuse-mat-no-subscript flex-auto">
-                                            <mat-label *ngIf="first">tel&eacute;fono</mat-label>
+                                            <mat-label *ngIf="first">Tel&eacute;fono</mat-label>
                                             <input
                                                 matInput
                                                 [formControl]="phoneNumber.get('number')"
@@ -1068,10 +1068,10 @@
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
                             <mat-label>Fecha de Ingreso a la organizaci&oacute;n</mat-label>
-                            <mat-icon
+                            <mat-iconF
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:calendar'"></mat-iconF>
                             <input
                                 matInput
                                 [matDatepicker]="organizationEntryDatepicker"
