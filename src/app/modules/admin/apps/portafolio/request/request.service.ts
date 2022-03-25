@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
@@ -240,7 +240,6 @@ export class RequestService
     getKnowledges(): Observable<Knowledge[]>
     {
 
-        console.log("geTknowledge");
         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
             tap((knowledges) => {
                 let knowledgesFiltered : Knowledge[] = []
@@ -249,8 +248,6 @@ export class RequestService
                         knowledgesFiltered.push(knowledge);
                     }
                 });
-
-                console.log("knowledgesFiltered: ", knowledgesFiltered);
                 
                 this._knowledges.next(knowledgesFiltered);
             })
@@ -587,6 +584,26 @@ export class RequestService
             })
         );
     }
+
+    /**
+     * GetBusinessType
+     */
+    getClientsByBusinessType(businessTypesId: number[]): Observable<Client[]>
+    {
+        let params = new HttpParams();
+        params = params.append('bussinessTypes', businessTypesId.join(','));
+
+        return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/bussinesstype', {
+            params
+        }).pipe(
+            tap(clients => {
+
+                this._clients.next(clients);
+            })
+        );
+    }
+
+
 
     /**
      * 

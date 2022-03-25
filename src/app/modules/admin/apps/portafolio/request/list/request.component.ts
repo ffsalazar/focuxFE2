@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -20,6 +20,10 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DateValidator } from './validation-date';
 import { MatSelect } from '@angular/material/select';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+//import { MatInput } from '@angular/material';
+
 @Component({
     selector       : 'request-list',
     templateUrl    : './request.component.html',
@@ -35,8 +39,16 @@ import { MatSelect } from '@angular/material/select';
             .mat-form-field-flex {
                 padding-right: 2px !important;
             }
+            
             .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix{
                 padding-right: 4px !important;
+            }
+
+            .checkbox-all {
+                padding: 0 16px;
+                height: 48px;
+                display: flex !important;
+                align-items: center;
             }
 
 
@@ -55,6 +67,8 @@ import { MatSelect } from '@angular/material/select';
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
             }
+
+
         `
     ],
     encapsulation  : ViewEncapsulation.None,
@@ -70,6 +84,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('knowledgesPanelOrigin') private _knowledgesPanelOrigin: ElementRef;
     @ViewChild('knowledgesPanel') private _knowledgesPanel: TemplateRef<any>;
     @ViewChild('matselect') a: MatSelect;
+    @ViewChild('inputBranch', {read: MatInput}) inputBranch: MatInput;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _knowledgesPanelOverlayRef: OverlayRef;
 
@@ -120,7 +136,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     filteredClients: Observable<string[]>;
     filteredCommercialArea: Observable<string[]>;
     filteredStatus: Observable<string[]>;
-    filteredCustomerBranch: Observable<string[]>;
+    filteredCustomerBranch: Observable<any[]>;
     knowledgeControl: FormControl = new FormControl();
     request$: any;
     priority: any[] = [{
@@ -134,6 +150,22 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         id: 3,
         description: 'Baja',
     }];
+
+    lastFilter: string = '';
+    businessTypeSelected = [];
+    selectedBranch: BusinessType[] = [];
+    selectedClient: Client[] = [];
+    selectedCommercialArea: CommercialArea[] = [];
+    selectedStatus: Status[] = [];
+    clientSelected = [];
+    commercialAreaSelected = [];
+    statusSelected = [];
+    isActive: boolean = true;
+    selectedItem: any = null;
+    allCompleteBusinessType: boolean = false;
+    allCompleteClient: boolean = false;
+    allCompleteCommercialArea: boolean = false;
+    allCompleteStatus: boolean = false;
 
     /*
     /**
@@ -236,7 +268,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe((categories: Category[]) => {
                 // Update the categories
                 this.categories = categories;
-
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -259,6 +290,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the client
                 clients.sort(this.sortArray);
                 this.clients = clients;
+
+                // Map for clients
+                this.clientSelected = this.clients.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -269,6 +309,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe((commercialArea: CommercialArea[]) => {
                 // Update the commercialArea
                 this.commercialArea = commercialArea;
+                
+                // Map for clients
+                this.commercialAreaSelected = this.commercialArea.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -280,6 +329,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Update the status
                 this.status = status;
                 const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
+
+                // Map for bussinessType
+                this.statusSelected = this.status.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
 
                 this.step2.get('status').setValue(statusId);
                 // Mark for check
@@ -313,6 +370,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe((businessType: BusinessType[]) => {
                 // Update the buninessType
                 this.businessType = businessType;
+
+                // Map for bussinessType
+                this.businessTypeSelected = this.businessType.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
+                this.businessType = [...this.businessTypeSelected];
+
                 //Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -375,7 +443,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 switchMap(query =>
-
                     // Search
                     this._requestService.searchRequest(query)
                 ),
@@ -383,39 +450,36 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe();
 
         this.handleChangeClients();
-
-        // Filter the clients
-        this.filteredClients = this.clientControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value, this.clients)),
-        );
-
-        // Filter the commercialArea
-        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value, this.commercialArea)),
-        );
-
-        // Filter the status
-        this.filteredStatus = this.statusControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filter(value, this.status)),
-        );
-
-        // Filter the status
+        
         this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
             startWith(''),
-            map(value => this._filter(value, this.businessType.sort(this.sortArray))),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.businessTypeSelected))
+        );
+
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.clientSelected))
+        );
+
+        this.filteredCommercialArea = this.commercialAreaControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.commercialAreaSelected))
+        );
+
+        this.filteredStatus = this.statusControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.statusSelected))
         );
 
         this._handleChangeForm();
         this._getKnowledges();
-        
-        this.toppings.valueChanges.subscribe((respon) => {
-            console.log("respon: ", respon);
-        })
+        //this._getClientsByBusinessType();
 
-        this.toppings.setValue(['Hola mundo']);
+        // Mark for check
         this._changeDetectorRef.markForCheck();
     }
 
@@ -424,9 +488,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngAfterViewInit(): void
     {   
-        //this.toppings.setValue('Extra cheese');
-        console.log(this.toppings.value);
-        console.log("mat-select: ", this.a);
         if ( this._sort && this._paginator )
         {
             // Set the initial sort
@@ -538,14 +599,120 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-     /**
-     * Sort Array 
+    // private _filter(value: string, collection: any[]): string[] {
+    //     const filteredValue = value.toLowerCase();
+
+    //     const filteredCollection = collection.map(option => option.name);
+
+    //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
+    // }
+
+
+    /**
+     * Handle filter subscription
+     * 
+     * @param control 
+     * @param collection 
+     * @returns 
      */
-    sortArray(x, y) {
-    if (x.name < y.name) {return -1; }
-    if (x.name > y.name) {return 1; }
-    return 0;
-  }
+    private _handleFilterSubscription(control: AbstractControl, collection: any): Observable<any> {
+        return control.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, collection))
+        );
+    }
+
+    /**
+     * Get clients by bussinessType
+     * 
+     */
+    private _getClientsByBusinessType() {
+        // Get clients by bussinessTypes
+        this._requestService.getClientsByBusinessType(this.businessTypeSelected.filter(item => item.selected).map(item => item.id))
+            .subscribe(clients => {
+                // Update array the clients
+                clients.sort(this.sortArray);
+
+                this.clients = clients;
+
+                // Map for clients
+                this.clientSelected = this.clients.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
+                // Notify to clientControl
+                this.clientControl.setValue('');
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    }
+
+    private _getBusinessTypeByClient(clientSelected) {
+        
+    }
+
+    /**
+     * _filter
+     * @param value
+     *
+     */
+     private _filter(value: string, collection: any[]): string[] {
+        const filteredValue = value.toLowerCase();
+        const filteredCollection = collection.map(option => option.name);
+        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
+    }
+    
+    /**
+     * Filter
+     * 
+     * @param filter 
+     * @param collection 
+     * @returns 
+     */
+    filter(filter: string, collection: any[]): any[] {
+        this.lastFilter = filter;
+        if (filter) {
+            return collection.filter((option) => {
+                return (option.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
+            });
+        } else {
+            return collection.slice();
+        }
+    }
+    
+    //   displayFn(value: User[] | string): string | undefined {
+    //     let displayValue: string;
+    //     if (Array.isArray(value)) {
+    //       value.forEach((user, index) => {
+    //         if (index === 0) {
+    //           displayValue = user.firstname + ' ' + user.lastname;
+    //         } else {
+    //           displayValue += ', ' + user.firstname + ' ' + user.lastname;
+    //         }
+    //       });
+    //     } else {
+    //       displayValue = value;
+    //     }
+    //     return displayValue;
+    // }
+
+    /**
+     * Sort Array
+     * 
+     * @param x 
+     * @param y 
+     * @returns 
+     */
+    sortArray(x: any, y: any) {
+        if ( x.name < y.name ) {return -1; }
+        if ( x.name > y.name ) {return 1; }
+        return 0;
+    }
+
     /**
      * Open knowledges panel
      */
@@ -682,38 +849,23 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Subscribe from form's values
         this.filterGroupForm.valueChanges.subscribe(controls => {
             let requests: Request[] = this._requestService.requests;
-
             // Filter requests by clients, commercialArea and status
             requests = requests.filter(item =>
-                ((controls.clientControl === null || (controls.clientControl.toLowerCase() === '' || item?.client.name.toLowerCase().includes(controls.clientControl.toLowerCase()) )) &&
-                    (controls.commercialAreaControl === null || ( controls.commercialAreaControl.toLowerCase() === '' || item?.commercialArea.name.toLowerCase().includes( controls.commercialAreaControl.toLowerCase()))) &&
-                        (controls.statusControl === null || ( controls.statusControl.toLowerCase() === '' || item?.status.name.toLowerCase().includes( controls.statusControl.toLowerCase()))) &&
-                            (controls.customerBranchControl === null || ( controls.customerBranchControl.toLowerCase() === '' || item?.client?.businessType.name.toLowerCase().includes( controls.customerBranchControl.toLowerCase())))
+                (((this.clientSelected.find(client => client.selected && client.name.includes(item?.client.name)) || this.clientSelected.every(client => !client.selected))) &&
+                    ((this.commercialAreaSelected.find(area => area.selected && area.name.includes(item?.commercialArea.name)) || this.commercialAreaSelected.every(area => !area.selected))) &&
+                        ((this.statusSelected.find(status => status.selected && status.name.includes(item?.status.name)) || this.statusSelected.every(status => !status.selected))) &&
+                            ((this.businessTypeSelected.find(businessType => businessType.selected && businessType.name.includes(item?.client.businessType.name)) || this.businessTypeSelected.every(businessType => !businessType.selected ) ))
 
             ));
-
+            
             // Set request for filter
             this.requestOriginal = requests;
-
             // Set the requests
             this._requestService.setRequests(requests);
-
+            // Mark for check
             this._changeDetectorRef.markForCheck();
 
         });
-    }
-
-    /**
-     * _filter
-     * @param value
-     *
-     */
-    private _filter(value: string, collection: any[]): string[] {
-        const filteredValue = value.toLowerCase();
-
-        const filteredCollection = collection.map(option => option.name);
-
-        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     }
 
     /**
@@ -1194,7 +1346,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 };
 
                 if ( !this.isEditing ) {
-                    requestNew.responsibleRequest = '';
+                    requestNew.responsibleRequest = null;
                     // Create the request on the server
                     this.createNewRequest(requestNew);
                 } else {
@@ -1217,5 +1369,176 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     trackByFn(index: number, item: any): any
     {
         return item.id || index;
+    }
+
+    /**
+     * Option clicked
+     * 
+     * @param event 
+     * @param selectedItem 
+     */
+    optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
+        event.stopPropagation();
+        this.toggleSelection(selectedItem, selectedCollection, option);
+    }
+    
+    /**
+     * Handle change the checkbox
+     * 
+     * @param option 
+     */
+    handleChangeCheckbox(option: string) {
+        // Select action option
+        switch( option ) {
+            case 'branch':
+                this._getClientsByBusinessType();
+                break;
+            case 'client':
+                this.clientControl.setValue('');
+                break;
+            case 'area':
+                this.commercialAreaControl.setValue('');
+                break;
+            case 'status':
+                this.statusControl.setValue('');
+                break;
+        }
+    }
+    /**
+     * Toggle Selection
+     * 
+     * @param selectedFilter 
+     * @param collection 
+     */
+    toggleSelection(selectedFilter: any, selectedCollection: BusinessType[] | Client[], option: string) {
+        // change status the selected
+        selectedFilter.selected = !selectedFilter.selected;
+        // update all as complete
+        this.updateAllComplete(option);
+        
+        // Handle change from checkbox
+        this.handleChangeCheckbox(option);
+        
+    }
+
+    /**
+     * Restarting list
+     * 
+     */
+    restartingList() {
+        this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: false});
+        this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true, emitEvent: true});
+        ///this.inputBranch.nativeElement.focus();
+        this.inputBranch.focus();
+    }
+
+    /**
+     * Update selected item
+     * 
+     * @param selectedItem 
+     */
+    updateSelectedItem(selectedItem: any) {
+        if ( this.selectedItem ) {
+            this.selectedItem = null;
+        } else {
+            this.selectedItem = selectedItem;
+        }
+    }
+
+    /**
+     * Select only one item
+     * 
+     * @param selectedItem 
+     */
+    selectOnlyItem(selectedItem: any, collection: any) {
+        selectedItem.selected = true;
+
+        collection.forEach((item) => {
+            if ( item.name !== selectedItem.name ) {
+                item.selected = false;
+            }
+        });
+        //event.stopPropagation();
+    }
+
+    /**
+     * Check item
+     * 
+     * @param item 
+     * @param collection 
+     * @returns 
+     */
+    checkItem(item: any, collection: any) {
+        return collection.find(element => element.name === item.name) === undefined ? false: true;
+    }
+
+    /**
+     * Set all as selected
+     * 
+     * @param completed 
+     */
+    setAll(completed: boolean, collection: any, option: string) {
+        
+        // Mark as completed all elements
+        collection.forEach(item => item.selected = completed);
+
+        // Select action option
+        switch( option ) {
+            case 'branch':
+                this.allCompleteBusinessType = completed;
+                this.handleChangeCheckbox(option)
+                break;
+            case 'client':
+                this.allCompleteClient = completed;
+                this.clientControl.setValue('');
+            break;
+            case 'area':
+                this.allCompleteCommercialArea = completed;
+                this.commercialAreaControl.setValue('');
+                break;
+            case 'status':
+                this.allCompleteStatus = completed;
+                this.statusControl.setValue('');
+                break;
+        }
+
+        
+    }
+
+    /**
+     * Some complete
+     * 
+     * @returns
+     */
+    someComplete(collection: any, allComplete: boolean): boolean {
+        return collection.filter(item => item.selected).length > 0 && !allComplete;
+    }
+    
+    /**
+     * Update all complete
+     * 
+     * @param option 
+     */
+    updateAllComplete(option: string) {
+
+        switch( option ) {
+            case 'branch':
+                this.allCompleteBusinessType = this.businessTypeSelected != null && this.businessTypeSelected.every(item => item.selected);
+
+                break;
+            case 'client':
+                this.allCompleteClient = this.clientSelected != null && this.clientSelected.every(item => item.selected);
+                break;
+            case 'area':
+                this.allCompleteCommercialArea = this.commercialAreaSelected != null && this.commercialAreaSelected.every(item => item.selected);
+                break;
+            case 'status':
+                this.allCompleteStatus = this.statusSelected != null && this.statusSelected.every(item => item.selected);
+
+                break;
+        }
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 }
