@@ -278,7 +278,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
     }
 
     /**
-     *
+     * Dismiss fuse
+     * 
      * @param name
      */
     dismissFuse(name){

@@ -36,7 +36,7 @@ export class EditAssignmentComponent implements OnInit {
     isEditing: boolean = false;
     collaborator: Collaborator = null;
     assigments: any = null;
-    filterForm: FormGroup = this._fb.group({
+    filterForm: FormGroup = this._formBuilder.group({
         myControl: [''],
         requestControl: [''],
         clientControl: [''],
@@ -47,7 +47,7 @@ export class EditAssignmentComponent implements OnInit {
     
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
-        private _fb: FormBuilder,
+        private _formBuilder: FormBuilder,
         private _changeDetectorRef: ChangeDetectorRef,
     ) { }
 
@@ -59,12 +59,9 @@ export class EditAssignmentComponent implements OnInit {
         }
 
         // Get all collaborators' occupations
-        this._assignmentOccupationService.getAllColaboratorOccupation()
-            .subscribe(collaborators => {
-                console.log("collaborators occupation: ", collaborators);
-                this.collaborators = collaborators;
-            });
 
+        this._getAllCollaboratorOccupation();        
+        
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filterClient(value)),
@@ -80,6 +77,16 @@ export class EditAssignmentComponent implements OnInit {
 
         this._getClients();
         this._getResponsibleByClient();
+    }
+
+    /**
+     * On destroy
+     */
+    ngOnDestroy(): void
+    {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
     }
 
     /**
@@ -118,7 +125,17 @@ export class EditAssignmentComponent implements OnInit {
     }
 
 
-       /**
+    private _getAllCollaboratorOccupation() {
+        this._assignmentOccupationService.getAllColaboratorOccupation()
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(collaborators => {
+                    console.log("collaborators occupation: ", collaborators);
+                    this.isEditing = false;
+                    this.collaborators = collaborators;
+                });
+    }
+
+    /**
      * getClients
      */
     private _getClients() {
@@ -185,5 +202,13 @@ export class EditAssignmentComponent implements OnInit {
                     this.assigments = response;
                 });
         
+    }
+
+    onReturnPrevious(e: any) {
+        this.isEditing = false;
+        // Get all collaborators occupation
+        this._getAllCollaboratorOccupation();
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 }

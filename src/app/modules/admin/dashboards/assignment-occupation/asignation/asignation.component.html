@@ -93,7 +93,7 @@
                                     <button class=" min-w-10 min-h-7 h-7 px-2 leading-6 my-auto mr-4" mat-stroked-button
                                         (click)="collaboratorOccupation.at(i).get('isCollapse').setValue(!collaboratorOccupation.at(i).get('isCollapse').value)">
                                         <mat-icon class="icon-size-5"
-                                            [svgIcon]="showObservation !== true ? 'heroicons_solid:chevron-down' : 'heroicons_solid:chevron-up'">
+                                            [svgIcon]="collaboratorOccupation.at(i).get('isCollapse').value ? 'heroicons_solid:chevron-down' : 'heroicons_solid:chevron-up'">
                                         </mat-icon>
                                     </button>
 
