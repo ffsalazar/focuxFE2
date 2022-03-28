@@ -7,12 +7,13 @@ import {AssingmentOccupationService} from "../assingment-occupation.service";
 import { Client, Collaborator } from '../assignment-occupation.types';
 import {FormArray} from "@angular/forms";
 import {BehaviorSubject} from "rxjs";
-import {map, startWith, takeUntil} from "rxjs/operators";
+import {finalize, map, startWith, takeUntil} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ActivatedRoute, Router} from "@angular/router";
 //import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 import { MatTabGroup } from '@angular/material/tabs';
+import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 
 
 @Component({
@@ -24,17 +25,18 @@ export class EditAssignmentComponent implements OnInit {
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-collaborators: Collaborator[] = [];
-clients: Client[] = [];
-selectedClient: Client;
-filteredOptions: Observable<string[]>;
-filteredClients: Observable<string[]>;
-filteredCollaborators: string[];
-displayedColumns: string[] = ['cliente', 'recurso','actividad', '%', 'fechaFinal',
-'dias', 'ocupacion', 'detalle'];
-
-
- filterForm: FormGroup = this._fb.group({
+    collaborators: Collaborator[] = [];
+    clients: Client[] = [];
+    selectedClient: Client;
+    filteredOptions: Observable<string[]>;
+    filteredClients: Observable<string[]>;
+    filteredCollaborators: string[];
+    displayedColumns: string[] = ['cliente', 'recurso', '%', 'fechaFinal',
+    'dias', 'ocupacion', 'detalle'];
+    isEditing: boolean = false;
+    collaborator: Collaborator = null;
+    assigments: any = null;
+    filterForm: FormGroup = this._fb.group({
         myControl: [''],
         requestControl: [''],
         clientControl: [''],
@@ -43,15 +45,25 @@ displayedColumns: string[] = ['cliente', 'recurso','actividad', '%', 'fechaFinal
         selectControl: ['']
     });
     
-  constructor( private _assignmentOccupationService: AssingmentOccupationService, private _fb: FormBuilder,  private _changeDetectorRef: ChangeDetectorRef,) { }
+    constructor(
+        private _assignmentOccupationService: AssingmentOccupationService,
+        private _fb: FormBuilder,
+        private _changeDetectorRef: ChangeDetectorRef,
+    ) { }
 
-  ngOnInit(): void {
-
+    ngOnInit(): void {
 
         if ( this._assignmentOccupationService.selectedFiltered.client !== '' ) {
             this.clientControl.setValue(this._assignmentOccupationService.selectedFiltered.client);
             this.collaboratorControl.setValue(this._assignmentOccupationService.selectedFiltered.responsible);
         }
+
+        // Get all collaborators' occupations
+        this._assignmentOccupationService.getAllColaboratorOccupation()
+            .subscribe(collaborators => {
+                console.log("collaborators occupation: ", collaborators);
+                this.collaborators = collaborators;
+            });
 
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
@@ -66,10 +78,9 @@ displayedColumns: string[] = ['cliente', 'recurso','actividad', '%', 'fechaFinal
                 this._changeDetectorRef.markForCheck();
             });
 
-
-  this._getClients();
-  this._getResponsibleByClient();
-  }
+        this._getClients();
+        this._getResponsibleByClient();
+    }
 
     /**
      * clientControl
@@ -85,7 +96,7 @@ displayedColumns: string[] = ['cliente', 'recurso','actividad', '%', 'fechaFinal
         return this.filterForm.get('collaboratorControl');
     }
 
-/**
+    /**
      * _filterClient
      * @param value 
      */
@@ -123,7 +134,7 @@ displayedColumns: string[] = ['cliente', 'recurso','actividad', '%', 'fechaFinal
     
         //this.collaborators$ = this._assignmentOccupationService.collaborators$;
     }
-     private _getResponsibleByClient() {
+    private _getResponsibleByClient() {
         this.clientControl.valueChanges
         .subscribe(value => {
             const client = this.clients.find(item => item.name === value);
@@ -153,11 +164,26 @@ displayedColumns: string[] = ['cliente', 'recurso','actividad', '%', 'fechaFinal
             })
     }
 
-  sortArray(x, y) {
-    if (x.name < y.name) {return -1; }
-    if (x.name > y.name) {return 1; }
-    return 0;
-  }
-
-
+    sortArray(x, y) {
+        if (x.name < y.name) {return -1; }
+        if (x.name > y.name) {return 1; }
+        return 0;
+    }
+    
+    /**
+     * Edit occupation
+     * 
+     * @param collaborator 
+     */
+    editOccupation(collaborator: Collaborator) {
+        console.log("collaborator: ", collaborator);
+        this.collaborator = collaborator;
+        this._assignmentOccupationService.getOccupationsByCollaborator(collaborator.id)
+            .pipe(finalize(() => this.isEditing = true))
+                .subscribe(response => {
+                    console.log("response: ", response);
+                    this.assigments = response;
+                });
+        
+    }
 }

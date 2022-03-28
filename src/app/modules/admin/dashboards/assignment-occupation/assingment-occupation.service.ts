@@ -322,4 +322,56 @@ export class AssingmentOccupationService {
         );
     }
 
+    /**
+     * Get all collaborator occupation
+     * 
+     * @returns 
+     */
+    getAllColaboratorOccupation(): Observable<any> {
+        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage')
+            .pipe(
+                tap(collaborators => {
+                    this._collaborators.next(collaborators);
+                })
+            )
+    }
+
+    /**
+     * Get occupations by collaborator
+     * 
+     * @returns 
+     */
+    getOccupationsByCollaborator(collaboratorId: number): Observable<any> {
+        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/assigments/' + collaboratorId);
+    }
+    
+    /**
+     * Update occupation by collaborator
+     * 
+     * @param occupationId 
+     * @param occupation 
+     * @returns 
+     */
+    updateOccupationsByCollaborator(occupationId: number, occupation): Observable<any> {
+        return this._httpClient.put<any>('http://localhost:1616/api/v1/followup/occupationassignments/occupationassigment/' + occupationId,
+            occupation
+        );
+    }
+
+    /**
+     * Delete occupation
+     * 
+     * @param occupationId 
+     * @param occupation 
+     * @returns 
+     */
+    deleteOccupation(occupationId: number, occupation) {
+        return this._httpClient.put<any>('http://localhost:1616/api/v1/followup/occupationassignments/status/' + occupationId,
+            occupation
+        );
+    }
+
+
+
+
 }

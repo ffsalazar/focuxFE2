@@ -182,6 +182,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Get collaborator occupation
+     * 
+     */
     get collaboratorOccupation() {
         return this.formOcupation.get('collaboratorOccupation') as FormArray;
     }

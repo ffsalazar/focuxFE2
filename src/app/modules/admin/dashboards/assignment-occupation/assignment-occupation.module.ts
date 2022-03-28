@@ -31,6 +31,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgxSpinnerModule } from "ngx-spinner";
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
+import { UpdateOccupationComponent } from './edit-assignment/update-occupation/update-occupation.component';
+import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { EditAssignmentComponent } from './edit-assignment/edit-assignment.compo
     AsignationComponent,
     FilterCollaboratorPipe,
     EditAssignmentComponent,
+    UpdateOccupationComponent,
+    ListCollaboratorsComponent,
   ],
     imports: [
         CommonModule,
