@@ -398,7 +398,7 @@ export class RequestService
     getClients(): Observable<Client[]> {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
             tap((clients) => {
-
+                clients = clients.filter(item => item.isActive === 1);
                 this._clients.next(clients);
             })
         );
@@ -407,12 +407,13 @@ export class RequestService
     /**
      * 
      * Get CommercialArea
+     *
      */
     getComercArea(): Observable<CommercialArea[]> {
         return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all').pipe(
-            tap((commerc) => {
-
-                this._commerc.next(commerc);
+            tap((commercialArea) => {
+                commercialArea = commercialArea.filter(item => item.isActive === 1);
+                this._commerc.next(commercialArea);
             })
         );
     }
@@ -423,9 +424,9 @@ export class RequestService
      */
     getRequestPeriod(): Observable<RequestPeriod[]> {
         return this._httpClient.get<RequestPeriod[]>('http://localhost:1616/api/v1/followup/requestPeriod/all').pipe(
-            tap((reqperiod) => {
-
-                this._requestp.next(reqperiod);
+            tap((requestPeriod) => {
+                requestPeriod = requestPeriod.filter(item => item.isActive === 1);
+                this._requestp.next(requestPeriod);
             })
         );
     }
@@ -436,9 +437,9 @@ export class RequestService
      */
     getTypeRequest(): Observable<TypeRequest[]> {
         return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
-            tap((typereq) => {
-
-                this._typereq.next(typereq);
+            tap((typeRequest) => {
+                typeRequest = typeRequest.filter(item => item.isActive === 1); 
+                this._typereq.next(typeRequest);
             })
         );
     }
@@ -462,9 +463,9 @@ export class RequestService
      */
     getAreaTech(): Observable<TechnicalArea[]> {
         return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all').pipe(
-            tap((areatech) => {
-
-                this._areatech.next(areatech);
+            tap((technicalArea) => {
+                technicalArea = technicalArea.filter(item => item.isActive === 1);
+                this._areatech.next(technicalArea);
             })
         );
     }
