@@ -12,9 +12,9 @@
         </fuse-alert>
         <div class="flex flex-col">
             <div class="flex flex-row mt-4">
-                <div class="flex flex-col">
+                <div class="flex flex-col" style="width: 60%;">
                     <mat-label class="font-semibold mr-6 ml-1">Solicitud</mat-label>
-                    <mat-form-field class=""style="width: 1010px;">
+                    <mat-form-field class="">
                         <input type="text" [placeholder]="'US-300'" matInput [value]="request?.titleRequest || ''" readonly>
                         <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -22,6 +22,21 @@
                             </mat-option>
                         </mat-autocomplete> -->
                     </mat-form-field>
+                </div>
+                <div class="flex flex-row justify-end items-center" style="width: 40%;">
+                    <button
+                        mat-fab
+                        [color]="'primary'"
+                        type="button"
+                        (click)="changeTab()"
+                        matTooltip="Regresar"
+                    >
+                        <mat-icon
+                            class="icon-size-7"
+                        >
+                            keyboard_arrow_left
+                        </mat-icon>
+                    </button>
                 </div>
             </div>
            
@@ -121,7 +136,7 @@
         <div>
     </div>
   
-            <div class="flex flex-row mt-8 justify-end">
+            <div class="flex flex-row mt-8 justify-end" *ngIf="collaboratorsArr.length">
                 <button (click)="redirection('partner-search', 0)" mat-stroked-button style="border-color:lightgray !important;">Cancelar
                 </button>
                 <!-- <button class="-ml-4" mat-button [color]="'warn'">Cancelar</button> -->

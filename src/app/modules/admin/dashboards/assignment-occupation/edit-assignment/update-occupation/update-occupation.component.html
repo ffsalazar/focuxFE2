@@ -93,7 +93,7 @@
                                 <div class="flex flex-col" style="justify-content: space-between !important;
                                 margin-top: 28px !important">
                                     <div>
-                                        <button class=" min-w-10 min-h-7 h-7 px-2 leading-6 my-auto mr-4" mat-stroked-button
+                                        <button class=" min-w-10 min-h-7 h-7 px-2 leading-6 my-auto mr-2" mat-stroked-button
                                             (click)="collaboratorOccupation.at(i).get('isCollapse').setValue(!collaboratorOccupation.at(i).get('isCollapse').value)">
                                             <mat-icon class="icon-size-5"
                                                 [svgIcon]="collaboratorOccupation.at(i).get('isCollapse').value ? 'heroicons_solid:chevron-down' : 'heroicons_solid:chevron-up'">
@@ -123,7 +123,7 @@
                                         >
                                             Guardar
                                         </button>
-                                        <button (click)="test()">test</button>
+                                        <!-- <button (click)="test()">test</button> -->
                                     </div>
                                 </div>
                             </div>

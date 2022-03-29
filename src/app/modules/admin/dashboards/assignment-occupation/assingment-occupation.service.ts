@@ -42,13 +42,13 @@ export class AssingmentOccupationService {
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-
+    
+    /**
+     * Tab index
+     * 
+     */
     get tabIndex$(): Observable<number> {
         return this._tabIndex.asObservable();
-    }
-
-    setTabIndex(id: number) {
-        this._tabIndex.next(id);
     }
 
     /**
@@ -140,10 +140,29 @@ export class AssingmentOccupationService {
         return this._collaboratorsSelected;
     }
 
+    /**
+     * Set tab index
+     * 
+     * @param id 
+     */
+    setTabIndex(id: number) {
+        this._tabIndex.next(id);
+    }
+
+    /**
+     * Set collaborator by assign
+     * 
+     * @param collaborator 
+     */
     setCollaboratorByAssign(collaborator: Collaborator) {
         this._collaboratorsAssign.push(collaborator);
     }
-
+    
+    /**
+     * Remove collaborator by assign
+     * 
+     * @param collaborator 
+     */
     removeCollaboratorByAssign(collaborator: Collaborator) {
         const index = this._collaboratorsAssign.findIndex(find => find.id === collaborator.id);
         this._collaboratorsAssign.splice(index, 1);
@@ -152,6 +171,7 @@ export class AssingmentOccupationService {
     
     /***
      * Get Collaborators
+     * 
      */
     getCollaborators(): Observable<Collaborator[]> {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all')
@@ -164,16 +184,24 @@ export class AssingmentOccupationService {
     
     /**
      * Get Clients
+     * 
      */
     getClients(): Observable<Client[]> {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all')
             .pipe(
                 tap((clients) => {
+                    clients = clients.filter(item => item.isActive === 1);
                     this._clients.next(clients);
                 })
             );
     }
-    
+
+    /**
+     * Get collaborators by client
+     *  
+     * @param clientId 
+     * @returns 
+     */
     getCollaboratorsByClient(clientId: number): Observable<Collaborator[]> {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/projectleads/', {
             params: {clientId}
@@ -192,12 +220,20 @@ export class AssingmentOccupationService {
     /**
      * Remove collaborator selected
      * 
+     * @param collaboratorId 
      */
     removeCollaboratorSelected(collaboratorId: number): void {
         // Remove collaborators selected
         this._collaboratorSelectedRemove.next(collaboratorId);
     }
 
+    /**
+     * Get request by responsible
+     * 
+     * @param responsibleId 
+     * @param statusId 
+     * @returns 
+     */
     getRequestByResponsible(responsibleId: number, statusId: number): Observable<any[]> {
         console.log("Obtener solic por responsables con status: ", statusId );
 
@@ -207,7 +243,14 @@ export class AssingmentOccupationService {
             }
         });
     }
-
+    
+    /**
+     * Get request by client
+     * 
+     * @param clientId 
+     * @param statusId 
+     * @returns 
+     */
     getRequestByClient(clientId: number, statusId: number): Observable<any[]> {
         console.log("Obtener solic por responsables con status: ", statusId );
 
@@ -277,6 +320,7 @@ export class AssingmentOccupationService {
     }
     
     /**
+     * Get collaborator recommended by free
      * 
      * @param requestId 
      */
@@ -296,6 +340,7 @@ export class AssingmentOccupationService {
     }
 
     /**
+     * Get status
      * 
      */
     getStatus(): Observable<Status[]>{
@@ -306,6 +351,11 @@ export class AssingmentOccupationService {
             }));
     }
     
+    /**
+     * Get collaborators selected
+     * 
+     * @returns 
+     */
     getCollaboratorsSelected(){
         return this._collaboratorsSelected;
     }

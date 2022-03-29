@@ -75,6 +75,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
             .pipe(
                 map(collaboratorSelected => collaboratorSelected))
                     .subscribe(collaboratorSelected => {
+
+                        console.log("collaboratorSelected: ", collaboratorSelected);
                         // Set collaborator selected
                         let aux = collaboratorSelected || [];
                         
@@ -381,13 +383,21 @@ export class AsignationComponent implements OnInit, OnDestroy {
                             // Set time out for change tab
                             setTimeout(() => {
                                 this._router.navigate(['dashboards/assignment-occupation/index']);
-                                this._assignmentOccupationService.setTabIndex(1);
+                                this._assignmentOccupationService.setTabIndex(0);
                             }, 2000); 
                         });
 
                 }
             });
         }
+    }
+
+    /**
+     * Change tab
+     * 
+     */
+     changeTab () {
+        this._assignmentOccupationService.setTabIndex(1);
     }
 
 }

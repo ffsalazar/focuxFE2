@@ -41,6 +41,10 @@ export class AssignmentOccupationComponent implements OnInit {
                 //this.getCollaboratorsRecommended();
                 break;
             case 1:
+                //this._assingmentOccupationService.setCollaboratorSelected();
+                break;
+            case 2:
+                console.log("Tab: ", this._tab.selectedIndex);
                 this._assingmentOccupationService.setCollaboratorSelected();
                 break;
         
@@ -51,8 +55,9 @@ export class AssignmentOccupationComponent implements OnInit {
 
     private _handleEventSavedOccupation() {
         this._assingmentOccupationService.tabIndex$
-            .subscribe((value) => {
-                this._tab.selectedIndex = 0;
+            .subscribe((tabIndex) => {
+                this._tab.selectedIndex = tabIndex;
+                this.selectTab();
             });
     }
 }

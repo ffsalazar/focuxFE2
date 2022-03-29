@@ -67,6 +67,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     successSave: string = '';
     tabIndex = 0;
     flashMessage: string = '';
+    hasCheckedCollaborator: boolean = false;
 
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
@@ -177,21 +178,24 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     private _handleEventSavedOccupation() {
         this._assignmentOccupationService.tabIndex$
-            .subscribe((value) => {
-                this.selectedResponsible = null;
-                this.selectedClient = null;
-                this._assignmentOccupationService.collaboratorsSelected = [];
-                // Clear form array of collaborator selected
-                this.collaboratorSelected.clear();
-                this.filterForm.setValue({
-                    myControl: '',
-                    requestControl: '',
-                    clientControl: '',
-                    collaboratorControl: '',
-                    statusControl: '',
-                    selectControl: ''
-                });
+            .subscribe((tabIndex) => {
+                if ( tabIndex === 0 ) {
+                    this.selectedResponsible = null;
+                    this.selectedClient = null;
+                    this._assignmentOccupationService.collaboratorsSelected = [];
+                    // Clear form array of collaborator selected
+                    this.collaboratorSelected.clear();
+                    this.filterForm.setValue({
+                        myControl: '',
+                        requestControl: '',
+                        clientControl: '',
+                        collaboratorControl: '',
+                        statusControl: '',
+                        selectControl: ''
+                    });
 
+                }
+                
             });
     }
 
@@ -471,8 +475,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * 
      */
     private _checkCollaboratorsSelected() {
-        console.log(this._assignmentOccupationService.collaboratorsSelected);
-        for(let i = 0; i < this.collaboratorSelected.length; i++) {
+        for (let i = 0; i < this.collaboratorSelected.length; i++) {
             const collaboratorSelected = this._assignmentOccupationService.collaboratorsSelected.find(item => item.id === this.collaboratorSelected.at(i).value.id);
             
             if ( collaboratorSelected ) {
@@ -517,15 +520,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     //find if collaborator already selected
                     const collaboratorIndex = this._assignmentOccupationService.collaboratorsSelected.findIndex(item => item.id === collaborator.id);
 
-                    // If has collaborator
-                    if ( collaboratorIndex >= 0 ) {
-                        // delete collaborator from collaborator selected
-                        this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
-                    } else {
-                        // add collaborator to collaborator selected
-                        this._assignmentOccupationService.collaboratorsSelected.push(item);
-                    }
 
+                    collaboratorIndex >= 0 ? this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1) :
+                                             this._assignmentOccupationService.collaboratorsSelected.push(item);
+
+                    this.hasCheckedCollaborator = this._assignmentOccupationService.collaboratorsSelected.length > 0 ? true : false;
                 });
                 
         });
@@ -642,6 +641,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         if (x.name < y.name) {return -1; }
         if (x.name > y.name) {return 1; }
         return 0;
+    }
+
+    /**
+     * Change tab
+     * 
+     */
+    changeTab () {
+        this._assignmentOccupationService.setTabIndex(2);
     }
 
 }
