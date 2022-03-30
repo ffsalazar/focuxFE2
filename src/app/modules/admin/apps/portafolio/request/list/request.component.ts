@@ -51,6 +51,12 @@ import { MatInput } from '@angular/material/input';
                 align-items: center;
             }
 
+            .btn-selected {
+                background: #99f6e4;
+                border-radius: 5px;
+                padding: 5px 10px;
+            }
+
 
             .inventory-grid {
                 grid-template-columns: 48px auto 40px;

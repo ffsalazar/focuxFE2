@@ -80,7 +80,7 @@
                         <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
                     </div>
                     <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
-                        <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
+                        <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                     </div>
                 </div>
             </mat-option>
@@ -130,7 +130,7 @@
                             <span>{{ getAmountRequestByOption(client.name, 1) }}</span>
                         </div>
                         <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
-                            <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
+                            <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                         </div>
                     </div>
                 </mat-option>
@@ -180,7 +180,7 @@
                         <span>{{ getAmountRequestByOption(area.name, 2) }}</span>
                     </div>
                     <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
-                        <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
+                        <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                     </div>
                 </div>
                   
@@ -240,7 +240,7 @@
                             <span>{{ getAmountRequestByOption(status.name, 3) }}</span>
                         </div>
                         <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
-                            <i class="underline not-italic text-xs" style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;">SOLAMENTE</i>
+                            <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                         </div>
                 </div>
                   

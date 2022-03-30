@@ -27,7 +27,6 @@ export class EditAssignmentComponent implements OnInit {
 
     collaborators: Collaborator[] = [];
     clients: Client[] = [];
-    selectedClient: Client;
     filteredOptions: Observable<string[]>;
     filteredClients: Observable<string[]>;
     filteredCollaborators: string[];
@@ -44,6 +43,16 @@ export class EditAssignmentComponent implements OnInit {
         statusControl: [''],
         selectControl: ['']
     });
+
+    lastFilter: string = '';
+    businessTypeSelected = [];
+    selectedClient: Client[] = [];
+    clientSelected = [];
+    commercialAreaSelected = [];
+    statusSelected = [];
+    isActive: boolean = true;
+    selectedItem: any = null;
+    allCompleteClient: boolean = false;
     
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
@@ -74,9 +83,14 @@ export class EditAssignmentComponent implements OnInit {
                 this.filteredCollaborators = value;
                 this._changeDetectorRef.markForCheck();
             });
-
+    
         this._getClients();
-        this._getResponsibleByClient();
+
+        this.filteredClients = this.clientControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.clientSelected))
+        );
     }
 
     /**
@@ -115,6 +129,24 @@ export class EditAssignmentComponent implements OnInit {
     }
 
     /**
+     * Filter
+     * 
+     * @param filter 
+     * @param collection 
+     * @returns 
+     */
+    filter(filter: string, collection: any[]): any[] {
+        this.lastFilter = filter;
+        if (filter) {
+            return collection.filter((option) => {
+                return (option.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
+            });
+        } else {
+            return collection.slice();
+        }
+    }
+
+    /**
      * _filterCollaborator
      * @param value 
      */
@@ -139,34 +171,27 @@ export class EditAssignmentComponent implements OnInit {
      * getClients
      */
     private _getClients() {
+        // Get the clients
         this._assignmentOccupationService.clients$
-        .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(clients => {
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((clients: Client[]) => {
+                // Update the client
                 clients.sort(this.sortArray);
                 this.clients = clients;
+
+                // Map for clients
+                this.clientSelected = this.clients.map(item => {
+                    return {
+                        selected: false,
+                        ...item
+                    }
+                });
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-                
-            })
+            });
     
         //this.collaborators$ = this._assignmentOccupationService.collaborators$;
-    }
-    private _getResponsibleByClient() {
-        this.clientControl.valueChanges
-        .subscribe(value => {
-            const client = this.clients.find(item => item.name === value);
-
-            if ( client ) {
-                this.selectedClient = client;
-                this._assignmentOccupationService.selectedFiltered.client = client.name;
-                this._getCollaboratorsByClient( this.selectedClient.id );
-            } else {
-                this.selectedClient = null;
-                this.collaborators = [];
-                this.collaboratorControl.setValue('');
-                this._changeDetectorRef.markForCheck();
-            }
-        });
     }
     
     /**
@@ -208,6 +233,164 @@ export class EditAssignmentComponent implements OnInit {
         this.isEditing = false;
         // Get all collaborators occupation
         this._getAllCollaboratorOccupation();
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Option clicked
+     * 
+     * @param event 
+     * @param selectedItem 
+     */
+    optionClicked(event: Event, selectedItem: Client, selectedCollection: Client[], option: string) {
+        event.stopPropagation();
+        this.toggleSelection(selectedItem, selectedCollection, option);
+    }
+    
+    /**
+     * Handle change the checkbox
+     * 
+     * @param option 
+     */
+    handleChangeCheckbox(option: string) {
+        // Select action option
+        switch( option ) {
+            case 'branch':
+                break;
+            case 'client':
+                this.clientControl.setValue('');
+                break;
+            case 'area':
+                break;
+            case 'status':
+                break;
+        }
+    }
+    /**
+     * Toggle Selection
+     * 
+     * @param selectedFilter 
+     * @param collection 
+     */
+    toggleSelection(selectedFilter: any, selectedCollection: Client[], option: string) {
+        // change status the selected
+        selectedFilter.selected = !selectedFilter.selected;
+        // update all as complete
+        this.updateAllComplete(option);
+        
+        // Handle change from checkbox
+        this.handleChangeCheckbox(option);
+        
+    }
+
+    /**
+     * Restarting list
+     * 
+     */
+    restartingList() {
+        // this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: false});
+        // this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true, emitEvent: true});
+        ///this.inputBranch.nativeElement.focus();
+    }
+
+    /**
+     * Update selected item
+     * 
+     * @param selectedItem 
+     */
+    updateSelectedItem(selectedItem: any) {
+        if ( this.selectedItem ) {
+            this.selectedItem = null;
+        } else {
+            this.selectedItem = selectedItem;
+        }
+    }
+
+    /**
+     * Select only one item
+     * 
+     * @param selectedItem 
+     */
+    selectOnlyItem(selectedItem: any, collection: any) {
+        selectedItem.selected = true;
+
+        collection.forEach((item) => {
+            if ( item.name !== selectedItem.name ) {
+                item.selected = false;
+            }
+        });
+        //event.stopPropagation();
+    }
+
+    /**
+     * Check item
+     * 
+     * @param item 
+     * @param collection 
+     * @returns 
+     */
+    checkItem(item: any, collection: any) {
+        return collection.find(element => element.name === item.name) === undefined ? false: true;
+    }
+
+    /**
+     * Set all as selected
+     * 
+     * @param completed 
+     */
+    setAll(completed: boolean, collection: any, option: string) {
+        
+        // Mark as completed all elements
+        collection.forEach(item => item.selected = completed);
+
+        // Select action option
+        switch( option ) {
+            case 'branch':
+     
+                break;
+            case 'client':
+                this.allCompleteClient = completed;
+                this.clientControl.setValue('');
+            break;
+            case 'area':
+                break;
+            case 'status':
+                break;
+        }
+
+        
+    }
+
+    /**
+     * Some complete
+     * 
+     * @returns
+     */
+    someComplete(collection: any, allComplete: boolean): boolean {
+        return collection.filter(item => item.selected).length > 0 && !allComplete;
+    }
+    
+    /**
+     * Update all complete
+     * 
+     * @param option 
+     */
+    updateAllComplete(option: string) {
+
+        switch( option ) {
+            case 'branch':
+                break;
+            case 'client':
+                this.allCompleteClient = this.clientSelected != null && this.clientSelected.every(item => item.selected);
+                break;
+            case 'area':
+                break;
+            case 'status':
+
+                break;
+        }
+
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
