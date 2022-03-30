@@ -75,7 +75,7 @@
                                     </div>
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Ocupación</mat-label>
-                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-50 ">
+                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-50 mr-5">
                                             <input formControlName="occupation" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
                                             <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
                                             <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>

@@ -54,6 +54,29 @@ export class ClientsResolver implements Resolve<any>
     }
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+export class OccupationCollaboratorResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _assingmentService: AssingmentOccupationService,
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    resolve(): Observable<Client[]>
+    {
+        return this._assingmentService.getAllColaboratorOccupation();           
+    }
+}
 
 // @Injectable({
 //     providedIn: 'root'

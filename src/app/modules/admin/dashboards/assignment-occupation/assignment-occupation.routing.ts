@@ -7,7 +7,7 @@ import {
     RequestCategoriesResolver,
     RequestTagsResolver,
 } from "../../apps/portafolio/request/request.resolvers";
-import { CollaboratorsResolver, ClientsResolver } from "./assignment.resolvers";
+import { CollaboratorsResolver, ClientsResolver, OccupationCollaboratorResolver } from "./assignment.resolvers";
 
 
 export const AssignmentOccupationRouter: Route[] = [
@@ -18,7 +18,10 @@ export const AssignmentOccupationRouter: Route[] = [
     },
     {
     path: 'index',
-    component: AssignmentOccupationComponent ,
+    component: AssignmentOccupationComponent,
+    resolve : {
+        collaborators: OccupationCollaboratorResolver
+    },
     children: [
         {
             path: '',
@@ -30,7 +33,6 @@ export const AssignmentOccupationRouter: Route[] = [
             path: 'partner-search',
             component: PartnerSearchComponent,
             resolve  : {
-                collaborators: CollaboratorsResolver,
                 clients: ClientsResolver,
                 //recommended : RecommendedResolver
             }

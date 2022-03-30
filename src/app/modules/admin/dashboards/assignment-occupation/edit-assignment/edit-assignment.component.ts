@@ -29,9 +29,8 @@ export class EditAssignmentComponent implements OnInit {
     clients: Client[] = [];
     filteredOptions: Observable<string[]>;
     filteredClients: Observable<string[]>;
-    filteredCollaborators: string[];
-    displayedColumns: string[] = ['cliente', 'recurso', '%', 'fechaFinal',
-    'dias', 'ocupacion', 'detalle'];
+    filteredCollaborators: Observable<string[]>;
+    displayedColumns: string[] = ['cliente', 'recurso', '%', 'fechaFinal', 'dias', 'ocupacion', 'detalle'];
     isEditing: boolean = false;
     collaborator: Collaborator = null;
     assigments: any = null;
@@ -48,12 +47,19 @@ export class EditAssignmentComponent implements OnInit {
     businessTypeSelected = [];
     selectedClient: Client[] = [];
     clientSelected = [];
+    collaboratorSelected = []
     commercialAreaSelected = [];
     statusSelected = [];
     isActive: boolean = true;
     selectedItem: any = null;
     allCompleteClient: boolean = false;
-    
+    collaboratorsOriginal = [];
+    allCompleteCollaborator: boolean = false;
+    collaborators$: Observable<Collaborator[]>;
+
+    // Form Controls
+    filterGroupForm: FormGroup;
+
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
         private _formBuilder: FormBuilder,
@@ -61,35 +67,47 @@ export class EditAssignmentComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-
+        
         if ( this._assignmentOccupationService.selectedFiltered.client !== '' ) {
             this.clientControl.setValue(this._assignmentOccupationService.selectedFiltered.client);
             this.collaboratorControl.setValue(this._assignmentOccupationService.selectedFiltered.responsible);
         }
+        
+        // Create the fiterGroupForm
+        this.filterGroupForm = this._formBuilder.group({
+            clientControl   : [],
+            collaboratorControl   : []
+        });
 
-        // Get all collaborators' occupations
+        this.collaborators$ = this._assignmentOccupationService.collaborators$;
 
-        this._getAllCollaboratorOccupation();        
+        // Get all collaborators
+        this._getAllCollaboratorOccupation();
+
+        // Get all clients
+        this._getClients();
+
+        // Handle change from filterGroupForm
+        this._handleChangeForm();
+
+        // Handle event saved occupation
+        this._ListenerEventSavedOccupation();
         
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filterClient(value)),
         );
-
-        this.collaboratorControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filterCollaborator(value)),
-            ).subscribe(value => {
-                this.filteredCollaborators = value;
-                this._changeDetectorRef.markForCheck();
-            });
     
-        this._getClients();
-
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map((value) => (typeof value === 'string' ? value : this.lastFilter)),
             map((filter) => this.filter(filter, this.clientSelected))
+        );
+
+        this.filteredCollaborators = this.collaboratorControl.valueChanges.pipe(
+            startWith(''),
+            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
+            map((filter) => this.filter(filter, this.collaboratorSelected))
         );
     }
 
@@ -103,22 +121,43 @@ export class EditAssignmentComponent implements OnInit {
         this._unsubscribeAll.complete();
     }
 
+    // -----------------------------------------------------------------------------------------------------
+    // @ Accessors
+    // -----------------------------------------------------------------------------------------------------
+
     /**
      * clientControl
+     * 
      */
     get clientControl() {
-        return this.filterForm.get('clientControl');
+        return this.filterGroupForm.get('clientControl');
     }
 
     /**
      * collaboratorControl
+     * 
      */
     get collaboratorControl() {
-        return this.filterForm.get('collaboratorControl');
+        return this.filterGroupForm.get('collaboratorControl');
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Methods
+    // -----------------------------------------------------------------------------------------------------
+
+    private _ListenerEventSavedOccupation() {
+        this._assignmentOccupationService.tabIndex$
+            .subscribe((tabIndex) => {
+                if ( tabIndex === 0 ) { 
+                    this._getAllCollaboratorOccupation();
+                }
+                
+            });
     }
 
     /**
      * _filterClient
+     * 
      * @param value 
      */
     private _filterClient(value: string): string[] {
@@ -148,6 +187,7 @@ export class EditAssignmentComponent implements OnInit {
 
     /**
      * _filterCollaborator
+     * 
      * @param value 
      */
     private _filterCollaborator(value: string): string[]{
@@ -156,85 +196,122 @@ export class EditAssignmentComponent implements OnInit {
         return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-
+    /**
+     * Get all collaborators occupation
+     * 
+     */
     private _getAllCollaboratorOccupation() {
         this._assignmentOccupationService.getAllColaboratorOccupation()
-            .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(collaborators => {
-                    console.log("collaborators occupation: ", collaborators);
-                    this.isEditing = false;
-                    this.collaborators = collaborators;
-                });
-    }
-
-    /**
-     * getClients
-     */
-    private _getClients() {
-        // Get the clients
-        this._assignmentOccupationService.clients$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((clients: Client[]) => {
+            .subscribe(collaborators => {
                 // Update the client
-                clients.sort(this.sortArray);
-                this.clients = clients;
+                collaborators.sort(this.sortArray);
+                
+                this.collaborators = collaborators;
 
                 // Map for clients
-                this.clientSelected = this.clients.map(item => {
+                this.collaboratorSelected = this.collaborators.map(item => {
                     return {
                         selected: false,
                         ...item
                     }
                 });
+                this.collaborators = collaborators;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-    
-        //this.collaborators$ = this._assignmentOccupationService.collaborators$;
-    }
-    
-    /**
-     * getCollaboratorsByClient
-     */
-    private _getCollaboratorsByClient(clientId: number) {
-        this._assignmentOccupationService.getCollaboratorsByClient( clientId )
-            .subscribe(collaborators => {
-                this.collaborators = collaborators;
-                this.collaboratorControl.setValue('');
-                this._changeDetectorRef.markForCheck();
-            })
     }
 
-    sortArray(x, y) {
+    /**
+     * getClients
+     * 
+     */
+    private _getClients() {
+        // Get the clients
+        this._assignmentOccupationService.clients$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((clients: Client[]) => {
+                    // Update the client
+                    clients.sort(this.sortArray);
+                    this.clients = clients;
+
+                    // Map for clients
+                    this.clientSelected = this.clients.map(item => {
+                        return {
+                            selected: false,
+                            ...item
+                        }
+                    });
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+    }
+    
+
+    /**
+     * Sort array
+     * 
+     * @param x 
+     * @param y 
+     * @returns 
+     */
+    sortArray(x: any, y: any) {
         if (x.name < y.name) {return -1; }
         if (x.name > y.name) {return 1; }
         return 0;
     }
-    
+
     /**
      * Edit occupation
      * 
      * @param collaborator 
      */
     editOccupation(collaborator: Collaborator) {
-        console.log("collaborator: ", collaborator);
         this.collaborator = collaborator;
         this._assignmentOccupationService.getOccupationsByCollaborator(collaborator.id)
             .pipe(finalize(() => this.isEditing = true))
                 .subscribe(response => {
-                    console.log("response: ", response);
                     this.assigments = response;
                 });
         
     }
-
-    onReturnPrevious(e: any) {
+    
+    /**
+     * On return previous
+     * 
+     * @param event
+     */
+    onReturnPrevious(event: any) {
         this.isEditing = false;
         // Get all collaborators occupation
-        this._getAllCollaboratorOccupation();
+        //this._getAllCollaboratorOccupation();
         // Mark for check
         this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Handle change form
+     *
+     */
+     private _handleChangeForm() {
+        // Subscribe from form's values
+        this.filterGroupForm.valueChanges.subscribe(controls => {
+            let collaborators: Collaborator[] = this._assignmentOccupationService.collaborators;
+            // Filter collaborators
+            collaborators = collaborators.filter(item =>
+                (((this.clientSelected.find(client => client.selected && client.name.includes(item?.client.name)) || this.clientSelected.every(client => !client.selected))) && 
+                    ((this.collaboratorSelected.find(collaborator => collaborator.selected && collaborator.name.includes(item?.name)) || this.collaboratorSelected.every(collaborator => !collaborator.selected)))
+            ));
+
+            // Set request for filter
+            this.collaboratorsOriginal = collaborators;
+            // Set the requests
+            this._assignmentOccupationService.setCollaborators(collaborators);
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+
+        });
     }
 
     /**
@@ -251,19 +328,16 @@ export class EditAssignmentComponent implements OnInit {
     /**
      * Handle change the checkbox
      * 
-     * @param option 
+     * @param option
      */
     handleChangeCheckbox(option: string) {
         // Select action option
         switch( option ) {
-            case 'branch':
+            case 'collaborator':
+                this.collaboratorControl.setValue('');
                 break;
             case 'client':
                 this.clientControl.setValue('');
-                break;
-            case 'area':
-                break;
-            case 'status':
                 break;
         }
     }
@@ -346,17 +420,14 @@ export class EditAssignmentComponent implements OnInit {
 
         // Select action option
         switch( option ) {
-            case 'branch':
-     
+            case 'collaborator':
+                this.allCompleteCollaborator = completed;
+                this.collaboratorControl.setValue('');
                 break;
             case 'client':
                 this.allCompleteClient = completed;
                 this.clientControl.setValue('');
             break;
-            case 'area':
-                break;
-            case 'status':
-                break;
         }
 
         
@@ -379,15 +450,11 @@ export class EditAssignmentComponent implements OnInit {
     updateAllComplete(option: string) {
 
         switch( option ) {
-            case 'branch':
+            case 'collaborator':
+                this.allCompleteCollaborator = this.collaboratorSelected != null && this.collaboratorSelected.every(item => item.selected);
                 break;
             case 'client':
                 this.allCompleteClient = this.clientSelected != null && this.clientSelected.every(item => item.selected);
-                break;
-            case 'area':
-                break;
-            case 'status':
-
                 break;
         }
 

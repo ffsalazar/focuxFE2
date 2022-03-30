@@ -145,14 +145,7 @@ export class RequestService
         return this._clients.asObservable();
     }
 
-    /**
-     * Setter for request
-     */
-    setRequests(requests: Request[])
-    {
-        this._requests.next(requests);
-    }
-
+    
     /**
      * Getter for request
      */
@@ -164,28 +157,28 @@ export class RequestService
     get areatech$(): Observable<TechnicalArea []>{
         return this._areatech.asObservable()
      }
-
-    /**
-     * Getter for typeRequest
-     */
-    get typereq$(): Observable<TypeRequest []>{
-       return this._typereq.asObservable()
-    }
-
+     
+     /**
+      * Getter for typeRequest
+      */
+     get typereq$(): Observable<TypeRequest []>{
+         return this._typereq.asObservable()
+        }
+        
     /**
      * Getter for isOpenModal
      */
     get isOpenModal$(): Observable<Boolean>{
-       return this._isOpenModal.asObservable()
+        return this._isOpenModal.asObservable()
     }
-
+    
     /**
      * Getter for businessType
      */
     get businessType$(): Observable<BusinessType[]> {
         return this._businessType.asObservable();
     }
-
+    
     /**
      * Getter for businessType
      */
@@ -196,9 +189,19 @@ export class RequestService
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+    
+    /**
+     * Setter for request
+     * 
+     */
+    setRequests(requests: Request[])
+    {
+        this._requests.next(requests);
+    }
 
     /**
      * Get categories
+     * 
      */
     getCategory(): Observable<Category[]>
     {
@@ -206,15 +209,15 @@ export class RequestService
             tap((categories) => {
                 this._categories.next(categories);
             })
-        );
-    }
-
-    /**
-     * 
-     * @returns
-     */
-    getDepartments() {
-        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+            );
+        }
+        
+        /**
+         * 
+         * @returns
+         */
+        getDepartments() {
+            return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
             tap((departments) => {
                 this._departments.next(departments);
             })
@@ -236,6 +239,7 @@ export class RequestService
 
     /**
      * Get knowledges
+     * 
      */
     getKnowledges(): Observable<Knowledge[]>
     {

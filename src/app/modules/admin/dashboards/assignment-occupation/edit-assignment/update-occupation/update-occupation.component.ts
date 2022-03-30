@@ -16,7 +16,6 @@ import { limitOccupation } from '../../partner-search/limit-occupation';
 export class UpdateOccupationComponent implements OnInit {
 
 	@Input() set collaboratorAssigment(collaborator: any) {
-		console.log("update: ", collaborator);
 		this.collaboratorOccupations = collaborator;
 		this._setFormOcupation(collaborator);
 	}
@@ -49,12 +48,6 @@ export class UpdateOccupationComponent implements OnInit {
     // -----------------------------------------------------------------------------------------------------
 	
 	ngOnInit(): void {
-
-		console.log("colaborador: ", this.collaborator);
-		//this.collaboratorsArr = [...aux];
-
-		// Set the form ocupation
-		//this._setFormOcupation();
 		this._handleChangeFormOccupation();
 	}
 
@@ -86,7 +79,6 @@ export class UpdateOccupationComponent implements OnInit {
 				map(occupations => occupations.collaboratorOccupation)
 			)
 			.subscribe(occupations => {
-				console.log("occupations: ", occupations);
 				this._calculatePercentageTotal(occupations);
 
 				// if ( occupations.length > 0 ) {
@@ -104,8 +96,6 @@ export class UpdateOccupationComponent implements OnInit {
 
 	test() {
 		for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-			console.log("total: ", this.percentageTotal);
-
 			this.collaboratorOccupation.at(i).setValidators(limitOccupation(this.percentageTotal));
 			this.collaboratorOccupation.at(i).updateValueAndValidity({onlySelf: true, emitEvent: true});
 		}
@@ -126,11 +116,9 @@ export class UpdateOccupationComponent implements OnInit {
 		if ( collaborator ) {
 			this.collaboratorOccupation.clear();
 
-			console.log("Assigments: ", collaborator.assigments);
 			collaborator.assigments.forEach(item => {
 				
 				if ( item && item?.isActive ) {
-					console.log("item: ", item);
 					let collaboratorOccupation: FormGroup = this._formBuilder.group({
 						id              : [item.id],
 						requestId 		: [item.requestId],
@@ -151,9 +139,6 @@ export class UpdateOccupationComponent implements OnInit {
 			});
 
 			this._calculatePercentageTotal(this.collaboratorOccupation.value);
-			console.log("collaboratorOccupation: ", this.collaboratorOccupation.value);
-			// Handle event from array form
-			//this._handleChangeArrayForm();
 		}
 	}
 
@@ -208,9 +193,6 @@ export class UpdateOccupationComponent implements OnInit {
     }
 
 	updateAssigmentOccupation(assignation: any) {
-
-		console.log("collaboratorAssignation:", assignation);
-
 		const assignationOccupation = {
 			occupationPercentage: assignation.occupation,
 			assignmentStartDate: assignation.dateInit,
@@ -245,20 +227,21 @@ export class UpdateOccupationComponent implements OnInit {
 
 		// Subscribe to the confirmation dialog closed action
 		confirmation.afterClosed().subscribe((result) => {
-
 				// If the confirm button pressed...
 				if ( result === 'confirmed' )
 				{
 					this._assignmentOccupationService.updateOccupationsByCollaborator(assignation.id, assignationOccupation)
 						.subscribe(response => {
-							console.log("Asignación editada con exito: ", response);
-							// Show notification update request
-							this.showFlashMessage('success', 'Asignación editada con éxito');
-							// Set time out for change tab
-							setTimeout(() => {
-								// this._router.navigate(['dashboards/assignment-occupation/index']);
-								// this._assignmentOccupationService.setTabIndex(1);
-							}, 2000); 
+							this._assignmentOccupationService.getAllColaboratorOccupation()
+								.subscribe(() => {
+									// Show notification update request
+									this.showFlashMessage('success', 'Asignación editada con éxito');
+									// Set time out for change tab
+									setTimeout(() => {
+										// this._router.navigate(['dashboards/assignment-occupation/index']);
+										// this._assignmentOccupationService.setTabIndex(1);
+									}, 2000); 
+								});
 						});
 
 				}

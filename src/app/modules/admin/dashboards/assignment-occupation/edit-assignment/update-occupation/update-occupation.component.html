@@ -61,7 +61,7 @@
                             <div class="flex flex-row gt-xs:flex-row">
                                 <div class="flex flex-col mr-6">
                                     <mat-label class="font-semibold">
-                                        <mat-icon *ngIf="collaboratorOccupation.at(i).valid" class="icon-size-5 text-green-500"  matPrefix [svgIcon]="'heroicons_solid:check-circle'">
+                                        <mat-icon *ngIf="formOcupation.get('collaboratorOccupation').at(i).valid" class="icon-size-5 text-green-500"  matPrefix [svgIcon]="'heroicons_solid:check-circle'">
                                         </mat-icon>
                                         Solicitud
                                     </mat-label>
@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="flex flex-col ">
                                     <mat-label class="font-semibold">Ocupación</mat-label>
-                                    <mat-form-field [ngClass]="formFieldHelpers" class="w-50 ">
+                                    <mat-form-field [ngClass]="formFieldHelpers" class="w-50 mr-5">
                                         <input formControlName="occupation" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
                                         <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
                                         <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
@@ -137,6 +137,7 @@
                                 <div style="display: flex; margin-top: 25px !important; margin-left: 10px;">    
                                     <div class="flex" style="flex-direction: row-reverse;">
                                         <button
+                                            [disabled]="!collaboratorOccupation.at(i).touched"
                                             class="px-8"
                                             mat-flat-button
                                             [color]="'primary'"

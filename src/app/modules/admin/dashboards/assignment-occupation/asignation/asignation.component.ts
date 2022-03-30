@@ -68,15 +68,11 @@ export class AsignationComponent implements OnInit, OnDestroy {
       }
 
       ngOnInit(): void {
-          // Handle change from occupation form
-        this._handleChangeformOccupation();
-
+          
         this._assignmentOccupationService.collaboratorSelected$
             .pipe(
                 map(collaboratorSelected => collaboratorSelected))
                     .subscribe(collaboratorSelected => {
-
-                        console.log("collaboratorSelected: ", collaboratorSelected);
                         // Set collaborator selected
                         let aux = collaboratorSelected || [];
                         
@@ -100,22 +96,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
           this.collaboratorFormGroup = this._formBuilder.group({
                 collaborators: this._formBuilder.array([])
           });
-      }
-    
-    
-    /**
-     * Handle change form occupation
-     * 
-     */
-    private _handleChangeformOccupation() {
-
-        this.formOcupation.valueChanges
-            .subscribe(() => {
-            });
-        this.collaboratorOccupation.valueChanges
-            .subscribe(response => {
-                console.log(response);
-            })
     }
 
     /**
@@ -145,7 +125,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     this.collaboratorOccupation.push(collaboratorOccupation);
                 }
             });
-            console.log("collaboratorOccupation: ", this.collaboratorOccupation.value);
             // Handle event from array form
             this._handleChangeArrayForm();
         }

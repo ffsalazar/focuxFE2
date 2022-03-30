@@ -25,6 +25,8 @@ export class AssingmentOccupationService {
     private _requestSelected: any = null;
     private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
 
+    collaborators: any;
+
     selectedFiltered: any = {
         client: '',
         responsible: '',
@@ -50,7 +52,7 @@ export class AssingmentOccupationService {
     get tabIndex$(): Observable<number> {
         return this._tabIndex.asObservable();
     }
-
+    
     /**
      * Getter for collaborators
      */
@@ -138,6 +140,15 @@ export class AssingmentOccupationService {
 
     get collaboratorsSelected() {
         return this._collaboratorsSelected;
+    }
+
+    /**
+     * Setter for request
+     * 
+     */
+    setCollaborators(collaborators: any[])
+    {
+        this._collaborators.next(collaborators);
     }
 
     /**
@@ -381,6 +392,8 @@ export class AssingmentOccupationService {
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage')
             .pipe(
                 tap(collaborators => {
+                    collaborators[0].client.name = 'BECONSULT';
+                    this.collaborators = collaborators;
                     this._collaborators.next(collaborators);
                 })
             )

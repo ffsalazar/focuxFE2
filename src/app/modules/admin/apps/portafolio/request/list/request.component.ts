@@ -201,17 +201,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
-        this.request$ = this._requestService.requests$;
         
-        this._requestService.requests$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((requests: any) => {
-                this.dataSource.data = requests;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-
         // Create the selected request form
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
@@ -268,42 +258,52 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             customerBranchControl   : [],
         });
 
+        this.request$ = this._requestService.requests$;
+        
+        this._requestService.requests$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((requests: any) => {
+                    this.dataSource.data = requests;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+
         // Get the categories
         this._requestService.categories$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((categories: Category[]) => {
-                // Update the categories
-                this.categories = categories;
+                .subscribe((categories: Category[]) => {
+                    // Update the categories
+                    this.categories = categories;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+
+
+        // Get the requestPeriod
+        this._requestService.requestp$
+        .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((requestp: RequestPeriod[]) => {
+                // Update the requestp
+                this.requestp = requestp;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
-
-             // Get the requests
-        this._requestService.requestp$
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe((requestp: RequestPeriod[]) => {
-            // Update the requestp
-            this.requestp = requestp;
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
-
         // Get the clients
         this._requestService.clients$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((clients: Client[]) => {
-                // Update the client
-                clients.sort(this.sortArray);
-                this.clients = clients;
+                .subscribe((clients: Client[]) => {
+                    // Update the client
+                    clients.sort(this.sortArray);
+                    this.clients = clients;
 
-                // Map for clients
-                this.clientSelected = this.clients.map(item => {
-                    return {
-                        selected: false,
-                        ...item
-                    }
-                });
+                    // Map for clients
+                    this.clientSelected = this.clients.map(item => {
+                        return {
+                            selected: false,
+                            ...item
+                        }
+                    });
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -312,17 +312,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Get the Commercial Area
         this._requestService.commerca$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((commercialArea: CommercialArea[]) => {
-                // Update the commercialArea
-                this.commercialArea = commercialArea;
-                
-                // Map for clients
-                this.commercialAreaSelected = this.commercialArea.map(item => {
-                    return {
-                        selected: false,
-                        ...item
-                    }
-                });
+                .subscribe((commercialArea: CommercialArea[]) => {
+                    // Update the commercialArea
+                    this.commercialArea = commercialArea;
+                    
+                    // Map for clients
+                    this.commercialAreaSelected = this.commercialArea.map(item => {
+                        return {
+                            selected: false,
+                            ...item
+                        }
+                    });
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -331,34 +331,34 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Get the Status
         this._requestService.status$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((status: Status[]) => {
-                // Update the status
-                this.status = status;
-                const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
+                .subscribe((status: Status[]) => {
+                    // Update the status
+                    this.status = status;
+                    const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
 
-                // Map for bussinessType
-                this.statusSelected = this.status.map(item => {
-                    return {
-                        selected: false,
-                        ...item
-                    }
+                    // Map for bussinessType
+                    this.statusSelected = this.status.map(item => {
+                        return {
+                            selected: false,
+                            ...item
+                        }
+                    });
+
+                    this.step2.get('status').setValue(statusId);
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 });
-
-                this.step2.get('status').setValue(statusId);
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
         // Get the TypeRequest
         this._requestService.typereq$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((typeRequest: TypeRequest[]) => {
+                .subscribe((typeRequest: TypeRequest[]) => {
 
-                // Update the typeRequest
-                this.typeRequest = typeRequest;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+                    // Update the typeRequest
+                    this.typeRequest = typeRequest;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
         
         // Get the Area technical
         this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
@@ -373,54 +373,54 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Get the businessType
         this._requestService.businessType$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((businessType: BusinessType[]) => {
-                // Update the buninessType
-                this.businessType = businessType;
+                .subscribe((businessType: BusinessType[]) => {
+                    // Update the buninessType
+                    this.businessType = businessType;
 
-                // Map for bussinessType
-                this.businessTypeSelected = this.businessType.map(item => {
-                    return {
-                        selected: false,
-                        ...item
-                    }
+                    // Map for bussinessType
+                    this.businessTypeSelected = this.businessType.map(item => {
+                        return {
+                            selected: false,
+                            ...item
+                        }
+                    });
+
+                    this.businessType = [...this.businessTypeSelected];
+
+                    //Mark for check
+                    this._changeDetectorRef.markForCheck();
                 });
-
-                this.businessType = [...this.businessTypeSelected];
-
-                //Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
         
         // Get the collaborators
         this._requestService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((collaborators: Collaborator[]) => {
-                // Update the collaborators
-                this.collaborators = collaborators;
-                //Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+                .subscribe((collaborators: Collaborator[]) => {
+                    // Update the collaborators
+                    this.collaborators = collaborators;
+                    //Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
         
         // Get the departments
         this._requestService.departments$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((departments: Department[]) => {
-                // Update the departments
-                this.departments = departments;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+                .subscribe((departments: Department[]) => {
+                    // Update the departments
+                    this.departments = departments;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
 
         // Get the pagination
         this._inventoryService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: InventoryPagination) => {
-                // Update the pagination
-                this.pagination = pagination;
+                .subscribe((pagination: InventoryPagination) => {
+                    // Update the pagination
+                    this.pagination = pagination;
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
 
         // Get the requests
         this.request$ = this._requestService.requests$;
@@ -435,14 +435,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Get the tags
         this._inventoryService.tags$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tags: InventoryTag[]) => {
-
-                // Update the tags
-                this.tags = tags;
-                this.filteredTags = tags;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+                .subscribe((tags: InventoryTag[]) => {
+                    // Update the tags
+                    this.tags = tags;
+                    this.filteredTags = tags;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -657,16 +656,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             });
     }
 
-    private _getBusinessTypeByClient(clientSelected) {
-        
-    }
-
     /**
      * _filter
      * @param value
      *
      */
-     private _filter(value: string, collection: any[]): string[] {
+    private _filter(value: string, collection: any[]): string[] {
         const filteredValue = value.toLowerCase();
         const filteredCollection = collection.map(option => option.name);
         return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
@@ -690,22 +685,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         }
     }
     
-    //   displayFn(value: User[] | string): string | undefined {
-    //     let displayValue: string;
-    //     if (Array.isArray(value)) {
-    //       value.forEach((user, index) => {
-    //         if (index === 0) {
-    //           displayValue = user.firstname + ' ' + user.lastname;
-    //         } else {
-    //           displayValue += ', ' + user.firstname + ' ' + user.lastname;
-    //         }
-    //       });
-    //     } else {
-    //       displayValue = value;
-    //     }
-    //     return displayValue;
-    // }
-
     /**
      * Sort Array
      * 

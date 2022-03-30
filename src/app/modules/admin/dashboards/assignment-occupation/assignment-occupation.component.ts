@@ -32,8 +32,9 @@ export class AssignmentOccupationComponent implements OnInit {
             });
 	}
 
-  /**
+    /**
      * Select Tab
+     * 
      */
     selectTab() {
         switch ( this._tab.selectedIndex ) {
@@ -53,6 +54,10 @@ export class AssignmentOccupationComponent implements OnInit {
         }
     }
 
+    /**
+     * Handle event saved occupation
+     * 
+     */
     private _handleEventSavedOccupation() {
         this._assingmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
