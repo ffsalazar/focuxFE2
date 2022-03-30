@@ -9,25 +9,47 @@
             >
             <span fuseAlertTitle>{{successSave}}</span>
         </fuse-alert>
-        <div class="flex flex-col" style="width: 60%;">
+        <div class="flex flex-col" style="width: 100%;">
             
-            <mat-label class="font-semibold mr-6 ml-1">Colaborador</mat-label>
-            <mat-form-field class="" >
-                <input type="text" [placeholder]="'Pablo Perez'" matInput [value]="collaborator.name + ' ' + collaborator.lastName" readonly>
-                <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                        {{option.name}}
-                    </mat-option>
-                </mat-autocomplete> -->
-            </mat-form-field>
-            <mat-label class="font-semibold">Total ocupación {{ percentageTotal}} % </mat-label>
+            <div class="flex flex-row justify-between" style="width: 100%;">
+                <div class="flex flex-col" style="width: 60%;">
+                    <mat-label class="font-semibold mr-6 ml-1">Colaborador</mat-label>
+                    <mat-form-field class="" >
+                        <input type="text" [placeholder]="'Pablo Perez'" matInput [value]="collaborator.name + ' ' + collaborator.lastName" readonly>
+                        <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete> -->
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-row justify-end items-center" style="width: 40%;">
+                    <button
+                        mat-fab
+                        [color]="'accent'"
+                        type="button"
+                        matTooltip="Regresar"
+                        (click)="showCollaborators()"
+                    >
+                        <mat-icon
+                            class="icon-size-7"
+                        >
+                            keyboard_arrow_left
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div style="width: 60%;">
+                <mat-label class="font-semibold">Total ocupación {{ percentageTotal}} % </mat-label>
                 <mat-progress-bar
                     class="rounded-full"
                     [mode]="'determine'"
-                    [color]="percentageTotal >= 60 && percentageTotal !== 100 ? 'accent' : (percentageTotal === 100 ? 'primary' : 'warn')"
+                    [color]="percentageTotal >= 60 && percentageTotal !== 100 ? 'warn' : (percentageTotal === 100 ? 'primary' : 'warn')"
                     [value]="percentageTotal"
                 >
                 </mat-progress-bar>
+            </div>
+            
         </div>
     </div>
     <ng-container [formGroup]="formOcupation" *ngIf="collaboratorOccupations.assigments.length > 0">
@@ -150,9 +172,9 @@
                 >
                     Regresar
                 </button> -->
-                <button (click)="showCollaborators()" class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button">
+                <!-- <button (click)="showCollaborators()" class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button">
                     Regresar
-                </button>
+                </button> -->
             </div>
         </ng-container>
     </ng-container>
