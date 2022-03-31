@@ -68,6 +68,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     tabIndex = 0;
     flashMessage: string = '';
     hasCheckedCollaborator: boolean = false;
+    selectedFilter: boolean = false;
 
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,

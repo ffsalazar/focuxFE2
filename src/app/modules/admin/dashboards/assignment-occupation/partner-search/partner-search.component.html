@@ -104,102 +104,231 @@
                         <span fuseAlertTitle>{{successSave}}</span>
                 </fuse-alert> -->
                
+                <div class="flex flex-row gap-4 ">
+                    <div class="flex flex-col" style="width: 20%;">
+                        <div class="flex items-center justify-start">
+                            <span class="ml-2 mb-3 font-semibold">Filtros (3)</span>
+                        </div>
+                        <div class="flex flex-col shadow px-2" style="background: white;">
+                            <div class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto;">
+                                <div class="flex items-center justify-between">
+                                    <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
+                                        <mat-icon class="icon-size-5 mr-1">{{ 'location_on' }}</mat-icon>
+                                        Cliente</span>
+                                    <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                </div>
+                                <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
+                                    
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Todos</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Credix</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Epa</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Beconsult</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
+                                <div class="flex items-center justify-between">
+                                    <!-- <div><span><mat-icon></mat-icon>Conocimiento</span></div> -->
+                                    
+                                    <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}"> <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
+                                    <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                </div>
+                                <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
+                                    
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Todos</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Credix</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Epa</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Beconsult</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
+                                <div class="flex items-center justify-between">
+                                    <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
+                                        <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
+                                        Ocupación</span>
+                                    <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                </div>
+                                <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
+                                    
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Todos</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Credix</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Epa</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <mat-checkbox
+                                            [color]="'primary'"
+                                            formControlName="checked">
+                                        </mat-checkbox>
+                                        <span>Beconsult</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="bg-card py-3 px-6 rounded shadow  flex flex-col">
-                    <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
-                        <mat-tab label="Recomendado"></mat-tab>
-                        <mat-tab label="Cliente"></mat-tab>
-                        <mat-tab label="Conocimiento"></mat-tab>
-                        <mat-tab label="Ocupacion"></mat-tab>
-                    </mat-tab-group>
-
-                <div class="relative">
-                    
-                    <ng-container [formGroup]="collaboratorArrayForm">
-                        <ng-container *ngIf="collaboratorsRecomm.length; else noCollaborators">
-                                <ng-container formArrayName="collaboratorSelected">
-                                    <ng-container *ngFor="let collaborator of collaboratorSelected.controls; index as i; ">
-                                        <ng-container [formGroupName]="i">
-                                            <!-- Group -->
-                                             <ng-container
-                                                *ngIf="i === 0 || collaboratorsRecomm[i].name.charAt(0) !== collaboratorsRecomm[i - 1].name.charAt(0)">
-                                                <div
-                                                    class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                                    {{collaboratorsRecomm[i].name.charAt(0)}}
-                                                </div>
-                                            </ng-container> 
-                                            <!-- Collaborator -->
+                        
+                    </div>
+                    <div class="bg-card py-3 px-6 rounded shadow  flex flex-col" style="width: 80%;">
+                        <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
+                            <mat-tab label="Recomendado"></mat-tab>
+                            <mat-tab label="Cliente"></mat-tab>
+                            <mat-tab label="Conocimiento"></mat-tab>
+                            <mat-tab label="Ocupacion"></mat-tab>
+                        </mat-tab-group>
+    
+                        <div class="relative">
+                            
+                            <ng-container [formGroup]="collaboratorArrayForm">
+                                <ng-container *ngIf="collaboratorsRecomm.length; else noCollaborators">
+                                        <ng-container formArrayName="collaboratorSelected">
                                             
-                                             <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
-                                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorsRecomm[i].id,
-                                                                        'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorsRecomm[i].id}">
-                                            
-                                                                        
-                                                <div class="flex flex-row">
-                                                      <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                                    <ng-container *ngIf="collaboratorsRecomm[i].avatar">
-                                                        <img class="object-cover w-full h-full" [src]="collaboratorsRecomm[i].avatar"
-                                                            alt="Collaborator avatar" />
-                                                    </ng-container>
-                                                    <ng-container *ngIf="!collaboratorsRecomm[i].avatar">
+                                            <ng-container *ngFor="let collaborator of collaboratorSelected.controls; index as i; ">
+                                                <ng-container [formGroupName]="i">
+                                                    <!-- Group -->
+                                                    <ng-container
+                                                        *ngIf="i === 0 || collaboratorsRecomm[i].name.charAt(0) !== collaboratorsRecomm[i - 1].name.charAt(0)">
                                                         <div
-                                                            class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                            class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
                                                             {{collaboratorsRecomm[i].name.charAt(0)}}
                                                         </div>
-                                                    </ng-container>
-                                                </div>
-                                                    <div class="min-w-0 ml-4">
-                                                        <div class="font-medium leading-5 truncate">{{collaboratorsRecomm[i].name}} {{collaboratorsRecomm[i].lastName}}</div>
-                                                        <div class="leading-5 truncate text-secondary">{{collaboratorsRecomm[i].employeePosition.name}}</div>
-                                                    </div>
+                                                    </ng-container> 
+                                                    <!-- Collaborator -->
                                                     
-                                                </div>
-                                                <!--  Knowledge -->
-                                               <div class="flex">
-                                                      <ng-container *ngIf="collaboratorsRecomm">
-                                                        <div class="flex flex-wrap items-center mt-2 mr-16">
-                                                         
-                                                           
-                                                                <ng-container >
-                                                                    <div
-                                                                        class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                                        <span class="text-sm font-medium whitespace-nowrap">{{collaboratorsRecomm[i].client.name}}</span>
-                                                                    </div>
-                                                                </ng-container>
-                                                           
+                                                    <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
+                                                        [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorsRecomm[i].id,
+                                                                                'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorsRecomm[i].id}">
+                                                    
+                                                                                
+                                                        <div class="flex flex-row">
+                                                            <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                                                            <ng-container *ngIf="collaboratorsRecomm[i].avatar">
+                                                                <img class="object-cover w-full h-full" [src]="collaboratorsRecomm[i].avatar"
+                                                                    alt="Collaborator avatar" />
+                                                            </ng-container>
+                                                            <ng-container *ngIf="!collaboratorsRecomm[i].avatar">
+                                                                <div
+                                                                    class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                                    {{collaboratorsRecomm[i].name.charAt(0)}}
+                                                                </div>
+                                                            </ng-container>
                                                         </div>
-                                                    </ng-container>
-                                                
-                                                <div class="flex flex-col mr-16">
-                                                    <mat-label>Ocupación {{ collaboratorsRecomm[i].occupationPercentage }} % </mat-label>
-                                                <mat-progress-bar
-                                                    class="mt-3 rounded-full w-60"
-                                                    [mode]="'determine'"
-                                                    [color]="collaboratorsRecomm[i].occupationPercentage >= 100 ? 'primary' : 'warn'"
-                                                    [value]="collaboratorsRecomm[i].occupationPercentage"
-                                                >
-                                                </mat-progress-bar>
-                                                </div>
-                                             <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            </div>
-                                           </span>
+                                                            <div class="min-w-0 ml-4">
+                                                                <div class="font-medium leading-5 truncate">{{collaboratorsRecomm[i].name}} {{collaboratorsRecomm[i].lastName}}</div>
+                                                                <div class="leading-5 truncate text-secondary">{{collaboratorsRecomm[i].employeePosition.name}}</div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <!--  Knowledge -->
+                                                    <div class="flex">
+                                                            <ng-container *ngIf="collaboratorsRecomm">
+                                                                <div class="flex flex-wrap items-center mt-2 mr-16">
+                                                                
+                                                                
+                                                                        <ng-container >
+                                                                            <div
+                                                                                class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
+                                                                                <span class="text-sm font-medium whitespace-nowrap">{{collaboratorsRecomm[i].client.name}}</span>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                
+                                                                </div>
+                                                            </ng-container>
+                                                        
+                                                        <div class="flex flex-col mr-16">
+                                                            <mat-label>Ocupación {{ collaboratorsRecomm[i].occupationPercentage }} % </mat-label>
+                                                        <mat-progress-bar
+                                                            class="mt-3 rounded-full w-60"
+                                                            [mode]="'determine'"
+                                                            [color]="collaboratorsRecomm[i].occupationPercentage >= 100 ? 'primary' : 'warn'"
+                                                            [value]="collaboratorsRecomm[i].occupationPercentage"
+                                                        >
+                                                        </mat-progress-bar>
+                                                        </div>
+                                                    <mat-checkbox
+                                                        [color]="'primary'"
+                                                        formControlName="checked">
+                                                    </mat-checkbox>
+                                                    </div>
+                                                </span>
+                                                </ng-container>
+                                            </ng-container>
                                         </ng-container>
-                                    </ng-container>
                                 </ng-container>
-                        </ng-container>
-                    </ng-container>
-                
-                    <!-- No collaborators -->
-                    <ng-template #noCollaborators>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay colaboradores!</div>
-                    </ng-template>
-                
+                            </ng-container>
+                        
+                            <!-- No collaborators -->
+                            <ng-template #noCollaborators>
+                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay colaboradores!</div>
+                            </ng-template>
+                        
+                        </div>
+    
+                    </div>
                 </div>
-
-                </div>
+                
             </div>
         </div>
     </div>

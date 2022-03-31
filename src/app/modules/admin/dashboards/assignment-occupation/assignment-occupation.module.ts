@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssignmentOccupationComponent } from './assignment-occupation.component';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
@@ -33,7 +33,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
 import { UpdateOccupationComponent } from './edit-assignment/update-occupation/update-occupation.component';
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
-
 @NgModule({
   declarations: [
     AssignmentOccupationComponent,
@@ -71,8 +70,12 @@ import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators
         NgxSpinnerModule,
         MatTooltipModule,
     ],
+    schemas: [
+          CUSTOM_ELEMENTS_SCHEMA,
+      ],
      providers   : [
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
-    ]
+    ],
+    
 })
 export class AssignmentOccupationModule { }
