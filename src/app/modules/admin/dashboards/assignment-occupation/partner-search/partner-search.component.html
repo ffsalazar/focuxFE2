@@ -232,12 +232,12 @@
                         
                     </div>
                     <div class="bg-card py-3 px-6 rounded shadow  flex flex-col" style="width: 80%;">
-                        <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
+                        <!-- <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
                             <mat-tab label="Recomendado"></mat-tab>
                             <mat-tab label="Cliente"></mat-tab>
                             <mat-tab label="Conocimiento"></mat-tab>
                             <mat-tab label="Ocupacion"></mat-tab>
-                        </mat-tab-group>
+                        </mat-tab-group> -->
     
                         <div class="relative">
                             
@@ -321,7 +321,24 @@
                         
                             <!-- No collaborators -->
                             <ng-template #noCollaborators>
-                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay colaboradores!</div>
+                                
+                                <!-- <button
+                                    mat-fab
+                                    style="background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;;
+                                    "
+                                    type="button"
+                                    matTooltip="Siguiente"
+                                    
+                                >
+                                    <mat-icon
+                                        style="background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;"
+
+                                        class="icon-size-10"
+                                    >
+                                        error
+                                    </mat-icon>
+                                </button> -->
+                                <div class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center">No hay colaboradores!</div>
                             </ng-template>
                         
                         </div>
