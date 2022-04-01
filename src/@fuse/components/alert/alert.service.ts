@@ -72,6 +72,9 @@ export class FuseAlertService
 
         // Execute the observable
         this._onShow.next(name);
+        setTimeout(() => {
+            this.dismiss(name);
+        }, 5000);
     }
 
 }

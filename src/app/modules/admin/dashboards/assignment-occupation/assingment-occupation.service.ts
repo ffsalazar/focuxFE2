@@ -246,8 +246,6 @@ export class AssingmentOccupationService {
      * @returns 
      */
     getRequestByResponsible(responsibleId: number, statusId: number): Observable<any[]> {
-        console.log("Obtener solic por responsables con status: ", statusId );
-
         return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId, {
             params: {
                 statusId
@@ -392,7 +390,6 @@ export class AssingmentOccupationService {
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage')
             .pipe(
                 tap(collaborators => {
-                    collaborators[0].client.name = 'BECONSULT';
                     this.collaborators = collaborators;
                     this._collaborators.next(collaborators);
                 })

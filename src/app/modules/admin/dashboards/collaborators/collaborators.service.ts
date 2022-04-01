@@ -270,6 +270,7 @@ export class CollaboratorsService
      */
     createCollaborator(): Observable<Collaborator>
     {
+        console.log("createCollaborator");
         // Generate a new collaborator
         const newCollaborator = {
 

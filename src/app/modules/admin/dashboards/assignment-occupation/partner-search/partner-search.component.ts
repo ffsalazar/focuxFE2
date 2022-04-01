@@ -548,7 +548,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     private _filterCollaborator(value: string): string[]{
         const filterValue = value.toLowerCase();
-        const val = this.collaborators.map(option => option.name + ' ' + option.lastName);
+        const val = this.collaborators.map(option => option.name + " " + option.lastName);
         return val.filter(option => option.toLowerCase().includes(filterValue));
     }
 

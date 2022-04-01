@@ -75,8 +75,8 @@ export class EditAssignmentComponent implements OnInit {
         
         // Create the fiterGroupForm
         this.filterGroupForm = this._formBuilder.group({
-            clientControl   : [],
-            collaboratorControl   : []
+            clientControl          : [],
+            collaboratorControl    : []
         });
 
         this.collaborators$ = this._assignmentOccupationService.collaborators$;
@@ -215,8 +215,11 @@ export class EditAssignmentComponent implements OnInit {
                         ...item
                     }
                 });
-                this.collaborators = collaborators;
 
+
+                console.log("Collaborators: ", this.collaborators);
+                this.collaborators = collaborators;
+                this.collaboratorControl.setValue('');
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -322,6 +325,7 @@ export class EditAssignmentComponent implements OnInit {
      */
     optionClicked(event: Event, selectedItem: Client, selectedCollection: Client[], option: string) {
         event.stopPropagation();
+        console.log("optionClicked");
         this.toggleSelection(selectedItem, selectedCollection, option);
     }
     
@@ -341,6 +345,7 @@ export class EditAssignmentComponent implements OnInit {
                 break;
         }
     }
+    
     /**
      * Toggle Selection
      * 
@@ -350,6 +355,8 @@ export class EditAssignmentComponent implements OnInit {
     toggleSelection(selectedFilter: any, selectedCollection: Client[], option: string) {
         // change status the selected
         selectedFilter.selected = !selectedFilter.selected;
+
+        console.log("SelectedFilter: ", selectedFilter);
         // update all as complete
         this.updateAllComplete(option);
         
@@ -394,6 +401,8 @@ export class EditAssignmentComponent implements OnInit {
                 item.selected = false;
             }
         });
+
+        //this.clientControl.setValue('');
         //event.stopPropagation();
     }
 

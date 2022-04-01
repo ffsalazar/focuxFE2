@@ -65,22 +65,22 @@
                 *ngFor="let branch of filteredCustomerBranch | async"
                 [value]="selectedUsers"
             >
-                <div class="flex" style="justify-content: space-between;">
-                    <div class="w-50 text-md" (click)="optionClicked($event, branch, selectedBranch, 'branch')">
+                <div class="flex" style="justify-content: space-between; ">
+                    <div class=" text-md whitespace-nowrap" (click)="optionClicked($event, branch, selectedBranch, 'branch')">
                         <mat-checkbox
                             [checked]="branch.selected"
                             (change)="toggleSelection(branch, selectedBranch, 'branch')"
                             (click)="$event.stopPropagation()"
                             [color]="'primary'"
                         >
-                            {{ branch.name }}
+                        <span class="whitespace-nowrap">{{ branch.name }}</span>
                         </mat-checkbox>
                     </div>
-                    <div class="w-50 text-right" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
-                        <span>{{ getAmountRequestByOption(branch.name, 4) }}</span>
+                    <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
+                        <span class="whitespace-nowrap">{{ getAmountRequestByOption(branch.name, 4) }}</span>
                     </div>
-                    <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
-                        <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
+                    <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
+                        <i class="underline not-italic text-xs btn-selected" >SOLAMENTE</i>
                     </div>
                 </div>
             </mat-option>
@@ -116,21 +116,21 @@
                   [value]="selectedUsers"
                 >
                     <div class="flex" style="justify-content: space-between;">
-                        <div class="w-50 text-md" (click)="optionClicked($event, client, clientSelected, 'client')">
+                        <div class=" text-md whitespace-nowrap" (click)="optionClicked($event, client, clientSelected, 'client')">
                             <mat-checkbox
                                 [checked]="client.selected"
                                 (change)="toggleSelection(client, clientSelected, 'client')"
                                 (click)="$event.stopPropagation()"
                                 [color]="'primary'"
                             >
-                            {{ client.name }}
+                            <span class="whitespace-nowrap">{{ client.name }}</span>
                             </mat-checkbox>
                         </div>
-                        <div class="w-50 text-right" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
-                            <span>{{ getAmountRequestByOption(client.name, 1) }}</span>
+                        <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
+                            <span class="whitespace-nowrap">{{ getAmountRequestByOption(client.name, 1) }}</span>
                         </div>
-                        <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
-                            <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
+                        <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
+                            <i class="underline not-italic text-xs btn-selected" >SOLAMENTE</i>
                         </div>
                     </div>
                 </mat-option>
@@ -166,20 +166,20 @@
                   [value]="selectedUsers"
                 >
                 <div class="flex" style="justify-content: space-between;">
-                    <div class="w-50 text-md" (click)="optionClicked($event, area, commercialAreaSelected, 'area')">
+                    <div class="w-50 text-md whitespace-nowrap" (click)="optionClicked($event, area, commercialAreaSelected, 'area')">
                         <mat-checkbox
                             [checked]="area.selected"
                             (change)="toggleSelection(area, commercialAreaSelected, 'area')"
                             (click)="$event.stopPropagation()"
                             [color]="'primary'"
                         >
-                          {{ area.name }}
+                        <span class="whitespace-nowrap">{{ area.name }}</span>
                         </mat-checkbox>
                     </div>
-                    <div class="w-50 text-right" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
-                        <span>{{ getAmountRequestByOption(area.name, 2) }}</span>
+                    <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
+                        <span  class="whitespace-nowrap">{{ getAmountRequestByOption(area.name, 2) }}</span>
                     </div>
-                    <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
+                    <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
                         <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                     </div>
                 </div>
@@ -226,20 +226,20 @@
                   [value]="selectedUsers"
                 >
                 <div class="flex" style="justify-content: space-between;">
-                    <div class="w-50 text-md" (click)="optionClicked($event, status, selectedStatus, 'status')">
+                    <div class="w-50 text-md whitespace-nowrap" (click)="optionClicked($event, status, selectedStatus, 'status')">
                         <mat-checkbox
                             [checked]="status.selected"
                             (change)="toggleSelection(status, selectedStatus, 'status')"
                             (click)="$event.stopPropagation()"
                             [color]="'primary'"
                         >
-                          {{ status.name }}
+                        <span class="whitespace-nowrap">{{ status.name }} </span>
                         </mat-checkbox>
                       </div>
-                        <div class="w-50 text-right" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
-                            <span>{{ getAmountRequestByOption(status.name, 3) }}</span>
+                        <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
+                            <span  class="whitespace-nowrap">{{ getAmountRequestByOption(status.name, 3) }}</span>
                         </div>
-                        <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
+                        <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
                             <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                         </div>
                 </div>

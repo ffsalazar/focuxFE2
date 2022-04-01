@@ -25,7 +25,7 @@ export class AssignmentOccupationComponent implements OnInit {
 
 	ngOnInit(): void {
         this._handleEventSavedOccupation();
-
+        
         this._loadingSpinnerService._isLoading$
             .subscribe(startLoading => {
                 startLoading ? this.spinner.show() : this.spinner.hide();
