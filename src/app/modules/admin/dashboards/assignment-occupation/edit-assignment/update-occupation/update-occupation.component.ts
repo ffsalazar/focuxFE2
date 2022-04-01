@@ -137,7 +137,8 @@ export class UpdateOccupationComponent implements OnInit {
 					this.collaboratorOccupation.push(collaboratorOccupation);
 				}
 			});
-
+			// Handle event from array form
+            this._handleChangeArrayForm();
 			this._calculatePercentageTotal(this.collaboratorOccupation.value);
 		}
 	}
@@ -190,6 +191,41 @@ export class UpdateOccupationComponent implements OnInit {
         // }
 
 		return 100;
+    }
+
+	/**
+     * Handle change from array form 
+     *
+     */
+	 private _handleChangeArrayForm(){
+        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+
+            this.collaboratorOccupation.at(i).statusChanges
+                .subscribe(value => {
+                    if ( value === 'VALID' ){
+                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    }
+                })
+
+            this.collaboratorOccupation.at(i).valueChanges
+                .subscribe(value => {
+                    // if ( value === 'VALID' ){
+                    //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                    // }
+					let totalOccupation = 0;
+
+					for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+						totalOccupation = totalOccupation + Number(this.collaboratorOccupation.at(i).value.occupation);
+					}
+
+                    if ( totalOccupation > 100 ) {
+                        this.collaboratorOccupation.at(i).get('occupation').setValue('');
+                    }
+                })
+            
+            
+
+        }
     }
 
 	updateAssigmentOccupation(assignation: any) {
