@@ -35,7 +35,7 @@
                                     
                                   <mat-autocomplete #autoCollaborator="matAutocomplete">
                                       <mat-option *ngFor="let collaborator of filteredCollaborators" [value]="collaborator">
-                                          {{collaborator}}
+                                          <span style="font-size: 14px;">{{collaborator}}</span>
                                       </mat-option>
                                   </mat-autocomplete>
                                 <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>

@@ -36,20 +36,20 @@
                                         [value]="selectedUsers"
                                         >
                                             <div class="flex" style="justify-content: space-between;">
-                                                <div class="w-50 text-md" (click)="optionClicked($event, client, clientSelected, 'client')">
+                                                <div class="w-40 text-md" (click)="optionClicked($event, client, clientSelected, 'client')">
                                                     <mat-checkbox
                                                         [checked]="client.selected"
                                                         (change)="toggleSelection(client, clientSelected, 'client')"
                                                         (click)="$event.stopPropagation()"
                                                         [color]="'primary'"
                                                     >
-                                                    {{ client.name }}
+                                                    <span class="whitespace-nowrap">{{ client.name }}</span>
                                                     </mat-checkbox>
                                                 </div>
-                                                <div class="w-50 text-right" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
+                                                <div class="w-100 text-right" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
                                                     <span></span>
                                                 </div>
-                                                <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
+                                                <div class="text-right absolute right-0 w-100" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
                                                     <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                                                 </div>
                                             </div>
@@ -95,13 +95,13 @@
                                                         (click)="$event.stopPropagation()"
                                                         [color]="'primary'"
                                                     >
-                                                    {{ collaborator.name }}
+                                                    <span class="whitespace-nowrap">{{ collaborator.name + " " + collaborator.lastName }}</span>
                                                     </mat-checkbox>
                                                 </div>
-                                                <div class="w-50 text-right" (mouseover)="updateSelectedItem(collaborator)" *ngIf="!(collaborator.name === selectedItem?.name)">
+                                                <div class="w-50 text-right" (mouseover)="updateSelectedItem(collaborator)" *ngIf="!(collaborator.name  === selectedItem?.name)">
                                                     <span></span>
                                                 </div>
-                                                <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(collaborator, collaboratorSelected)" *ngIf="collaborator.name === selectedItem?.name">
+                                                <div class="w-50 text-right" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(collaborator, collaboratorSelected)" *ngIf="collaborator.lastName=== selectedItem?.lastName && collaborator.name=== selectedItem?.name;">
                                                     <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                                                 </div>
                                             </div>
