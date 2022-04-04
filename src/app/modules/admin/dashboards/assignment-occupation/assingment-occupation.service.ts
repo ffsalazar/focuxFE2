@@ -387,9 +387,14 @@ export class AssingmentOccupationService {
      * @returns 
      */
     getAllColaboratorOccupation(): Observable<any> {
+        /** spinner starts on init */
+        this._loadingSpinnerService.startLoading();
+        
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage')
             .pipe(
                 tap(collaborators => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
                     this.collaborators = collaborators;
                     this._collaborators.next(collaborators);
                 })

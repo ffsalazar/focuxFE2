@@ -177,6 +177,16 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     // @ Methods
     // -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Restarting list
+     * 
+     */
+     restartingList(control: FormControl) {
+        control.setValue('', {emitEvent: false});
+        control.updateValueAndValidity({onlySelf: true, emitEvent: true});
+        ///this.inputBranch.nativeElement.focus();
+    }
+    
     private _handleEventSavedOccupation() {
         this._assignmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {

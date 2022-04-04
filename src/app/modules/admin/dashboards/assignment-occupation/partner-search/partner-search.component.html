@@ -10,15 +10,21 @@
                                 <div class="flex flex-col">
                                     <mat-label class="font-semibold">Cliente</mat-label>
                                     <mat-form-field class="mr-6" appearance="fill"> 
-                                        
-                                        <input type="text" matInput [placeholder]="'Cliente'" formControlName="clientControl" [matAutocomplete]="client">
-                                    
+                                        <input
+                                            type="text"
+                                            matInput
+                                            [placeholder]="'Cliente'"
+                                            formControlName="clientControl"
+                                            [matAutocomplete]="client">
+                    
                                         <mat-autocomplete #client="matAutocomplete">
                                             <mat-option *ngFor="let option of filteredClients | async" [value]="option">
                                                 {{option}}
                                             </mat-option>
                                         </mat-autocomplete>
-                                        <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('clientControl').value !== '' && filterForm.get('clientControl').value !== null" (click)="restartingList(filterForm.get('clientControl'))" matSuffix>clear</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('clientControl').value === '' || filterForm.get('clientControl').value === null">arrow_drop_down</mat-icon>
+
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -38,7 +44,8 @@
                                             {{collaborator}}
                                         </mat-option>
                                     </mat-autocomplete>
-                                    <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+                                    <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('collaboratorControl').value !== '' && filterForm.get('collaboratorControl').value !== null" (click)="restartingList(filterForm.get('collaboratorControl'))" matSuffix>clear</mat-icon>
+                                    <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('collaboratorControl').value === '' || filterForm.get('collaboratorControl').value === null">arrow_drop_down</mat-icon>
                                 </mat-form-field>
                                 </div>
                             </div>
@@ -63,7 +70,14 @@
                             <div style="width: 60%;">
                                 <mat-label class="font-semibold">Solicitudes</mat-label>
                                 <mat-form-field (click)="validateCollaborator()" class="" style="width: 100%;" appearance="fill">
-                                    <input matTooltip="No hay solicitudes" [matTooltipDisabled]="filteredRequest.length > 0" [matTooltipClass]="'matTooltipCustom'"  type="text" placeholder="Solicitud" aria-label="Number" matInput formControlName="requestControl"
+                                    <input
+                                        matTooltip="No hay solicitudes"
+                                        [matTooltipDisabled]="filteredRequest.length > 0"
+                                        [matTooltipClass]="'matTooltipCustom'"
+                                        type="text" placeholder="Solicitud"
+                                        aria-label="Number"
+                                        matInput
+                                        formControlName="requestControl"
                                         [matAutocomplete]="auto">
                                     
                                         <mat-autocomplete #auto="matAutocomplete">
@@ -71,7 +85,8 @@
                                                 {{option}}
                                             </mat-option>
                                         </mat-autocomplete>
-                                <mat-icon style="cursor: pointer;">arrow_drop_down</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('requestControl').value !== '' && filterForm.get('requestControl').value !== null" (click)="restartingList(filterForm.get('requestControl'))" matSuffix>clear</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('requestControl').value === '' || filterForm.get('requestControl').value === null">arrow_drop_down</mat-icon>
                                 </mat-form-field>
                             </div>
                             <div class="flex flex-row justify-end items-end" style="width: 40%;">
@@ -110,6 +125,7 @@
                             <span class="ml-2 mb-3 font-semibold">Filtros (3)</span>
                         </div>
                         <div class="flex flex-col shadow px-2" style="background: white;">
+                            
                             <div class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto;">
                                 <div class="flex items-center justify-between">
                                     <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
