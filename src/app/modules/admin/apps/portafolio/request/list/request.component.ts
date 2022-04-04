@@ -202,7 +202,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnInit(): void
     {
         
-        this._fuseAlertService.dismiss('alertBox4');
+        //this._fuseAlertService.dismiss('alertBox4');
 
         // Create the selected request form
         this.horizontalStepperForm = this._formBuilder.group({
