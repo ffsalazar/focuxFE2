@@ -177,7 +177,7 @@
                                                     <div class="flex flex-col mr-16 w-full">
                                                         <mat-label class="mb-3">Ocupación {{ collaborator.occupationPercentage }} % </mat-label>
                                                         <mat-progress-bar
-                                                            class="mt-3 rounded-full w-full"
+                                                            class="mt-3 rounded-full w-40"
                                                             [mode]="'determine'"
                                                             [color]="collaborator.occupationPercentage >= 60 && collaborator.occupationPercentage !== 100 ? 'accent' : (collaborator.occupationPercentage === 100 ? 'primary' : 'warn')"
                                                             [value]="collaborator.occupationPercentage"

@@ -8,7 +8,7 @@
         <p *ngSwitchCase="'create'" class="mt-0 text-xl">Crear Solicitud</p>
     </ng-container>
     <div *ngIf="data.template" mat-dialog-content>
-        <div style="width: 1000px; height: 790px;">
+        <div style="width: 1000px; height: auto;">
             <ng-container *ngTemplateOutlet="data.template, context: data.context" class="drop-shadow-none"></ng-container>
         </div>
     </div>

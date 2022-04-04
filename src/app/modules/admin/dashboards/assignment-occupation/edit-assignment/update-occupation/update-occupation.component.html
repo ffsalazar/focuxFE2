@@ -83,7 +83,7 @@
                                     </div>
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Ocupación</mat-label>
-                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-50 mr-5">
+                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-30 mr-5">
                                             <input formControlName="occupation" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
                                             <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
                                             <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
@@ -94,7 +94,7 @@
                                 <div class="flex flex-row ">
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Fecha Inicio: </mat-label>
-                                        <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
+                                        <mat-form-field class="w-40 mr-5" [ngClass]="formFieldHelpers">
                                             <input formControlName="dateInit" matInput [placeholder]="'mm/dd/yyyy'" [matDatepicker]="picker1">
                                             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                             <mat-datepicker #picker1></mat-datepicker>
@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Fecha Fin: </mat-label>
-                                        <mat-form-field class="w-50 mr-5" [ngClass]="formFieldHelpers">
+                                        <mat-form-field class="w-40 mr-5" [ngClass]="formFieldHelpers">
                                             <input formControlName="dateEnd" matInput [matDatepicker]="picker2" [placeholder]="'mm/dd/yyyy'">
                                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                             <mat-datepicker #picker2></mat-datepicker>
@@ -113,7 +113,7 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-row mr-6">
-                                    <div class="flex flex-col" style="justify-content: space-between !important;
+                                    <div class="flex flex-col whitespace-nowrap" style="justify-content: space-between !important;
                                     margin-top: 28px !important">
                                         <div>
                                             <button class=" min-w-10 min-h-7 h-7 px-2 leading-6 my-auto mr-2" mat-stroked-button
