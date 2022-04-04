@@ -17,11 +17,13 @@ export class UpdateOccupationComponent implements OnInit {
 
 	@Input() set collaboratorAssigment(collaborator: any) {
 		this.collaboratorOccupations = collaborator;
+		console.log("collaborator: ", collaborator);
 		this._setFormOcupation(collaborator);
 	}
 
 	@Input('collaborator') collaborator;
 	@Output('returnPrevious') returnPrevious: EventEmitter<any> = new EventEmitter();
+	@Output('deleteAssignment') deleteAssignment: EventEmitter<any> = new EventEmitter();
 
 	collaboratorOccupations: any = null;
 	successSave: string;
@@ -48,6 +50,8 @@ export class UpdateOccupationComponent implements OnInit {
     // -----------------------------------------------------------------------------------------------------
 	
 	ngOnInit(): void {
+		this._fuseAlertService.dismiss('alertBox4');
+
 		this._handleChangeFormOccupation();
 	}
 
@@ -202,6 +206,7 @@ export class UpdateOccupationComponent implements OnInit {
 
             this.collaboratorOccupation.at(i).statusChanges
                 .subscribe(value => {
+					//console.log("value: ", value);
                     if ( value === 'VALID' ){
                         this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
                     }
@@ -285,7 +290,7 @@ export class UpdateOccupationComponent implements OnInit {
 
 	}
 
-	deleteAssigmentOccupation(assignation: any) {
+	deleteAssigmentOccupation(assignation: any, i: number) {
 
 		const assignationOccupation = {
 			occupationPercentage: assignation.occupation,
@@ -323,7 +328,15 @@ export class UpdateOccupationComponent implements OnInit {
 				{
 					this._assignmentOccupationService.deleteOccupation(assignation.id, assignationOccupation)
 						.subscribe(response => {
-							console.log(response);
+							console.log("eliminado: ", response);
+							// remove form group from collaborator occupation
+							this.collaboratorOccupation.removeAt(i);
+							// Show notification update request
+							this.showFlashMessage('success', 'Asignación eliminada con éxito');
+							// Mark for check
+							this._changeDetectorRef.markForCheck();
+
+							//this.deleteAssignment.emit();
 							// Show notification update request
 							//this.showFlashMessage('success', 'Asignación guardada con éxito');
 							// Set time out for change tab

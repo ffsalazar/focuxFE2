@@ -65,10 +65,16 @@ export class AsignationComponent implements OnInit, OnDestroy {
         private _formBuilder: FormBuilder,
         private _router: Router,) {
 
-      }
+    }
 
-      ngOnInit(): void {
-          
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
+
+    ngOnInit(): void {
+        
+        this._fuseAlertService.dismiss('alertBox4');
+
         this._assignmentOccupationService.collaboratorSelected$
             .pipe(
                 map(collaboratorSelected => collaboratorSelected))
@@ -97,6 +103,41 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 collaborators: this._formBuilder.array([])
           });
     }
+
+    /**
+    * On destroy
+    */
+    ngOnDestroy(): void
+    {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+        this._fuseAlertService.unSubscribe();
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Accessors
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Get collaborator occupation
+     * 
+     */
+    get collaboratorOccupation() {
+        return this.formOcupation.get('collaboratorOccupation') as FormArray;
+    }
+
+    /**
+     * Get collaborators
+     *
+     */
+    get collaborators() {
+        return this.collaboratorFormGroup.controls['collaborators'] as FormArray;
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
 
     /**
      * Set the form Ocupation
@@ -163,13 +204,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
         }
     }
 
-    /**
-     * Get collaborator occupation
-     * 
-     */
-    get collaboratorOccupation() {
-        return this.formOcupation.get('collaboratorOccupation') as FormArray;
-    }
 
     /**
      * Get calculate percentage real
@@ -182,21 +216,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
             return Number(collaboratorAssignation.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage);
         }
     }
-
-    /**
-    * On destroy
-    */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next();
-        this._unsubscribeAll.complete();
-    }
-
-    get collaborators() {
-        return this.collaboratorFormGroup.controls['collaborators'] as FormArray;
-    }
-
 
     displayFn(data): string {
         return data && data.name ? data.name : '';
@@ -255,7 +274,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
-        }, 3000);
+        }, 1500);
     }
 
     /**

@@ -3,7 +3,7 @@
         <div class="flex flex-col">
             <ng-container *ngIf="!isEditing">
                 <div class="flex flex-auto mt-4 mb-8">
-                    <form [formGroup]="filterForm" class="example-form">
+                    <form [formGroup]="filterGroupForm" class="example-form">
                         <div class="container-filter w-full" style="display: flex;">
                             <div>
                                 <div class="flex flex-col mr-6">
@@ -11,14 +11,16 @@
                                         <mat-label class="font-semibold">Cliente</mat-label>
                                         <input
                                             type="text"
-                                            placeholder="Seccione cliente"
-                                            aria-label="Seccione cliente"
+                                            [placeholder]="'Seccione cliente'"
                                             matInput
                                             [matAutocomplete]="autoClient"
-                                            [formControl]="clientControl"
+                                            formControlName="clientControl"
                                         />
-                                        <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value !== '' && filterGroupForm.get('clientControl').value !== null" (click)="restartingList()" matSuffix>clear</mat-icon>
+                                        
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value !== '' && filterGroupForm.get('clientControl').value !== null" (click)="restartingList(filterGroupForm.get('clientControl'))" matSuffix>clear</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value === '' || filterGroupForm.get('clientControl').value === null">arrow_drop_down</mat-icon>
                                     </mat-form-field>
+
                                     <mat-autocomplete #autoClient="matAutocomplete">
                                         <map-option>
                                             <mat-checkbox
@@ -32,9 +34,9 @@
                                             </mat-checkbox>
                                         </map-option>
                                         <mat-option
-                                        *ngFor="let client of filteredClients | async"
-                                        [value]="selectedUsers"
-                                        >
+                                            *ngFor="let client of filteredClients | async"
+                                            [value]="selectedUsers"
+                                            >
                                             <div class="flex" style="justify-content: space-between;">
                                                 <div class="w-40 text-md" (click)="optionClicked($event, client, clientSelected, 'client')">
                                                     <mat-checkbox
@@ -69,7 +71,9 @@
                                             [matAutocomplete]="autoCollaborator"
                                             [formControl]="collaboratorControl"
                                         />
-                                        <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('collaboratorControl').value !== '' && filterGroupForm.get('collaboratorControl').value !== null" (click)="restartingList()" matSuffix>clear</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('collaboratorControl').value !== '' && filterGroupForm.get('collaboratorControl').value !== null"  (click)="restartingList(filterGroupForm.get('collaboratorControl'))"  matSuffix>clear</mat-icon>
+                                        <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('collaboratorControl').value === '' || filterGroupForm.get('collaboratorControl').value === null">arrow_drop_down</mat-icon>
+
                                     </mat-form-field>
                                     <mat-autocomplete #autoCollaborator="matAutocomplete">
                                         <map-option>
@@ -215,6 +219,7 @@
                 [collaboratorAssigment]="assigments"
                 [collaborator]="collaborator"
                 (returnPrevious)="onReturnPrevious($event)"
+                (deleteAssignment)="onDeleteAssignment()"
             >
             </app-update-occupation>
         </div>

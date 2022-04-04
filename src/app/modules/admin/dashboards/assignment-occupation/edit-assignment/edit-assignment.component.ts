@@ -64,22 +64,22 @@ export class EditAssignmentComponent implements OnInit {
         private _assignmentOccupationService: AssingmentOccupationService,
         private _formBuilder: FormBuilder,
         private _changeDetectorRef: ChangeDetectorRef,
-    ) { }
-
-    ngOnInit(): void {
-        
-        if ( this._assignmentOccupationService.selectedFiltered.client !== '' ) {
-            this.clientControl.setValue(this._assignmentOccupationService.selectedFiltered.client);
-            this.collaboratorControl.setValue(this._assignmentOccupationService.selectedFiltered.responsible);
-        }
-        
+    ) {
         // Create the fiterGroupForm
         this.filterGroupForm = this._formBuilder.group({
             clientControl          : [],
             collaboratorControl    : []
         });
+    }
+
+    ngOnInit(): void {
+        
+        
 
         this.collaborators$ = this._assignmentOccupationService.collaborators$;
+
+        // Listener event from tab
+        this._handleEventTab();
 
         // Get all collaborators
         this._getAllCollaboratorOccupation();
@@ -91,12 +91,12 @@ export class EditAssignmentComponent implements OnInit {
         this._handleChangeForm();
 
         // Handle event saved occupation
-        this._ListenerEventSavedOccupation();
+        this._handleEventTab();
         
-        this.filteredClients = this.clientControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filterClient(value)),
-        );
+        // this.filteredClients = this.clientControl.valueChanges.pipe(
+        //     startWith(''),
+        //     map(value => this._filterClient(value)),
+        // );
     
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
@@ -145,11 +145,15 @@ export class EditAssignmentComponent implements OnInit {
     // @ Methods
     // -----------------------------------------------------------------------------------------------------
 
-    private _ListenerEventSavedOccupation() {
+    private _handleEventTab() {
         this._assignmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
-                if ( tabIndex === 0 ) { 
+                if ( tabIndex === 0 ) {
+                    this.isEditing = false;
                     this._getAllCollaboratorOccupation();
+                    
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 }
                 
             });
@@ -176,6 +180,7 @@ export class EditAssignmentComponent implements OnInit {
      */
     filter(filter: string, collection: any[]): any[] {
         this.lastFilter = filter;
+        console.log("filter: ", filter, collection);
         if (filter) {
             return collection.filter((option) => {
                 return (option.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
@@ -294,6 +299,14 @@ export class EditAssignmentComponent implements OnInit {
     }
 
     /**
+     * On delete assignment
+     * 
+     */
+    onDeleteAssignment() {
+        this.editOccupation(Object.assign({}, this.collaborator));
+    }
+
+    /**
      * Handle change form
      *
      */
@@ -369,9 +382,9 @@ export class EditAssignmentComponent implements OnInit {
      * Restarting list
      * 
      */
-    restartingList() {
-        // this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: false});
-        // this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true, emitEvent: true});
+    restartingList(control: FormControl) {
+        control.setValue('', {emitEvent: false});
+        control.updateValueAndValidity({onlySelf: true, emitEvent: true});
         ///this.inputBranch.nativeElement.focus();
     }
 

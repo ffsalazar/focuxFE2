@@ -39,7 +39,7 @@ export class AssignmentOccupationComponent implements OnInit {
     selectTab() {
         switch ( this._tab.selectedIndex ) {
             case 0:
-                //this.getCollaboratorsRecommended();
+                this._assingmentOccupationService.setTabIndex(0);
                 break;
             case 1:
                 //this._assingmentOccupationService.setCollaboratorSelected();
@@ -62,7 +62,9 @@ export class AssignmentOccupationComponent implements OnInit {
         this._assingmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
                 this._tab.selectedIndex = tabIndex;
-                this.selectTab();
+                if ( this._tab.selectedIndex !== 0 ) {
+                    this.selectTab();
+                }
             });
     }
 }
