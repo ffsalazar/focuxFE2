@@ -1412,11 +1412,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * Restarting list
      * 
      */
-    restartingList(control: FormControl) {
-        control.setValue('', {emitEvent: false});
-        control.updateValueAndValidity({onlySelf: true, emitEvent: true});
+    restartingList() {
+        this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: false});
+        this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true, emitEvent: true});
         ///this.inputBranch.nativeElement.focus();
-        //this.inputBranch.focus();
+        this.inputBranch.focus();
     }
 
     /**

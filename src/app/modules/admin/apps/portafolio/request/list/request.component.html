@@ -47,8 +47,7 @@
                   [matAutocomplete]="autoCustomerBranch"
                   [formControl]="customerBranchControl"
                 />
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('customerBranchControl').value !== '' && filterGroupForm.get('customerBranchControl').value !== null" (click)="restartingList(filterGroupForm.get('customerBranchControl'))" matSuffix>clear</mat-icon>
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('customerBranchControl').value === '' || filterGroupForm.get('customerBranchControl').value === null">arrow_drop_down</mat-icon>
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('customerBranchControl').value !== '' && filterGroupForm.get('customerBranchControl').value !== null" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
             <mat-autocomplete #autoCustomerBranch="matAutocomplete">
             <map-option>
@@ -97,8 +96,7 @@
                   [matAutocomplete]="autoClient"
                   [formControl]="clientControl"
                 />
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value !== '' && filterGroupForm.get('clientControl').value !== null" (click)="restartingList(filterGroupForm.get('clientControl'))" matSuffix>clear</mat-icon>
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value === '' || filterGroupForm.get('clientControl').value === null">arrow_drop_down</mat-icon>
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('clientControl').value !== '' && filterGroupForm.get('clientControl').value !== null" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
               
               <mat-autocomplete #autoClient="matAutocomplete">
@@ -148,8 +146,7 @@
                   [matAutocomplete]="autoCommercialArea"
                   [formControl]="commercialAreaControl"
                 />
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('commercialAreaControl').value !== '' && filterGroupForm.get('commercialAreaControl').value !== null" (click)="restartingList(filterGroupForm.get('commercialAreaControl'))" matSuffix>clear</mat-icon>
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('commercialAreaControl').value === '' || filterGroupForm.get('commercialAreaControl').value === null">arrow_drop_down</mat-icon>
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('commercialAreaControl').value !== '' && filterGroupForm.get('commercialAreaControl').value !== null" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
               
               <mat-autocomplete #autoCommercialArea="matAutocomplete">
@@ -209,9 +206,7 @@
                   [matAutocomplete]="autoStatus"
                   [formControl]="statusControl"
                 />
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('statusControl').value !== '' && filterGroupForm.get('statusControl').value !== null" (click)="restartingList(filterGroupForm.get('statusControl'))" matSuffix>clear</mat-icon>
-                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('statusControl').value === '' || filterGroupForm.get('statusControl').value === null">arrow_drop_down</mat-icon>
-
+                <mat-icon style="cursor: pointer;" *ngIf="filterGroupForm.get('statusControl').value !== '' && filterGroupForm.get('statusControl').value !== null" (click)="restartingList()" matSuffix>clear</mat-icon>
             </mat-form-field>
               
               <mat-autocomplete #autoStatus="matAutocomplete">
