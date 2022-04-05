@@ -6,7 +6,7 @@
         <!-- Header -->
         <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
             <!-- Background -->
-            <ng-container *ngIf="collaborator.background">
+            <ng-container *ngIf="collaborator?.background">
                 <img
                     class="absolute inset-0 object-cover w-full h-full"
                     [src]="collaborator.background">
@@ -34,11 +34,11 @@
                     <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
                         <img
                             class="object-cover w-full h-full"
-                            *ngIf="collaborator.avatar"
-                            [src]="collaborator.avatar">
+                            *ngIf="collaborator?.avatar"
+                            [src]="collaborator?.avatar">
                         <div
                             class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                            *ngIf="!collaborator.avatar">
+                            *ngIf="!collaborator?.avatar">
                             {{collaborator.name.charAt(0)}}
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                 <div class="mt-3 text-4xl font-bold truncate">{{collaborator.name}} {{collaborator.lastName}}</div>
 
                 <!-- Knowledges -->
-                <ng-container *ngIf="collaborator.knowledges.length">
+                <ng-container *ngIf="collaborator?.knowledges.length">
                     <div class="flex flex-wrap items-center mt-2">
                         <!-- Knowledge -->
                         <ng-container *ngFor="let knowledge of collaborator.knowledges">
@@ -113,7 +113,7 @@
 
 
                         <!-- Role in the company -->
-                        <ng-container *ngIf="collaborator.idFile">
+                        <ng-container *ngIf="collaborator?.idFile">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-list'"></mat-icon>
                                 <span class="mx-2 font-medium">Ficha</span>
@@ -124,7 +124,7 @@
 
 
                         <!-- Role in the company -->
-                        <ng-container *ngIf="collaborator.employeePosition">
+                        <ng-container *ngIf="collaborator?.employeePosition">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
                                 <span class="mx-2 font-medium">Cargo</span>
@@ -134,7 +134,7 @@
                         </ng-container>
 
                         <!-- Department -->
-                        <ng-container *ngIf="collaborator.employeePosition.department">
+                        <ng-container *ngIf="collaborator?.employeePosition.department">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
                                 <span class="mx-2 font-medium">Departamento</span>
@@ -144,7 +144,7 @@
                         </ng-container>
 
                         <!-- Client -->
-                        <ng-container *ngIf="collaborator.client">
+                        <ng-container *ngIf="collaborator?.client">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
                                 <span class="mx-2 font-medium">Cliente</span>
@@ -154,7 +154,7 @@
                         </ng-container>
 
                         <!-- leader -->
-                        <ng-container *ngIf="collaborator.leader">
+                        <ng-container *ngIf="collaborator?.leader">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
                                 <span class="mx-2 font-medium">L&iacute;der</span>
@@ -164,7 +164,7 @@
                         </ng-container>
 
                         <!-- Status -->
-                        <ng-container *ngIf="collaborator.status">
+                        <ng-container *ngIf="collaborator?.status">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:clipboard-copy'"></mat-icon>
                                 <span class="mx-2 font-medium">Estatus</span>
@@ -173,7 +173,7 @@
                             </div>
                         </ng-container>
                         <!-- Gender -->
-                        <ng-container *ngIf="collaborator.gender">
+                        <ng-container *ngIf="collaborator?.gender">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:user'"></mat-icon>
                                 <span class="mx-2 font-medium">Sexo</span>
@@ -183,7 +183,7 @@
                         </ng-container>
 
                         <!-- Nationality -->
-                        <ng-container *ngIf="collaborator.nationality">
+                        <ng-container *ngIf="collaborator?.nationality">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:map'"></mat-icon>
                                 <span class="mx-2 font-medium">Nacionalidad</span>
@@ -199,7 +199,7 @@
                         </ng-container>
 
                         <!-- Emails -->
-                        <ng-container *ngIf="collaborator.mail">
+                        <ng-container *ngIf="collaborator?.mail">
                             <div class="flex">
                                 <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
                                 <div class="min-w-0 ml-6 space-y-1">
@@ -226,7 +226,7 @@
                         </ng-container>
 
                         <!-- Phone -->
-                        <ng-container *ngIf="collaborator.phones">
+                        <ng-container *ngIf="collaborator?.phones">
                             <div class="flex">
                                 <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                                 <div class="min-w-0 ml-6 space-y-1">
@@ -258,7 +258,7 @@
 
 
                         <!-- Address -->
-                        <ng-container *ngIf="collaborator.assignedLocation">
+                        <ng-container *ngIf="collaborator?.assignedLocation">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
                                 <span class="mx-2 font-medium">Sede</span>
@@ -268,7 +268,7 @@
                         </ng-container>
 
                         <!-- Birthday -->
-                        <ng-container *ngIf="collaborator.bornDate">
+                        <ng-container *ngIf="collaborator?.bornDate">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:cake'"></mat-icon>
                                 <span class="mx-2 font-medium">Fecha de nacimiento</span>
@@ -278,7 +278,7 @@
                         </ng-container>
 
                         <!-- Birthday -->
-                        <ng-container *ngIf="collaborator.companyEntryDate">
+                        <ng-container *ngIf="collaborator?.companyEntryDate">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                                 <span class="mx-2 font-medium">Fecha de ingreso a la Empresa</span>
@@ -288,7 +288,7 @@
                         </ng-container>
 
                         <!-- Birthday -->
-                        <ng-container *ngIf="collaborator.organizationEntryDate">
+                        <ng-container *ngIf="collaborator?.organizationEntryDate">
                             <div class="flex sm:items-center">
                                 <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                                 <span class="mx-2 font-medium">Fecha de ingreso a la organizaci&oacute;n</span>
@@ -551,7 +551,7 @@
         <!-- Header -->
         <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
             <!-- Background -->
-            <ng-container *ngIf="collaborator.background">
+            <ng-container *ngIf="collaborator?.background">
                 <img
                     class="absolute inset-0 object-cover w-full h-full"
                     [src]="collaborator.background">
@@ -611,11 +611,11 @@
                             <!-- Image/Letter -->
                             <img
                                 class="object-cover w-full h-full"
-                                *ngIf="collaborator.avatar"
-                                [src]="collaborator.avatar">
+                                *ngIf="collaborator?.avatar"
+                                [src]="collaborator?.avatar">
                             <div
                                 class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                                *ngIf="!collaborator.avatar">
+                                *ngIf="collaborator?.avatar">
                                 {{collaborator.name.charAt(0)}}
                             </div>
                         </div>
@@ -652,7 +652,7 @@
                             </mat-form-field>
                         </div>
                         <!-- Last Name -->
-                        <div class="mt-4" *ngIf="collaborator.idFile == 0">
+                        <div class="mt-4" *ngIf="collaborator?.idFile == 0">
                             <mat-form-field class="fuse-mat-no-subscript w-full">
                                 <mat-label>Ficha</mat-label>
                                 <mat-icon
@@ -728,7 +728,7 @@
                     <div class="flex flex-wrap items-center -m-1.5 mt-6">
                         <mat-label class="w-full">Habilidades</mat-label>
                         <!-- Knowledges -->
-                        <ng-container *ngIf="collaborator.knowledges.length">
+                        <ng-container *ngIf="collaborator?.knowledges.length">
                             <ng-container *ngFor="let collaboratorKnowledge of collaborator.knowledges">
                                 <ng-container *ngIf="collaboratorKnowledge.isActive != 0">
                                     <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
@@ -743,14 +743,14 @@
                             (click)="openKnowledgesPanel()"
                             #knowledgesPanelOrigin>
 
-                            <ng-container *ngIf="collaborator.knowledges.length">
+                            <ng-container *ngIf="collaborator?.knowledges.length">
                                 <mat-icon
                                     class="icon-size-5"
                                     [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
                                 <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
                             </ng-container>
 
-                            <ng-container *ngIf="!collaborator.knowledges.length">
+                            <ng-container *ngIf="!collaborator?.knowledges.length">
                                 <mat-icon
                                     class="icon-size-5"
                                     [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
@@ -872,7 +872,7 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:users'"></mat-icon>
-                            <mat-select [placeholder]="collaborator.employeePosition.name" formControlName="employeePosition">
+                            <mat-select [placeholder]="collaborator?.employeePosition.name" formControlName="employeePosition">
                                 <mat-option *ngFor="let employeePosition of filteredEmployeePositions" [value]="employeePosition.id">{{employeePosition.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -886,7 +886,7 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
-                            <mat-select [placeholder]="collaborator.client.name" formControlName="client">
+                            <mat-select [placeholder]="collaborator?.client.name" formControlName="client">
                                 <mat-option *ngFor="let client of clients" [value]="client.id">{{client.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -899,7 +899,7 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:user'"></mat-icon>
-                            <mat-select [placeholder]="collaborator.leader" formControlName="leader">
+                            <mat-select [placeholder]="collaborator?.leader" formControlName="leader">
                                 <mat-option *ngFor="let lead of leaders" [value]="lead.id">{{lead.name.split(' ')[0] | titlecase}} {{lead.lastName.split(' ')[0] | titlecase}}  </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -912,7 +912,7 @@
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:clipboard-copy'"></mat-icon>
-                            <mat-select [placeholder]="collaborator.status.name" formControlName="status">
+                            <mat-select [placeholder]="collaborator?.status.name" formControlName="status">
                                 <mat-option *ngFor="let status of statuses" [value]="status.id">{{status.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -1149,7 +1149,7 @@
                             [color]="'primary'"
                             [disabled]="collaboratorForm.invalid"
                             [matTooltip]="'Guardar'"
-                            (click)="updateCollaborator()">
+                            (click)="!isCreate ? updateCollaborator() : createCollaborator()">
                             Guardar
                         </button>
                     </div>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import {CollaboratorsDetailsComponent} from "./details/details.component";
+import {CollaboratorsService} from "./collaborators.service";
 
 
 @Injectable({
@@ -13,11 +14,12 @@ export class CanDeactivateCollaboratorsDetails implements CanDeactivate<Collabor
         component: CollaboratorsDetailsComponent,
         currentRoute: ActivatedRouteSnapshot,
         currentState: RouterStateSnapshot,
-        nextState: RouterStateSnapshot
+        nextState: RouterStateSnapshot,
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
     {
         // Get the next route
         let nextRoute: ActivatedRouteSnapshot = nextState.root;
+
         while ( nextRoute.firstChild )
         {
             nextRoute = nextRoute.firstChild;
@@ -42,6 +44,7 @@ export class CanDeactivateCollaboratorsDetails implements CanDeactivate<Collabor
         else
         {
             // Close the drawer first, and then navigate
+
             return component.closeDrawer().then(() => true);
         }
     }
