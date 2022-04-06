@@ -725,128 +725,96 @@
                     </div>
 
                     <!-- Knowledges -->
-                    <div class="flex flex-wrap items-center -m-1.5 mt-6">
-                        <mat-label class="w-full">Habilidades</mat-label>
-                        <!-- Knowledges -->
-                        <ng-container *ngIf="collaborator?.knowledges.length">
-                            <ng-container *ngFor="let collaboratorKnowledge of collaborator.knowledges">
-                                <ng-container *ngIf="collaboratorKnowledge.isActive != 0">
-                                    <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                        <span class="text-md font-medium whitespace-nowrap">{{collaboratorKnowledge.knowledge.name}}</span>
-                                    </div>
+                    <div class="flex space-x-4">
+                        <div class="flex flex-wrap items-center -m-1.5 mt-6">
+                            <mat-label class="w-full font-medium">Conocimiento</mat-label>
+                            <!-- Knowledges -->
+                            <ng-container *ngIf="selectedKnowledges.length > 0">
+                                <ng-container *ngFor="let requestKnowledge of selectedKnowledges">
+                                    <ng-container *ngIf="requestKnowledge.isActive != 0">
+                                        <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
+                                            <span class="text-md font-medium whitespace-nowrap">{{requestKnowledge.knowledge.name}}</span>
+                                        </div>
+                                    </ng-container>
                                 </ng-container>
                             </ng-container>
-                        </ng-container>
-                        <!-- Knowledges panel and its button -->
-                        <div
-                            class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 cursor-pointer text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                            (click)="openKnowledgesPanel()"
-                            #knowledgesPanelOrigin>
-
-                            <ng-container *ngIf="collaborator?.knowledges.length">
-                                <mat-icon
-                                    class="icon-size-5"
-                                    [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
-                            </ng-container>
-
-                            <ng-container *ngIf="!collaborator?.knowledges.length">
-                                <mat-icon
-                                    class="icon-size-5"
-                                    [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
-                            </ng-container>
-
-                            <!-- Knowledges panel -->
-                            <ng-template #knowledgesPanel>
-                                <div class="w-60 rounded border shadow-md bg-card">
-                                    <!-- Knowledges panel header -->
-                                    <div class="flex items-center m-3 mr-2">
-                                        <div class="flex items-center">
-                                            <mat-icon
-                                                class="icon-size-5"
-                                                [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                                            <div class="ml-2">
-                                                <input
-                                                    class="w-full min-w-0 py-1 border-0"
-                                                    type="text"
-                                                    placeholder="Ingrese habilidad"
-                                                    (input)="filterKnowledges($event)"
-                                                    (keydown)="filterKnowledgesInputKeyDown($event)"
-                                                    [maxLength]="30"
-                                                    #newKnowledgeInput>
-                                            </div>
-                                        </div>
-                                        <button
-                                            class="ml-1"
-                                            mat-icon-button
-                                            (click)="toggleKnowledgesEditMode()">
-                                            <mat-icon
-                                                *ngIf="!knowledgesEditMode"
-                                                class="icon-size-5"
-                                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                            <mat-icon
-                                                *ngIf="knowledgesEditMode"
-                                                class="icon-size-5"
-                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                                        </button>
-                                    </div>
-                                    <div
-                                        class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
-                                        <!-- Knowledges-->
-                                        <ng-container *ngIf="!knowledgesEditMode">
-                                            <ng-container *ngFor="let knowledge of knowledges; trackBy: trackByFn">
-                                                <div
-                                                    class="flex items-center h-10 min-h-10 px-4 cursor-pointer hover:bg-hover"
-                                                    (click)="toggleCollaboratorKnowledge(knowledge)"
-                                                    matRipple>
-                                                    <mat-checkbox
-                                                        class="flex items-center h-10 min-h-10 pointer-events-none"
-                                                        [checked]="checkerKnowledges(knowledge)"
-                                                        [color]="'primary'"
-                                                        [disableRipple]="true">
-                                                    </mat-checkbox>
-                                                    <div class="ml-1">{{knowledge.name}}</div>
+                            <!-- Knowledges panel and its button -->
+                            <div
+                                class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 cursor-pointer text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
+                                (click)="openKnowledgesPanel()"
+                                #knowledgesPanelOrigin>
+                        
+                                <ng-container *ngIf="selectedKnowledges.length > 0">
+                                    <mat-icon
+                                        class="icon-size-5"
+                                        [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                    <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
+                                </ng-container>
+                        
+                                <ng-container *ngIf="selectedKnowledges.length === 0">
+                                    <mat-icon
+                                        class="icon-size-5"
+                                        [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                                    <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
+                                </ng-container>
+                        
+                                <!-- Knowledges panel -->
+                                <ng-template #knowledgesPanel>
+                                    <div class="w-60 rounded border shadow-md bg-card">
+                                        <!-- Knowledges panel header -->
+                                        <div class="flex items-center m-3 mr-2">
+                                            <div class="flex items-center">
+                                                <mat-icon
+                                                    class="icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                                                <div class="ml-2">
+                                                    <input
+                                                        class="w-full min-w-0 py-1 border-0"
+                                                        type="text"
+                                                        placeholder="Ingrese habilidad"
+                                                        (input)="filterKnowledges($event)"
+                                                        (keydown)="filterKnowledgesInputKeyDown($event)"
+                                                        [maxLength]="30"
+                                                        #newKnowledgeInput>
                                                 </div>
-                                            </ng-container>
-                                        </ng-container>
-                                        <!-- Knowledges editing
-                                        <ng-container *ngIf="knowledgesEditMode">
-                                            <div class="py-2 space-y-2">
-                                                <ng-container *ngFor="let knowledge of filteredKnowledges; trackBy: trackByFn">
-                                                    <div class="flex items-center">
-                                                        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript w-full mx-4">
-                                                            <input
-                                                                matInput
-                                                                [value]="knowledge.title"
-                                                                (input)="updateKnowledgeTitle(knowledge, $event)">
-                                                            <button
-                                                                mat-icon-button
-                                                                (click)="deleteKnowledge(knowledge)"
-                                                                matSuffix>
-                                                                <mat-icon
-                                                                    class="icon-size-5 ml-2"
-                                                                    [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-                                                            </button>
-                                                        </mat-form-field>
+                                            </div>
+                                            <button
+                                                class="ml-1"
+                                                mat-icon-button
+                                                (click)="toggleKnowledgesEditMode()">
+                                                <mat-icon
+                                                    *ngIf="!knowledgesEditMode"
+                                                    class="icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                                <mat-icon
+                                                    *ngIf="knowledgesEditMode"
+                                                    class="icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                            </button>
+                                        </div>
+                                        <div
+                                            class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
+                                            <!-- Knowledges-->
+                                            <ng-container *ngIf="!knowledgesEditMode">
+                                                <ng-container *ngFor="let knowledge of knowledges; trackBy: trackByFn">
+                                                    <div
+                                                        class="flex items-center h-10 min-h-10 px-4 cursor-pointer hover:bg-hover"
+                                                        (click)="toggleCollaboratorKnowledge(knowledge)"
+                                                        matRipple>
+                                                        <mat-checkbox
+                                                            class="flex items-center h-10 min-h-10 pointer-events-none"
+                                                            [checked]="checkerKnowledges(knowledge)"
+                                                            [color]="'primary'"
+                                                            [disableRipple]="true">
+                                                        </mat-checkbox>
+                                                        <div class="ml-1">{{knowledge.name}}</div>
                                                     </div>
                                                 </ng-container>
-                                            </div>
-                                        </ng-container>-->
-                                        <!-- Create knowledge
-                                        <div
-                                            class="flex items-center h-10 min-h-10 -ml-0.5 pl-4 pr-3 leading-none cursor-pointer hover:bg-hover"
-                                            *ngIf="shouldShowCreateKnowledgeButton(newKnowledgeInput.value)"
-                                            (click)="createKnowledge(newKnowledgeInput.value); newKnowledgeInput.value = ''"
-                                            matRipple>
-                                            <mat-icon
-                                                class="mr-2 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                            <div class="break-all">Create "<b>{{newKnowledgeInput.value}}</b>"</div>
-                                        </div> -->
+                                            </ng-container>
+                                        </div>
                                     </div>
-                                </div>
-                            </ng-template>
+                                </ng-template>
+                            </div>
                         </div>
                     </div>
 
@@ -1128,6 +1096,7 @@
                     <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
                         <!-- Delete -->
                         <button
+                            *ngIf="collaborator"
                             mat-button
                             [color]="'warn'"
                             [matTooltip]="'Desactivar'"

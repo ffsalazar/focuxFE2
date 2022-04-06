@@ -60,6 +60,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
     isCreate: boolean = false;
+    selectedKnowledges = [];
 
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
@@ -141,13 +142,16 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .subscribe((collaborator: Collaborator) => {
                 // Open the drawer in case it is closed
                 this._collaboratorsListComponent.matDrawer.open();
-
+                
+                console.log("collaborator: ", collaborator);
                 // Get the collaborator
                 this.collaborator = collaborator;
 
                 if ( this.collaborator ) {
                     // Clear the emails and phoneNumbers form arrays
                     
+                    this.selectedKnowledges = this.collaborator.knowledges;
+
                     (this.collaboratorForm.get('phones') as FormArray).clear();
 
                     // Patch values to the form
@@ -457,34 +461,32 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
 
     createCollaborator(): void
     {
-         // Get the collaborator object
-         this.collaboratorForm.removeControl('id', {emitEvent: false});
+        this.collaboratorForm.removeControl('id', {emitEvent: false});
+        this.collaboratorForm.get('knowledges').setValue(this.selectedKnowledges);
 
-         let collaborator = this.collaboratorForm.getRawValue();
-         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
-         collaborator.client = this.clients.find(value => value.id === collaborator.client);
-         if(collaborator.leader){
-             collaborator.leader= this.leaders.find(value => value.id === collaborator.leader);
-         }
- 
-         collaborator.status= this.statuses.find(value => value.id === collaborator.status);
-         collaborator.isCentralAmerican ? collaborator.isCentralAmerican = 1 : collaborator.isCentralAmerican = 0;
-         collaborator.idFile = 0;
-         collaborator.isActive = 1;
+        // Get the collaborator object
+        let collaborator = this.collaboratorForm.getRawValue();
+        collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
+        collaborator.client = this.clients.find(value => value.id === collaborator.client);
+        if (collaborator.leader){
+            collaborator.leader= this.leaders.find(value => value.id === collaborator.leader);
+        }
 
+        collaborator.status= this.statuses.find(value => value.id === collaborator.status);
+        collaborator.isCentralAmerican ? collaborator.isCentralAmerican = 1 : collaborator.isCentralAmerican = 0;
+        collaborator.idFile = 0;
+        collaborator.isActive = 1;
+                
         // Create the collaborator
-        this._collaboratorsService.createCollaborator(collaborator).subscribe((newCollaborator) => {
-
-            // Go to the new collaborator
-            //this._router.navigate(['./', newCollaborator.id], {relativeTo: this._activatedRoute});
-
-            // Toggle the edit mode off
-            //this.toggleEditMode(false);
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
+        this._collaboratorsService.createCollaborator(collaborator)
+            .subscribe((newCollaborator) => {
+                // Go to the new collaborator
+                //this._router.navigate(['/dashboards/collaborators/']);
+                this._router.navigate(['../'], {relativeTo: this._activatedRoute});
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
         });
 
-        //this._router.navigate(['./create'], {relativeTo: this._activatedRoute});
     }
 
     /**
@@ -492,6 +494,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      */
     updateCollaborator(): void
     {
+
+        this.collaboratorForm.get('knowledges').setValue(this.selectedKnowledges);
+
         // Get the collaborator object
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(value => value.id == collaborator.employeePosition)
@@ -566,11 +571,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this._collaboratorsService.deleteCollaborator(this.collaborator)
                     .subscribe(() => {
                         // Navigate to the next collaborator if available
-
-
-                            this._router.navigate(['../'], {relativeTo: this._activatedRoute});
-
-
+                        this._router.navigate(['../../'], {relativeTo: this._activatedRoute});
                         // Toggle the edit mode off
                         this.toggleEditMode(false);
                     });
@@ -831,77 +832,54 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
      *
      * @param knowledge
      */
-    addKnowledgeToCollaborator(knowledge: Knowledge): void
-    {
-        // TODO: we need to add logic for levels here
-        let newKnowledge: CollaboratorKnowledge = {
-            level: 0,
-            knowledge: knowledge,
-            isActive: 1
-        }
+    // addKnowledgeToCollaborator(knowledge: Knowledge): void
+    // {
+    //     // TODO: we need to add logic for levels here
+    //     let newKnowledge: CollaboratorKnowledge = {
+    //         level: 0,
+    //         knowledge: knowledge,
+    //         isActive: 1
+    //     }
 
-        // Add the knowledge
-        this.collaborator.knowledges.unshift(newKnowledge);
+    //     // Add the knowledge
+    //     this.collaborator.knowledges.unshift(newKnowledge);
 
-        // Update the collaborator form
-        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
+    //     // Update the collaborator form
+    //     this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
-        // Mark for check
-        this._changeDetectorRef.detectChanges();
-    }
+    //     // Mark for check
+    //     this._changeDetectorRef.detectChanges();
+    // }
 
-    activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {
-        knowledge.isActive = 1;
-        // Update the collaborator form
-        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
+    // activeCollaboratorKnowledge(knowledge: CollaboratorKnowledge) {
+    //     knowledge.isActive = 1;
+    //     // Update the collaborator form
+    //     this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
 
-        // Mark for check
-        this._changeDetectorRef.detectChanges();
+    //     // Mark for check
+    //     this._changeDetectorRef.detectChanges();
 
-        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe()
-    }
+    //     this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.id, knowledge).subscribe()
+    // }
 
-    /**
-     * Remove knowledge from the collaborator
-     *
-     * @param knowledge
-     */
-    removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
-    {
-        // Remove the knowledge
-        knowledge.isActive = 0;
+    // /**
+    //  * Remove knowledge from the collaborator
+    //  *
+    //  * @param knowledge
+    //  */
+    // removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
+    // {
+    //     // Remove the knowledge
+    //     knowledge.isActive = 0;
 
-        // Update the collaborator form
-        this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
-        // Setting status to inactive
-        this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.knowledge.id, knowledge).subscribe();
+    //     // Update the collaborator form
+    //     this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
+    //     // Setting status to inactive
+    //     this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.knowledge.id, knowledge).subscribe();
 
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Toggle collaborator knowledge
-     *
-     * @param knowledge
-     */
-    toggleCollaboratorKnowledge(knowledge: Knowledge): void
-    {
-        /*let collaboratorKnowledge : CollaboratorKnowledge = {
-            id: knowledge.id,
-            level : 0,
-            knowledge : knowledge
-        }*/
-        let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
-        if (knowledgeFound) {
-            if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
-            else  this.activeCollaboratorKnowledge(knowledgeFound);
-        }
-        else
-        {
-            this.addKnowledgeToCollaborator(knowledge);
-        }
-    }
+    //     // Mark for check
+    //     this._changeDetectorRef.markForCheck();
+    // }
 
     /**
      * Should the create knowledge button be visible
@@ -1009,8 +987,136 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         return item.id || index;
     }
 
+    // checkerKnowledges(knowledge: Knowledge): boolean {
+    //     let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);
+    //     return hasKnowledge !== undefined;
+    // };
+
+    // /**
+    //  * Toggle collaborator knowledge
+    //  *
+    //  * @param knowledge
+    //  */
+    // toggleCollaboratorKnowledge(knowledge: Knowledge): void
+    // {
+    //     /*let collaboratorKnowledge : CollaboratorKnowledge = {
+    //         id: knowledge.id,
+    //         level : 0,
+    //         knowledge : knowledge
+    //     }*/
+    //     let knowledgeFound = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id == knowledge.id);
+    //     if (knowledgeFound) {
+    //         if   (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+    //         else  this.activeCollaboratorKnowledge(knowledgeFound);
+    //     }
+    //     else
+    //     {
+    //         this.addKnowledgeToCollaborator(knowledge);
+    //     }
+    // }
+
+    // /**
+    //  * Remove knowledge from the collaborator
+    //  *
+    //  * @param knowledge
+    //  */
+    // removeKnowledgeFromCollaborator(knowledge: CollaboratorKnowledge): void
+    // {
+    //     // Remove the knowledge
+    //     knowledge.isActive = 0;
+
+    //     // Update the collaborator form
+    //     this.collaboratorForm.get('knowledges').patchValue(this.collaborator.knowledges);
+    //     // Setting status to inactive
+    //     this._collaboratorsService.updateCollaboratorKnowledgeStatus(knowledge.knowledge.id, knowledge).subscribe();
+
+    //     // Mark for check
+    //     this._changeDetectorRef.markForCheck();
+    // }
+
+    /**
+      * Active collaborator the knowledge
+      *
+      * @param knowledge
+      */
+     activeCollaboratorKnowledge(knowledge: any) {
+        knowledge.isActive = 1;
+
+        const knowledgeIndex = this.selectedKnowledges.find(item => item.knowledge.id === knowledge.knowledge.id);
+        this.selectedKnowledges[knowledgeIndex - 1].isActive = 1;
+
+        // Mark for check
+        this._changeDetectorRef.detectChanges();
+    }
+
+    /**
+     * Add knowledge to the collaborator
+     *
+     * @param knowledge
+     */
+    addKnowledgeToCollaborator(knowledge: Knowledge): void
+    {
+         // TODO: we need to add logic for levels here
+        let newKnowledge: any = {
+            knowledge: Object.assign({}, knowledge),
+            isActive: 1,
+            level: 1,
+        }
+
+         // Add the knowledge
+         this.selectedKnowledges.unshift(newKnowledge);
+
+         // Update the collaborator form
+         //this.step2.get('knowledges').patchValue(this.selectedRequest.knowledges);
+
+         // Mark for check
+         this._changeDetectorRef.detectChanges();
+    }
+
+    /**
+     * Remove knowledge from the collaborator
+     *
+     * @param knowledge
+     */
+     removeKnowledgeFromCollaborator(knowledge: any): void
+     {
+        // Remove the knowledge
+         knowledge.isActive = 0;
+        ///const knowledgeIndex = this.selectedRequest.knowledges.find(item => item.knowledge.id === knowledge.knowledge.id);
+        //this.selectedRequest.knowledges[knowledgeIndex].isActive = 0;
+
+         // Mark for check
+         this._changeDetectorRef.markForCheck();
+     }
+
+    /**
+     * Toggle collaborator knowledge
+     *
+     * @param knowledge
+     */
+    toggleCollaboratorKnowledge(knowledge: Knowledge): void
+    {
+        let knowledgeFound = this.selectedKnowledges.find(selectedKnowledge => selectedKnowledge.knowledge.id == knowledge.id);
+
+        if (knowledgeFound) {
+            if (knowledgeFound.isActive) this.removeKnowledgeFromCollaborator(knowledgeFound);
+            else  this.activeCollaboratorKnowledge(knowledgeFound);
+        }
+        else
+        {
+            this.addKnowledgeToCollaborator(knowledge);
+        }
+    }
+
+    
+
+    /**
+     * checkerKnowledges
+     *
+     * @param knowledge
+     */
     checkerKnowledges(knowledge: Knowledge): boolean {
-        let hasKnowledge = this.collaborator.knowledges.find(collaboratorKnowledge => collaboratorKnowledge.knowledge.id === knowledge.id && collaboratorKnowledge.isActive);
+        let hasKnowledge = this.selectedKnowledges.find(selectedKnowledge => selectedKnowledge.knowledge.id === knowledge.id && selectedKnowledge.isActive);
         return hasKnowledge !== undefined;
     };
 }

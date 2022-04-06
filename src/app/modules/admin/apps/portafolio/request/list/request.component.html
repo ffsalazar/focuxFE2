@@ -746,7 +746,7 @@
                                         <mat-error *ngIf="!step2.get('technicalArea').valid && (step2.get('technicalArea').dirty || step2.get('technicalArea').touched)">El campo es obligatorio</mat-error>
                                     </mat-form-field>
                                     
-                                    <mat-form-field *ngIf="isEditing" class="w-1/3">
+                                    <mat-form-field *ngIf="isEditing || isDetail" class="w-1/3">
                                         <mat-label>Responsable</mat-label>
                                         <mat-select
                                             formControlName="responsibleRequest"
