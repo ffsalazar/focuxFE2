@@ -115,6 +115,7 @@ export const appRoutes: Route[] = [
                     {path: 'knowledges', loadChildren: () => import('app/modules/admin/masters/knowledges/knowledges.module').then(m => m.KnowledgesModule)},
                     {path: 'businessTypes', loadChildren: () => import('app/modules/admin/masters/businessType/businessTypes.module').then(m => m.BusinessTypesModule)},
                     //{path: 'typesStatus', loadChildren: () => import('app/modules/admin/masters/typeStatus/typeStatus.module').then(m => m.TypeStatusModule)},
+                    {path: 'typesRequest', loadChildren: () => import('app/modules/admin/masters/typeRequest/typeRequest.module').then(m => m.TypeRequestModule)},
                     {path: 'technicalAreas', loadChildren: () => import('app/modules/admin/masters/technicalAreas/technicalAreas.module').then(m => m.TechnicalAreasModule)},
                     {path: 'commercialAreas', loadChildren: () => import('app/modules/admin/masters/commercialAreas/commercialAreas.module').then(m => m.CommercialAreasModule)},
                     {path: 'statuses', loadChildren: () => import('app/modules/admin/masters/statuses/statuses.module').then(m => m.StatusesModule)},
