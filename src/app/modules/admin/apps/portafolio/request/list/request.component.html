@@ -76,10 +76,10 @@
                         <span class="whitespace-nowrap">{{ branch.name }}</span>
                         </mat-checkbox>
                     </div>
-                    <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
+                    <div class="text-right whitespace-nowrap w-50" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
                         <span class="whitespace-nowrap">{{ getAmountRequestByOption(branch.name, 4) }}</span>
                     </div>
-                    <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
+                    <div class="text-right absolute right-0 w-50" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
                         <i class="underline not-italic text-xs btn-selected" >SOLAMENTE</i>
                     </div>
                 </div>
@@ -126,10 +126,10 @@
                             <span class="whitespace-nowrap">{{ client.name }}</span>
                             </mat-checkbox>
                         </div>
-                        <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
+                        <div class="text-right whitespace-nowrap w-50" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
                             <span class="whitespace-nowrap">{{ getAmountRequestByOption(client.name, 1) }}</span>
                         </div>
-                        <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
+                        <div class="text-right absolute right-0 w-50" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
                             <i class="underline not-italic text-xs btn-selected" >SOLAMENTE</i>
                         </div>
                     </div>
@@ -176,10 +176,10 @@
                         <span class="whitespace-nowrap">{{ area.name }}</span>
                         </mat-checkbox>
                     </div>
-                    <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
+                    <div class="text-right whitespace-nowrap w-50" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
                         <span  class="whitespace-nowrap">{{ getAmountRequestByOption(area.name, 2) }}</span>
                     </div>
-                    <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
+                    <div class="text-right absolute right-0 w-50" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
                         <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                     </div>
                 </div>
@@ -236,10 +236,10 @@
                         <span class="whitespace-nowrap">{{ status.name }} </span>
                         </mat-checkbox>
                       </div>
-                        <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
+                        <div class="text-right whitespace-nowrap w-50" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
                             <span  class="whitespace-nowrap">{{ getAmountRequestByOption(status.name, 3) }}</span>
                         </div>
-                        <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
+                        <div class="text-right absolute right-0 w-50" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
                             <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                         </div>
                 </div>

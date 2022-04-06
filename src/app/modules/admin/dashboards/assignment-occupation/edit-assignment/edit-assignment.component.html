@@ -48,10 +48,10 @@
                                                     <span class="whitespace-nowrap">{{ client.name }}</span>
                                                     </mat-checkbox>
                                                 </div>
-                                                <div class="text-right whitespace-nowrap absolute h-full right-0 w-full mr-2" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
+                                                <div class="text-right whitespace-nowrap w-50" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
                                                     <span></span>
                                                 </div>
-                                                <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
+                                                <div class="text-right absolute right-0 w-50" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
                                                     <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                                                 </div>
                                             </div>
@@ -61,7 +61,7 @@
                            
                             
                                
-                                    <mat-form-field class="w-80 ml-4" appearance="fill">
+                                    <mat-form-field class="w-100 ml-4" appearance="fill">
                                         <mat-label class="font-semibold">Colaborador</mat-label>
                                         <input
                                             type="text"
@@ -102,10 +102,10 @@
                                                     <span class="whitespace-nowrap">{{ collaborator.name + " " + collaborator.lastName }}</span>
                                                     </mat-checkbox>
                                                 </div>
-                                                <div class="text-right whitespace-nowrap right-0 absolute h-full w-full" (mouseover)="updateSelectedItem(collaborator)" *ngIf="!(collaborator.name  === selectedItem?.name)">
+                                                <div class="text-right whitespace-nowrap w-50" (mouseover)="updateSelectedItem(collaborator)" *ngIf="!(collaborator.name  === selectedItem?.name)">
                                                     <span></span>
                                                 </div>
-                                                <div class="text-right absolute right-0 w-full" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(collaborator, collaboratorSelected)" *ngIf="collaborator.lastName=== selectedItem?.lastName && collaborator.name=== selectedItem?.name;">
+                                                <div class="text-right absolute right-0 w-50" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(collaborator, collaboratorSelected)" *ngIf="collaborator.lastName=== selectedItem?.lastName && collaborator.name=== selectedItem?.name;">
                                                     <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                                                 </div>
                                             </div>
