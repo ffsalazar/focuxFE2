@@ -417,9 +417,10 @@ export class AssingmentOccupationService {
      * @param occupation 
      * @returns 
      */
-    updateOccupationsByCollaborator(occupationId: number, occupation): Observable<any> {
-        return this._httpClient.put<any>('http://localhost:1616/api/v1/followup/occupationassignments/occupationassigment/' + occupationId,
-            occupation
+    updateOccupationsByCollaborator(collaboratorId: number, occupations): Observable<any> {
+        console.log("occupations: ", occupations);
+        return this._httpClient.put<any>('http://localhost:1616/api/v1/followup/occupationassignments/updateall/' + collaboratorId,
+            occupations
         );
     }
 
@@ -435,8 +436,5 @@ export class AssingmentOccupationService {
             occupation
         );
     }
-
-
-
 
 }
