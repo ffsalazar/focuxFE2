@@ -225,7 +225,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 dateInit            : ['', [Validators.required]],
                 datePlanEnd         : ['', [Validators.required]],
                 isActive            : ['1', [Validators.required]],
-                responsibleRequest  : ['1', [Validators.required]],
+                responsibleRequest  : ['1', []],
                 dateRequest         : ['', [Validators.required]],
                 status              : ['', [Validators.required]],
                 technicalArea       : ['', [Validators.required]],
@@ -1028,7 +1028,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Fill the formGroup step2
         this.step2.patchValue(request);
-        this.step2.get('responsibleRequest').setValue(request.responsibleRequest.id);
+        this.step2.get('responsibleRequest').setValue(request.responsibleRequest?.id || '');
         this.step2.get('dateRequest').setValue(request.dateRequest);
         this.step2.get('technicalArea').setValue(request.technicalArea.id);
         this.step2.get('status').setValue(request.status.id);
