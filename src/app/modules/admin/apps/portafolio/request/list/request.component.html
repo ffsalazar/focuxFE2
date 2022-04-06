@@ -76,10 +76,10 @@
                         <span class="whitespace-nowrap">{{ branch.name }}</span>
                         </mat-checkbox>
                     </div>
-                    <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
+                    <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(branch)" *ngIf="!(branch.name === selectedItem?.name)">
                         <span class="whitespace-nowrap">{{ getAmountRequestByOption(branch.name, 4) }}</span>
                     </div>
-                    <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
+                    <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(branch, businessTypeSelected)" *ngIf="branch.name === selectedItem?.name">
                         <i class="underline not-italic text-xs btn-selected" >SOLAMENTE</i>
                     </div>
                 </div>
@@ -126,10 +126,10 @@
                             <span class="whitespace-nowrap">{{ client.name }}</span>
                             </mat-checkbox>
                         </div>
-                        <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
+                        <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(client)" *ngIf="!(client.name === selectedItem?.name)">
                             <span class="whitespace-nowrap">{{ getAmountRequestByOption(client.name, 1) }}</span>
                         </div>
-                        <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
+                        <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(client, clientSelected)" *ngIf="client.name === selectedItem?.name">
                             <i class="underline not-italic text-xs btn-selected" >SOLAMENTE</i>
                         </div>
                     </div>
@@ -176,10 +176,10 @@
                         <span class="whitespace-nowrap">{{ area.name }}</span>
                         </mat-checkbox>
                     </div>
-                    <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
+                    <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(area)" *ngIf="!(area.name === selectedItem?.name)">
                         <span  class="whitespace-nowrap">{{ getAmountRequestByOption(area.name, 2) }}</span>
                     </div>
-                    <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
+                    <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(area, commercialAreaSelected)" *ngIf="area.name === selectedItem?.name">
                         <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                     </div>
                 </div>
@@ -236,10 +236,10 @@
                         <span class="whitespace-nowrap">{{ status.name }} </span>
                         </mat-checkbox>
                       </div>
-                        <div class="text-right whitespace-nowrap" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
+                        <div class="text-right whitespace-nowrap right-0 absolute w-full mr-2" (mouseover)="updateSelectedItem(status)" *ngIf="!(status.name === selectedItem?.name)">
                             <span  class="whitespace-nowrap">{{ getAmountRequestByOption(status.name, 3) }}</span>
                         </div>
-                        <div class="text-right absolute right-0" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
+                        <div class="text-right absolute right-0 w-full mr-2" (mouseleave)="updateSelectedItem()" (click)="selectOnlyItem(status, statusSelected)" *ngIf="status.name === selectedItem?.name">
                             <i class="underline not-italic text-xs btn-selected">SOLAMENTE</i>
                         </div>
                 </div>
@@ -942,12 +942,9 @@
                                             Periodo de pausa
                                         </p>
                                         <div class="flex space-x-4">
-                                            <mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
+                                            <mat-form-field class="fuse-mat-no-subscript w-1/3">
                                                 <mat-label>Fecha inicial de pausa</mat-label>
-                                                <mat-icon
-                                                    matPrefix
-                                                    class="hidden sm:flex icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
                                                 <input
                                                     matInput
                                                     [matDatepicker]="dateInitPausePicker"
@@ -961,7 +958,7 @@
                                                 </mat-datepicker-toggle>
                                                 <mat-datepicker #dateInitPausePicker></mat-datepicker>
                                             </mat-form-field>
-                                            <mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
+                                            <mat-form-field class="fuse-mat-no-subscript w-1/3">
                                                 <mat-label>Fecha fin pausa</mat-label>
                                                 <mat-icon
                                                     matPrefix
