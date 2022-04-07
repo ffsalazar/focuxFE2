@@ -33,10 +33,11 @@ import { limitOccupation } from '../partner-search/limit-occupation';
   styleUrls: ['./asignation.component.scss']
 })
 export class AsignationComponent implements OnInit, OnDestroy {
+
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
     collaboratorFormGroup: FormGroup;
     myControlTest = new FormControl();
     collaboratorForm = new FormControl();
-    
     successSave: string;
     flashMessage: 'success' | 'error' | null = null;
     collaborators$: Observable<Collaborator[]>;
@@ -45,14 +46,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
     filteredOptions: Observable<any[]>;
     filteredCollaboratorsOptions: Observable<any[]>;
     project: Project = undefined;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
     formFieldHelpers: string[] = [''];
     tabIndex = 0;
     showObservation = false;
     noCollaborators = true;
     request: any = null;
-
-    // Form Array
+    activatedAlert: boolean = false;
     formOcupation: FormGroup = this._formBuilder.group({
         collaboratorOccupation: this._formBuilder.array([])
     });
@@ -112,7 +111,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
-        this._fuseAlertService.unSubscribe();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -182,6 +180,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
             this.collaboratorOccupation.at(i).statusChanges
                 .subscribe(value => {
                     if ( value === 'VALID' ){
+                        this.activatedAlert = true;
                         this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
                     }
                 })
@@ -199,15 +198,14 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     }
                 })
             
-            
-
         }
     }
 
-
     /**
-     * Get calculate percentage real
-     *
+     * Get calculate real percentage
+     * 
+     * @param collaboratorAssignation 
+     * @returns 
      */
     calculatePercentageReal(collaboratorAssignation) {
         const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === collaboratorAssignation.id));
@@ -217,31 +215,21 @@ export class AsignationComponent implements OnInit, OnDestroy {
         }
     }
 
-    displayFn(data): string {
-        return data && data.name ? data.name : '';
-    }
-
+    /**
+     * Remove collaborator
+     * 
+     * @param collaborator 
+     */
     removeCollaborator(collaborator) {
         this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
     }
 
     /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
+     * Redirection
+     * 
+     * @param tab 
+     * @param index 
      */
-    trackByFn(index: number, item: any): any
-    {
-        return item.id || index;
-    }
-
-
-    private _filter(name: string): any[] {
-        const filterValue = name.toLowerCase();
-        return this.collaboratorsArr.filter(option => option.name.toLowerCase().includes(filterValue));
-    }
-
     redirection(tab: string, index: number) {
       this._assignmentOccupationService.tabIndex$.subscribe(id => {
           if (id != null) this.tabIndex = id;
@@ -288,6 +276,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
     
     /**
      * Delete the selected product using the form data
+     * 
+     * @param i 
      */
     deleteAssignationOcupation(i: number): void
     {
@@ -309,6 +299,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
             // If the confirm button pressed...
             if ( result === 'confirmed' )
             {
+                this.activatedAlert = true;
+
                 const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
                 
                 if ( collaboratorIndex != null ) {
@@ -333,6 +325,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Save assignation occupation
+     * 
+     */
     saveAssignationOccupation() {
         const assignation = this.formOcupation.getRawValue();
 
@@ -374,8 +370,10 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 // If the confirm button pressed...
                 if ( result === 'confirmed' )
                 {
+
                     this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
                         .subscribe(response => {
+                            this.activatedAlert = true;
                             // Show notification update request
                             this.showFlashMessage('success', 'Asignación guardada con éxito');
                             // Set time out for change tab

@@ -172,6 +172,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     allCompleteClient: boolean = false;
     allCompleteCommercialArea: boolean = false;
     allCompleteStatus: boolean = false;
+    activatedAlert: boolean = false;
 
     /*
     /**
@@ -614,22 +615,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     // }
 
-
-    /**
-     * Handle filter subscription
-     * 
-     * @param control 
-     * @param collection 
-     * @returns 
-     */
-    private _handleFilterSubscription(control: AbstractControl, collection: any): Observable<any> {
-        return control.valueChanges.pipe(
-            startWith(''),
-            map((value) => (typeof value === 'string' ? value : this.lastFilter)),
-            map((filter) => this.filter(filter, collection))
-        );
-    }
-
     /**
      * Get clients by bussinessType
      * 
@@ -656,17 +641,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-    }
-
-    /**
-     * _filter
-     * @param value
-     *
-     */
-    private _filter(value: string, collection: any[]): string[] {
-        const filteredValue = value.toLowerCase();
-        const filteredCollection = collection.map(option => option.name);
-        return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     }
     
     /**
@@ -1176,7 +1150,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._requestService.deleteRequest(this.selectedRequest.id, this.selectedRequest).subscribe(() => {
                     // Close the details
                     this.closeDetails();
-                    this.successSave = 'La solicitud ha sido eliminada con éxito!'
+                    this.successSave = 'La solicitud ha sido eliminada con éxito!';
+                    this.activatedAlert = true;
                     this._fuseAlertService.show('alertBox4');
 
                     this._changeDetectorRef.markForCheck();
@@ -1257,7 +1232,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 // Go to new request
                 this.selectedRequest = newRequest;
                 this.selectedRequest.knowledges = [];
-                
+                this.activatedAlert = true;
+
                 // Show Notification and close modal
                 this.showNotificationAndCloseModal('Solicitud creada con éxito!');
 
@@ -1272,6 +1248,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     updateRequest(request: any) {
         this._requestService.updateRequest(request.id, request)
             .subscribe((request) => {
+                this.activatedAlert = true;
                 // Show Notification and close modal
                 this.showNotificationAndCloseModal('Solicitud actualizada con éxito!');
             });
@@ -1391,6 +1368,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 break;
         }
     }
+
     /**
      * Toggle Selection
      * 
@@ -1411,6 +1389,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     /**
      * Restarting list
      * 
+     * @param control 
      */
     restartingList(control: FormControl) {
         control.setValue('', {emitEvent: false});

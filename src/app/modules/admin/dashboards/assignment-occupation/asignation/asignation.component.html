@@ -2,11 +2,12 @@
     
     <div class="w-full">
         <fuse-alert
-        [type]="'success'" 
-        [dismissible]="true"
-        [dismissed]="true"
-        [name]="'alertBox4'"
-        (click)="dismissFuse('alertBox4')"
+            *ngIf="activatedAlert"
+            [type]="'success'" 
+            [dismissible]="true"
+            [dismissed]="true"
+            [name]="'alertBox4'"
+            (click)="dismissFuse('alertBox4')"
         >
             <span fuseAlertTitle>{{successSave}}</span>
         </fuse-alert>

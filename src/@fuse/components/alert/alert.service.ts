@@ -75,15 +75,5 @@ export class FuseAlertService
         setTimeout(() => {
             this.dismiss(name);
         }, 5000);
-
-        
     }
-
-    unSubscribe() {
-        this._onDismiss.unsubscribe();
-        this._onShow.unsubscribe();
-    }
-
-
-
 }
