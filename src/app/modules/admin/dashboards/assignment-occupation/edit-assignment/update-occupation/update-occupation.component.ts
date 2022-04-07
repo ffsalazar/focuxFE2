@@ -62,7 +62,6 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 		this._fuseAlertService.onDismiss
 			.pipe(takeUntil(this._unsubscribeAll))
 				.subscribe(response => {
-					console.log("response");
 				});
 
 		this._fuseAlertService.dismiss('alertBox4');
@@ -405,7 +404,6 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 	}
 
 	showCollaborators() {
-		console.log("show collaborators");
 		this.returnPrevious.emit('');
 	}
 
