@@ -275,6 +275,7 @@
         <!-- Request list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
             <fuse-alert
+                *ngIf="activatedAlert"
                 [type]="'success'" 
                 [dismissible]="true"
                 [dismissed]="true"

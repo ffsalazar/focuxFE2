@@ -28,7 +28,7 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 	collaboratorOccupations: any = null;
 	successSave: string;
     flashMessage: 'success' | 'error' | null = null;
-
+	isActive: boolean = false;
   	collaboratorsArr: any[] = [];
 	percentageTotal: number = 0;
 
@@ -244,6 +244,7 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
                 .subscribe(value => {
 					//console.log("value: ", value);
                     if ( value === 'VALID' ){
+						this.isActive = true;
                         this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
                     }
                 })
@@ -322,6 +323,7 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 						.subscribe(response => {
 							this._assignmentOccupationService.getAllColaboratorOccupation()
 								.subscribe(() => {
+									this.isActive = true;
 									// Show notification update request
 									this.showFlashMessage('success', 'Asignación editada con éxito');
 									// Set time out for change tab
@@ -361,8 +363,6 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 			id: assignation.id
 		};
 
-		console.log("assignation a eliminar: ", assignationOccupation);
-
 		const confirmation = this._fuseConfirmationService.open({
 			title  : 'Eliminar asignación',
 			message: '¿Seguro que quiere eliminar la asignación?',
@@ -381,7 +381,7 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 				{
 					this._assignmentOccupationService.deleteOccupation(assignation.id, assignationOccupation)
 						.subscribe(response => {
-							console.log("eliminado: ", response);
+							this.isActive = true;
 							// remove form group from collaborator occupation
 							this.collaboratorOccupation.removeAt(i);
 							// Show notification update request
