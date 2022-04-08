@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FuseAlertService } from '@fuse/components/alert';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { Collaborator } from '../../../collaborators/collaborators.types';
 import { DateValidator } from '../../asignation/date-validation';
 import { AssingmentOccupationService } from '../../assingment-occupation.service';
@@ -13,11 +14,10 @@ import { limitOccupation } from '../../partner-search/limit-occupation';
   templateUrl: './update-occupation.component.html',
   styleUrls: ['./update-occupation.component.scss']
 })
-export class UpdateOccupationComponent implements OnInit {
+export class UpdateOccupationComponent implements OnInit, OnDestroy {
 
 	@Input() set collaboratorAssigment(collaborator: any) {
 		this.collaboratorOccupations = collaborator;
-		console.log("collaborator: ", collaborator);
 		this._setFormOcupation(collaborator);
 	}
 
@@ -37,6 +37,10 @@ export class UpdateOccupationComponent implements OnInit {
         collaboratorOccupation: this._formBuilder.array([])
     });
 
+	dissmisible: boolean = true;
+
+	private _unsubscribeAll: Subject<any> = new Subject<any>();
+
   	constructor(
 		private _formBuilder: FormBuilder,
 		private _assignmentOccupationService: AssingmentOccupationService,
@@ -49,10 +53,34 @@ export class UpdateOccupationComponent implements OnInit {
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 	
+	/**
+	 * ngOnInit
+	 * 
+	 */
 	ngOnInit(): void {
+		
+		this._fuseAlertService.onDismiss
+			.pipe(takeUntil(this._unsubscribeAll))
+				.subscribe(response => {
+				});
+
 		this._fuseAlertService.dismiss('alertBox4');
 
+		// mark for check
+		this._changeDetectorRef.markForCheck();
 		this._handleChangeFormOccupation();
+
+	}
+
+	/**
+	 * ngOnDestroy
+	 * 
+	 */
+	ngOnDestroy(): void {
+		//this._fuseAlertService.unSubscribe();
+		// Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
 	}
 
   	// -----------------------------------------------------------------------------------------------------
@@ -98,13 +126,18 @@ export class UpdateOccupationComponent implements OnInit {
 			})
 	}
 
-	test() {
-		for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-			this.collaboratorOccupation.at(i).setValidators(limitOccupation(this.percentageTotal));
-			this.collaboratorOccupation.at(i).updateValueAndValidity({onlySelf: true, emitEvent: true});
-		}
-	}
+	// test() {
+	// 	for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+	// 		this.collaboratorOccupation.at(i).setValidators(limitOccupation(this.percentageTotal));
+	// 		this.collaboratorOccupation.at(i).updateValueAndValidity({onlySelf: true, emitEvent: true});
+	// 	}
+	// }
 
+	/**
+	 * Calculate percentage total
+	 * 
+	 * @param occupations 
+	 */
 	private _calculatePercentageTotal(occupations) {
 		this.percentageTotal = 0;
 		occupations.forEach(item => {
@@ -112,10 +145,11 @@ export class UpdateOccupationComponent implements OnInit {
 		});
 	}
 
-  	/**
-     * Set the form Ocupation
-     * 
-     */
+	/**
+	 * Set form occupation
+	 * 
+	 * @param collaborator 
+	 */
    	private _setFormOcupation(collaborator: any) {
 		if ( collaborator ) {
 			this.collaboratorOccupation.clear();
@@ -128,7 +162,7 @@ export class UpdateOccupationComponent implements OnInit {
 						requestId 		: [item.requestId],
 						requestTitle	: [item.request],
 						name            : ['', Validators.required],
-						occupation      : [item.occupationPercentage, [Validators.required, Validators.maxLength(100), limitOccupation(item.occupationPercentage)]],
+						occupation      : [item.occupationPercentage, [Validators.required, Validators.maxLength(100)]],
 						observation     : [item.observations],
 						dateInit        : [item.assignmentStartDate, Validators.required],
 						dateEnd         : [item.assignmentEndDate, Validators.required],
@@ -157,6 +191,7 @@ export class UpdateOccupationComponent implements OnInit {
 		// Show the message
 		this.flashMessage = type;
 
+		this.dissmisible = true;
 		this._fuseAlertService.show('alertBox4');
 		// Set message title
 		this.successSave = message;
@@ -179,7 +214,8 @@ export class UpdateOccupationComponent implements OnInit {
      * 
      * @param name
      */
-	 dismissFuse(name){
+	dismissFuse(name){
+		this.dissmisible = false;
 		this._fuseAlertService.dismiss(name);
 	}
 
@@ -233,22 +269,33 @@ export class UpdateOccupationComponent implements OnInit {
         }
     }
 
-	updateAssigmentOccupation(assignation: any) {
-		const assignationOccupation = {
-			occupationPercentage: assignation.occupation,
-			assignmentStartDate: assignation.dateInit,
-			assignmentEndDate: assignation.dateEnd,
-			observations: assignation.observation,
-			isActive: 1,
-			code: '213',
-			request: {
-				id: assignation.requestId
-			},
-			collaborator: {
-				id: this.collaborator.id
-			},
-			id: assignation.id
-		};
+	/**
+	 * Update assignment occupation
+	 * 
+	 */
+	updateAssigmentOccupation() {
+
+		let occupations = [];
+
+		for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+			const assignationOccupation = {
+				occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
+				assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
+				assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
+				observations: this.collaboratorOccupation.at(i).get('observation').value,
+				isActive: 1,
+				code: '213',
+				request: {
+					id: this.collaboratorOccupation.at(i).get('requestId').value
+				},
+				collaborator: {
+					id: this.collaborator.id
+				},
+				id: this.collaboratorOccupation.at(i).get('id').value,
+			};
+
+			occupations.push(assignationOccupation);
+		}
 
 		const confirmation = this._fuseConfirmationService.open({
 			title  : 'Editar asignación',
@@ -271,7 +318,7 @@ export class UpdateOccupationComponent implements OnInit {
 				// If the confirm button pressed...
 				if ( result === 'confirmed' )
 				{
-					this._assignmentOccupationService.updateOccupationsByCollaborator(assignation.id, assignationOccupation)
+					this._assignmentOccupationService.updateOccupationsByCollaborator(this.collaborator.id, occupations)
 						.subscribe(response => {
 							this._assignmentOccupationService.getAllColaboratorOccupation()
 								.subscribe(() => {
@@ -280,7 +327,7 @@ export class UpdateOccupationComponent implements OnInit {
 									// Set time out for change tab
 									setTimeout(() => {
 										// this._router.navigate(['dashboards/assignment-occupation/index']);
-										// this._assignmentOccupationService.setTabIndex(1);
+										this._assignmentOccupationService.setTabIndex(0);
 									}, 2000); 
 								});
 						});
@@ -290,6 +337,12 @@ export class UpdateOccupationComponent implements OnInit {
 
 	}
 
+	/**
+	 * Delete assignment occupation
+	 * 
+	 * @param assignation 
+	 * @param i 
+	 */
 	deleteAssigmentOccupation(assignation: any, i: number) {
 
 		const assignationOccupation = {
@@ -351,7 +404,6 @@ export class UpdateOccupationComponent implements OnInit {
 	}
 
 	showCollaborators() {
-		console.log("show collaborators");
 		this.returnPrevious.emit('');
 	}
 

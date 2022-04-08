@@ -140,6 +140,12 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         type : 'basic',
                         link : '/masters/typesRequest'
                     },
+                    {
+                        id   : 'masters.portafolio.category',
+                        title: 'Categorias',
+                        type : 'basic',
+                        link : '/masters/categories'
+                    },
                 ]
             },
             {

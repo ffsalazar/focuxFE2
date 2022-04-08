@@ -37,7 +37,7 @@ export const collaboratorsRoutes: Route[] = [
                 },
                 children : [
                     {
-                        path         : ':id',
+                        path         : 'profile/:id',
                         component    : CollaboratorsDetailsComponent,
                         resolve      : {
                             task     : CollaboratorsCollaboratorResolver,
@@ -50,7 +50,22 @@ export const collaboratorsRoutes: Route[] = [
                             status: CollaboratorsStatusResolver
                         },
                         canDeactivate: [CanDeactivateCollaboratorsDetails]
-                    }
+                    },
+                    {
+                        path         : 'create',
+                        component    : CollaboratorsDetailsComponent,
+                        resolve      : {
+                            //task     : CollaboratorsCollaboratorResolver,
+                            countries: CollaboratorsCountriesResolver,
+                            departments: CollaboratorsDepartmentsResolver,
+                            employeePositions: CollaboratorsEmployeePositionResolver,
+                            clients: CollaboratorsClientResolver,
+                            //ocupations:CollaboratorsCollaboratorOcupationResolver,
+                            leaders:CollaboratorsLeadersResolver,
+                            status: CollaboratorsStatusResolver
+                        },
+                        canDeactivate: [CanDeactivateCollaboratorsDetails]
+                    },
                 ]
             }
         ]

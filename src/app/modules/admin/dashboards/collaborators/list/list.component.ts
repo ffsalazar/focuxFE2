@@ -9,6 +9,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Collaborator, Country, Status, Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {CollaboratorsService} from "../collaborators.service";
 import {MatOption} from "@angular/material/core";
+import { TechnicalAreasService } from 'app/modules/admin/masters/technicalAreas/technicalAreas.service';
 
 
 @Component({
@@ -171,7 +172,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
             {
                 // Remove the selected collaborator when drawer closed
                 this.selectedCollaborator = null;
-
+                //this._collaboratorsService.updateCollaboratorSelected();
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
@@ -269,14 +270,16 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     createCollaborator(): void
     {
         // Create the collaborator
-        this._collaboratorsService.createCollaborator().subscribe((newCollaborator) => {
+        // this._collaboratorsService.createCollaborator().subscribe((newCollaborator) => {
 
-            // Go to the new collaborator
-            this._router.navigate(['./', newCollaborator.id], {relativeTo: this._activatedRoute});
+        //     // Go to the new collaborator
+        //     this._router.navigate(['./', newCollaborator.id], {relativeTo: this._activatedRoute});
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
+        //     // Mark for check
+        //     this._changeDetectorRef.markForCheck();
+        // });
+        this._collaboratorsService.updateCollaboratorSelected();
+        this._router.navigate(['./create'], {relativeTo: this._activatedRoute});
     }
 
     /**
@@ -289,10 +292,11 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+
     sortArray(x, y) {
-    if (x.name < y.name) {return -1; }
-    if (x.name > y.name) {return 1; }
-    return 0;
-  }
+        if (x.name < y.name) {return -1; }
+        if (x.name > y.name) {return 1; }
+        return 0;
+    }
 
 }

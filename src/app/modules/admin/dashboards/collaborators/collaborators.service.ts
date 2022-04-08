@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone, Assigments,Status } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {DialogData, DialogOptions} from "../../apps/portafolio/request/request.types";
@@ -14,7 +14,7 @@ import {FocusPopupRequestComponent} from "./details/focux-popup-request/focus-po
 export class CollaboratorsService
 {
     // Private
-    private _collaborator: BehaviorSubject<Collaborator | null> = new BehaviorSubject(null);
+    private _collaborator: Subject<Collaborator | null> = new BehaviorSubject(null);
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
@@ -163,11 +163,19 @@ export class CollaboratorsService
     }
 
     /**
+     * Update collaborator selected
+     * 
+     */
+    updateCollaboratorSelected() {
+        return this._collaborator.next(null);
+    }
+
+    /**
      * Search collaborators with given query
      *
      * @param query
      */
-   filtersCollaborator(controls: any): Observable<Collaborator[]>
+    filtersCollaborator(controls: any): Observable<Collaborator[]>
     {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {
             params: {controls}
@@ -236,13 +244,13 @@ export class CollaboratorsService
             take(1),
             map((collaborators) => {
 
-                // Find the collaborator¿
+                // Find the collaborator
 
                 const collaborator = collaborators.find(item => item.id === id) || null;
                 const collaborator_test = collaborators.find(item => item.id === id);
 
-
                 // Update the collaborator
+                console.log("emit collaborator");
                 this._collaborator.next(collaborator);
 
                 // Return the collaborator
@@ -264,56 +272,57 @@ export class CollaboratorsService
     /**
      * Create collaborator
      */
-    createCollaborator(): Observable<Collaborator>
+    createCollaborator(newCollaborator): Observable<Collaborator>
     {
         console.log("createCollaborator");
         // Generate a new collaborator
-        const newCollaborator = {
+        // const newCollaborator = {
 
-            idFile: 0,
-            name: 'Nuevo',
-            lastName: 'Colaborador',
-            employeePosition: {
-                id: 2,
-                department: {
-                    id: 1,
-                    code: 'A01',
-                    name: 'Aplicaciones',
-                    description: 'Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.',
-                    isActive: 1
-                },
-                name: 'Analista de aplicaciones',
-                description: 'Es capaz de mantener y desrrollar programas.',
-                isActive: 1
-            },
-            client:{
-                "id": 1,
-                "businessType": {
-                    "id": 2,
-                    "code": "FIN01",
-                    "name": "Financiero",
-                    "description": "Servicios Financieros, inversiones, creditos personales",
-                    "isActive": 1
-                 },
-            "name": "Credix",
-            "description": "Empresa del ramo financiero en Costa Rica",
-            "isActive": 1
-            },
-            companyEntryDate: '1970-01-01T00:00:00.000+00:00',
-            organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
-            gender: 'M',
-            bornDate: '1970-01-01T00:00:00.000+00:00',
-            nationality: 've',
-            mail: '' ,
-            isActive: 1,
-            assignedLocation: 'Intelix Principal',
-            technicalSkills: '',
-            knowledges: [],
-            phones: [],
-            status: {
-                id: 9
-            }
-        };
+        //     idFile: 0,
+        //     name: 'Nuevo',
+        //     lastName: 'Colaborador',
+        //     employeePosition: {
+        //         id: 2,
+        //         department: {
+        //             id: 1,
+        //             code: 'A01',
+        //             name: 'Aplicaciones',
+        //             description: 'Departamento encarcado del desarrollo y mantenimiento de las diversas aplicaciones que se manejan.',
+        //             isActive: 1
+        //         },
+        //         name: 'Analista de aplicaciones',
+        //         description: 'Es capaz de mantener y desrrollar programas.',
+        //         isActive: 1
+        //     },
+        //     client:{
+        //         "id": 1,
+        //         "businessType": {
+        //             "id": 2,
+        //             "code": "FIN01",
+        //             "name": "Financiero",
+        //             "description": "Servicios Financieros, inversiones, creditos personales",
+        //             "isActive": 1
+        //          },
+        //     "name": "Credix",
+        //     "description": "Empresa del ramo financiero en Costa Rica",
+        //     "isActive": 1
+        //     },
+        //     companyEntryDate: '1970-01-01T00:00:00.000+00:00',
+        //     organizationEntryDate: '1970-01-01T00:00:00.000+00:00',
+        //     gender: 'M',
+        //     bornDate: '1970-01-01T00:00:00.000+00:00',
+        //     nationality: 've',
+        //     mail: '' ,
+        //     isActive: 1,
+        //     assignedLocation: 'Intelix Principal',
+        //     technicalSkills: '',
+        //     knowledges: [],
+        //     phones: [],
+        //     status: {
+        //         id: 9
+        //     }
+        // };
+
         return this.collaborators$.pipe(
             take(1),
             switchMap(collaborators => this._httpClient.post<Collaborator>('http://localhost:1616/api/v1/followup/collaborators/save', newCollaborator).pipe(
@@ -692,7 +701,6 @@ export class CollaboratorsService
 
     updatePhoneStatus(id: number, phone: Phone): Observable<Phone>
     {
-        console.log(phone);
         return this._httpClient.put<Phone>('http://localhost:1616/api/v1/followup/phones/status/'+ id, phone).pipe(
             tap(phone => {
                 //console.log(phone)
@@ -702,7 +710,6 @@ export class CollaboratorsService
 
     updateCollaboratorKnowledgeStatus(id: number, collaboratorKnowledge: CollaboratorKnowledge): Observable<CollaboratorKnowledge>
     {
-        console.log(collaboratorKnowledge);
         return this._httpClient.put<CollaboratorKnowledge>('http://localhost:1616/api/v1/followup/collaboratorknowledge/status/'+ id, collaboratorKnowledge).pipe(
             tap(collaboratorKnowledge => {
                 console.log(collaboratorKnowledge);

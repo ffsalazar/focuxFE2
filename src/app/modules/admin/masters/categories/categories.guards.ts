@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import {CollaboratorsDetailsComponent} from "./details/details.component";
-import {CollaboratorsService} from "./collaborators.service";
+import {CategoriesDetailsComponent} from './details/details.component';
 
 
 @Injectable({
     providedIn: 'root'
 })
-export class CanDeactivateCollaboratorsDetails implements CanDeactivate<CollaboratorsDetailsComponent>
+export class CanDeactivateCategoriesDetails implements CanDeactivate<CategoriesDetailsComponent>
 {
     canDeactivate(
-        component: CollaboratorsDetailsComponent,
+        component: CategoriesDetailsComponent,
         currentRoute: ActivatedRouteSnapshot,
         currentState: RouterStateSnapshot,
-        nextState: RouterStateSnapshot,
+        nextState: RouterStateSnapshot
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
     {
         // Get the next route
         let nextRoute: ActivatedRouteSnapshot = nextState.root;
-
         while ( nextRoute.firstChild )
         {
             nextRoute = nextRoute.firstChild;
@@ -28,7 +26,7 @@ export class CanDeactivateCollaboratorsDetails implements CanDeactivate<Collabor
         // If the next state doesn't contain '/contacts'
         // it means we are navigating away from the
         // contacts app
-        if ( !nextState.url.includes('/collaborators') )
+        if ( !nextState.url.includes('/categories') )
         {
             // Let it navigate
             return true;
@@ -44,7 +42,6 @@ export class CanDeactivateCollaboratorsDetails implements CanDeactivate<Collabor
         else
         {
             // Close the drawer first, and then navigate
-
             return component.closeDrawer().then(() => true);
         }
     }

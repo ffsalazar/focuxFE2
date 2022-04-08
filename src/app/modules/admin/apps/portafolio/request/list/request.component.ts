@@ -225,7 +225,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 dateInit            : ['', [Validators.required]],
                 datePlanEnd         : ['', [Validators.required]],
                 isActive            : ['1', [Validators.required]],
-                responsibleRequest  : ['1', [Validators.required]],
+                responsibleRequest  : ['1', []],
                 dateRequest         : ['', [Validators.required]],
                 status              : ['', [Validators.required]],
                 technicalArea       : ['', [Validators.required]],
@@ -1028,7 +1028,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Fill the formGroup step2
         this.step2.patchValue(request);
-        this.step2.get('responsibleRequest').setValue(request.responsibleRequest.id);
+        this.step2.get('responsibleRequest').setValue(request.responsibleRequest?.id || '');
         this.step2.get('dateRequest').setValue(request.dateRequest);
         this.step2.get('technicalArea').setValue(request.technicalArea.id);
         this.step2.get('status').setValue(request.status.id);
@@ -1412,11 +1412,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * Restarting list
      * 
      */
-    restartingList() {
-        this.filterGroupForm.get('customerBranchControl').setValue('', {emitEvent: false});
-        this.filterGroupForm.get('customerBranchControl').updateValueAndValidity({onlySelf: true, emitEvent: true});
+    restartingList(control: FormControl) {
+        control.setValue('', {emitEvent: false});
+        control.updateValueAndValidity({onlySelf: true, emitEvent: true});
         ///this.inputBranch.nativeElement.focus();
-        this.inputBranch.focus();
+        //this.inputBranch.focus();
     }
 
     /**
