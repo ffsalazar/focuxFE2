@@ -188,7 +188,21 @@ export class AssingmentOccupationService {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all')
             .pipe(
                 tap((collaborators) => {
-                    this._collaborators.next(collaborators);
+                    let collaboratorFiltered : any[]=[];
+
+                    function compare(a: Collaborator, b: Collaborator) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+                    // Their names are equal
+                    if (a.lastName < b.lastName) return -1;
+                    if (a.lastName > b.lastName) return 1;
+                    return 0;
+                }
+                collaborators.sort(compare);
+
+                collaboratorFiltered = collaborators.filter((item)=> item.isActive ===1);
+
+                this._collaborators.next(collaboratorFiltered);
             }));
     }
     
@@ -395,8 +409,30 @@ export class AssingmentOccupationService {
                 tap(collaborators => {
                     /** spinner ends after 5 seconds */
                     this._loadingSpinnerService.stopLoading();
-                    this.collaborators = collaborators;
-                    this._collaborators.next(collaborators);
+                    
+                let collaboratorFiltered : any[]=[];
+
+                 function compareOcupation(a: any, b: any) {
+                    if (a.occupationPercentage < b.occupationPercentage) return -1;
+                    if (a.occupationPercentage > b.occupationPercentage) return 1;
+                    return 0;
+                }
+                function compare(a: Collaborator, b: Collaborator) {
+                        if (a.name < b.name) return -1;
+                        if (a.name > b.name) return 1;
+                        // Their names are equal
+                        if (a.lastName < b.lastName) return -1;
+                        if (a.lastName > b.lastName) return 1;
+
+                        return 0;
+                    }
+                
+                let collaboratorsTmp = collaborators.sort(compare);
+                collaboratorsTmp.sort(compareOcupation);
+                collaboratorFiltered = collaboratorsTmp.filter((item)=> item.isActive ===1);
+                
+                this.collaborators = [...collaboratorFiltered];
+                this._collaborators.next(collaboratorFiltered);
                 })
             )
     }

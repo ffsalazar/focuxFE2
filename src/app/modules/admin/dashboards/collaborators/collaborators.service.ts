@@ -156,11 +156,7 @@ export class CollaboratorsService
                     return 0;
                 }
                 collaborators.sort(compare);
-                collaborators.forEach((collaborator) => {
-                    if (collaborator.isActive != 0){
-                        collaboratorFiltered.push(collaborator);
-                    }
-                });
+                collaboratorFiltered = collaborators.filter((item)=> item.isActive ===1);
                 this._collaborators.next(collaboratorFiltered);
             })
         );

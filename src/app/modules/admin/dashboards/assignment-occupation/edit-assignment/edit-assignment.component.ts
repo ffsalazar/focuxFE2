@@ -180,7 +180,6 @@ export class EditAssignmentComponent implements OnInit {
      */
     filter(filter: string, collection: any[]): any[] {
         this.lastFilter = filter;
-        console.log("filter: ", filter, collection);
         if (filter) {
             return collection.filter((option) => {
                 return (option.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
@@ -220,9 +219,9 @@ export class EditAssignmentComponent implements OnInit {
                         ...item
                     }
                 });
+                this.collaboratorSelected = this.collaborators.filter((item)=> item.isActive ===1);
 
-
-                console.log("Collaborators: ", this.collaborators);
+            
                 this.collaborators = collaborators;
                 this.collaboratorControl.setValue('');
                 // Mark for check
@@ -338,7 +337,6 @@ export class EditAssignmentComponent implements OnInit {
      */
     optionClicked(event: Event, selectedItem: Client, selectedCollection: Client[], option: string) {
         event.stopPropagation();
-        console.log("optionClicked");
         this.toggleSelection(selectedItem, selectedCollection, option);
     }
     
@@ -369,7 +367,6 @@ export class EditAssignmentComponent implements OnInit {
         // change status the selected
         selectedFilter.selected = !selectedFilter.selected;
 
-        console.log("SelectedFilter: ", selectedFilter);
         // update all as complete
         this.updateAllComplete(option);
         
