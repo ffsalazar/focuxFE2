@@ -59,8 +59,6 @@ export class ClientsService
     {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
             tap((clients) => {
-
-
                 let clientFiltered : any[]=[];
 
                 function compare(a: Client, b: Client) {
@@ -87,6 +85,7 @@ export class ClientsService
      *
      * @param query
      */
+
     searchClient(query: string): Observable<Client[]>
     {
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all', {

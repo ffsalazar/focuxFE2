@@ -94,7 +94,7 @@
                                         mat-fab
                                         [color]="'accent'"
                                         type="button"
-                                        [disabled]="!hasCheckedCollaborator"
+                                        [disabled]="!selectedRequest || !hasCheckedCollaborator"
                                         (click)="changeTab()"
                                         matTooltip="Siguiente"
                                         

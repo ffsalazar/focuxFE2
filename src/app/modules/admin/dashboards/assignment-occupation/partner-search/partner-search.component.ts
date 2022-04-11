@@ -72,6 +72,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     hasCheckedCollaborator: boolean = false;
     selectedFilter: boolean = false;
     collaboratorOccupation = [];
+    selectedRequest: boolean = false;
 
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
@@ -83,7 +84,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-
+        console.log("Se creo :)");
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filterClient(value)),
@@ -195,6 +196,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe((tabIndex) => {
                 console.log("tabIndex: ", tabIndex);
                 if ( tabIndex === 0 ) {
+                    console.log("Entro en el tab");
                     this.isEditing = false;
                     this._getAllCollaboratorOccupation();
                     
@@ -236,6 +238,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     onReturnPrevious(event: any) {
         this.isEditing = false;
+        console.log("on Return previous");
         // Get all collaborators occupation
         //this._getAllCollaboratorOccupation();
         // Mark for check
@@ -494,6 +497,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         if ( request ) {
             this._assignmentOccupationService.requestSelected = request;
+            this.selectedRequest = true;
             // this._assignmentOccupationService.selectedFiltered.request = request.titleRequest;
             // this._assignmentOccupationService.getRecommended( request.id )
             //     .subscribe(collaborators => {
@@ -619,7 +623,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * handle ChangeArrayForm
      */
     private _handleChangeArrayForm() {
-        this.collaboratorsRecomm.forEach((item, index) => {
+        this.collaboratorOccupation.forEach((item, index) => {
             this.collaboratorSelected.at(index).valueChanges
                 .subscribe((collaborator) => {
                     //find if collaborator already selected
