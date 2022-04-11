@@ -3,7 +3,7 @@ import { Activity, Collaborator, Project, Client, Status } from "../assignment-o
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {FormArray, FormControl} from "@angular/forms";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {map, startWith, takeUntil} from "rxjs/operators";
+import {map, startWith, takeUntil, finalize} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -33,6 +33,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     collaborators: Collaborator[] = [];
     collaboratorsRecomm : Collaborator[] = [];
+    collaborator: any;
+    assigments: any = [];
     requests: any[] = [];
     clients: Client[] = [];
     status: any[];
@@ -41,7 +43,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     selectedClient: Client;
     selectedResponsible: any = null;
     filterActive: string;
-
+    isEditing: boolean = false;
     // FormControls    
     filterForm: FormGroup = this._fb.group({
         myControl: [''],
@@ -69,6 +71,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     flashMessage: string = '';
     hasCheckedCollaborator: boolean = false;
     selectedFilter: boolean = false;
+    collaboratorOccupation = [];
 
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
@@ -131,7 +134,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._getResponsibleByClient();
         this._handleChangeResponsible()
         this._getCollaboratorsByRequest();
-  } 
+
+        // Listener event from tab
+        this._handleEventTab();
+        
+        // Get all collaborators
+        this._getAllCollaboratorOccupation();
+    }
 
 
     // -----------------------------------------------------------------------------------------------------
@@ -176,6 +185,91 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Methods
     // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Handle event tab
+     *
+     */
+    private _handleEventTab() {
+        this._assignmentOccupationService.tabIndex$
+            .subscribe((tabIndex) => {
+                console.log("tabIndex: ", tabIndex);
+                if ( tabIndex === 0 ) {
+                    this.isEditing = false;
+                    this._getAllCollaboratorOccupation();
+                    
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                }
+                
+            });
+    }
+
+    /**
+     * Edit occupation
+     * 
+     * @param collaborator 
+     */
+    editOccupation(collaborator: Collaborator) {
+        this.collaborator = collaborator;
+        this._assignmentOccupationService.getOccupationsByCollaborator(collaborator.id)
+            .pipe(finalize(() => this.isEditing = true))
+                .subscribe(response => {
+                    console.log("response: ", response);
+                    this.assigments = response;
+                });
+        
+    }
+
+    /**
+     * On delete assignment
+     * 
+     */
+    onDeleteAssignment() {
+        this.editOccupation(Object.assign({}, this.collaborator));
+    }
+
+    /**
+     * On return previous
+     * 
+     * @param event
+     */
+    onReturnPrevious(event: any) {
+        this.isEditing = false;
+        // Get all collaborators occupation
+        //this._getAllCollaboratorOccupation();
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+    }
+
+    /**
+     * Get all collaborators occupation
+     * 
+     */
+    private _getAllCollaboratorOccupation() {
+        this._assignmentOccupationService.getAllColaboratorOccupation()
+            .subscribe(collaborators => {
+                // Update the client
+
+                // // Map for clients
+                // this.collaboratorSelected = this.collaborators.map(item => {
+                //     return {
+                //         selected: false,
+                //         ...item
+                //     }
+                // });
+                // this.collaboratorSelected = this.collaborators.filter((item)=> item.isActive ===1);
+
+            
+                //this.collaboratorsRecomm = collaborators;
+                this.collaboratorOccupation = collaborators;
+                // Update the collaboatorsRecomm
+                this._setCollaboratorsRecomm();
+                //this.collaboratorControl.setValue('');
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
+    }
 
     /**
      * Restarting list
@@ -400,15 +494,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         if ( request ) {
             this._assignmentOccupationService.requestSelected = request;
-            this._assignmentOccupationService.selectedFiltered.request = request.titleRequest;
-            this._assignmentOccupationService.getRecommended( request.id )
-                .subscribe(collaborators => {
-                    this.collaboratorsRecomm = collaborators;
-                    // Update the collaboatorsRecomm
-                    this._setCollaboratorsRecomm();
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-                })
+            // this._assignmentOccupationService.selectedFiltered.request = request.titleRequest;
+            // this._assignmentOccupationService.getRecommended( request.id )
+            //     .subscribe(collaborators => {
+            //         this.collaboratorsRecomm = collaborators;
+            //         // Update the collaboatorsRecomm
+            //         this._setCollaboratorsRecomm();
+            //         // Mark for check
+            //         this._changeDetectorRef.markForCheck();
+            //     })
         } else {
             this.collaboratorsRecomm = [];
             this._changeDetectorRef.markForCheck();
@@ -505,7 +599,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         // Clear formArray
         this.collaboratorSelected.clear();
         // Set formArray
-        this.collaboratorsRecomm.forEach(item => {
+        this.collaboratorOccupation.forEach(item => {
             // Create form group of collaborator
             const collaboratorGroup = this._fb.group({
                 id: [item.id],
@@ -659,7 +753,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * 
      */
     changeTab () {
-        this._assignmentOccupationService.setTabIndex(2);
+        this._assignmentOccupationService.setTabIndex(1);
     }
 
 }

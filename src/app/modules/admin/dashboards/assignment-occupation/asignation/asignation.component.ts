@@ -393,7 +393,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
      * 
      */
      changeTab () {
-        this._assignmentOccupationService.setTabIndex(1);
+        this._assignmentOccupationService.setTabIndex(0);
     }
 
 }

@@ -38,13 +38,15 @@ export class AssignmentOccupationComponent implements OnInit {
      */
     selectTab() {
         switch ( this._tab.selectedIndex ) {
+            // case 0:
+            //     this._assingmentOccupationService.setTabIndex(0);
+            //     break;
             case 0:
-                this._assingmentOccupationService.setTabIndex(0);
-                break;
-            case 1:
+            console.log("tab: ",  this._tab.selectedIndex);
+                //this._assingmentOccupationService.setTabIndex(0);
                 //this._assingmentOccupationService.setCollaboratorSelected();
                 break;
-            case 2:
+            case 1:
                 console.log("Tab: ", this._tab.selectedIndex);
                 this._assingmentOccupationService.setCollaboratorSelected();
                 break;
@@ -62,9 +64,12 @@ export class AssignmentOccupationComponent implements OnInit {
         this._assingmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
                 this._tab.selectedIndex = tabIndex;
-                if ( this._tab.selectedIndex !== 0 ) {
-                    this.selectTab();
-                }
+                // if ( this._tab.selectedIndex !== 0 ) {
+                //     this.selectTab();
+                // }
             });
+
+            this.selectTab();
+
     }
 }
