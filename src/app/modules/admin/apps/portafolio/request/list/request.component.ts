@@ -173,6 +173,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     allCompleteCommercialArea: boolean = false;
     allCompleteStatus: boolean = false;
     activatedAlert: boolean = false;
+    hasPause: boolean = false;
+    isToggle:  boolean = false;
 
     /*
     /**
@@ -225,7 +227,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 category            : ['', [Validators.required]],
                 dateInit            : ['', [Validators.required]],
                 datePlanEnd         : ['', [Validators.required]],
-                isActive            : ['1', [Validators.required]],
+                //isActive            : ['1', [Validators.required]],
                 responsibleRequest  : ['1', []],
                 dateRequest         : ['', [Validators.required]],
                 status              : ['', [Validators.required]],
@@ -337,7 +339,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 .subscribe((status: Status[]) => {
                     // Update the status
                     this.status = status;
-                    const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
 
                     // Map for bussinessType
                     this.statusSelected = this.status.map(item => {
@@ -347,7 +348,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                         }
                     });
 
-                    this.step2.get('status').setValue(statusId);
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
                 });
@@ -1016,6 +1016,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Fill the formGroup step4
         this.step4.patchValue(request);
 
+        this.isToggle = this.step3.get('totalPauseDays').value > 0 ? true: false;
+        this.hasPause = this.step3.get('totalPauseDays').value > 0 ? true: false;
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -1102,6 +1104,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     createRequest(): void
     {
 
+        const statusId = this.status.find(item => item.name === 'Sin iniciar').id;
+
+        this.step2.get('status').setValue(statusId);
+
         this.selectedRequest = {
             knowledges: []
         }
@@ -1115,6 +1121,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * @param requestId
      */
     updateSelectedRequest(requestId: number) {
+        this.hasPause = false;
         this.isEditing = true;
         this.openPopup(requestId);
     }
@@ -1200,7 +1207,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this._stepper.reset();
 
         // Set the isActive as 1
-        this.step2.get('isActive').setValue('1');
+        //this.step2.get('isActive').setValue('1');
 
         // Show notification update request
         this.showFlashMessage('success');
@@ -1222,6 +1229,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * @param request
      */
     createNewRequest(request: any) {
+
+        this.hasPause = false;
 
         request.requestPeriod = {
             id: 1,
@@ -1289,7 +1298,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 this.step1.setControl('customerBranch', new FormControl());
 
-                let requestNew = {...wizzard.step1, ...wizzard.step2, ...wizzard.step3, ...wizzard.step4};
+                let requestNew = {...wizzard.step1, ...wizzard.step2, ...wizzard.step3, ...wizzard.step4, isActive: 1};
 
                 requestNew.client = this.clients.find(item => item.id === requestNew.client);
                 requestNew.typeRequest = this.typeRequest.find(item => item.id === requestNew.typeRequest);
@@ -1506,5 +1515,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
+    }  
+    
+    /**
+     * Set pause
+     *
+     */
+    setPause() {
+        this.hasPause = !this.hasPause;
     }
 }
