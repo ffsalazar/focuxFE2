@@ -24,6 +24,7 @@ export class AssingmentOccupationService {
     private _collaboratorsSelected: Collaborator[] = [];
     private _requestSelected: any = null;
     private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
+    private _isSuccess: Subject<boolean | null> = new Subject();
 
     collaborators: any;
 
@@ -65,6 +66,13 @@ export class AssingmentOccupationService {
      */
     get recommended$(): Observable<Collaborator[]> {
         return this._recommended.asObservable();
+    }
+
+    /**
+     * Getter for isSuccess$
+     */
+    get isSuccess$(): Observable<boolean> {
+        return this._isSuccess.asObservable();
     }
 
     /**
@@ -392,13 +400,17 @@ export class AssingmentOccupationService {
     saveAssignationOccupation(assignationOcupation: AssignationOccupation): Observable<any> {
         return this._httpClient.post<any>('http://localhost:1616/api/v1/followup/occupationassignments/save',
             assignationOcupation,
+        ).pipe(
+            tap((occupation) => {
+                this._isSuccess.next(true);
+            })
         );
     }
 
     /**
      * Get all collaborator occupation
      * 
-     * @returns 
+     * @returns
      */
     getAllColaboratorOccupation(): Observable<any> {
         /** spinner starts on init */
@@ -454,9 +466,12 @@ export class AssingmentOccupationService {
      * @returns 
      */
     updateOccupationsByCollaborator(collaboratorId: number, occupations): Observable<any> {
-        console.log("occupations: ", occupations);
         return this._httpClient.put<any>('http://localhost:1616/api/v1/followup/occupationassignments/updateall/' + collaboratorId,
             occupations
+        ).pipe(
+            tap((occupation) => {
+                this._isSuccess.next(true);
+            })
         );
     }
 

@@ -194,11 +194,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _handleEventTab() {
         this._assignmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
-                console.log("tabIndex: ", tabIndex);
                 if ( tabIndex === 0 ) {
                     console.log("Entro en el tab");
                     this.isEditing = false;
-                    this._getAllCollaboratorOccupation();
+
+                    console.log("collaborator occupation: ", this.collaboratorOccupation);
+                    //this._getAllCollaboratorOccupation();
                     
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
@@ -217,7 +218,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.getOccupationsByCollaborator(collaborator.id)
             .pipe(finalize(() => this.isEditing = true))
                 .subscribe(response => {
-                    console.log("response: ", response);
                     this.assigments = response;
                 });
         
@@ -285,11 +285,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
     
     private _handleEventSavedOccupation() {
-        this._assignmentOccupationService.tabIndex$
-            .subscribe((tabIndex) => {
-                if ( tabIndex === 0 ) {
+        this._assignmentOccupationService.isSuccess$
+            .subscribe((success) => {
+                if ( success ) {
+                    this._getAllCollaboratorOccupation();
                     this.selectedResponsible = null;
                     this.selectedClient = null;
+                    this.selectedRequest = null;
+                    this.hasCheckedCollaborator = false;
                     this._assignmentOccupationService.collaboratorsSelected = [];
                     // Clear form array of collaborator selected
                     this.collaboratorSelected.clear();
