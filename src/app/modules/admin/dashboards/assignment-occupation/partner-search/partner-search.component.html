@@ -279,18 +279,26 @@
                                                         
                                                                                     
                                                             <div class="flex flex-row ">
+                                                                <div class="mt-2 mr-2">
+                                                                    <mat-checkbox
+                                                                    [color]="'primary'"
+                                                                    formControlName="checked">
+                                                                </mat-checkbox>
+                                                                </div>
+                                                                
                                                                 <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                                                <ng-container *ngIf="collaboratorOccupation[i].avatar">
-                                                                    <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i].avatar"
-                                                                        alt="Collaborator avatar" />
-                                                                </ng-container>
-                                                                <ng-container *ngIf="!collaboratorOccupation[i].avatar">
-                                                                    <div
-                                                                        class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                                        {{collaboratorOccupation[i].name.charAt(0)}}
-                                                                    </div>
-                                                                </ng-container>
-                                                            </div>
+                                                                    
+                                                                    <ng-container *ngIf="collaboratorOccupation[i].avatar">
+                                                                        <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i].avatar"
+                                                                            alt="Collaborator avatar" />
+                                                                    </ng-container>
+                                                                    <ng-container *ngIf="!collaboratorOccupation[i].avatar">
+                                                                        <div
+                                                                            class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                                            {{collaboratorOccupation[i].name.charAt(0)}}
+                                                                        </div>
+                                                                    </ng-container>
+                                                                </div>
                                                                 <div class="min-w-0 ml-4">
                                                                     <div class="font-medium leading-5 truncate">{{collaboratorOccupation[i].name}} {{collaboratorOccupation[i].lastName}}</div>
                                                                     <div class="leading-5 truncate text-secondary">{{collaboratorOccupation[i].employeePosition.name}}</div>
@@ -332,10 +340,10 @@
                                                                     [svgIcon]="'heroicons_solid:pencil'">
                                                                 </mat-icon>
                                                             </button>
-                                                            <mat-checkbox
+                                                            <!-- <mat-checkbox
                                                                 [color]="'primary'"
                                                                 formControlName="checked">
-                                                            </mat-checkbox>
+                                                            </mat-checkbox> -->
                                                         </div>
                                                     </span>
                                                     </ng-container>

@@ -408,6 +408,14 @@ export class AssingmentOccupationService {
     }
 
     /**
+     * Update is success
+     * 
+     */
+    updateIsSuccess() {
+        this._isSuccess.next(true);
+    }
+
+    /**
      * Get all collaborator occupation
      * 
      * @returns

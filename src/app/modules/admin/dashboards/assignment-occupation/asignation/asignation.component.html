@@ -138,7 +138,7 @@
     </div>
   
             <div class="flex flex-row mt-8 justify-end" *ngIf="collaboratorsArr.length">
-                <button (click)="redirection('partner-search', 0)" mat-stroked-button style="border-color:lightgray !important;">Cancelar
+                <button (click)="goBack()" mat-stroked-button style="border-color:lightgray !important;">Cancelar
                 </button>
                 <!-- <button class="-ml-4" mat-button [color]="'warn'">Cancelar</button> -->
                 <button (click)="saveAssignationOccupation()" [disabled]="!formOcupation.valid" class="ml-3" mat-flat-button [color]="'primary'">

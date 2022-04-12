@@ -238,9 +238,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     onReturnPrevious(event: any) {
         this.isEditing = false;
-        console.log("on Return previous");
         // Get all collaborators occupation
-        //this._getAllCollaboratorOccupation();
+        this._getAllCollaboratorOccupation();
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }

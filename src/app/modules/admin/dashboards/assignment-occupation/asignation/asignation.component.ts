@@ -396,4 +396,13 @@ export class AsignationComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.setTabIndex(0);
     }
 
+    /**
+     * Go back
+     */
+    goBack() {
+
+        this._assignmentOccupationService.updateIsSuccess();
+        this._assignmentOccupationService.setTabIndex(0);
+    }
+
 }
