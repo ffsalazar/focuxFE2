@@ -143,7 +143,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 // Open the drawer in case it is closed
                 this._collaboratorsListComponent.matDrawer.open();
                 
-                console.log("collaborator: ", collaborator);
                 // Get the collaborator
                 this.collaborator = collaborator;
 

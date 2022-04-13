@@ -1105,6 +1105,17 @@
                         </button>
                         <!-- Cancel -->
                         <button
+                            *ngIf="!collaborator"
+                            class="ml-auto"
+                            mat-button
+                            [matTooltip]="'Cancelar'"
+                            [routerLink]="['../']"
+                            >
+                            Cancelar
+                        </button>
+                        <!-- Cancel -->
+                        <button
+                            *ngIf="collaborator"
                             class="ml-auto"
                             mat-button
                             [matTooltip]="'Cancelar'"
