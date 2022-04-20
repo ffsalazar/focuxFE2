@@ -84,7 +84,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        console.log("Se creo :)");
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filterClient(value)),
@@ -107,6 +106,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             });
 
         this.status$ = this._assignmentOccupationService.status$;
+        
+        this._assignmentOccupationService.collaboratorsSelected = [];
 
         this._assignmentOccupationService.collaboratorSelectedRemove$
             .subscribe(collaboratorId => {
@@ -126,7 +127,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-
+        
+        
         this._handleEventSavedOccupation();
         //this._handleChangeArrayForm();
         this._handleChangeStatus();
@@ -135,7 +137,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._getResponsibleByClient();
         this._handleChangeResponsible()
         this._getCollaboratorsByRequest();
-
+        
         // Listener event from tab
         this._handleEventTab();
         
