@@ -141,6 +141,12 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         link : '/masters/typesRequest'
                     },
                     {
+                        id   : 'masters.portafolio.requestRole',
+                        title: 'Roles en Solicitud',
+                        type : 'basic',
+                        link : '/masters/requestRole'
+                    },
+                    {
                         id   : 'masters.portafolio.category',
                         title: 'Categorias',
                         type : 'basic',

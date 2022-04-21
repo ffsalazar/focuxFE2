@@ -51,7 +51,7 @@ export class BusinessTypesService
      */
     getBusinessTypes(): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all').pipe(
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all').pipe(
             tap((businessTypes) => {
 
 
@@ -83,7 +83,7 @@ export class BusinessTypesService
      */
     searchBusinessType(query: string): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all', {
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all', {
             params: {query}
         }).pipe(
             tap((businessTypes) => {
@@ -175,7 +175,7 @@ export class BusinessTypesService
         };
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.post<BusinessType>('http://localhost:1616/api/v1/followup/businessType/save', newBusinessType).pipe(
+            switchMap(businessTypes => this._httpClient.post<BusinessType>('http://localhost:1616/api/v1/followup/businesstype/save', newBusinessType).pipe(
                 map((newBusinessType) => {
                     // Update the businessTypes with the new businessType
                     this._businessTypes.next([newBusinessType, ...businessTypes]);
@@ -198,7 +198,7 @@ export class BusinessTypesService
        console.log(JSON.stringify(businessType));
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.put<BusinessType>('http://localhost:1616/api/v1/followup/businessType/businesstype/' + businessType.id,
+            switchMap(businessTypes => this._httpClient.put<BusinessType>('http://localhost:1616/api/v1/followup/businesstype/businesstype/' + businessType.id,
                 businessType
             ).pipe(
                 map((updatedBusinessType) => {
@@ -249,7 +249,7 @@ export class BusinessTypesService
     {
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.put('http://localhost:1616/api/v1/followup/businessType/status/' + businessType.id, businessType).pipe(
+            switchMap(businessTypes => this._httpClient.put('http://localhost:1616/api/v1/followup/businesstype/status/' + businessType.id, businessType).pipe(
                 map((updatedBusinessType: BusinessType) => {
 
                     // Find the index of the deleted businessType
@@ -295,7 +295,7 @@ export class BusinessTypesService
     {
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.post<BusinessType>('api/dashboards/businessType/avatar', {
+            switchMap(businessTypes => this._httpClient.post<BusinessType>('api/dashboards/businesstype/avatar', {
                 id
 
             }).pipe(
