@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient, HttpParams } from '@angular/common/http';
 import data from './data/data.json';
 import activitys from './data/activitys.json'
 import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge } from "./assignment-occupation.types";
@@ -458,29 +458,29 @@ export class AssingmentOccupationService {
                     /** spinner ends after 5 seconds */
                     this._loadingSpinnerService.stopLoading();
                     
-                let collaboratorFiltered : any[]=[];
+                    let collaboratorFiltered : any[]=[];
 
-                 function compareOcupation(a: any, b: any) {
-                    if (a.occupationPercentage < b.occupationPercentage) return -1;
-                    if (a.occupationPercentage > b.occupationPercentage) return 1;
-                    return 0;
-                }
-                function compare(a: Collaborator, b: Collaborator) {
-                        if (a.name < b.name) return -1;
-                        if (a.name > b.name) return 1;
-                        // Their names are equal
-                        if (a.lastName < b.lastName) return -1;
-                        if (a.lastName > b.lastName) return 1;
-
+                    function compareOcupation(a: any, b: any) {
+                        if (a.occupationPercentage < b.occupationPercentage) return -1;
+                        if (a.occupationPercentage > b.occupationPercentage) return 1;
                         return 0;
                     }
-                
-                let collaboratorsTmp = collaborators.sort(compare);
-                collaboratorsTmp.sort(compareOcupation);
-                collaboratorFiltered = collaboratorsTmp.filter((item)=> item.isActive ===1);
-                
-                this.collaborators = [...collaboratorFiltered];
-                this._collaborators.next(collaboratorFiltered);
+                    function compare(a: Collaborator, b: Collaborator) {
+                            if (a.name < b.name) return -1;
+                            if (a.name > b.name) return 1;
+                            // Their names are equal
+                            if (a.lastName < b.lastName) return -1;
+                            if (a.lastName > b.lastName) return 1;
+
+                            return 0;
+                        }
+                    
+                    let collaboratorsTmp = collaborators.sort(compare);
+                    collaboratorsTmp.sort(compareOcupation);
+                    collaboratorFiltered = collaboratorsTmp.filter((item)=> item.isActive ===1);
+                    
+                    this.collaborators = [...collaboratorFiltered];
+                    this._collaborators.next(collaboratorFiltered);
                 })
             )
     }
@@ -523,5 +523,42 @@ export class AssingmentOccupationService {
             occupation
         );
     }
+    
+    /**
+     * Delete occupation
+     * 
+     * @param occupationId 
+     * @param occupation 
+     * @returns 
+     */
+    getFilterCollaborator(clientsId: number[], knowledgesId: number[]): Observable<any> {
+        /** spinner starts on init */
+        this._loadingSpinnerService.startLoading();
 
+        let params = new HttpParams();
+
+        if ( clientsId.length > 0 ) {
+            params = params.append('clientsId', clientsId.join(','));
+        }
+        
+        if ( knowledgesId.length > 0 ) {
+            params = params.append('knowledgesId', knowledgesId.join(','));
+        }
+
+        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/filtercollaborator/allby', {
+            params
+        }).pipe(
+            tap(collaborators => {
+                /** spinner ends after 5 seconds */
+                this._loadingSpinnerService.stopLoading();
+
+                this._collaborators.next(collaborators);
+
+            }
+        ));
+    }
+
+
+
+    
 }

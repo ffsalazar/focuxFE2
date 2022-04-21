@@ -34,7 +34,8 @@ export const AssignmentOccupationRouter: Route[] = [
             component: PartnerSearchComponent,
             resolve  : {
                 clients: ClientsResolver,
-                knowledges: KnowledgesResolver
+                knowledges: KnowledgesResolver,
+                collaborators: OccupationCollaboratorResolver,
                 //recommended : RecommendedResolver
             }
         },

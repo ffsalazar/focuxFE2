@@ -126,7 +126,7 @@
                             </div>
                             <form  class="flex flex-col shadow px-2" style="background: white;">
                                 
-                                <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto;">
+                                <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto; ">
                                     <div class="flex items-center justify-between">
                                         <span [ngClass]="{'font-semibold': selectedFilterClient, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">{{ 'location_on' }}</mat-icon>
@@ -260,7 +260,7 @@
                                             <span>100%</span>
                                         </div>
                                         
-                                        <div class="flex flex-auto">
+                                        <div class="flex w-full flex-auto" style="width: 100% !important;">
                                             <mat-slider
                                                 aria-label="unit(s)"
                                                 [color]="'primary'"
@@ -290,17 +290,17 @@
                                                     <ng-container [formGroupName]="i">
                                                         <!-- Group -->
                                                         <ng-container
-                                                            *ngIf="i === 0 || collaboratorOccupation[i].name.charAt(0) !== collaboratorOccupation[i - 1].name.charAt(0)">
+                                                            *ngIf="i === 0 || collaboratorOccupation[i]?.name.charAt(0) !== collaboratorOccupation[i - 1]?.name.charAt(0)">
                                                             <div
                                                                 class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                                                {{collaboratorOccupation[i].name.charAt(0)}}
+                                                                {{collaboratorOccupation[i]?.name.charAt(0)}}
                                                             </div>
                                                         </ng-container> 
                                                         <!-- Collaborator -->
                                                         
                                                         <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
-                                                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorOccupation[i].id,
-                                                                                    'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorOccupation[i].id}">
+                                                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorOccupation[i]?.id,
+                                                                                    'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorOccupation[i]?.id}">
                                                         
                                                                                     
                                                             <div class="flex flex-row ">
@@ -313,20 +313,20 @@
                                                                 
                                                                 <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
                                                                     
-                                                                    <ng-container *ngIf="collaboratorOccupation[i].avatar">
-                                                                        <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i].avatar"
+                                                                    <ng-container *ngIf="collaboratorOccupation[i]?.avatar">
+                                                                        <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i]?.avatar"
                                                                             alt="Collaborator avatar" />
                                                                     </ng-container>
-                                                                    <ng-container *ngIf="!collaboratorOccupation[i].avatar">
+                                                                    <ng-container *ngIf="!collaboratorOccupation[i]?.avatar">
                                                                         <div
                                                                             class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                                            {{collaboratorOccupation[i].name.charAt(0)}}
+                                                                            {{collaboratorOccupation[i]?.name.charAt(0)}}
                                                                         </div>
                                                                     </ng-container>
                                                                 </div>
                                                                 <div class="min-w-0 ml-4">
-                                                                    <div class="font-medium leading-5 truncate">{{collaboratorOccupation[i].name}} {{collaboratorOccupation[i].lastName}}</div>
-                                                                    <div class="leading-5 truncate text-secondary">{{collaboratorOccupation[i].employeePosition.name}}</div>
+                                                                    <div class="font-medium leading-5 truncate">{{collaboratorOccupation[i]?.name}} {{collaboratorOccupation[i]?.lastName}}</div>
+                                                                    <div class="leading-5 truncate text-secondary">{{collaboratorOccupation[i]?.employeePosition.name}}</div>
                                                                 </div>
                                                                 
                                                             </div>
@@ -338,7 +338,7 @@
                                                                         <ng-container >
                                                                             <div
                                                                                 class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                                                <span class="text-sm font-medium whitespace-nowrap">{{collaboratorOccupation[i].client.name}}</span>
+                                                                                <span class="text-sm font-medium whitespace-nowrap">{{collaboratorOccupation[i]?.client.name}}</span>
                                                                             </div>
                                                                         </ng-container>
                                                                     
@@ -346,12 +346,12 @@
                                                                 </ng-container>
                                                             
                                                             <div class="flex flex-col mr-16">
-                                                                <mat-label>Ocupación {{ collaboratorOccupation[i].occupationPercentage }} % </mat-label>
+                                                                <mat-label>Ocupación {{ collaboratorOccupation[i]?.occupationPercentage }} % </mat-label>
                                                                 <mat-progress-bar
                                                                     class="mt-3 rounded-full w-60"
                                                                     [mode]="'determine'"
-                                                                    [color]="collaboratorOccupation[i].occupationPercentage >= 100 ? 'primary' : 'warn'"
-                                                                    [value]="collaboratorOccupation[i].occupationPercentage"
+                                                                    [color]="collaboratorOccupation[i]?.occupationPercentage >= 100 ? 'primary' : 'warn'"
+                                                                    [value]="collaboratorOccupation[i]?.occupationPercentage"
                                                                 >
                                                                 </mat-progress-bar>
                                                             </div>

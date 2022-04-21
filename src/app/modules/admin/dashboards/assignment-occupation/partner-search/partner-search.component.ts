@@ -11,7 +11,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { FuseAlertService } from '@fuse/components/alert';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-partner-search',
@@ -105,6 +104,30 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     ngOnInit(): void {
+
+        this._assignmentOccupationService.collaborators$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(collaborators => {
+                    console.log("Collaborators: ", collaborators);
+                    this.collaboratorOccupation = collaborators;
+                });
+
+        this.filterCollaboratorsGroup.valueChanges
+            .subscribe(values => {
+                console.log("Values: ", values);
+                const filteredClients = values.filterClients.filter(item => item.checked && item.id);
+                const clientsId = filteredClients.map(item => item.id);
+                const filteredKnowledges = values.filterKnowledges.filter(item => item.checked && item.id);
+                const knowledgesId = filteredKnowledges.map(item => item.id);
+
+                this._assignmentOccupationService.getFilterCollaborator(clientsId, knowledgesId)
+                    .subscribe(response => {
+                        console.log("response: ", response);
+                        this.collaboratorOccupation = response;
+                        this._setCollaboratorsRecomm();
+                    });
+            });
+
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
             map(value => this._filterClient(value)),
@@ -328,6 +351,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         ///this.inputBranch.nativeElement.focus();
     }
     
+    /**
+     * Handle event saved occupation
+     * 
+     */
     private _handleEventSavedOccupation() {
         this._assignmentOccupationService.isSuccess$
             .subscribe((success) => {
@@ -399,10 +426,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     // Create form array filterClients
                     for (let i = 0; i < this.clients.length; i++) {
                         this.filterClients.push(this._fb.group({
+                            id: [this.clients[i].id],
                             name: [this.clients[i].name],
                             checked: [false],
-                        }));
+                        }), {emitEvent: false});
                     }
+
+                    
 
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
@@ -425,9 +455,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     // Create form array filterClients
                     for (let i = 0; i < this.knowledges.length; i++) {
                         this.filterKnowledges.push(this._fb.group({
+                            id: [this.knowledges[i].id],
                             name: [this.knowledges[i].name],
                             checked: [false],
-                        }));
+                        }), {emitEvent: false});
                     }
 
                     // Mark for check
@@ -678,6 +709,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     /**
      * Set CollaboratorsRecomm
+     * 
      */
     private _setCollaboratorsRecomm() {
         // Clear formArray
@@ -689,12 +721,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 id: [item.id],
                 checked: [false],
             });
+
             this.collaboratorSelected.push(collaboratorGroup);
             // value.collaboratorSelected[i] = this.collaborators[i];
 
         });
+
         this._checkCollaboratorsSelected();
         this._handleChangeArrayForm();
+
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -851,8 +886,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         // Mark as check
         this._changeDetectorRef.markForCheck();
-    
-        console.log("selected client: ", this.selectedClients);
     }
 
 }
