@@ -23,6 +23,7 @@ export class LoadingSpinnerService {
 	 * 
 	 */
 	startLoading() {
+		console.log("start loading");
 		this._isLoading.next(true);
 	}
 

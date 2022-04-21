@@ -11,6 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { FuseAlertService } from '@fuse/components/alert';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-partner-search',
@@ -88,6 +89,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         private _fuseAlertService: FuseAlertService,
         private _router: Router,
         private activateRouter: ActivatedRoute,
+        private spinner: NgxSpinnerService,
         private _fb: FormBuilder,
     ) {
         // Create form group for filter collaborators

@@ -272,7 +272,7 @@
     
                             
                         </div>
-                        <div class="bg-card py-3 px-6 rounded shadow  flex flex-col" style="width: 80%;">
+                        <div class="bg-card py-3 px-6 rounded shadow  flex flex-col" style="width: 80%; height: 100%;">
                             <!-- <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
                                 <mat-tab label="Recomendado"></mat-tab>
                                 <mat-tab label="Cliente"></mat-tab>
@@ -404,7 +404,7 @@
                         </div>
                     </div>
                 </ng-container>
-
+                <ngx-spinner></ngx-spinner>
                 <app-update-occupation
                     *ngIf="isEditing"
                     [fullName]="collaborator.name + ' ' + collaborator.lastName"

@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 import data from './data/data.json';
 import activitys from './data/activitys.json'
 import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge } from "./assignment-occupation.types";
@@ -39,6 +40,7 @@ export class AssingmentOccupationService {
     constructor(
         private _httpClient: HttpClient,
         private _loadingSpinnerService: LoadingSpinnerService,
+        private spinner: NgxSpinnerService,
     ) { }
 
 
@@ -535,6 +537,8 @@ export class AssingmentOccupationService {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
 
+        this.spinner.show();
+
         let params = new HttpParams();
 
         if ( clientsId.length > 0 ) {
@@ -550,7 +554,8 @@ export class AssingmentOccupationService {
         }).pipe(
             tap(collaborators => {
                 /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+                //this._loadingSpinnerService.stopLoading();
+                this.spinner.hide();
 
                 this._collaborators.next(collaborators);
 
