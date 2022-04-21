@@ -20,6 +20,15 @@ export interface Collaborator {
     client?:                 Client;
 }
 
+export interface Knowledge
+{
+    id: number;
+    type: string;
+    description: string;
+    name: string;
+    isActive: number;
+}
+
 export interface EmployeePosition {
     id:          number;
     department?: EmployeePosition;

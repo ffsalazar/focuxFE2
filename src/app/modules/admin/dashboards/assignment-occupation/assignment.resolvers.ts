@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Collaborator } from "./assignment-occupation.types";
+import { Collaborator, Client, Knowledge } from "./assignment-occupation.types";
 import { AssingmentOccupationService } from './assingment-occupation.service';
-import { Client } from './assignment-occupation.types';
 
 @Injectable({
     providedIn: 'root'
@@ -51,6 +50,30 @@ export class ClientsResolver implements Resolve<any>
     resolve(): Observable<Client[]>
     {
         return this._assingmentService.getClients();           
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class KnowledgesResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+        private _assingmentService: AssingmentOccupationService,
+    )
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    resolve(): Observable<Knowledge[]>
+    {
+        return this._assingmentService.getKnowledges();           
     }
 }
 

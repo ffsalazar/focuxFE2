@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import { Activity, Collaborator, Client, Status, AssignationOccupation } from "./assignment-occupation.types";
+import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { tap } from 'rxjs/operators';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
@@ -25,6 +25,7 @@ export class AssingmentOccupationService {
     private _requestSelected: any = null;
     private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
     private _isSuccess: Subject<boolean | null> = new Subject();
+    private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
 
     collaborators: any;
 
@@ -74,6 +75,14 @@ export class AssingmentOccupationService {
     get isSuccess$(): Observable<boolean> {
         return this._isSuccess.asObservable();
     }
+
+    /**
+     * Getter for knowledges
+     */
+     get knowledges$(): Observable<Knowledge[]>
+     {
+         return this._knowledges.asObservable();
+     }
 
     /**
      * Getter for requestSelected
@@ -228,6 +237,25 @@ export class AssingmentOccupationService {
                 })
             );
     }
+
+    /**
+     * Get knowledges
+     */
+     getKnowledges(): Observable<Knowledge[]>
+     {
+         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
+             tap((knowledges) => {
+                let knowledgesFiltered : Knowledge[] = []
+                knowledges.forEach((knowledge) => {
+                    if (knowledge.isActive != 0){
+                        knowledgesFiltered.push(knowledge);
+                    }
+                });
+ 
+                this._knowledges.next(knowledgesFiltered);
+             })
+         );
+     }
 
     /**
      * Get collaborators by client

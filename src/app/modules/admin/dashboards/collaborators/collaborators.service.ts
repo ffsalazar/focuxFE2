@@ -78,6 +78,7 @@ export class CollaboratorsService
     {
         return this._knowledges.asObservable();
     }
+    
     /**
      * Getter for departments
      */

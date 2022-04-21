@@ -124,32 +124,41 @@
                             <div class="flex items-center justify-start">
                                 <span class="ml-2 mb-3 font-semibold">Filtros (3)</span>
                             </div>
-                            <div class="flex flex-col shadow px-2" style="background: white;">
+                            <form  class="flex flex-col shadow px-2" style="background: white;">
                                 
-                                <div class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto;">
+                                <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto;">
                                     <div class="flex items-center justify-between">
-                                        <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
+                                        <span [ngClass]="{'font-semibold': selectedFilterClient, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">{{ 'location_on' }}</mat-icon>
                                             Cliente</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterClient = !selectedFilterClient;">{{ !selectedFilterClient ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
-                                    <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
-                                        
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Todos</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Credix</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
+                                    <div *ngIf="selectedFilterClient" class="flex flex-col mt-3 px-3">
+                                        <ng-container [formGroup]="filterCollaboratorsGroup">
+                                            <ng-container>
+                                                <div class="flex items-center gap-2">
+                                                    <mat-checkbox
+                                                        [color]="'primary'"
+                                                        >
+                                                    </mat-checkbox>
+                                                    <span>Todos</span>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container formArrayName="filterClients">
+                                                <ng-container *ngFor="let client of filterClients.controls; index as i;">
+                                                    <div [formGroupName]="i" class="flex items-center gap-2">
+                                                        <mat-checkbox
+                                                            [color]="'primary'"
+                                                            formControlName="checked"
+                                                        >
+                                                        </mat-checkbox>
+                                                        <span>{{ filterClients.at(i).controls.name.value }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                            
+                                        </ng-container>
+                                        <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 formControlName="checked">
@@ -162,33 +171,42 @@
                                                 formControlName="checked">
                                             </mat-checkbox>
                                             <span>Beconsult</span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
                                     <div class="flex items-center justify-between">
                                         <!-- <div><span><mat-icon></mat-icon>Conocimiento</span></div> -->
                                         
-                                        <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}"> <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                        <span [ngClass]="{'font-semibold': selectedFilterKnowledge, 'flex': true}"> <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterKnowledge = !selectedFilterKnowledge;">{{ !selectedFilterKnowledge ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
-                                    <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
-                                        
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Todos</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Credix</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
+                                    <div *ngIf="selectedFilterKnowledge" class="flex flex-col mt-3 px-3">
+                                        <ng-container [formGroup]="filterCollaboratorsGroup">
+                                            <ng-container>
+                                                <div class="flex items-center gap-2">
+                                                    <mat-checkbox
+                                                        [color]="'primary'"
+                                                        >
+                                                    </mat-checkbox>
+                                                    <span>Todos</span>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container formArrayName="filterKnowledges">
+                                                <ng-container *ngFor="let knowledge of filterKnowledges.controls; index as i;">
+                                                    <div [formGroupName]="i" class="flex items-center gap-2">
+                                                        <mat-checkbox
+                                                            [color]="'primary'"
+                                                            formControlName="checked"
+                                                        >
+                                                        </mat-checkbox>
+                                                        <span>{{ filterKnowledges.at(i).controls.name.value }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                            
+                                        </ng-container>
+                                        <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 formControlName="checked">
@@ -201,49 +219,56 @@
                                                 formControlName="checked">
                                             </mat-checkbox>
                                             <span>Beconsult</span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
                                     <div class="flex items-center justify-between">
-                                        <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
+                                        <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
                                             Ocupación</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
-                                    <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
+                                    <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
                                         
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
                                             <span>Todos</span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
-                                            <span>Credix</span>
+                                            <span>20%</span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
-                                            <span>Epa</span>
+                                            <span>50%</span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
-                                            <span>Beconsult</span>
+                                            <span>100%</span>
+                                        </div>
+                                        
+                                        <div class="flex flex-auto">
+                                            <mat-slider
+                                                aria-label="unit(s)"
+                                                [color]="'primary'"
+                                            ></mat-slider>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
     
                             
                         </div>

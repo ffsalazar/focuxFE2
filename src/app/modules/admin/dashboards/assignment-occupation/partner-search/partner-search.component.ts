@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { Activity, Collaborator, Project, Client, Status } from "../assignment-occupation.types";
+import { Activity, Collaborator, Project, Client, Status, Knowledge } from "../assignment-occupation.types";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {FormArray, FormControl} from "@angular/forms";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
@@ -37,6 +37,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     assigments: any = [];
     requests: any[] = [];
     clients: Client[] = [];
+    knowledges: Knowledge[] = [];
     status: any[];
     activity: Activity[] = [];
     isLoading: boolean = false;
@@ -70,10 +71,18 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     tabIndex = 0;
     flashMessage: string = '';
     hasCheckedCollaborator: boolean = false;
-    selectedFilter: boolean = false;
+    selectedFilterClient: boolean = false;
+    selectedFilterKnowledge: boolean = false;
+    selectedFilterOccupation: boolean = false;
     collaboratorOccupation = [];
     selectedRequest: boolean = false;
+    selectedClients: any = [];
 
+    filterCollaboratorsGroup: FormGroup;
+    
+    /**
+     * Constructor
+     */
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
         private _changeDetectorRef: ChangeDetectorRef,
@@ -81,7 +90,19 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         private _router: Router,
         private activateRouter: ActivatedRoute,
         private _fb: FormBuilder,
-    ) { }
+    ) {
+        // Create form group for filter collaborators
+        this.filterCollaboratorsGroup = this._fb.group({
+            filterClients: new FormArray([]),
+            filterKnowledges: new FormArray([]),
+            occupations: new FormArray([]),
+        });
+
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
 
     ngOnInit(): void {
         this.filteredClients = this.clientControl.valueChanges.pipe(
@@ -134,6 +155,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._handleChangeStatus();
         this._getStatus();
         this._getClients();
+        this._getKnowledges();
         this._getResponsibleByClient();
         this._handleChangeResponsible()
         this._getCollaboratorsByRequest();
@@ -179,12 +201,33 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * requestControl
+     * status Control
      */
     get statusControl() {
         return this.filterForm.get('statusControl');
     }
 
+    /**
+     * Filter clients
+     */
+    get filterClients() {
+        return this.filterCollaboratorsGroup.get('filterClients') as FormArray;
+    }
+
+    /**
+     * Filter knowledges
+     */
+    get filterKnowledges(): FormArray {
+        return this.filterCollaboratorsGroup.get('filterKnowledges') as FormArray;
+    }
+
+    /**
+     * Filter occupations
+     */
+    get filterOccupations(): FormArray {
+        return this.filterCollaboratorsGroup.get('occupations') as FormArray;
+    }
+    
     // -----------------------------------------------------------------------------------------------------
     // @ Methods
     // -----------------------------------------------------------------------------------------------------
@@ -348,16 +391,49 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     private _getClients() {
         this._assignmentOccupationService.clients$
-        .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(clients => {
-                clients.sort(this._sortArray);
-                this.clients = clients;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-                
-            })
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(clients => {
+                    clients.sort(this._sortArray);
+                    this.clients = clients;
+
+                    // Create form array filterClients
+                    for (let i = 0; i < this.clients.length; i++) {
+                        this.filterClients.push(this._fb.group({
+                            name: [this.clients[i].name],
+                            checked: [false],
+                        }));
+                    }
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                    
+                })
     
         //this.collaborators$ = this._assignmentOccupationService.collaborators$;
+    }
+
+    /**
+     * Get all knowledges
+     */
+    private _getKnowledges() {
+        this._assignmentOccupationService.knowledges$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(knowledges => {
+                    knowledges.sort(this._sortArray);
+                    this.knowledges = knowledges;
+
+                    // Create form array filterClients
+                    for (let i = 0; i < this.knowledges.length; i++) {
+                        this.filterKnowledges.push(this._fb.group({
+                            name: [this.knowledges[i].name],
+                            checked: [false],
+                        }));
+                    }
+
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                    
+                })
     }
 
     /**
@@ -762,6 +838,21 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     changeTab () {
         this._assignmentOccupationService.setTabIndex(1);
+    }
+
+    handleCheckEvent(client: any) {
+        //client = !client.selected;
+
+        this.selectedClients.forEach(item => {
+            if ( item.name === client.name ) {
+                item.selected = !item.selected;
+            }
+        });
+
+        // Mark as check
+        this._changeDetectorRef.markForCheck();
+    
+        console.log("selected client: ", this.selectedClients);
     }
 
 }
