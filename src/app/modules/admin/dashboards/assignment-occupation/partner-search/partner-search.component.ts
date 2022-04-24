@@ -77,9 +77,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     collaboratorOccupation = [];
     selectedRequest: boolean = false;
     selectedClients: any = [];
-
+    occupations: number[] = [15, 50, 100];
     filterCollaboratorsGroup: FormGroup;
-    
+    range = new FormGroup({
+        start: new FormControl(),
+        end: new FormControl(),
+    });
     /**
      * Constructor
      */
@@ -94,9 +97,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     ) {
         // Create form group for filter collaborators
         this.filterCollaboratorsGroup = this._fb.group({
-            filterClients: new FormArray([]),
-            filterKnowledges: new FormArray([]),
-            occupations: new FormArray([]),
+            filterClients       :   new FormArray([]),
+            filterKnowledges    :   new FormArray([]),
+            filterOccupation    :   [''],
+            filterDateInit      :   [''],
+            filterDateEnd       :   [''],
         });
 
     }
@@ -110,9 +115,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(collaborators => {
-                    console.log("Collaborators: ", collaborators);
                     this.collaboratorOccupation = collaborators;
+                    console.log("Entro: ", collaborators);
+                    this._setCollaboratorsRecomm();
+
                 });
+     
 
         this.filterCollaboratorsGroup.valueChanges
             .subscribe(values => {
@@ -121,12 +129,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 const clientsId = filteredClients.map(item => item.id);
                 const filteredKnowledges = values.filterKnowledges.filter(item => item.checked && item.id);
                 const knowledgesId = filteredKnowledges.map(item => item.id);
+                const occupation = this.filterCollaboratorsGroup.get('filterOccupation').value;
+                const dateInit = this.filterCollaboratorsGroup.get('filterDateInit').value;
+                const dateEnd = this.filterCollaboratorsGroup.get('filterDateEnd').value;
 
-                this._assignmentOccupationService.getFilterCollaborator(clientsId, knowledgesId)
+                this._assignmentOccupationService.getFilterCollaborator(clientsId, knowledgesId, occupation, dateInit, dateEnd)
                     .subscribe(response => {
                         console.log("response: ", response);
-                        this.collaboratorOccupation = response;
-                        this._setCollaboratorsRecomm();
+                        //this._setCollaboratorsRecomm();
                     });
             });
 
@@ -265,11 +275,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
                 if ( tabIndex === 0 ) {
-                    console.log("Entro en el tab");
                     this.isEditing = false;
-
-                    console.log("collaborator occupation: ", this.collaboratorOccupation);
-                    //this._getAllCollaboratorOccupation();
                     
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
@@ -314,6 +320,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
+    test() {
+        this._getAllCollaboratorOccupation();
+    }
+
     /**
      * Get all collaborators occupation
      * 
@@ -321,23 +331,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _getAllCollaboratorOccupation() {
         this._assignmentOccupationService.getAllColaboratorOccupation()
             .subscribe(collaborators => {
-                // Update the client
-
-                // // Map for clients
-                // this.collaboratorSelected = this.collaborators.map(item => {
-                //     return {
-                //         selected: false,
-                //         ...item
-                //     }
-                // });
-                // this.collaboratorSelected = this.collaborators.filter((item)=> item.isActive ===1);
-
-            
-                //this.collaboratorsRecomm = collaborators;
-                this.collaboratorOccupation = collaborators;
-                // Update the collaboatorsRecomm
-                this._setCollaboratorsRecomm();
-                //this.collaboratorControl.setValue('');
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -611,15 +604,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         if ( request ) {
             this._assignmentOccupationService.requestSelected = request;
             this.selectedRequest = true;
-            // this._assignmentOccupationService.selectedFiltered.request = request.titleRequest;
-            // this._assignmentOccupationService.getRecommended( request.id )
-            //     .subscribe(collaborators => {
-            //         this.collaboratorsRecomm = collaborators;
-            //         // Update the collaboatorsRecomm
-            //         this._setCollaboratorsRecomm();
-            //         // Mark for check
-            //         this._changeDetectorRef.markForCheck();
-            //     })
         } else {
             this.collaboratorsRecomm = [];
             this._changeDetectorRef.markForCheck();

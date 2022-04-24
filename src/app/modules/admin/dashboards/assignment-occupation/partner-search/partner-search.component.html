@@ -122,9 +122,9 @@
                     <div class="flex flex-row gap-4 ">
                         <div class="flex flex-col" style="width: 20%;">
                             <div class="flex items-center justify-start">
-                                <span class="ml-2 mb-3 font-semibold">Filtros (3)</span>
+                                <span class="ml-2 mb-3 font-semibold">Filtros (4)</span>
                             </div>
-                            <form  class="flex flex-col shadow px-2" style="background: white;">
+                            <form [formGroup]="filterCollaboratorsGroup"  class="flex flex-col shadow px-2" style="background: white;">
                                 
                                 <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto; ">
                                     <div class="flex items-center justify-between">
@@ -134,7 +134,7 @@
                                         <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterClient = !selectedFilterClient;">{{ !selectedFilterClient ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
                                     <div *ngIf="selectedFilterClient" class="flex flex-col mt-3 px-3">
-                                        <ng-container [formGroup]="filterCollaboratorsGroup">
+                                        <ng-container>
                                             <ng-container>
                                                 <div class="flex items-center gap-2">
                                                     <mat-checkbox
@@ -182,7 +182,7 @@
                                         <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterKnowledge = !selectedFilterKnowledge;">{{ !selectedFilterKnowledge ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
                                     <div *ngIf="selectedFilterKnowledge" class="flex flex-col mt-3 px-3">
-                                        <ng-container [formGroup]="filterCollaboratorsGroup">
+                                        <ng-container>
                                             <ng-container>
                                                 <div class="flex items-center gap-2">
                                                     <mat-checkbox
@@ -226,12 +226,20 @@
                                     <div class="flex items-center justify-between">
                                         <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
-                                            Ocupación</span>
+                                            Disponibilidad</span>
                                         <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
                                     <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
-                                        
-                                        <div class="flex items-center gap-2">
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="example-radio-group"
+                                            [color]="'primary'"
+                                            formControlName="filterOccupation">
+                                            <mat-radio-button class="example-radio-button" *ngFor="let occupation of occupations" [value]="occupation">
+                                                {{occupation + '%'}}
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+                                        <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 >
@@ -258,16 +266,58 @@
                                                 >
                                             </mat-checkbox>
                                             <span>100%</span>
-                                        </div>
+                                        </div> -->
                                         
-                                        <div class="flex w-full flex-auto" style="width: 100% !important;">
+                                        <div class="flex w-full flex-auto mt-2" style="width: 100% !important;">
                                             <mat-slider
                                                 aria-label="unit(s)"
+                                                [thumbLabel]="true"
+                                                [step]="5"
                                                 [color]="'primary'"
                                             ></mat-slider>
                                         </div>
+
+                                        <div class="flex w-full flex-auto" style="width: 100% !important;">
+                                            <mat-form-field style="width: 100% !important">
+                                                <mat-label>Rango de fecha</mat-label>
+                                                <mat-date-range-input [rangePicker]="picker">
+                                                  <input matStartDate formControlName="filterDateInit" placeholder="Start date">
+                                                  <input matEndDate formControlName="filterDateEnd" placeholder="End date">
+                                                </mat-date-range-input>
+                                                <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-date-range-picker #picker></mat-date-range-picker>
+                                              
+                                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                                              </mat-form-field>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
+                                    <div class="flex items-center justify-between">
+                                        <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
+                                            <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
+                                            Fecha</span>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                    </div>
+                                    <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
+                                        
+                                        <mat-form-field appearance="fill">
+                                            <mat-label>Rango de fecha</mat-label>
+                                            <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                              <input matStartDate formControlName="start" placeholder="Start date">
+                                              <input matEndDate formControlName="end" placeholder="End date">
+                                            </mat-date-range-input>
+                                            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-date-range-picker #picker></mat-date-range-picker>
+                                          
+                                            <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                            <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                                          </mat-form-field>
+                                    </div>
+                                </div> -->
                             </form>
     
                             

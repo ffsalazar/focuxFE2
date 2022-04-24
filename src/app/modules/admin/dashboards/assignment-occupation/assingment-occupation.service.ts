@@ -331,14 +331,14 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allconditions/' + requestId)
-        .pipe(
-            tap((recommended)=>{
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended)=>{
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-            })
-        );
+                    this._recommended.next(recommended);
+                })
+            );
     }
      	
     /**
@@ -350,14 +350,14 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allclients/' + requestId)
-        .pipe(
-            tap((recommended) => {
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended) => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-            })
-        );
+                    this._recommended.next(recommended);
+                })
+            );
     }
 
     /**
@@ -369,15 +369,15 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/knowledgeclient/' + requestId)
-        .pipe(
-            tap((recommended) => {
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended) => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-                
-            })
-        );
+                    this._recommended.next(recommended);
+                    
+                })
+            );
     }
     
     /**
@@ -390,14 +390,14 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/free/' + requestId)
-        .pipe(
-            tap((recommended) => {
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended) => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-            })
-        );
+                    this._recommended.next(recommended);
+                })
+            );
     }
 
     /**
@@ -533,7 +533,7 @@ export class AssingmentOccupationService {
      * @param occupation 
      * @returns 
      */
-    getFilterCollaborator(clientsId: number[], knowledgesId: number[]): Observable<any> {
+    getFilterCollaborator(clientsId: number[], knowledgesId: number[], occupation: number, dateInit: string, dateEnd: string): Observable<any> {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
 
@@ -547,6 +547,15 @@ export class AssingmentOccupationService {
         
         if ( knowledgesId.length > 0 ) {
             params = params.append('knowledgesId', knowledgesId.join(','));
+        }
+
+        if ( occupation ) {
+            params = params.append('occupation', occupation);
+        }
+
+        if ( dateInit !== '' && dateEnd !== '' ) {
+            params = params.append('dateInit', dateInit);
+            params = params.append('dateEnd', dateEnd);
         }
 
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/filtercollaborator/allby', {

@@ -7,6 +7,7 @@ import {TranslocoModule} from "@ngneat/transloco";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatMenuModule} from "@angular/material/menu";
+ import {MatRadioModule} from '@angular/material/radio'; 
 import {MatRippleModule, MAT_DATE_LOCALE} from "@angular/material/core";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {RouterModule} from "@angular/router";
@@ -71,6 +72,7 @@ import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators
         NgxSpinnerModule,
         MatTooltipModule,
         MatSliderModule,
+        MatRadioModule,
     ],
     schemas: [
           CUSTOM_ELEMENTS_SCHEMA,

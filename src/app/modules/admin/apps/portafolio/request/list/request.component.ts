@@ -175,6 +175,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     activatedAlert: boolean = false;
     hasPause: boolean = false;
     isToggle:  boolean = false;
+    hasCollab: boolean = false;
 
     /*
     /**
@@ -1524,4 +1525,14 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     setPause() {
         this.hasPause = !this.hasPause;
     }
+
+    /**
+     * Set pause
+     *
+     */
+    isShowCollab() {
+        console.log("heree")
+        this.hasCollab = !this.hasCollab;
+    }
+    
 }
