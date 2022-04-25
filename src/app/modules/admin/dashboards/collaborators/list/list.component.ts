@@ -24,7 +24,15 @@ import { TechnicalAreasService } from 'app/modules/admin/masters/technicalAreas/
                 .mat-form-field-flex {
                     padding-right: 16px !important;
                 }
+
             }
+
+             .mat-option-text{
+                display: flex !important;
+                justify-content: space-between;
+            }
+
+
 
             `
         ],
@@ -44,12 +52,17 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     statuses: Status[];
     clients: Client[];
     leaders: Collaborator[];
+    selectedItem: any = null;
+
+
+
 
     selectedCollaborator: Collaborator;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     @ViewChild('allSelectedClients') private allSelectedClients: MatOption;
     @ViewChild('allSelectedStatuses') private allSelectedStatuses: MatOption;
     @ViewChild('allSelectedLeaders') private allSelectedLeaders: MatOption;
+    private indexActive: number;
 
     /**
      * Constructor
@@ -130,6 +143,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+
         // Get the collaborator
         this._collaboratorsService.collaborator$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -215,6 +229,72 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     }
 
     /**
+     * Select only one item
+     *
+     * @param selectedItem
+     */
+    selectOnlyClient(client: Client) {
+
+
+        this.filterForm.controls.clientControl.patchValue([...client.name]);
+
+
+        //event.stopPropagation();
+    }
+
+    /**
+     * Select only one item
+     *
+     * @param selectedItem
+     */
+    selectOnlyLeader(leader: Collaborator) {
+
+
+        this.filterForm.controls.leaderControl.patchValue([...leader.id.toString()]);
+
+
+        //event.stopPropagation();
+    }
+
+    /**
+     * Select only one item
+     *
+     * @param selectedItem
+     */
+    selectOnlyStatus(status: Status) {
+
+
+        this.filterForm.controls.statusControl.patchValue([...status.name]);
+
+
+        //event.stopPropagation();
+    }
+
+    /**
+     * Update selected item
+     *
+     * @param selectedItem
+     */
+    updateSelectedItem(selectedItem: number) {
+
+        this.indexActive = selectedItem;
+
+    }
+
+    /**
+     * Update selected item
+     *
+     * @param selectedItem
+     */
+    updateUnselectItem(selectedItem: number) {
+
+        if(this.indexActive = selectedItem)
+            this.indexActive = null;
+
+
+    }
+
+    /**
      * On destroy
      */
     ngOnDestroy(): void
@@ -225,6 +305,7 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
     }
 
     toggleAllSelectionClients() {
+
         if (this.allSelectedClients.selected) {
             this.filterForm.controls.clientControl.patchValue([...this.clients.map(item => item.name), 0]);
         } else {
@@ -299,4 +380,13 @@ export class CollaboratorsListComponent implements OnInit, OnDestroy
         return 0;
     }
 
+    updateSpan(index: number) {
+        let show=false;
+        if(index == this.indexActive)
+            show = true;
+        else show = false;
+
+        return show;
+
+    }
 }

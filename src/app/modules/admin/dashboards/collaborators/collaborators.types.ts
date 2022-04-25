@@ -22,6 +22,7 @@ export interface Collaborator
     leader?:Collaborator;
     isCentralAmerican:number;
     status: Status;
+    image:string;
 
 }
 
