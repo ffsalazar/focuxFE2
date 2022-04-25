@@ -66,7 +66,7 @@ export class CategoriesDetailsComponent implements OnInit, OnDestroy
         // Create the category form
         this.categoryForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', Validators.required],
             description: [''],
             code:[''],
             isActive: ['']
@@ -148,7 +148,9 @@ export class CategoriesDetailsComponent implements OnInit, OnDestroy
     {
         return this._categoriesListComponent.matDrawer.close();
     }
-
+    checkError(item, type?){
+        return (type) ? this.categoryForm.get(item).hasError(type) : (this.categoryForm.get(item).errors && this.categoryForm.get(item).touched);
+    }
     /**
      * Toggle edit mode
      *

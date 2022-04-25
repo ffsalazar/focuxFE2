@@ -66,9 +66,9 @@ export class TypeRequestDetailsComponent implements OnInit, OnDestroy
         // Create the typeRequest form
         this.typeRequestForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', Validators.required],
             description: [''],
-            code:[''],
+            code:['', Validators.required],
             isActive: ['']
 
         });
@@ -148,7 +148,9 @@ export class TypeRequestDetailsComponent implements OnInit, OnDestroy
     {
         return this._typeRequestListComponent.matDrawer.close();
     }
-
+    checkError(item, type?){
+        return (type) ? this.typeRequestForm.get(item).hasError(type) : (this.typeRequestForm.get(item).errors && this.typeRequestForm.get(item).touched);
+    }
     /**
      * Toggle edit mode
      *

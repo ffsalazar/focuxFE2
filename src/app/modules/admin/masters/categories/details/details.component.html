@@ -152,7 +152,7 @@
                     <div class="row">
                         <div class="mt-8">
                             <mat-form-field class="fuse-mat-no-subscript w-full">
-                                <mat-label>Nombre del &aacute;rea t&eacute;cnica</mat-label>
+                                <mat-label>Nombre de la Categoria</mat-label>
                                 <mat-icon
                                     matPrefix
                                     class="hidden sm:flex icon-size-5"
@@ -163,6 +163,7 @@
                                     [placeholder]="'Nombre'"
                                     [spellcheck]="false">
                             </mat-form-field>
+                            <mat-error [ngStyle]="{'opacity':checkError('name') == true ? '1': '0' }">El campo es obligatorio</mat-error>
                         </div>
 
                     </div>

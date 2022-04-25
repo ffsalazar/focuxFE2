@@ -46,7 +46,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     filteredOptions: Observable<any[]>;
     filteredCollaboratorsOptions: Observable<any[]>;
     project: Project = undefined;
-    formFieldHelpers: string[] = [''];
+        formFieldHelpers: string[] = [''];
     tabIndex = 0;
     showObservation = false;
     noCollaborators = true;
@@ -71,7 +71,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     ngOnInit(): void {
-        
+
         this._fuseAlertService.dismiss('alertBox4');
 
         this._assignmentOccupationService.collaboratorSelected$
@@ -80,7 +80,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     .subscribe(collaboratorSelected => {
                         // Set collaborator selected
                         let aux = collaboratorSelected || [];
-                        
+
                         this.collaboratorsArr = [...aux];
 
                         // Set the form ocupation
@@ -93,11 +93,11 @@ export class AsignationComponent implements OnInit, OnDestroy {
                         this._changeDetectorRef.markForCheck();
                     });
 
-        
+
         if ( this.request ) {
             this.myControlTest.setValue(this.request.titleRequest);
         }
-        
+
           this.collaboratorFormGroup = this._formBuilder.group({
                 collaborators: this._formBuilder.array([])
           });
@@ -119,7 +119,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Get collaborator occupation
-     * 
+     *
      */
     get collaboratorOccupation() {
         return this.formOcupation.get('collaboratorOccupation') as FormArray;
@@ -139,24 +139,24 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Set the form Ocupation
-     * 
+     *
      */
     private _setFormOcupation() {
         if ( this.collaboratorsArr ) {
             this.collaboratorOccupation.clear();
             this.collaboratorsArr.forEach(item => {
-                
+
                 if ( item ) {
                     let collaboratorOccupation: FormGroup = this._formBuilder.group({
                         id              : [item.id],
                         name            : ['', Validators.required],
-                        occupation      : ['', [Validators.required, Validators.maxLength(100), limitOccupation(item.occupationPercentage)]],
+                        occupation      : ['', [Validators.required, Validators.maxLength(100),  Validators.pattern("^[0-9]*$"), limitOccupation(item.occupationPercentage)]],
                         observation     : [''],
                         dateInit        : ['', Validators.required],
                         dateEnd         : ['', Validators.required],
                         isCollapse      : [false],
                     }, {validator: DateValidator});
-                    
+
                     // Initial default value
                     collaboratorOccupation.get('id').setValue(item.id);
                     collaboratorOccupation.get('name').setValue(item.name + ' ' + item.lastName);
@@ -167,11 +167,11 @@ export class AsignationComponent implements OnInit, OnDestroy {
             // Handle event from array form
             this._handleChangeArrayForm();
         }
-        
+
     }
 
     /**
-     * Handle change from array form 
+     * Handle change from array form
      *
      */
     private _handleChangeArrayForm(){
@@ -190,26 +190,25 @@ export class AsignationComponent implements OnInit, OnDestroy {
                     // if ( value === 'VALID' ){
                     //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
                     // }
-
                     const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
 
-                    if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
+                    if (Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
                         this.collaboratorOccupation.at(i).get('occupation').setValue('');
                     }
                 })
-            
+
         }
     }
 
     /**
      * Get calculate real percentage
-     * 
-     * @param collaboratorAssignation 
-     * @returns 
+     *
+     * @param collaboratorAssignation
+     * @returns
      */
     calculatePercentageReal(collaboratorAssignation) {
         const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === collaboratorAssignation.id));
-        
+
         if ( collaboratorAssignation ) {
             return Number(collaboratorAssignation.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage);
         }
@@ -217,8 +216,8 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Remove collaborator
-     * 
-     * @param collaborator 
+     *
+     * @param collaborator
      */
     removeCollaborator(collaborator) {
         this._assignmentOccupationService.removeCollaboratorByAssign(collaborator);
@@ -226,9 +225,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Redirection
-     * 
-     * @param tab 
-     * @param index 
+     *
+     * @param tab
+     * @param index
      */
     redirection(tab: string, index: number) {
       this._assignmentOccupationService.tabIndex$.subscribe(id => {
@@ -267,17 +266,17 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Dismiss fuse
-     * 
+     *
      * @param name
      */
     dismissFuse(name){
        this._fuseAlertService.dismiss(name);
     }
-    
+
     /**
      * Delete the selected product using the form data
-     * 
-     * @param i 
+     *
+     * @param i
      */
     deleteAssignationOcupation(i: number): void
     {
@@ -302,7 +301,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 this.activatedAlert = true;
 
                 const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
-                
+
                 if ( collaboratorIndex != null ) {
                     // remove collaborator from collaboratorsArr
                     this.collaboratorsArr.splice(collaboratorIndex, 1);
@@ -327,7 +326,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Save assignation occupation
-     * 
+     *
      */
     saveAssignationOccupation() {
         const assignation = this.formOcupation.getRawValue();
@@ -380,7 +379,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                             setTimeout(() => {
                                 this._router.navigate(['dashboards/assignment-occupation/index']);
                                 this._assignmentOccupationService.setTabIndex(0);
-                            }, 2000); 
+                            }, 2000);
                         });
 
                 }
@@ -390,7 +389,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
 
     /**
      * Change tab
-     * 
+     *
      */
      changeTab () {
         this._assignmentOccupationService.setTabIndex(0);

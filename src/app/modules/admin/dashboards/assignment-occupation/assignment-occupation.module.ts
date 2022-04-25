@@ -33,6 +33,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
 import { UpdateOccupationComponent } from './edit-assignment/update-occupation/update-occupation.component';
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
+import {MatDividerModule} from "@angular/material/divider";
 @NgModule({
   declarations: [
     AssignmentOccupationComponent,
@@ -69,6 +70,7 @@ import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators
         MatCheckboxModule,
         NgxSpinnerModule,
         MatTooltipModule,
+        MatDividerModule,
     ],
     schemas: [
           CUSTOM_ELEMENTS_SCHEMA,
@@ -76,6 +78,6 @@ import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators
      providers   : [
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ],
-    
+
 })
 export class AssignmentOccupationModule { }

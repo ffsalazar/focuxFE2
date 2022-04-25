@@ -68,10 +68,10 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
         // Create the status form
         this.statusForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', [Validators.required, Validators.minLength(2)]],
             description: [''],
             isActive: [''],
-            typeStatus: ['']
+            typeStatus: ['', Validators.required]
         })
 
         // Get the statuses
@@ -159,6 +159,10 @@ export class StatusesDetailsComponent implements OnInit, OnDestroy
     closeDrawer(): Promise<MatDrawerToggleResult>
     {
         return this._statusesListComponent.matDrawer.close();
+    }
+
+    checkError(item, type?){
+        return (type) ? this.statusForm.get(item).hasError(type) : (this.statusForm.get(item).errors && this.statusForm.get(item).touched);
     }
 
     /**

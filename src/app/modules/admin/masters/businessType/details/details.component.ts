@@ -66,9 +66,9 @@ export class BusinessTypesDetailsComponent implements OnInit, OnDestroy
         // Create the businessType form
         this.businessTypeForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', Validators.required],
             description: [''],
-            code:[''],
+            code:['', Validators.required],
             isActive: ['']
 
         })
@@ -148,7 +148,9 @@ export class BusinessTypesDetailsComponent implements OnInit, OnDestroy
     {
         return this._businessTypesListComponent.matDrawer.close();
     }
-
+    checkError(item, type?){
+        return (type) ? this.businessTypeForm.get(item).hasError(type) : (this.businessTypeForm.get(item).errors && this.businessTypeForm.get(item).touched);
+    }
     /**
      * Toggle edit mode
      *

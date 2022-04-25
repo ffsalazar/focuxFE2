@@ -66,9 +66,9 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
         // Create the technicalArea form
         this.technicalAreaForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', Validators.required],
             description: [''],
-            code:[''],
+            code:['', Validators.required],
             isActive: ['']
 
         })
@@ -148,7 +148,9 @@ export class TechnicalAreasDetailsComponent implements OnInit, OnDestroy
     {
         return this._technicalAreasListComponent.matDrawer.close();
     }
-
+    checkError(item, type?){
+        return (type) ? this.technicalAreaForm.get(item).hasError(type) : (this.technicalAreaForm.get(item).errors && this.technicalAreaForm.get(item).touched);
+    }
     /**
      * Toggle edit mode
      *

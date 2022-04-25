@@ -163,6 +163,7 @@
                                     [placeholder]="'Nombres'"
                                     [spellcheck]="false">
                             </mat-form-field>
+                            <mat-error [ngStyle]="{'opacity':checkError('name') == true ? '1': '0' }">El campo es obligatorio</mat-error>
                         </div>
 
                     </div>

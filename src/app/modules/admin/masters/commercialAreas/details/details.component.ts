@@ -66,9 +66,9 @@ export class CommercialAreasDetailsComponent implements OnInit, OnDestroy
         // Create the commercialArea form
         this.commercialAreaForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', Validators.required],
             description: [''],
-            code:[''],
+            code:['', Validators.required],
             isActive: ['']
 
         })
@@ -148,7 +148,9 @@ export class CommercialAreasDetailsComponent implements OnInit, OnDestroy
     {
         return this._commercialAreasListComponent.matDrawer.close();
     }
-
+    checkError(item, type?){
+        return (type) ? this.commercialAreaForm.get(item).hasError(type) : (this.commercialAreaForm.get(item).errors && this.commercialAreaForm.get(item).touched);
+    }
     /**
      * Toggle edit mode
      *

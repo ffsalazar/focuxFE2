@@ -15,7 +15,7 @@ export class RequestService
 {
     // Private
     private _brands: BehaviorSubject<InventoryBrand[] | null> = new BehaviorSubject(null);
-  
+
     private _pagination: BehaviorSubject<InventoryPagination | null> = new BehaviorSubject(null);
     private _product: BehaviorSubject<InventoryProduct | null> = new BehaviorSubject(null);
     private _products: BehaviorSubject<InventoryProduct[] | null> = new BehaviorSubject(null);
@@ -23,7 +23,7 @@ export class RequestService
 
     private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
     private _commerc: BehaviorSubject<CommercialArea[] | null> = new BehaviorSubject(null);
-    private _request: BehaviorSubject<Request | null> = new BehaviorSubject(null); 
+    private _request: BehaviorSubject<Request | null> = new BehaviorSubject(null);
     private _requests: BehaviorSubject<Request[] | null> = new BehaviorSubject(null);
     private _status: BehaviorSubject<Status[] | null> = new BehaviorSubject(null);
     private _categories: BehaviorSubject<Category[] | null> = new BehaviorSubject(null);
@@ -34,7 +34,7 @@ export class RequestService
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
     private _collaborators: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
-    private _isOpenModal: Subject<boolean | null> = new Subject(); 
+    private _isOpenModal: Subject<boolean | null> = new Subject();
 
     public requests: Request[];
 
@@ -128,7 +128,7 @@ export class RequestService
     {
         return this._commerc.asObservable();
     }
-     
+
      /**
      * Getter for status
      */
@@ -145,7 +145,7 @@ export class RequestService
         return this._clients.asObservable();
     }
 
-    
+
     /**
      * Getter for request
      */
@@ -157,28 +157,28 @@ export class RequestService
     get areatech$(): Observable<TechnicalArea []>{
         return this._areatech.asObservable()
      }
-     
+
      /**
       * Getter for typeRequest
       */
      get typereq$(): Observable<TypeRequest []>{
          return this._typereq.asObservable()
         }
-        
+
     /**
      * Getter for isOpenModal
      */
     get isOpenModal$(): Observable<Boolean>{
         return this._isOpenModal.asObservable()
     }
-    
+
     /**
      * Getter for businessType
      */
     get businessType$(): Observable<BusinessType[]> {
         return this._businessType.asObservable();
     }
-    
+
     /**
      * Getter for businessType
      */
@@ -189,10 +189,10 @@ export class RequestService
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-    
+
     /**
      * Setter for request
-     * 
+     *
      */
     setRequests(requests: Request[])
     {
@@ -201,7 +201,7 @@ export class RequestService
 
     /**
      * Get categories
-     * 
+     *
      */
     getCategory(): Observable<Category[]>
     {
@@ -211,9 +211,9 @@ export class RequestService
             })
             );
         }
-        
+
         /**
-         * 
+         *
          * @returns
          */
         getDepartments() {
@@ -239,7 +239,7 @@ export class RequestService
 
     /**
      * Get knowledges
-     * 
+     *
      */
     getKnowledges(): Observable<Knowledge[]>
     {
@@ -252,7 +252,7 @@ export class RequestService
                         knowledgesFiltered.push(knowledge);
                     }
                 });
-                
+
                 this._knowledges.next(knowledgesFiltered);
             })
         );
@@ -266,8 +266,8 @@ export class RequestService
 
     /**
      * Get rewquest by id
-     * @param id 
-     * @returns 
+     * @param id
+     * @returns
      */
     getRequestById(id: number): Observable<Request>
     {
@@ -327,7 +327,7 @@ export class RequestService
 
     /**
      * Search Request
-     * @param query 
+     * @param query
      */
     searchRequest(query: string): Observable<Request[]> {
 
@@ -337,7 +337,7 @@ export class RequestService
         .pipe(
             tap((requests) => {
                 let requestsFiltered : Request[]=[];
-                // Filter inactive request 
+                // Filter inactive request
                 requestsFiltered = requests.filter(item => item.isActive !== 0);
 
                 // If the query exists...
@@ -377,26 +377,26 @@ export class RequestService
     }
 
     /**
-     * 
+     *
      * Get Requests
      */
     getRequests(): Observable<Request[]> {
         return this._httpClient.get<Request[]>('http://localhost:1616/api/v1/followup/requests/all').pipe(
             tap((requests) => {
 
-                // Filter inactive request 
+                // Filter inactive request
                 requests = requests.filter(item => item.isActive !== 0);
-                
+
                 this.requests = requests;
 
-                // Emit next value 
+                // Emit next value
                 this._requests.next(requests);
             })
         );
     }
 
     /**
-     * 
+     *
      * Get Clients
      */
     getClients(): Observable<Client[]> {
@@ -409,7 +409,7 @@ export class RequestService
     }
 
     /**
-     * 
+     *
      * Get CommercialArea
      *
      */
@@ -423,7 +423,7 @@ export class RequestService
     }
 
     /**
-     * 
+     *
      * Get RequestPeriod
      */
     getRequestPeriod(): Observable<RequestPeriod[]> {
@@ -434,22 +434,22 @@ export class RequestService
             })
         );
     }
-    
+
     /**
-     * 
+     *
      * Get TypeRequest
      */
     getTypeRequest(): Observable<TypeRequest[]> {
         return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
             tap((typeRequest) => {
-                typeRequest = typeRequest.filter(item => item.isActive === 1); 
+                typeRequest = typeRequest.filter(item => item.isActive === 1);
                 this._typereq.next(typeRequest);
             })
         );
     }
 
     /**
-     * 
+     *
      * Get Status
      */
     getStatus(): Observable<Status[]> {
@@ -460,9 +460,9 @@ export class RequestService
             })
         );
     }
-    
+
     /**
-     * 
+     *
      * Get AreaTechical
      */
     getAreaTech(): Observable<TechnicalArea[]> {
@@ -478,13 +478,13 @@ export class RequestService
      * Create product
      */
     createRequest(request: Request): Observable<Request>
-    {   
+    {
         return this.requests$.pipe(
             take(1),
             switchMap(requests => this._httpClient.post<Request>('http://localhost:1616/api/v1/followup/requests/save', request).pipe(
                 map((newRequest) => {
                     this._requests.next([newRequest, ...requests]);
-                    
+
                     return newRequest;
                 })
             )),
@@ -505,7 +505,7 @@ export class RequestService
     {
         return this.requests$.pipe(
             take(1),
-            switchMap(requests => this._httpClient.put<Request> ('http://localhost:1616/api/v1/followup/requests/request/' + id, 
+            switchMap(requests => this._httpClient.put<Request> ('http://localhost:1616/api/v1/followup/requests/request/' + id,
                 request
             ).pipe(
                 map((updatedRequest) => {
@@ -535,7 +535,7 @@ export class RequestService
 
                         // Update the product if it's selected
                         this._request.next(updatedRequest);
-                        
+
                         // Return the updated product
                         return updatedRequest;
                     })
@@ -570,7 +570,7 @@ export class RequestService
                     // Update the requests
                     this._requests.next(requests);
                     // Return the deleted status
-                    
+
                     return isDeleted;
                 })
             ))
@@ -611,11 +611,11 @@ export class RequestService
 
 
     /**
-     * 
-     * @param data 
-     * @param options 
-     * @param modalType 
-     * @returns 
+     *
+     * @param data
+     * @param options
+     * @param modalType
+     * @returns
      */
     open(data: DialogData, options: DialogOptions = {width: 800, minHeight: 0, height: 200, disableClose: true}, modalType: 1 | 2 = 1): Observable<boolean> {
         const dialogRef: MatDialogRef<FocuxPopupComponent> = this.dialog.open<FocuxPopupComponent, DialogData>(

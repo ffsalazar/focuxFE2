@@ -68,10 +68,10 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
         // Create the client form
         this.clientForm = this._formBuilder.group({
             id: [''],
-            name: [''],
+            name: ['', Validators.required],
             description: [''],
             isActive: [''],
-            businessType: [[]]
+            businessType: ['', Validators.required]
         })
 
         // Get the clients
@@ -160,6 +160,9 @@ export class ClientsDetailsComponent implements OnInit, OnDestroy
     {
         return this._clientsListComponent.matDrawer.close();
     }
+        checkError(item, type?){
+            return (type) ? this.clientForm.get(item).hasError(type) : (this.clientForm.get(item).errors && this.clientForm.get(item).touched);
+        }
 
     /**
      * Toggle edit mode

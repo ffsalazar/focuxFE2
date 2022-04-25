@@ -1,19 +1,20 @@
 <div class="flex flex-col">
-    <div class="flex flex-col mt-4 mb-8">
-        <fuse-alert
-            *ngIf="isActive"
-            [type]="'success'" 
-            [dismissible]="true"
-            [dismissed]="true"
-            [name]="'alertBox4'"
-            (click)="dismissFuse('alertBox4')"
-            >
-            <span fuseAlertTitle>{{successSave}}</span>
-        </fuse-alert>
+    <div class="flex flex-col mt-0 mb-8">
         <div class="flex flex-col" style="width: 100%;">
-            
             <div class="flex flex-row justify-between" style="width: 100%;">
-                <div class="flex flex-col" style="width: 60%;">
+                <div class="flex flex-col" style="width: 100%;">
+                    <div class="h-13" style="width: 180%;">
+                        <fuse-alert class="h-13" style="width: 100%;"
+                                    *ngIf="isActive"
+                                    [type]="'success'"
+                                    [dismissible]="true"
+                                    [dismissed]="true"
+                                    [name]="'alertBox4'"
+                                    (click)="dismissFuse('alertBox4')"
+                        >
+                            <span fuseAlertTitle>{{successSave}}</span>
+                        </fuse-alert>
+                    </div>
                     <mat-label class="font-semibold mr-6 ml-1 mb-2">Colaborador</mat-label>
                     <mat-form-field class="" >
                         <input type="text" [placeholder]="'Pablo Perez'" matInput [value]="collaborator.name + ' ' + collaborator.lastName" readonly>
@@ -24,7 +25,7 @@
                         </mat-autocomplete> -->
                     </mat-form-field>
                 </div>
-                <div class="flex flex-row justify-end items-center" style="width: 40%;">
+                <div class="flex flex-row justify-end items-center" style="width: 90%;">
                     <button
                         mat-fab
                         [color]="'accent'"
@@ -50,7 +51,7 @@
                 >
                 </mat-progress-bar>
             </div>
-            
+
         </div>
     </div>
     <ng-container [formGroup]="formOcupation">
@@ -63,7 +64,7 @@
                                 <div class="flex flex-row gt-xs:flex-row">
                                     <div class="flex flex-col mr-6">
                                         <mat-label class="font-semibold">
-                                            <mat-icon *ngIf="formOcupation.get('collaboratorOccupation').at(i).valid" class="icon-size-5 text-green-500"  matPrefix [svgIcon]="'heroicons_solid:check-circle'">
+                                            <mat-icon *ngIf="formOcupation.get('collaboratorOccupation').at(i).valid" class="icon-size-4 text-green-500"  matPrefix [svgIcon]="'heroicons_solid:check-circle'">
                                             </mat-icon>
                                             Solicitud
                                         </mat-label>
@@ -85,11 +86,11 @@
                                     <div class="flex flex-col">
                                         <mat-label class="font-semibold">Ocupación</mat-label>
                                         <mat-form-field [ngClass]="formFieldHelpers" class="w-50 mr-5">
-                                            <input formControlName="occupation" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
+                                            <input formControlName="occupation" type="number" min="0" onkeydown="javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
                                             <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
-                                            <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
+                                            <mat-error  *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
                                         </mat-form-field>
-                                        
+
                                     </div>
                                 </div>
                                 <div class="flex flex-row ">
@@ -133,10 +134,10 @@
                                                 src="../../../../../../assets/icons/delete-icon.png">
                                             </button>
                                         </div>
-                                        
+
                                     </div>
                                     <!-- <div style="align-items: flex-end; display: flex; margin-top: 82px !important;"> -->
-                                    <div style="display: flex; margin-top: 25px !important; margin-left: 10px;">    
+                                    <div style="display: flex; margin-top: 25px !important; margin-left: 10px;">
                                         <div class="flex" style="flex-direction: row-reverse;">
                                             <!-- <button
                                                 [disabled]="!collaboratorOccupation.at(i).touched"
@@ -154,19 +155,19 @@
                                 </div>
                             </div>
                             <div *ngIf="collaboratorOccupation.at(i).get('isCollapse').value" class="flex flex-col mt-2">
-    
+
                                 <mat-form-field class="fuse-mat-textarea flex-auto">
                                     <textarea formControlName="observation" matInput [placeholder]="'Observaciones'" [rows]="1"></textarea>
                                     <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                 </mat-form-field>
                             </div>
                         </div>
-                    
-                        
+
+
                     </ng-container>
                 </ng-container>
             </ng-container>
-            
+
             <!-- No collaborators Selected -->
             <ng-template #noOccupation>
                 <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No tiene ocupaciones asignadas!</div>
