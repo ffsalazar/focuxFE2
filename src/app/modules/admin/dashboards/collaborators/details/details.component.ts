@@ -646,6 +646,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         // Update the collaborator
         this.collaborator.image = null;
 
+        this.updateCollaborator();
+
         location.reload();
     }
 
