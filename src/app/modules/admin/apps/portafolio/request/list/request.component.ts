@@ -131,7 +131,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     isDetail: boolean = false;
     alert: boolean = false;
     successSave: String = "";
+    dataCollab : any[] = [{name: 'Francisco Mauel Quintero Suarez', role: 'Front-end'}, {name: 'Emmanuel Luis Torres Quero', role: 'Back-end'}, {name: 'Susana María Díaz Fuentes', role: 'Front-end'}];
     // dataSource: Request[]
+    displayColCollab : string[] = ['id','name', 'role'];
     displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest',
     'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
@@ -1531,8 +1533,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      */
     isShowCollab() {
-        console.log("heree")
         this.hasCollab = !this.hasCollab;
+    }
+    
+    /**
+     * Set pause
+     *
+     */
+    test() {
+        console.log("heree")
     }
     
 }
