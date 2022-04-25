@@ -52,6 +52,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/vacations'
             },
+            {
+                id   : 'dashboards.evaluation',
+                title: 'Evaluaciones',
+                type : 'basic',
+                icon : 'heroicons_outline:cash',
+                link : '/dashboards/evaluation'
+            },
 
             /*{
                 id   : 'dashboards.crypto',
