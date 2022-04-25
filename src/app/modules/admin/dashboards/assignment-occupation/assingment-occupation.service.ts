@@ -3,9 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge } from "./assignment-occupation.types";
+import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge, RolesRequest } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { tap } from 'rxjs/operators';
+import { tap, switchMap, filter, toArray } from 'rxjs/operators';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
 import { LoadingSpinnerService } from 'app/core/services/loading-spinner/loading-spinner.service';
 
@@ -27,6 +27,7 @@ export class AssingmentOccupationService {
     private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
     private _isSuccess: Subject<boolean | null> = new Subject();
     private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
+    private _rolesRequest: BehaviorSubject<RolesRequest[] | null> = new BehaviorSubject(null);
 
     collaborators: any;
 
@@ -91,6 +92,14 @@ export class AssingmentOccupationService {
      */
     get requestSelected() {
         return this._requestSelected;
+    }
+
+    /**
+     * Getter for rolesRequest
+     * 
+     */
+    get rolesRequest$(): Observable<any> {
+        return this._rolesRequest.asObservable();
     }
 
     /**
@@ -243,20 +252,65 @@ export class AssingmentOccupationService {
     /**
      * Get knowledges
      */
-     getKnowledges(): Observable<Knowledge[]>
+    getKnowledges(): Observable<Knowledge[]>
+    {
+        // return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
+        //     tap((knowledges) => {
+        //     let knowledgesFiltered : Knowledge[] = []
+        //     knowledges.forEach((knowledge) => {
+        //         if (knowledge.isActive != 0){
+        //             knowledgesFiltered.push(knowledge);
+        //         }
+        //     });
+
+        //     this._knowledges.next(knowledgesFiltered);
+        //     })
+        // );
+        return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
+            
+        switchMap(knowledges => knowledges),
+            filter(knowledges => knowledges.isActive !== 0),
+            toArray(),
+            tap(knowledges => {
+                console.log("RolesRequest: ", knowledges);
+                this._knowledges.next(knowledges);
+            })
+        );
+    }
+
+    // private _sortArray(x, y): number {
+    //     if (x.name < y.name) {return -1; }
+    //     if (x.name > y.name) {return 1; }
+    //     return 0;
+    // }
+
+    /**
+     * Get knowledges
+     */
+     getRolesRequest(): Observable<RolesRequest[]>
      {
-         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
-             tap((knowledges) => {
-                let knowledgesFiltered : Knowledge[] = []
-                knowledges.forEach((knowledge) => {
-                    if (knowledge.isActive != 0){
-                        knowledgesFiltered.push(knowledge);
-                    }
-                });
- 
-                this._knowledges.next(knowledgesFiltered);
-             })
+         return this._httpClient.get<RolesRequest[]>('http://localhost:1616/api/v1/followup/requestrole/all').pipe(
+            switchMap(rolesRequest => rolesRequest),
+            filter(roleRequest => roleRequest.isActive !== 0),
+            toArray(),
+            tap(rolesRequest => {
+                console.log("RolesRequest: ", rolesRequest);
+                this._rolesRequest.next(rolesRequest);
+            })
+
+         
          );
+
+        //  tap((knowledges) => {
+        //     let knowledgesFiltered : Knowledge[] = []
+        //     knowledges.forEach((knowledge) => {
+        //         if (knowledge.isActive != 0){
+        //             knowledgesFiltered.push(knowledge);
+        //         }
+        //     });
+
+        //     this._knowledges.next(knowledgesFiltered);
+        //  })
      }
 
     /**
@@ -535,9 +589,9 @@ export class AssingmentOccupationService {
      */
     getFilterCollaborator(clientsId: number[], knowledgesId: number[], occupation: number, dateInit: string, dateEnd: string): Observable<any> {
         /** spinner starts on init */
-        this._loadingSpinnerService.startLoading();
+        //this._loadingSpinnerService.startLoading();
 
-        this.spinner.show();
+        //this.spinner.show();
 
         let params = new HttpParams();
 
@@ -572,7 +626,4 @@ export class AssingmentOccupationService {
         ));
     }
 
-
-
-    
 }

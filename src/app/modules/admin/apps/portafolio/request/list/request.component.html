@@ -818,13 +818,13 @@
                                 </div>
                         
                                 <button
-                                class="px-8"
-                                mat-flat-button
-                                [color]="'primary'"
-                                type="button"
-                                isShowCollab
-                                (click)="isShowCollab()"
-                            >
+                                    class="px-8"
+                                    mat-flat-button
+                                    [color]="'primary'"
+                                    type="button"
+                                    isShowCollab
+                                    (click)="isShowCollab()"
+                                >
                                 {{ isEditing || isDetail ? 'Colaboradores ' : 'Colaboradores ' }}
                                 <mat-icon class="icon-size-5" style="margin-left:10px;"
                                 [svgIcon]="hasCollab? 'heroicons_solid:eye-off' : 'heroicons_solid:eye'">
@@ -843,6 +843,18 @@
                                 <ng-container matColumnDef="role">
                                     <th mat-header-cell *matHeaderCellDef>  Rol </th>
                                     <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+                                  </ng-container>
+                                <ng-container matColumnDef="occupation">
+                                    <th mat-header-cell *matHeaderCellDef>  Ocupación </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.occupation}} </td>
+                                  </ng-container>
+                                <ng-container matColumnDef="dateInit">
+                                    <th mat-header-cell *matHeaderCellDef>  Fecha de Inicio </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.dateInit}} </td>
+                                  </ng-container>
+                                <ng-container matColumnDef="dateEnd">
+                                    <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.dateEnd}} </td>
                                   </ng-container>
                                 <!-- DateEnd Pause -->
                                 

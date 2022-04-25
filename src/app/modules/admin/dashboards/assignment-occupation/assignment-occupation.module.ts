@@ -35,6 +35,7 @@ import {AssingmentOccupationService} from "./assingment-occupation.service";
 import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
 import { UpdateOccupationComponent } from './edit-assignment/update-occupation/update-occupation.component';
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
+import { RolesRequestResolver } from './assignment.resolvers';
 @NgModule({
   declarations: [
     AssignmentOccupationComponent,

@@ -444,6 +444,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.knowledges$
             .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(knowledges => {
+
+                    console.log("knowledges:", knowledges);
                     knowledges.sort(this._sortArray);
                     this.knowledges = knowledges;
 

@@ -7,6 +7,7 @@ import {
     ClientsResolver,
     OccupationCollaboratorResolver,
     KnowledgesResolver,
+    RolesRequestResolver,
 } from "./assignment.resolvers";
 
 
@@ -36,6 +37,7 @@ export const AssignmentOccupationRouter: Route[] = [
                 clients: ClientsResolver,
                 knowledges: KnowledgesResolver,
                 collaborators: OccupationCollaboratorResolver,
+                rolesRequest: RolesRequestResolver
                 //recommended : RecommendedResolver
             }
         },

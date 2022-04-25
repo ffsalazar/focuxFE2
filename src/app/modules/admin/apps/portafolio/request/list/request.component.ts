@@ -131,9 +131,30 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     isDetail: boolean = false;
     alert: boolean = false;
     successSave: String = "";
-    dataCollab : any[] = [{name: 'Francisco Mauel Quintero Suarez', role: 'Front-end'}, {name: 'Emmanuel Luis Torres Quero', role: 'Back-end'}, {name: 'Susana María Díaz Fuentes', role: 'Front-end'}];
+    dataCollab : any[] = [
+        {name: 'Francisco Mauel Quintero Suarez',
+        role: 'Front-end',
+        occupation: 100,
+        dateInit: '20-08-2022',
+        dateEnd: '27-09-2022',
+    },
+    {
+        name: 'Emmanuel Luis Torres Quero',
+        role: 'Back-end',
+        occupation: 50,
+        dateInit: '20-08-2022',
+        dateEnd: '27-09-2022',
+    },
+    {
+        name: 'Susana María Díaz Fuentes',
+        role: 'Front-end',
+        occupation: 30,
+        dateInit: '20-08-2022',
+        dateEnd: '27-09-2022',
+    }];
+
     // dataSource: Request[]
-    displayColCollab : string[] = ['id','name', 'role'];
+    displayColCollab : string[] = ['id','name', 'role', 'occupation', 'dateInit', 'dateEnd'];
     displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest',
     'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
