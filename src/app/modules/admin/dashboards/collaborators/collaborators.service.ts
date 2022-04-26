@@ -5,8 +5,14 @@ import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Client, Collaborator, CollaboratorKnowledge, Country, Department, EmployeePosition, Knowledge, Phone, Assigments,Status } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import {DialogData, DialogOptions} from "../../apps/portafolio/request/request.types";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {FocuxPopupComponent} from "../../apps/portafolio/request/focux-popup/focux-popup.component";
 import {FocusPopupRequestComponent} from "./details/focux-popup-request/focus-popup-request.component";
+import {environment} from "../../../../../environments/environment";
+
+import firebase  from "firebase/compat/app";
+import 'firebase/compat/storage'
+
+firebase.initializeApp(environment.firebaseConfig)
+
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +44,8 @@ export class CollaboratorsService
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
+
+    storareRef = firebase.app().storage().ref();
 
     /**
      * Getter for collaborator
@@ -145,6 +153,9 @@ export class CollaboratorsService
             tap((collaborators) => {
 
 
+
+
+
                 let collaboratorFiltered : any[]=[];
 
                 function compare(a: Collaborator, b: Collaborator) {
@@ -165,7 +176,7 @@ export class CollaboratorsService
 
     /**
      * Update collaborator selected
-     * 
+     *
      */
     updateCollaboratorSelected() {
         return this._collaborator.next(null);
@@ -184,15 +195,13 @@ export class CollaboratorsService
             tap((collaborators) => {
                 let collaboratorFiltered : any[]=[];
                 collaborators.forEach((collaborator) => {
+
                     //console.log(collaborator.leader.id)
                     collaboratorFiltered.push(collaborator);
                 });
                 // If the query exists...
                 if ( controls )
                 {
-
-                    console.log(controls)
-
                     // Filter the collaborators
 
                     collaboratorFiltered = collaboratorFiltered.filter(collaborator =>
@@ -200,10 +209,8 @@ export class CollaboratorsService
                         (
                             (controls.clientControl.length > 0 ? controls.clientControl.includes( collaborator?.client.name) : true)  &&
                             (controls.statusControl.length > 0 ? controls.statusControl.includes( collaborator?.status.name) : true) &&
-                            (controls.leaderControl.length && collaborator.leader !== null ? controls.leaderControl.includes( collaborator?.leader.id ) : true) &&
-
+                            (controls.leaderControl.length > 0 ? controls.leaderControl.includes( collaborator.leader?.id ) : true) &&
                             (controls.centralAmericanControl === null || ( controls.centralAmericanControl === '' || collaborator?.isCentralAmerican == controls.centralAmericanControl)) &&
-
                             (controls.searchInputControl === null || ( controls.searchInputControl.toLowerCase() === '' || collaborator?.name.toLowerCase().includes( controls.searchInputControl.toLowerCase())))
 
                         ));
@@ -559,6 +566,26 @@ export class CollaboratorsService
         );
     }
 
+
+     */
+
+    async uploadImage(nombre: number, Img: any){
+
+
+
+        try {
+
+                let respuesta = await this.storareRef.child("collaborators/" + nombre).putString(Img, "data_url");
+                console.log(respuesta);
+                return await respuesta.ref.getDownloadURL()
+
+        }catch (e) {
+
+            console.log(e)
+
+        }
+    }
+
     /**
      * Update the avatar of the given collaborator
      *
@@ -567,6 +594,7 @@ export class CollaboratorsService
      */
     uploadAvatar(id: number, avatar: File): Observable<Collaborator>
     {
+
         return this.collaborators$.pipe(
             take(1),
             switchMap(collaborators => this._httpClient.post<Collaborator>('api/dashboards/collaborators/avatar', {
@@ -579,6 +607,8 @@ export class CollaboratorsService
                 }
             }).pipe(
                 map((updatedCollaborator) => {
+
+
 
                     // Find the index of the updated collaborator
                     const index = collaborators.findIndex(item => item.id === id);
@@ -596,6 +626,8 @@ export class CollaboratorsService
                     take(1),
                     filter(item => item && item.id === id),
                     tap(() => {
+
+
 
                         // Update the collaborator if it's selected
                         this._collaborator.next(updatedcollaborator);
