@@ -148,7 +148,6 @@ export class EditAssignmentComponent implements OnInit {
     private _handleEventTab() {
         this._assignmentOccupationService.tabIndex$
             .subscribe((tabIndex) => {
-                console.log("tabIndex: ", tabIndex);
                 if ( tabIndex === 0 ) {
                     this.isEditing = false;
                     this._getAllCollaboratorOccupation();

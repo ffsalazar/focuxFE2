@@ -130,9 +130,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 const filteredKnowledges = values.filterKnowledges.filter(item => item.checked && item.id);
                 const knowledgesId = filteredKnowledges.map(item => item.id);
                 const occupation = this.filterCollaboratorsGroup.get('filterOccupation').value;
-                const dateInit = this.filterCollaboratorsGroup.get('filterDateInit').value;
-                const dateEnd = this.filterCollaboratorsGroup.get('filterDateEnd').value;
-
+                const dateInit: string = this.filterCollaboratorsGroup.get('filterDateInit').value;
+                const dateEnd: string = this.filterCollaboratorsGroup.get('filterDateEnd').value;
+                
                 this._assignmentOccupationService.getFilterCollaborator(clientsId, knowledgesId, occupation, dateInit, dateEnd)
                     .subscribe(response => {
                         console.log("response: ", response);

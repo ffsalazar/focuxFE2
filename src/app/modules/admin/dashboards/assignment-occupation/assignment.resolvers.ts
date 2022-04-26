@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 import { Collaborator, Client, Knowledge, RolesRequest } from "./assignment-occupation.types";
 import { AssingmentOccupationService } from './assingment-occupation.service';
 

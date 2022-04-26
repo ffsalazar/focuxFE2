@@ -251,73 +251,52 @@ export class AssingmentOccupationService {
 
     /**
      * Get knowledges
+     *
      */
     getKnowledges(): Observable<Knowledge[]>
     {
-        // return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
-        //     tap((knowledges) => {
-        //     let knowledgesFiltered : Knowledge[] = []
-        //     knowledges.forEach((knowledge) => {
-        //         if (knowledge.isActive != 0){
-        //             knowledgesFiltered.push(knowledge);
-        //         }
-        //     });
-
-        //     this._knowledges.next(knowledgesFiltered);
-        //     })
-        // );
         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
             
         switchMap(knowledges => knowledges),
             filter(knowledges => knowledges.isActive !== 0),
             toArray(),
             tap(knowledges => {
-                console.log("RolesRequest: ", knowledges);
                 this._knowledges.next(knowledges);
             })
         );
     }
 
-    // private _sortArray(x, y): number {
-    //     if (x.name < y.name) {return -1; }
-    //     if (x.name > y.name) {return 1; }
-    //     return 0;
-    // }
+    /**
+     * Sort Array
+     *
+     */
+    private _sortArray(x, y): number {
+        if (x.name < y.name) {return -1; }
+        if (x.name > y.name) {return 1; }
+        return 0;
+    }
 
     /**
-     * Get knowledges
+     * Get Roles Request
+     *
      */
      getRolesRequest(): Observable<RolesRequest[]>
      {
-         return this._httpClient.get<RolesRequest[]>('http://localhost:1616/api/v1/followup/requestrole/all').pipe(
-            switchMap(rolesRequest => rolesRequest),
+        return this._httpClient.get<RolesRequest[]>('http://localhost:1616/api/v1/followup/requestrole/all').pipe(
+            switchMap(rolesRequest => rolesRequest.sort(this._sortArray)),
             filter(roleRequest => roleRequest.isActive !== 0),
             toArray(),
             tap(rolesRequest => {
-                console.log("RolesRequest: ", rolesRequest);
                 this._rolesRequest.next(rolesRequest);
             })
-
-         
-         );
-
-        //  tap((knowledges) => {
-        //     let knowledgesFiltered : Knowledge[] = []
-        //     knowledges.forEach((knowledge) => {
-        //         if (knowledge.isActive != 0){
-        //             knowledgesFiltered.push(knowledge);
-        //         }
-        //     });
-
-        //     this._knowledges.next(knowledgesFiltered);
-        //  })
-     }
+        );
+    }
 
     /**
      * Get collaborators by client
-     *  
-     * @param clientId 
-     * @returns 
+     *
+     * @param clientId
+     * @returns
      */
     getCollaboratorsByClient(clientId: number): Observable<Collaborator[]> {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/projectleads/', {
@@ -336,8 +315,8 @@ export class AssingmentOccupationService {
 
     /**
      * Remove collaborator selected
-     * 
-     * @param collaboratorId 
+     *
+     * @param collaboratorId
      */
     removeCollaboratorSelected(collaboratorId: number): void {
         // Remove collaborators selected
@@ -606,6 +585,11 @@ export class AssingmentOccupationService {
         if ( occupation ) {
             params = params.append('occupation', occupation);
         }
+
+        console.log("dateInit: ", dateInit);
+        console.log("dateEnd: ", dateEnd);
+        // const dateInits = this.datePipe.transform(dateInit, 'dd-MM-yyyy');
+        // const dateEnds = this.datePipe.transform(dateEnd, 'dd-MM-yyyy');
 
         if ( dateInit !== '' && dateEnd !== '' ) {
             params = params.append('dateInit', dateInit);

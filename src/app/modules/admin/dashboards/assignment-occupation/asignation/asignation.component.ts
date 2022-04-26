@@ -344,6 +344,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
         const assignation = this.formOcupation.getRawValue();
 
         for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+
+            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateInit').value);
+            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateEnd').value);
             const assignationOccupation: AssignationOccupation = {
                 occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
                 assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,

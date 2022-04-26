@@ -36,6 +36,8 @@ import { EditAssignmentComponent } from './edit-assignment/edit-assignment.compo
 import { UpdateOccupationComponent } from './edit-assignment/update-occupation/update-occupation.component';
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
 import { RolesRequestResolver } from './assignment.resolvers';
+import { DatePipe } from '@angular/common';
+
 @NgModule({
   declarations: [
     AssignmentOccupationComponent,
