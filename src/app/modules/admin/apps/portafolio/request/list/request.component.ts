@@ -131,30 +131,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     isDetail: boolean = false;
     alert: boolean = false;
     successSave: String = "";
-    dataCollab : any[] = [
-        {name: 'Francisco Mauel Quintero Suarez',
-        role: 'Front-end',
-        occupation: 100,
-        dateInit: '20-08-2022',
-        dateEnd: '27-09-2022',
-    },
-    {
-        name: 'Emmanuel Luis Torres Quero',
-        role: 'Back-end',
-        occupation: 50,
-        dateInit: '20-08-2022',
-        dateEnd: '27-09-2022',
-    },
-    {
-        name: 'Susana María Díaz Fuentes',
-        role: 'Front-end',
-        occupation: 30,
-        dateInit: '20-08-2022',
-        dateEnd: '27-09-2022',
-    }];
+    dataCollab = new MatTableDataSource<any>();
 
     // dataSource: Request[]
-    displayColCollab : string[] = ['id','name', 'role', 'occupation', 'dateInit', 'dateEnd'];
+    displayColCollab : string[] = ['id','name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
     displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest',
     'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
@@ -310,13 +290,22 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Get the requestPeriod
         this._requestService.requestp$
-        .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((requestp: RequestPeriod[]) => {
-                // Update the requestp
-                this.requestp = requestp;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((requestp: RequestPeriod[]) => {
+                    // Update the requestp
+                    this.requestp = requestp;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+
+        this._requestService.collaborators$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((collaborators: Collaborator[]) => {
+                    // Update the requestp
+                    this.collaborators = collaborators;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
 
         // Get the clients
         this._requestService.clients$
@@ -983,6 +972,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     showDetail(id: number) {
         this.isDetail = true;
+        this.getCollaboratorsAssigned(id);
         this.openPopup(id);
     }
 
@@ -1141,6 +1131,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
+     * Get collaborators assigned
+     * 
+     * @param requestId 
+     */
+    getCollaboratorsAssigned(requestId: number) {
+        this._requestService.getCollaboratorsAssigned(requestId)
+            .subscribe(collaborators => {
+                this.collaborators.forEach(item => {
+                    item.name = item.name + ' ' + item.lastName;
+                });
+                this.dataCollab.data = this.collaborators;
+            });
+    }
+
+    /**
      * Update the selected request using the form data
      * @param requestId
      */
@@ -1148,7 +1153,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.hasPause = false;
         this.isEditing = true;
         this.openPopup(requestId);
+        this.getCollaboratorsAssigned(requestId);
     }
+
 
     /**
      * Delete the selected product using the form data

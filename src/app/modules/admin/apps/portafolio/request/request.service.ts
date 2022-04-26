@@ -608,7 +608,17 @@ export class RequestService
         );
     }
 
+    getCollaboratorsAssigned(requestId: number): Observable<Collaborator[]> {
+        console.log("GET");
 
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/requests/assigned/' + requestId)
+            .pipe(
+                tap(collaborators => {
+
+                    this._collaborators.next(collaborators);
+                })
+            );
+    }
 
     /**
      * 

@@ -840,21 +840,21 @@
                                     <th mat-header-cell *matHeaderCellDef> Nombre </th>
                                     <td mat-cell *matCellDef="let element; let i = index;" class="th-left">  {{element.name}}</td>
                                   </ng-container>
-                                <ng-container matColumnDef="role">
+                                <ng-container matColumnDef="roleName">
                                     <th mat-header-cell *matHeaderCellDef>  Rol </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+                                    <td mat-cell *matCellDef="let element"> {{element.roleName}} </td>
                                   </ng-container>
-                                <ng-container matColumnDef="occupation">
+                                <ng-container matColumnDef="occupationPercentage">
                                     <th mat-header-cell *matHeaderCellDef>  Ocupación </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.occupation}} </td>
+                                    <td mat-cell *matCellDef="let element"> {{element.occupationPercentage}} </td>
                                   </ng-container>
-                                <ng-container matColumnDef="dateInit">
+                                <ng-container matColumnDef="startDate">
                                     <th mat-header-cell *matHeaderCellDef>  Fecha de Inicio </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.dateInit}} </td>
+                                    <td mat-cell *matCellDef="let element"> {{element.startDate | amParse: formats | amDateFormat:'DD/MM/YYYY'}} </td>
                                   </ng-container>
-                                <ng-container matColumnDef="dateEnd">
+                                <ng-container matColumnDef="endDate">
                                     <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.dateEnd}} </td>
+                                    <td mat-cell *matCellDef="let element"> {{element.endDate | amParse: formats | amDateFormat:'DD/MM/YYYY'}} </td>
                                   </ng-container>
                                 <!-- DateEnd Pause -->
                                 
