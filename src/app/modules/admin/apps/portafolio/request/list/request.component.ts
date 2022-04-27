@@ -1008,6 +1008,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     setRequestForm(request: Request) {
         // Fill the formGroup step1
+        console.log("request: ", request);
         this.step1.patchValue(request);
         this.step1.get('client').setValue(request.client.id);
         this.step1.get('commercialArea').setValue(request.commercialArea.id);
@@ -1138,10 +1139,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     getCollaboratorsAssigned(requestId: number) {
         this._requestService.getCollaboratorsAssigned(requestId)
             .subscribe(collaborators => {
-                this.collaborators.forEach(item => {
+                collaborators.forEach(item => {
                     item.name = item.name + ' ' + item.lastName;
                 });
-                this.dataCollab.data = this.collaborators;
+                this.dataCollab.data = collaborators;
             });
     }
 
@@ -1345,16 +1346,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 //     id: 1
                 // };
 
-                requestNew.technicalArea = {
-                    id: 1
-                };
 
                 if ( !this.isEditing ) {
                     requestNew.responsibleRequest = null;
+                    requestNew.technicalArea = {
+                        id: 1
+                    };
                     // Create the request on the server
                     this.createNewRequest(requestNew);
                 } else {
-                    requestNew.responsibleRequest = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
+                    requestNew.responsibleRequest = this.collaborators.find(item => item.id === 1);
+                    requestNew.technicalArea = this.technicalArea.find(item => item.id === requestNew.technicalArea);
                     // Update the request on the server
                     this.updateRequest(requestNew);
                 }
