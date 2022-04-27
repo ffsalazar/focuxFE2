@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
+import * as moment from "moment";
 import data from './data/data.json';
 import activitys from './data/activitys.json'
 import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge, RolesRequest } from "./assignment-occupation.types";
@@ -566,7 +567,7 @@ export class AssingmentOccupationService {
      * @param occupation 
      * @returns 
      */
-    getFilterCollaborator(clientsId: number[], knowledgesId: number[], occupation: number, dateInit: string, dateEnd: string): Observable<any> {
+    getFilterCollaborator(clientsId: number[], knowledgesId: number[], occupation: number, dateInit: Date, dateEnd: Date): Observable<any> {
         /** spinner starts on init */
         //this._loadingSpinnerService.startLoading();
 
@@ -588,14 +589,25 @@ export class AssingmentOccupationService {
 
         console.log("dateInit: ", dateInit);
         console.log("dateEnd: ", dateEnd);
-        // const dateInits = this.datePipe.transform(dateInit, 'dd-MM-yyyy');
-        // const dateEnds = this.datePipe.transform(dateEnd, 'dd-MM-yyyy');
 
-        if ( dateInit !== '' && dateEnd !== '' ) {
-            params = params.append('dateInit', dateInit);
-            params = params.append('dateEnd', dateEnd);
+        const ab = {
+            a: dateInit,
+            b: dateEnd,
+        };
+
+        const startDate = moment(dateInit).format('L').split('/').join('-');
+        const endDate = moment(dateEnd).format('L').split('/').join('-')
+
+        if ( ( dateInit.toString() !== '' || !startDate.includes('Invalid') ) && ( dateEnd.toString() !== '' || !endDate.includes('Invalid') ) ) {
+            params = params.append('dateInit', startDate);
+            params = params.append('dateEnd', endDate);
         }
 
+        
+
+        console.log(startDate, endDate);
+        
+        
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/filtercollaborator/allby', {
             params
         }).pipe(
