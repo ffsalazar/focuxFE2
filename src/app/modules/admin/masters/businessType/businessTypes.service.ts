@@ -198,7 +198,7 @@ export class BusinessTypesService
        console.log(JSON.stringify(businessType));
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.put<BusinessType>('http://localhost:1616/api/v1/followup/businessType/businesstype/' + businessType.id,
+            switchMap(businessTypes => this._httpClient.put<BusinessType>('http://localhost:1616/api/v1/followup/businesstype/businesstype/' + businessType.id,
                 businessType
             ).pipe(
                 map((updatedBusinessType) => {

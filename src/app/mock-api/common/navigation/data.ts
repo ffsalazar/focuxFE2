@@ -129,6 +129,12 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         link : '/masters/technicalAreas'
                     },
                     {
+                        id   : 'masters.portafolio.indicator',
+                        title: 'Indicadores',
+                        type : 'basic',
+                        link : '/masters/indicators'
+                    },
+                    {
                         id   : 'masters.portafolio.businessType',
                         title: 'Tipo de negocio',
                         type : 'basic',

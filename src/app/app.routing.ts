@@ -120,6 +120,7 @@ export const appRoutes: Route[] = [
                     {path: 'technicalAreas', loadChildren: () => import('app/modules/admin/masters/technicalAreas/technicalAreas.module').then(m => m.TechnicalAreasModule)},
                     {path: 'commercialAreas', loadChildren: () => import('app/modules/admin/masters/commercialAreas/commercialAreas.module').then(m => m.CommercialAreasModule)},
                     {path: 'statuses', loadChildren: () => import('app/modules/admin/masters/statuses/statuses.module').then(m => m.StatusesModule)},
+                    {path: 'indicators', loadChildren: () => import('app/modules/admin/masters/indicators/indicators.module').then(m => m.IndicatorsModule)},
             ]},
 
 
