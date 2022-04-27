@@ -20,6 +20,22 @@ export interface Collaborator {
     client?:                 Client;
 }
 
+export interface RolesRequest {
+    id:             number,
+    name:           string,
+    description:    string,
+    isActive:       number,
+}
+
+export interface Knowledge
+{
+    id: number;
+    type: string;
+    description: string;
+    name: string;
+    isActive: number;
+}
+
 export interface EmployeePosition {
     id:          number;
     department?: EmployeePosition;
@@ -55,7 +71,8 @@ export interface AssignationOccupation {
     observations: string,
     isActive: 1,
     request: any,
-    collaborator: any
+    collaborator: any,
+    requestRole: any,
 }
 
 export interface Client

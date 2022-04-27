@@ -131,7 +131,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     isDetail: boolean = false;
     alert: boolean = false;
     successSave: String = "";
+    dataCollab = new MatTableDataSource<any>();
+
     // dataSource: Request[]
+    displayColCollab : string[] = ['id','name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
     displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest',
     'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
@@ -175,6 +178,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     activatedAlert: boolean = false;
     hasPause: boolean = false;
     isToggle:  boolean = false;
+    hasCollab: boolean = false;
 
     /*
     /**
@@ -286,13 +290,22 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Get the requestPeriod
         this._requestService.requestp$
-        .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((requestp: RequestPeriod[]) => {
-                // Update the requestp
-                this.requestp = requestp;
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((requestp: RequestPeriod[]) => {
+                    // Update the requestp
+                    this.requestp = requestp;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
+
+        this._requestService.collaborators$
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((collaborators: Collaborator[]) => {
+                    // Update the requestp
+                    this.collaborators = collaborators;
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
+                });
 
         // Get the clients
         this._requestService.clients$
@@ -959,6 +972,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     showDetail(id: number) {
         this.isDetail = true;
+        this.getCollaboratorsAssigned(id);
         this.openPopup(id);
     }
 
@@ -994,6 +1008,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     setRequestForm(request: Request) {
         // Fill the formGroup step1
+        console.log("request: ", request);
         this.step1.patchValue(request);
         this.step1.get('client').setValue(request.client.id);
         this.step1.get('commercialArea').setValue(request.commercialArea.id);
@@ -1117,6 +1132,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
+     * Get collaborators assigned
+     * 
+     * @param requestId 
+     */
+    getCollaboratorsAssigned(requestId: number) {
+        this._requestService.getCollaboratorsAssigned(requestId)
+            .subscribe(collaborators => {
+                collaborators.forEach(item => {
+                    item.name = item.name + ' ' + item.lastName;
+                });
+                this.dataCollab.data = collaborators;
+            });
+    }
+
+    /**
      * Update the selected request using the form data
      * @param requestId
      */
@@ -1124,7 +1154,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.hasPause = false;
         this.isEditing = true;
         this.openPopup(requestId);
+        this.getCollaboratorsAssigned(requestId);
     }
+
 
     /**
      * Delete the selected product using the form data
@@ -1314,16 +1346,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 //     id: 1
                 // };
 
-                requestNew.technicalArea = {
-                    id: 1
-                };
 
                 if ( !this.isEditing ) {
                     requestNew.responsibleRequest = null;
+                    requestNew.technicalArea = {
+                        id: 1
+                    };
                     // Create the request on the server
                     this.createNewRequest(requestNew);
                 } else {
-                    requestNew.responsibleRequest = this.collaborators.find(item => item.id === requestNew.responsibleRequest);
+                    requestNew.responsibleRequest = this.collaborators.find(item => item.id === 1);
+                    requestNew.technicalArea = this.technicalArea.find(item => item.id === requestNew.technicalArea);
                     // Update the request on the server
                     this.updateRequest(requestNew);
                 }
@@ -1524,4 +1557,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     setPause() {
         this.hasPause = !this.hasPause;
     }
+
+    /**
+     * Set pause
+     *
+     */
+    isShowCollab() {
+        this.hasCollab = !this.hasCollab;
+    }
+    
+    /**
+     * Set pause
+     *
+     */
+    test() {
+        console.log("heree")
+    }
+    
 }

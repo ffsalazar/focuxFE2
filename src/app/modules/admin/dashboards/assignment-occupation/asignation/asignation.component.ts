@@ -9,24 +9,21 @@ import {
 } from '@angular/core';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseAlertService } from '@fuse/components/alert';
+import { Router } from '@angular/router';
 import {
-    Activity,
     Collaborator,
-    CollaboratorOcupation,
-    EmployeePosition,
-    KnowledgeElement,
-    Phone,
     Project,
     AssignationOccupation,
+    RolesRequest,
 } from "../assignment-occupation.types";
 import {Form, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {map, startWith, takeUntil} from "rxjs/operators";
-import {Observable, Subject} from "rxjs";
+import {Observable, pipe, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
-import { Router } from '@angular/router';
 import { DateValidator } from './date-validation';
 import { limitOccupation } from '../partner-search/limit-occupation';
+
 @Component({
   selector: 'app-asignation',
   templateUrl: './asignation.component.html',
@@ -55,6 +52,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
     formOcupation: FormGroup = this._formBuilder.group({
         collaboratorOccupation: this._formBuilder.array([])
     });
+    rolesRequest$: Observable<RolesRequest[]>;
 
     constructor(
         private _assignmentOccupationService: AssingmentOccupationService,
@@ -74,6 +72,18 @@ export class AsignationComponent implements OnInit, OnDestroy {
         
         this._fuseAlertService.dismiss('alertBox4');
 
+        // this._assignmentOccupationService.collaborators$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //         .subscribe(collaborators => {
+        //             this.collaboratorOccupation = collaborators;
+        //             console.log("Entro: ", collaborators);
+        //             this._setCollaboratorsRecomm();
+
+        //         });
+
+        this.rolesRequest$ = this._assignmentOccupationService.rolesRequest$
+            .pipe(takeUntil(this._unsubscribeAll));
+                
         this._assignmentOccupationService.collaboratorSelected$
             .pipe(
                 map(collaboratorSelected => collaboratorSelected))
@@ -154,6 +164,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                         observation     : [''],
                         dateInit        : ['', Validators.required],
                         dateEnd         : ['', Validators.required],
+                        roleRequest     : ['', Validators.required],
                         isCollapse      : [false],
                     }, {validator: DateValidator});
                     
@@ -333,6 +344,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
         const assignation = this.formOcupation.getRawValue();
 
         for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+
+            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateInit').value);
+            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateEnd').value);
             const assignationOccupation: AssignationOccupation = {
                 occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
                 assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
@@ -346,7 +360,12 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 collaborator: {
                     id: this.collaboratorOccupation.at(i).get('id').value
                 },
+                requestRole: {
+                    id: this.collaboratorOccupation.at(i).get('roleRequest').value,
+                }
             };
+
+            console.log("Assignation: ", assignationOccupation);
 
             const confirmation = this._fuseConfirmationService.open({
                     title  : 'Guardar asignación',

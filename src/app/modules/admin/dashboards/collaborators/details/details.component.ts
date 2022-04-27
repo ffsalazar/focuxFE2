@@ -61,6 +61,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     filteredEmployeePositions: EmployeePosition[];
     isCreate: boolean = false;
     selectedKnowledges = [];
+    background: any = "firebasestorage.googleapis.com/v0/b/focux-f00d8.appspot.com/o/banners%2Funnamed.jpg?alt=media&token=a78e3f7a-575a-48e8-81d7-b6dec2829ceb"
 
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
@@ -121,7 +122,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             phones: this._formBuilder.array([]),
             isCentralAmerican:[''],
             leader:[[]],
-            status: [[],[Validators.required]]
+            status: [[],[Validators.required]],
+            image:['']
 
         })
 
@@ -142,13 +144,14 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             .subscribe((collaborator: Collaborator) => {
                 // Open the drawer in case it is closed
                 this._collaboratorsListComponent.matDrawer.open();
-                
+
                 // Get the collaborator
                 this.collaborator = collaborator;
 
+
                 if ( this.collaborator ) {
                     // Clear the emails and phoneNumbers form arrays
-                    
+
                     this.selectedKnowledges = this.collaborator.knowledges;
 
                     (this.collaboratorForm.get('phones') as FormArray).clear();
@@ -210,7 +213,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 } else {
                     this.isCreate = true;
                 }
-                
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -475,7 +478,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         collaborator.isCentralAmerican ? collaborator.isCentralAmerican = 1 : collaborator.isCentralAmerican = 0;
         collaborator.idFile = 0;
         collaborator.isActive = 1;
-                
+
         // Create the collaborator
         this._collaboratorsService.createCollaborator(collaborator)
             .subscribe((newCollaborator) => {
@@ -604,8 +607,26 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
             return;
         }
 
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            this._collaboratorsService.uploadImage(this.collaborator.id,reader.result).then(urlImage => {
+                console.log(urlImage);
+
+                this.collaboratorForm.get('image').setValue(urlImage);
+                this.updateCollaborator();
+                location.reload();
+
+
+            });
+        }
+
+
+
         // Upload the avatar
-        this._collaboratorsService.uploadAvatar(this.collaborator.id, file).subscribe();
+        //this._collaboratorsService.uploadAvatar(this.collaborator.id, file).subscribe();
+
+
     }
 
     /**
@@ -614,7 +635,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
     removeAvatar(): void
     {
         // Get the form control for 'avatar'
-        const avatarFormControl = this.collaboratorForm.get('avatar');
+        const avatarFormControl = this.collaboratorForm.get('image');
 
         // Set the avatar as null
         avatarFormControl.setValue(null);
@@ -623,7 +644,11 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         this._avatarFileInput.nativeElement.value = null;
 
         // Update the collaborator
-        this.collaborator.avatar = null;
+        this.collaborator.image = null;
+
+        this.updateCollaborator();
+
+        location.reload();
     }
 
     /**
@@ -1107,7 +1132,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
         }
     }
 
-    
+
 
     /**
      * checkerKnowledges

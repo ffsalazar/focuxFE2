@@ -15,6 +15,8 @@ import { appRoutes } from 'app/app.routing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+
+
 registerLocaleData(localeEs);
 
 const routerConfig: ExtraOptions = {

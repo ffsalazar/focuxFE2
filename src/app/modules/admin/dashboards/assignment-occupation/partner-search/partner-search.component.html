@@ -122,34 +122,43 @@
                     <div class="flex flex-row gap-4 ">
                         <div class="flex flex-col" style="width: 20%;">
                             <div class="flex items-center justify-start">
-                                <span class="ml-2 mb-3 font-semibold">Filtros (3)</span>
+                                <span class="ml-2 mb-3 font-semibold">Filtros (4)</span>
                             </div>
-                            <div class="flex flex-col shadow px-2" style="background: white;">
+                            <form [formGroup]="filterCollaboratorsGroup"  class="flex flex-col shadow px-2" style="background: white;">
                                 
-                                <div class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto;">
+                                <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto; ">
                                     <div class="flex items-center justify-between">
-                                        <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
+                                        <span [ngClass]="{'font-semibold': selectedFilterClient, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">{{ 'location_on' }}</mat-icon>
                                             Cliente</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterClient = !selectedFilterClient;">{{ !selectedFilterClient ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
-                                    <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
-                                        
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Todos</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Credix</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
+                                    <div *ngIf="selectedFilterClient" class="flex flex-col mt-3 px-3">
+                                        <ng-container>
+                                            <ng-container>
+                                                <div class="flex items-center gap-2">
+                                                    <mat-checkbox
+                                                        [color]="'primary'"
+                                                        >
+                                                    </mat-checkbox>
+                                                    <span>Todos</span>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container formArrayName="filterClients">
+                                                <ng-container *ngFor="let client of filterClients.controls; index as i;">
+                                                    <div [formGroupName]="i" class="flex items-center gap-2">
+                                                        <mat-checkbox
+                                                            [color]="'primary'"
+                                                            formControlName="checked"
+                                                        >
+                                                        </mat-checkbox>
+                                                        <span>{{ filterClients.at(i).controls.name.value }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                            
+                                        </ng-container>
+                                        <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 formControlName="checked">
@@ -162,33 +171,42 @@
                                                 formControlName="checked">
                                             </mat-checkbox>
                                             <span>Beconsult</span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
                                     <div class="flex items-center justify-between">
                                         <!-- <div><span><mat-icon></mat-icon>Conocimiento</span></div> -->
                                         
-                                        <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}"> <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                        <span [ngClass]="{'font-semibold': selectedFilterKnowledge, 'flex': true}"> <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterKnowledge = !selectedFilterKnowledge;">{{ !selectedFilterKnowledge ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
-                                    <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
-                                        
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Todos</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Credix</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
+                                    <div *ngIf="selectedFilterKnowledge" class="flex flex-col mt-3 px-3">
+                                        <ng-container>
+                                            <ng-container>
+                                                <div class="flex items-center gap-2">
+                                                    <mat-checkbox
+                                                        [color]="'primary'"
+                                                        >
+                                                    </mat-checkbox>
+                                                    <span>Todos</span>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container formArrayName="filterKnowledges">
+                                                <ng-container *ngFor="let knowledge of filterKnowledges.controls; index as i;">
+                                                    <div [formGroupName]="i" class="flex items-center gap-2">
+                                                        <mat-checkbox
+                                                            [color]="'primary'"
+                                                            formControlName="checked"
+                                                        >
+                                                        </mat-checkbox>
+                                                        <span>{{ filterKnowledges.at(i).controls.name.value }}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                            
+                                        </ng-container>
+                                        <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 formControlName="checked">
@@ -201,53 +219,146 @@
                                                 formControlName="checked">
                                             </mat-checkbox>
                                             <span>Beconsult</span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
                                     <div class="flex items-center justify-between">
-                                        <span [ngClass]="{'font-semibold': selectedFilter, 'flex': true}">
+                                        <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
-                                            Ocupación</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilter = !selectedFilter;">{{ !selectedFilter ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                            Disponibilidad</span>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
-                                    <div *ngIf="selectedFilter" class="flex flex-col mt-3 px-3">
-                                        
-                                        <div class="flex items-center gap-2">
+                                    <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
+                                        <mat-radio-group
+                                            aria-labelledby="example-radio-group-label"
+                                            class="example-radio-group"
+                                            [color]="'primary'"
+                                            formControlName="filterOccupation">
+                                            <mat-radio-button class="example-radio-button" *ngFor="let occupation of occupations" [value]="occupation">
+                                                {{occupation + '%'}}
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+                                        <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
                                             <span>Todos</span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
-                                            <span>Credix</span>
+                                            <span>20%</span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
-                                            <span>Epa</span>
+                                            <span>50%</span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
-                                                formControlName="checked">
+                                                >
                                             </mat-checkbox>
-                                            <span>Beconsult</span>
+                                            <span>100%</span>
+                                        </div> -->
+                                        
+                                        <div class="flex w-full flex-auto mt-2" style="width: 100% !important;">
+                                            <mat-slider
+                                                aria-label="unit(s)"
+                                                [thumbLabel]="true"
+                                                [step]="5"
+                                                [color]="'primary'"
+                                            ></mat-slider>
+                                        </div>
+
+                                        <div class="flex w-full flex-auto" style="width: 100% !important;">
+
+                                            <mat-form-field class="fuse-mat-no-subscript w-1/3">
+                                                <mat-label>Fecha fin pausa</mat-label>
+                                                <mat-icon
+                                                    matPrefix
+                                                    class="hidden sm:flex icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <input
+                                                    matInput
+                                                    [matDatepicker]="dateEndPausePicker"
+                                                    formControlName="filterDateInit"
+                                                >
+                                                <mat-datepicker-toggle
+                                                    matSuffix
+                                                    [for]="dateEndPausePicker">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #dateEndPausePicker></mat-datepicker>
+                                            </mat-form-field>
+                                            <mat-form-field class="fuse-mat-no-subscript w-1/3">
+                                                <mat-label>Fecha fin pausa</mat-label>
+                                                <mat-icon
+                                                    matPrefix
+                                                    class="hidden sm:flex icon-size-5"
+                                                    [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                <input
+                                                    matInput
+                                                    [matDatepicker]="dateEndaPausePicker"
+                                                    formControlName="filterDateEnd"
+                                                >
+                                                <mat-datepicker-toggle
+                                                    matSuffix
+                                                    [for]="dateEndaPausePicker">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #dateEndaPausePicker></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <!-- <mat-form-field style="width: 100% !important">
+                                                <mat-label>Rango de fecha</mat-label>
+                                                <mat-date-range-input [rangePicker]="picker">
+                                                  <input matStartDate formControlName="filterDateInit" placeholder="Start date">
+                                                  <input matEndDate formControlName="filterDateEnd" placeholder="End date">
+                                                </mat-date-range-input>
+                                                <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
+                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                <mat-date-range-picker #picker></mat-date-range-picker>
+                                              
+                                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                                              </mat-form-field> -->
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <!-- <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
+                                    <div class="flex items-center justify-between">
+                                        <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
+                                            <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
+                                            Fecha</span>
+                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
+                                    </div>
+                                    <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
+                                        
+                                        <mat-form-field appearance="fill">
+                                            <mat-label>Rango de fecha</mat-label>
+                                            <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                              <input matStartDate formControlName="start" placeholder="Start date">
+                                              <input matEndDate formControlName="end" placeholder="End date">
+                                            </mat-date-range-input>
+                                            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-date-range-picker #picker></mat-date-range-picker>
+                                          
+                                            <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                            <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                                          </mat-form-field>
+                                    </div>
+                                </div> -->
+                            </form>
     
                             
                         </div>
-                        <div class="bg-card py-3 px-6 rounded shadow  flex flex-col" style="width: 80%;">
+                        <div class="bg-card py-3 px-6 rounded shadow  flex flex-col" style="width: 80%; height: 100%;">
                             <!-- <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
                                 <mat-tab label="Recomendado"></mat-tab>
                                 <mat-tab label="Cliente"></mat-tab>
@@ -265,17 +376,17 @@
                                                     <ng-container [formGroupName]="i">
                                                         <!-- Group -->
                                                         <ng-container
-                                                            *ngIf="i === 0 || collaboratorOccupation[i].name.charAt(0) !== collaboratorOccupation[i - 1].name.charAt(0)">
+                                                            *ngIf="i === 0 || collaboratorOccupation[i]?.name.charAt(0) !== collaboratorOccupation[i - 1]?.name.charAt(0)">
                                                             <div
                                                                 class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                                                {{collaboratorOccupation[i].name.charAt(0)}}
+                                                                {{collaboratorOccupation[i]?.name.charAt(0)}}
                                                             </div>
                                                         </ng-container> 
                                                         <!-- Collaborator -->
                                                         
                                                         <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
-                                                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorOccupation[i].id,
-                                                                                    'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorOccupation[i].id}">
+                                                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorOccupation[i]?.id,
+                                                                                    'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorOccupation[i]?.id}">
                                                         
                                                                                     
                                                             <div class="flex flex-row ">
@@ -288,20 +399,20 @@
                                                                 
                                                                 <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
                                                                     
-                                                                    <ng-container *ngIf="collaboratorOccupation[i].avatar">
-                                                                        <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i].avatar"
+                                                                    <ng-container *ngIf="collaboratorOccupation[i]?.avatar">
+                                                                        <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i]?.avatar"
                                                                             alt="Collaborator avatar" />
                                                                     </ng-container>
-                                                                    <ng-container *ngIf="!collaboratorOccupation[i].avatar">
+                                                                    <ng-container *ngIf="!collaboratorOccupation[i]?.avatar">
                                                                         <div
                                                                             class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                                            {{collaboratorOccupation[i].name.charAt(0)}}
+                                                                            {{collaboratorOccupation[i]?.name.charAt(0)}}
                                                                         </div>
                                                                     </ng-container>
                                                                 </div>
                                                                 <div class="min-w-0 ml-4">
-                                                                    <div class="font-medium leading-5 truncate">{{collaboratorOccupation[i].name}} {{collaboratorOccupation[i].lastName}}</div>
-                                                                    <div class="leading-5 truncate text-secondary">{{collaboratorOccupation[i].employeePosition.name}}</div>
+                                                                    <div class="font-medium leading-5 truncate">{{collaboratorOccupation[i]?.name}} {{collaboratorOccupation[i]?.lastName}}</div>
+                                                                    <div class="leading-5 truncate text-secondary">{{collaboratorOccupation[i]?.employeePosition.name}}</div>
                                                                 </div>
                                                                 
                                                             </div>
@@ -313,7 +424,7 @@
                                                                         <ng-container >
                                                                             <div
                                                                                 class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                                                <span class="text-sm font-medium whitespace-nowrap">{{collaboratorOccupation[i].client.name}}</span>
+                                                                                <span class="text-sm font-medium whitespace-nowrap">{{collaboratorOccupation[i]?.client.name}}</span>
                                                                             </div>
                                                                         </ng-container>
                                                                     
@@ -321,12 +432,12 @@
                                                                 </ng-container>
                                                             
                                                             <div class="flex flex-col mr-16">
-                                                                <mat-label>Ocupación {{ collaboratorOccupation[i].occupationPercentage }} % </mat-label>
+                                                                <mat-label>Ocupación {{ collaboratorOccupation[i]?.occupationPercentage }} % </mat-label>
                                                                 <mat-progress-bar
                                                                     class="mt-3 rounded-full w-60"
                                                                     [mode]="'determine'"
-                                                                    [color]="collaboratorOccupation[i].occupationPercentage >= 100 ? 'primary' : 'warn'"
-                                                                    [value]="collaboratorOccupation[i].occupationPercentage"
+                                                                    [color]="collaboratorOccupation[i]?.occupationPercentage >= 100 ? 'primary' : 'warn'"
+                                                                    [value]="collaboratorOccupation[i]?.occupationPercentage"
                                                                 >
                                                                 </mat-progress-bar>
                                                             </div>
@@ -379,7 +490,7 @@
                         </div>
                     </div>
                 </ng-container>
-
+                <ngx-spinner></ngx-spinner>
                 <app-update-occupation
                     *ngIf="isEditing"
                     [fullName]="collaborator.name + ' ' + collaborator.lastName"

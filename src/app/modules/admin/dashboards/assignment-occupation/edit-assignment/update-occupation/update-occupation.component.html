@@ -82,7 +82,7 @@
                                                 >
                                             </mat-progress-bar> -->
                                     </div>
-                                    <div class="flex flex-col">
+                                    <!-- <div class="flex flex-col">
                                         <mat-label class="font-semibold">Ocupación</mat-label>
                                         <mat-form-field [ngClass]="formFieldHelpers" class="w-50 mr-5">
                                             <input formControlName="occupation" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
@@ -90,10 +90,43 @@
                                             <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
                                         </mat-form-field>
                                         
-                                    </div>
+                                    </div> -->
                                 </div>
-                                <div class="flex flex-row ">
-                                    <div class="flex flex-col ">
+                                <div class="flex flex-row gap-8 mr-6 justify-end" style="width: 60%;">
+                                    <mat-form-field [ngClass]="formFieldHelpers" class="w-1/4">
+                                        <mat-label class="font-semibold">Ocupación</mat-label>
+
+                                        <input formControlName="occupation" matInput [placeholder]="'Ingrese ocupación'"><span matSuffix>%</span>
+                                        <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
+                                        <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-1/4">
+                                        <mat-label>Rol de solicitud</mat-label>
+                                        <mat-select formControlName="roleRequest"  [readonly]="isDetail " [disabled]="isDetail">
+                                            <ng-container *ngFor="let role of rolesRequest$ | async">
+                                                <mat-option [value]="role.id">
+                                                    {{role.name}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <!-- <mat-error
+                                            *ngIf="!step1.get('commercialArea').valid && (step1.get('commercialArea').dirty || step1.get('commercialArea').touched)">
+                                            El campo es obligatorio</mat-error> -->
+                                    </mat-form-field>
+                                    <mat-form-field class="w-1/3">
+                                        <mat-label>Fecha ocupación</mat-label>
+                                        <mat-date-range-input [rangePicker]="picker">
+                                          <input matStartDate formControlName="dateInit" placeholder="Start date">
+                                          <input matEndDate formControlName="dateEnd" placeholder="End date">
+                                        </mat-date-range-input>
+                                        <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #picker></mat-date-range-picker>
+                                      
+                                        <!-- <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error> -->
+                                    </mat-form-field>
+                                    <!-- <div class="flex flex-col ">
                                         <mat-label class="font-semibold">Fecha Inicio: </mat-label>
                                         <mat-form-field class="w-40 mr-5" [ngClass]="formFieldHelpers">
                                             <input formControlName="dateInit" matInput [placeholder]="'mm/dd/yyyy'" [matDatepicker]="picker1">
@@ -111,7 +144,7 @@
                                             <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('dateEnd').valid && (formOcupation.get('collaboratorOccupation').at(i).get('dateEnd').dirty || formOcupation.get('collaboratorOccupation').at(i).get('dateEnd').touched)">El campo es obligatorio</mat-error>
                                             <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).hasError('dates')">La fecha debe ser menor a fecha inicio</mat-error>
                                         </mat-form-field>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="flex flex-row mr-6">
                                     <div class="flex flex-col whitespace-nowrap" style="justify-content: space-between !important;

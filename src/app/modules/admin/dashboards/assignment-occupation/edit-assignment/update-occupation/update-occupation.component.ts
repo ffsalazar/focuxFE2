@@ -2,10 +2,13 @@ import { ChangeDetectorRef, Component, Input, OnInit, Output, EventEmitter, OnDe
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FuseAlertService } from '@fuse/components/alert';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { Collaborator } from '../../../collaborators/collaborators.types';
 import { DateValidator } from '../../asignation/date-validation';
+import {
+    RolesRequest,
+} from "../../assignment-occupation.types";
 import { AssingmentOccupationService } from '../../assingment-occupation.service';
 import { limitOccupation } from '../../partner-search/limit-occupation';
 
@@ -24,6 +27,8 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 	@Input('collaborator') collaborator;
 	@Output('returnPrevious') returnPrevious: EventEmitter<any> = new EventEmitter();
 	@Output('deleteAssignment') deleteAssignment: EventEmitter<any> = new EventEmitter();
+
+	rolesRequest$: Observable<RolesRequest[]>;
 
 	collaboratorOccupations: any = null;
 	successSave: string;
@@ -59,6 +64,9 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 	 */
 	ngOnInit(): void {
 		
+		this.rolesRequest$ = this._assignmentOccupationService.rolesRequest$
+            .pipe(takeUntil(this._unsubscribeAll));
+
 		this._fuseAlertService.onDismiss
 			.pipe(takeUntil(this._unsubscribeAll))
 				.subscribe(response => {
@@ -113,25 +121,10 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 			.subscribe(occupations => {
 				this._calculatePercentageTotal(occupations);
 
-				// if ( occupations.length > 0 ) {
-				// 	for (let i = 0; i < occupations.length; i++) {
-				// 		this.collaboratorOccupation.at(i).setValidators(limitOccupation(this.percentageTotal));
-				// 		this.collaboratorOccupation.at(i).updateValueAndValidity({onlySelf: true, emitEvent:false});
-				// 	}
-				// }
-
-				
 				// Mark for check
 				this._changeDetectorRef.markForCheck();
 			})
 	}
-
-	// test() {
-	// 	for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-	// 		this.collaboratorOccupation.at(i).setValidators(limitOccupation(this.percentageTotal));
-	// 		this.collaboratorOccupation.at(i).updateValueAndValidity({onlySelf: true, emitEvent: true});
-	// 	}
-	// }
 
 	/**
 	 * Calculate percentage total
@@ -155,7 +148,7 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 			this.collaboratorOccupation.clear();
 
 			collaborator.assigments.forEach(item => {
-				
+				console.log("item: ", item);
 				if ( item && item?.isActive ) {
 					let collaboratorOccupation: FormGroup = this._formBuilder.group({
 						id              : [item.id],
@@ -166,6 +159,7 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 						observation     : [item.observations],
 						dateInit        : [item.assignmentStartDate, Validators.required],
 						dateEnd         : [item.assignmentEndDate, Validators.required],
+						roleRequest     : [item.roleId, Validators.required],
 						isCollapse      : [false],
 					}, {validator: DateValidator});
 					
@@ -360,7 +354,10 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 			collaborator: {
 				id: this.collaborator.id
 			},
-			id: assignation.id
+			id: assignation.id,
+			requestRole: {
+				id: this.collaboratorOccupation.at(i).get('roleRequest').value,
+			}
 		};
 
 		const confirmation = this._fuseConfirmationService.open({

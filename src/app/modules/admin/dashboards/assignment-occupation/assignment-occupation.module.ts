@@ -7,6 +7,7 @@ import {TranslocoModule} from "@ngneat/transloco";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatMenuModule} from "@angular/material/menu";
+ import {MatRadioModule} from '@angular/material/radio'; 
 import {MatRippleModule, MAT_DATE_LOCALE} from "@angular/material/core";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {RouterModule} from "@angular/router";
@@ -14,8 +15,8 @@ import {RequestPanelRoutes} from "../requestPanel/requestPanel.routing";
 import {AssignmentOccupationRouter} from "./assignment-occupation.routing";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {AssingmentOccupationService} from "./assingment-occupation.service";
 import {MatSelectModule} from "@angular/material/select";
+ import {MatSliderModule} from '@angular/material/slider'; 
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SearchBoxModule} from "../../../../shared/components/search-box/search-box.module";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -30,9 +31,13 @@ import { FilterCollaboratorPipe } from './pipes/filter-collaborator.pipe';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgxSpinnerModule } from "ngx-spinner";
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {AssingmentOccupationService} from "./assingment-occupation.service";
 import { EditAssignmentComponent } from './edit-assignment/edit-assignment.component';
 import { UpdateOccupationComponent } from './edit-assignment/update-occupation/update-occupation.component';
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
+import { RolesRequestResolver } from './assignment.resolvers';
+import { DatePipe } from '@angular/common';
+
 @NgModule({
   declarations: [
     AssignmentOccupationComponent,
@@ -69,6 +74,8 @@ import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators
         MatCheckboxModule,
         NgxSpinnerModule,
         MatTooltipModule,
+        MatSliderModule,
+        MatRadioModule,
     ],
     schemas: [
           CUSTOM_ELEMENTS_SCHEMA,

@@ -18,6 +18,21 @@
     }
 }
 
+.example-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+    align-items: flex-start;
+}
+
+.example-radio-button {
+    margin: 5px;
+}
+
+mat-slider {
+    width: 100% !important;
+}
+
 .filter-item {
     width: 100%;
     height: 50px;
@@ -27,6 +42,11 @@
     cursor: pointer;
     border-style: solid;
 }
+
+// .filter-item:hover {
+//     --tw-bg-opacity: 1 !important;
+//     background-color: rgba(241, 245, 249, var(--tw-bg-opacity)) !important;
+// }
 
 .pointer {
     cursor: pointer;

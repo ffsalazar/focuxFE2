@@ -3,11 +3,12 @@ import {PartnerSearchComponent} from "./partner-search/partner-search.component"
 import {AsignationComponent} from "./asignation/asignation.component";
 import {AssignmentOccupationComponent} from "./assignment-occupation.component";
 import {
-    RequestBrandsResolver,
-    RequestCategoriesResolver,
-    RequestTagsResolver,
-} from "../../apps/portafolio/request/request.resolvers";
-import { CollaboratorsResolver, ClientsResolver, OccupationCollaboratorResolver } from "./assignment.resolvers";
+    CollaboratorsResolver,
+    ClientsResolver,
+    OccupationCollaboratorResolver,
+    KnowledgesResolver,
+    RolesRequestResolver,
+} from "./assignment.resolvers";
 
 
 export const AssignmentOccupationRouter: Route[] = [
@@ -34,6 +35,9 @@ export const AssignmentOccupationRouter: Route[] = [
             component: PartnerSearchComponent,
             resolve  : {
                 clients: ClientsResolver,
+                knowledges: KnowledgesResolver,
+                collaborators: OccupationCollaboratorResolver,
+                rolesRequest: RolesRequestResolver
                 //recommended : RecommendedResolver
             }
         },

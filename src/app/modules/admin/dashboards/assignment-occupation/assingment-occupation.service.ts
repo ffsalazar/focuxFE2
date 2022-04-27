@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 import data from './data/data.json';
 import activitys from './data/activitys.json'
-import { Activity, Collaborator, Client, Status, AssignationOccupation } from "./assignment-occupation.types";
+import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge, RolesRequest } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { tap } from 'rxjs/operators';
+import { tap, switchMap, filter, toArray } from 'rxjs/operators';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
 import { LoadingSpinnerService } from 'app/core/services/loading-spinner/loading-spinner.service';
 
@@ -25,6 +26,8 @@ export class AssingmentOccupationService {
     private _requestSelected: any = null;
     private _collaboratorSelectedRemove: BehaviorSubject<number | null> = new BehaviorSubject(null);
     private _isSuccess: Subject<boolean | null> = new Subject();
+    private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
+    private _rolesRequest: BehaviorSubject<RolesRequest[] | null> = new BehaviorSubject(null);
 
     collaborators: any;
 
@@ -38,6 +41,7 @@ export class AssingmentOccupationService {
     constructor(
         private _httpClient: HttpClient,
         private _loadingSpinnerService: LoadingSpinnerService,
+        private spinner: NgxSpinnerService,
     ) { }
 
 
@@ -76,10 +80,26 @@ export class AssingmentOccupationService {
     }
 
     /**
+     * Getter for knowledges
+     */
+     get knowledges$(): Observable<Knowledge[]>
+     {
+         return this._knowledges.asObservable();
+     }
+
+    /**
      * Getter for requestSelected
      */
     get requestSelected() {
         return this._requestSelected;
+    }
+
+    /**
+     * Getter for rolesRequest
+     * 
+     */
+    get rolesRequest$(): Observable<any> {
+        return this._rolesRequest.asObservable();
     }
 
     /**
@@ -230,10 +250,53 @@ export class AssingmentOccupationService {
     }
 
     /**
+     * Get knowledges
+     *
+     */
+    getKnowledges(): Observable<Knowledge[]>
+    {
+        return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
+            
+        switchMap(knowledges => knowledges),
+            filter(knowledges => knowledges.isActive !== 0),
+            toArray(),
+            tap(knowledges => {
+                this._knowledges.next(knowledges);
+            })
+        );
+    }
+
+    /**
+     * Sort Array
+     *
+     */
+    private _sortArray(x, y): number {
+        if (x.name < y.name) {return -1; }
+        if (x.name > y.name) {return 1; }
+        return 0;
+    }
+
+    /**
+     * Get Roles Request
+     *
+     */
+     getRolesRequest(): Observable<RolesRequest[]>
+     {
+        return this._httpClient.get<RolesRequest[]>('http://localhost:1616/api/v1/followup/requestrole/all').pipe(
+            switchMap(rolesRequest => rolesRequest.sort(this._sortArray)),
+            filter(roleRequest => roleRequest.isActive !== 0),
+            toArray(),
+            tap(rolesRequest => {
+                this._rolesRequest.next(rolesRequest);
+            })
+        );
+    }
+
+    /**
      * Get collaborators by client
-     *  
-     * @param clientId 
-     * @returns 
+     *
+     * @param clientId
+     * @returns
      */
     getCollaboratorsByClient(clientId: number): Observable<Collaborator[]> {
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/projectleads/', {
@@ -252,8 +315,8 @@ export class AssingmentOccupationService {
 
     /**
      * Remove collaborator selected
-     * 
-     * @param collaboratorId 
+     *
+     * @param collaboratorId
      */
     removeCollaboratorSelected(collaboratorId: number): void {
         // Remove collaborators selected
@@ -301,14 +364,14 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allconditions/' + requestId)
-        .pipe(
-            tap((recommended)=>{
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended)=>{
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-            })
-        );
+                    this._recommended.next(recommended);
+                })
+            );
     }
      	
     /**
@@ -320,14 +383,14 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allclients/' + requestId)
-        .pipe(
-            tap((recommended) => {
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended) => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-            })
-        );
+                    this._recommended.next(recommended);
+                })
+            );
     }
 
     /**
@@ -339,15 +402,15 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/knowledgeclient/' + requestId)
-        .pipe(
-            tap((recommended) => {
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended) => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-                
-            })
-        );
+                    this._recommended.next(recommended);
+                    
+                })
+            );
     }
     
     /**
@@ -360,14 +423,14 @@ export class AssingmentOccupationService {
         this._loadingSpinnerService.startLoading();
 
         return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/free/' + requestId)
-        .pipe(
-            tap((recommended) => {
-                /** spinner ends after 5 seconds */
-                this._loadingSpinnerService.stopLoading();
+            .pipe(
+                tap((recommended) => {
+                    /** spinner ends after 5 seconds */
+                    this._loadingSpinnerService.stopLoading();
 
-                this._recommended.next(recommended);
-            })
-        );
+                    this._recommended.next(recommended);
+                })
+            );
     }
 
     /**
@@ -430,29 +493,29 @@ export class AssingmentOccupationService {
                     /** spinner ends after 5 seconds */
                     this._loadingSpinnerService.stopLoading();
                     
-                let collaboratorFiltered : any[]=[];
+                    let collaboratorFiltered : any[]=[];
 
-                 function compareOcupation(a: any, b: any) {
-                    if (a.occupationPercentage < b.occupationPercentage) return -1;
-                    if (a.occupationPercentage > b.occupationPercentage) return 1;
-                    return 0;
-                }
-                function compare(a: Collaborator, b: Collaborator) {
-                        if (a.name < b.name) return -1;
-                        if (a.name > b.name) return 1;
-                        // Their names are equal
-                        if (a.lastName < b.lastName) return -1;
-                        if (a.lastName > b.lastName) return 1;
-
+                    function compareOcupation(a: any, b: any) {
+                        if (a.occupationPercentage < b.occupationPercentage) return -1;
+                        if (a.occupationPercentage > b.occupationPercentage) return 1;
                         return 0;
                     }
-                
-                let collaboratorsTmp = collaborators.sort(compare);
-                collaboratorsTmp.sort(compareOcupation);
-                collaboratorFiltered = collaboratorsTmp.filter((item)=> item.isActive ===1);
-                
-                this.collaborators = [...collaboratorFiltered];
-                this._collaborators.next(collaboratorFiltered);
+                    function compare(a: Collaborator, b: Collaborator) {
+                            if (a.name < b.name) return -1;
+                            if (a.name > b.name) return 1;
+                            // Their names are equal
+                            if (a.lastName < b.lastName) return -1;
+                            if (a.lastName > b.lastName) return 1;
+
+                            return 0;
+                        }
+                    
+                    let collaboratorsTmp = collaborators.sort(compare);
+                    collaboratorsTmp.sort(compareOcupation);
+                    collaboratorFiltered = collaboratorsTmp.filter((item)=> item.isActive ===1);
+                    
+                    this.collaborators = [...collaboratorFiltered];
+                    this._collaborators.next(collaboratorFiltered);
                 })
             )
     }
@@ -494,6 +557,57 @@ export class AssingmentOccupationService {
         return this._httpClient.put<any>('http://localhost:1616/api/v1/followup/occupationassignments/status/' + occupationId,
             occupation
         );
+    }
+    
+    /**
+     * Delete occupation
+     * 
+     * @param occupationId 
+     * @param occupation 
+     * @returns 
+     */
+    getFilterCollaborator(clientsId: number[], knowledgesId: number[], occupation: number, dateInit: string, dateEnd: string): Observable<any> {
+        /** spinner starts on init */
+        //this._loadingSpinnerService.startLoading();
+
+        //this.spinner.show();
+
+        let params = new HttpParams();
+
+        if ( clientsId.length > 0 ) {
+            params = params.append('clientsId', clientsId.join(','));
+        }
+        
+        if ( knowledgesId.length > 0 ) {
+            params = params.append('knowledgesId', knowledgesId.join(','));
+        }
+
+        if ( occupation ) {
+            params = params.append('occupation', occupation);
+        }
+
+        console.log("dateInit: ", dateInit);
+        console.log("dateEnd: ", dateEnd);
+        // const dateInits = this.datePipe.transform(dateInit, 'dd-MM-yyyy');
+        // const dateEnds = this.datePipe.transform(dateEnd, 'dd-MM-yyyy');
+
+        if ( dateInit !== '' && dateEnd !== '' ) {
+            params = params.append('dateInit', dateInit);
+            params = params.append('dateEnd', dateEnd);
+        }
+
+        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/filtercollaborator/allby', {
+            params
+        }).pipe(
+            tap(collaborators => {
+                /** spinner ends after 5 seconds */
+                //this._loadingSpinnerService.stopLoading();
+                this.spinner.hide();
+
+                this._collaborators.next(collaborators);
+
+            }
+        ));
     }
 
 }

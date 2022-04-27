@@ -582,7 +582,7 @@ export class RequestService
      */
     getBusinessType(): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all/').pipe(
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all/').pipe(
             tap(businessType => {
 
                 this._businessType.next(businessType);
@@ -608,7 +608,32 @@ export class RequestService
         );
     }
 
+    /**
+     * Compare
+     * 
+     * @param a 
+     * @param b 
+     * @returns 
+     */
+    private _compare(a: Collaborator, b: Collaborator) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        // Their names are equal
+        if (a.lastName < b.lastName) return -1;
+        if (a.lastName > b.lastName) return 1;
 
+        return 0;
+    }
+
+    getCollaboratorsAssigned(requestId: number): Observable<Collaborator[]> {
+        return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/requests/assigned/' + requestId)
+            .pipe(
+                map(collaborators => collaborators.sort(this._compare)),
+                tap(collaborators => {
+                    this._collaborators.next(collaborators);
+                })
+            );
+    }
 
     /**
      * 

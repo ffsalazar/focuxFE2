@@ -71,9 +71,17 @@
                             <mat-form-field class="w-1/4 pr-2 pt-2">
                                 <mat-label>Cliente</mat-label>
                                 <mat-select [formControlName]="'clientControl'" multiple="multiple">
-                                    <ng-container>
+                                    <ng-container >
                                         <mat-option #allSelectedClients (click)="toggleAllSelectionClients()" [value]="0">All</mat-option>
-                                        <mat-option *ngFor="let client of clients" [value]="client.name">{{client.name}} </mat-option>
+                                        <mat-option (mouseover)="updateSelectedItem(i)"  *ngFor="let client of clients; let i = index" [value]="client.name">{{client.name}}
+                                            <span *ngIf="indexActive == i">
+                                                <i [ngClass]="updateSpan(i) ? 'visible' : 'invisible'"
+                                                   (click)="selectOnlyClient(client)"
+                                                    class="underline not-italic text-xs "
+                                                    style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;"
+                                                >{{updateSpan(i) ? 'SOLAMENTE' : ''}}</i>
+                                            </span>
+                                         </mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
@@ -83,7 +91,15 @@
                                 <mat-select [formControlName]="'leaderControl'" multiple="multiple">
                                     <ng-container>
                                         <mat-option #allSelectedLeaders (click)="toggleAllSelectionLeaders()" [value]="0">All</mat-option>
-                                        <mat-option *ngFor="let leader of leaders" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase}} {{leader.lastName.split(' ')[0] | titlecase}} </mat-option>
+                                        <mat-option (mouseover)="updateSelectedItem(i)" *ngFor="let leader of leaders; let i = index" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase}} {{leader.lastName.split(' ')[0] | titlecase}}
+                                            <span *ngIf="indexActive == i">
+                                                <i [ngClass]="updateSpan(i) ? 'visible' : 'invisible'"
+                                                   (click)="selectOnlyLeader(leader)"
+                                                   class="underline not-italic text-xs "
+                                                   style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;"
+                                                >{{updateSpan(i) ? 'SOLAMENTE' : ''}}</i>
+                                            </span>
+                                        </mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
@@ -94,7 +110,16 @@
                                 <mat-select  [formControlName]="'statusControl'" multiple="multiple">
                                     <ng-container >
                                         <mat-option #allSelectedStatuses (click)="toggleAllSelectionStatuses()" [value]="0">All</mat-option>
-                                        <mat-option *ngFor="let status of statuses" [value]="status.name">{{status.name}}</mat-option>
+                                        <mat-option (mouseover)="updateSelectedItem(i)" (mouseleave)="updateUnselectItem(i)" *ngFor="let status of statuses; let i = index" [value]="status.name">{{status.name}}
+                                            <span  *ngIf="indexActive == i">
+                                                <i
+
+                                                   (click)="selectOnlyStatus(status)"
+                                                   class="underline not-italic text-xs "
+                                                   style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;"
+                                                >{{updateSpan(i) ? 'SOLAMENTE' : ''}}</i>
+                                            </span>
+                                        </mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
@@ -118,7 +143,7 @@
                 </div>
                 <!-- <fuse-alert
                     *ngIf="activatedAlert"
-                    [type]="'success'" 
+                    [type]="'success'"
                     [dismissible]="true"
                     [dismissed]="true"
                     [name]="'alertBox4'"
@@ -146,13 +171,13 @@
                                                 'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaborator.id}"
                                     [routerLink]="['./profile', collaborator.id]">
                                     <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                        <ng-container *ngIf="collaborator.avatar">
+                                        <ng-container *ngIf="collaborator.image">
                                             <img
                                                 class="object-cover w-full h-full"
-                                                [src]="collaborator.avatar"
+                                                [src]="collaborator.image"
                                                 alt="Collaborator avatar"/>
                                         </ng-container>
-                                        <ng-container *ngIf="!collaborator.avatar">
+                                        <ng-container *ngIf="!collaborator.image">
                                             <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                                 {{collaborator.name.charAt(0)}}
                                             </div>
