@@ -45,7 +45,12 @@
                                                 [placeholder]="'Responsable'"
                                                 matInput
                                                 formControlName="collaboratorControl"
-                                                [matAutocomplete]="autoCollaborator" >
+                                                [matAutocomplete]="autoCollaborator"
+                                                matTooltip="No hay Responsables"
+                                                [matTooltipDisabled]="filteredCollaborators.length > 0"
+                                                [matTooltipClass]="'matTooltipResponsibleCustom'"
+                                                [matTooltipPosition]="'right'"
+                                            >
                                                 
                                             <mat-autocomplete #autoCollaborator="matAutocomplete">
                                                 <mat-option *ngFor="let collaborator of filteredCollaborators" [value]="collaborator">
@@ -82,14 +87,17 @@
                                         <mat-label class="font-semibold">Solicitudes</mat-label>
                                         <mat-form-field (click)="validateCollaborator()" class="" style="width: 100%;" appearance="fill">
                                             <input
-                                                matTooltip="No hay solicitudes"
-                                                [matTooltipDisabled]="filteredRequest.length > 0"
-                                                [matTooltipClass]="'matTooltipCustom'"
                                                 type="text" placeholder="Solicitud"
                                                 aria-label="Number"
                                                 matInput
                                                 formControlName="requestControl"
-                                                [matAutocomplete]="auto">
+                                                [matAutocomplete]="auto"
+                                                matTooltip="No hay solicitudes"
+                                                [matTooltipDisabled]="filteredRequest.length > 0"
+                                                [matTooltipClass]="'matTooltipCustom'"
+                                                [matTooltipClass]="'matTooltipResponsibleCustom'"
+                                                [matTooltipPosition]="'left'"
+                                            >
                                             
                                                 <mat-autocomplete #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredRequest" [value]="option">
@@ -333,11 +341,16 @@
                                             <!-- <div class="">
                                                 <span>100%</span>
                                             </div> -->
+                                            <div class="flex justify-between" [class]="'example-label-horizontal'">
+                                                <label id="example-name-label" class="example-name-label">Ocupación</label>
+                                                <label class="example-value-label">{{ filterOccupation.value }}%</label>
+                                              </div>
                                             <mat-slider
                                                 aria-label="unit(s)"
                                                 [thumbLabel]="true"
                                                 [step]="5"
                                                 [color]="'primary'"
+                                                formControlName="filterOccupation"
                                             ></mat-slider>
                                         </div>
 
@@ -388,8 +401,8 @@
                                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                                 <mat-date-range-picker #picker></mat-date-range-picker>
                                               
-                                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
-                                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Fecha Invalida</mat-error>
+                                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fecha Invalida</mat-error>
                                               </mat-form-field>
                                         </div>
                                     </div>

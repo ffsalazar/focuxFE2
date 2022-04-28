@@ -85,7 +85,17 @@ mat-slider {
     color: white !important;
     font-size: 18px !important;
     left: 0px !important;
-    margin-left: 10px;
+    margin-right: 30px;
+    margin-top: 4px !important;
+    background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;
+}
+
+.matTooltipResponsibleCustom {
+    max-width: 300px !important;
+    color: white !important;
+    font-size: 18px !important;
+    left: 0px !important;
+    margin-left: 30px;
     margin-top: 4px !important;
     background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;;
 }
@@ -118,6 +128,22 @@ mat-slider {
 //         color: blue !important;
 //     }
 // } 
+
+.example-result-card .example-label-container .example-label-horizontal {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 12px 16px;
+    max-width: 284px;
+}
+
+.example-result-card .example-label-container .example-label-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 68px;
+    height: 48px;
+}
 
 .example-form {
     //min-width: 150px;

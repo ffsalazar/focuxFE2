@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { Activity, Collaborator, Project, Client, Status, Knowledge } from "../assignment-occupation.types";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
-import {FormArray, FormControl} from "@angular/forms";
+import {AbstractControl, FormArray, FormControl} from "@angular/forms";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {map, startWith, takeUntil, finalize} from "rxjs/operators";
 import {MatPaginator} from "@angular/material/paginator";
@@ -81,14 +81,17 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     selectedClients: any = [];
     occupations: number[] = [15, 50, 100];
     filterCollaboratorsGroup: FormGroup;
-    range = new FormGroup({
+    range: FormGroup = new FormGroup({
         start: new FormControl(),
         end: new FormControl(),
     });
+    valueSlider: FormControl = new FormControl(0);
+
     dataCollab = new MatTableDataSource<any>();
 
-    // dataSource: Request[]
     displayColCollab : string[] = ['id','name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
+
+
     /**
      * Constructor
      */
@@ -106,7 +109,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.filterCollaboratorsGroup = this._fb.group({
             filterClients       :   new FormArray([]),
             filterKnowledges    :   new FormArray([]),
-            filterOccupation    :   [''],
+            filterOccupation    :   [0],
             filterDateInit      :   [''],
             filterDateEnd       :   [''],
         });
@@ -119,21 +122,20 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
+        // Get collaborators assigned to Request
         this.getCollaboratorsAssigned(8);
 
+        this.valueSlider.valueChanges.subscribe(resp => console.log("resp: ", resp));
         this._assignmentOccupationService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(collaborators => {
                     this.collaboratorOccupation = collaborators;
-                    console.log("Entro: ", collaborators);
                     this._setCollaboratorsRecomm();
-
                 });
      
 
         this.filterCollaboratorsGroup.valueChanges
             .subscribe(values => {
-                console.log("Values: ", values);
                 const filteredClients = values.filterClients.filter(item => item.checked && item.id);
                 const clientsId = filteredClients.map(item => item.id);
                 const filteredKnowledges = values.filterKnowledges.filter(item => item.checked && item.id);
@@ -144,7 +146,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
                 this._assignmentOccupationService.getFilterCollaborator(clientsId, knowledgesId, occupation, dateInit, dateEnd)
                     .subscribe(response => {
-                        console.log("response: ", response);
                         //this._setCollaboratorsRecomm();
                     });
             });
@@ -195,7 +196,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         
         
         this._handleEventSavedOccupation();
-        //this._handleChangeArrayForm();
         this._handleChangeStatus();
         this._getStatus();
         this._getClients();
@@ -203,11 +203,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._getResponsibleByClient();
         this._handleChangeResponsible()
         this._getCollaboratorsByRequest();
-        
-        // Listener event from tab
         this._handleEventTab();
-
-        // Get all collaborators
         this._getAllCollaboratorOccupation();
     }
 
@@ -268,8 +264,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     /**
      * Filter occupations
      */
-    get filterOccupations(): FormArray {
-        return this.filterCollaboratorsGroup.get('occupations') as FormArray;
+    get filterOccupation(): AbstractControl {
+        return this.filterCollaboratorsGroup.get('filterOccupation');
     }
     
     // -----------------------------------------------------------------------------------------------------
@@ -406,7 +402,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 if ( value ) {
                     this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
 
+                    console.log("selecte Responsible: ", this.selectedResponsible);
                     if ( this.selectedResponsible ) {
+                        console.log("entro");
                         // Get all request by responsible
                         this._getRequestByResponsible( this.selectedResponsible );
                     } else if ( this.selectedClient ) {
@@ -537,7 +535,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.getRequestByClient( clientId, this.statusControl.value || 8 )
             .subscribe(requests => {
                 this.requests = requests;
-                console.log("request: ", requests);
                 this.requestControl.setValue('');
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -593,7 +590,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.requestControl.valueChanges
             .subscribe(value => {
                 // Get recommended
-                this.getCollaboratorsRecommended();
+                //this.getCollaboratorsRecommended();
             });
     }
 

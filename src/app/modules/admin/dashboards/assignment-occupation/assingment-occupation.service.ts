@@ -6,7 +6,7 @@ import data from './data/data.json';
 import activitys from './data/activitys.json'
 import { Activity, Collaborator, Client, Status, AssignationOccupation, Knowledge, RolesRequest } from "./assignment-occupation.types";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { tap, switchMap, filter, toArray } from 'rxjs/operators';
+import { tap, switchMap, filter, toArray, take } from 'rxjs/operators';
 import { PartnerSearchComponent } from './partner-search/partner-search.component';
 import { LoadingSpinnerService } from 'app/core/services/loading-spinner/loading-spinner.service';
 
@@ -347,7 +347,6 @@ export class AssingmentOccupationService {
      * @returns 
      */
     getRequestByClient(clientId: number, statusId: number): Observable<any[]> {
-        console.log("Obtener solic por responsables con status: ", statusId );
 
         return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/client/' + clientId, {
             params: {
@@ -561,6 +560,36 @@ export class AssingmentOccupationService {
     }
     
     /**
+     * Compare occupation
+     * 
+     * @param a 
+     * @param b 
+     * @returns 
+     */
+    private _compareOcupation(a: any, b: any) {
+        if (a.occupationPercentage < b.occupationPercentage) return -1;
+        if (a.occupationPercentage > b.occupationPercentage) return 1;
+        return 0;
+    }
+    
+    /**
+     * Compare
+     * 
+     * @param a 
+     * @param b 
+     * @returns 
+     */
+    private _compare(a: Collaborator, b: Collaborator) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        // Their names are equal
+        if (a.lastName < b.lastName) return -1;
+        if (a.lastName > b.lastName) return 1;
+
+        return 0;
+    }
+
+    /**
      * Delete occupation
      * 
      * @param occupationId 
@@ -569,9 +598,9 @@ export class AssingmentOccupationService {
      */
     getFilterCollaborator(clientsId: number[], knowledgesId: number[], occupation: number, dateInit: Date, dateEnd: Date): Observable<any> {
         /** spinner starts on init */
-        //this._loadingSpinnerService.startLoading();
+        this._loadingSpinnerService.startLoading();
 
-        //this.spinner.show();
+        this.spinner.show();
 
         let params = new HttpParams();
 
@@ -587,14 +616,6 @@ export class AssingmentOccupationService {
             params = params.append('occupation', occupation);
         }
 
-        console.log("dateInit: ", dateInit);
-        console.log("dateEnd: ", dateEnd);
-
-        const ab = {
-            a: dateInit,
-            b: dateEnd,
-        };
-
         const startDate = moment(dateInit).format('L').split('/').join('-');
         const endDate = moment(dateEnd).format('L').split('/').join('-')
 
@@ -602,18 +623,17 @@ export class AssingmentOccupationService {
             params = params.append('dateInit', startDate);
             params = params.append('dateEnd', endDate);
         }
-
-        
-
-        console.log(startDate, endDate);
-        
         
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/filtercollaborator/allby', {
             params
         }).pipe(
+            switchMap(collaborators => collaborators.sort(this._compare)),
+            toArray(),
+            switchMap(collaborators => collaborators.sort(this._compareOcupation)),
+            toArray(),
             tap(collaborators => {
                 /** spinner ends after 5 seconds */
-                //this._loadingSpinnerService.stopLoading();
+                this._loadingSpinnerService.stopLoading();
                 this.spinner.hide();
 
                 this._collaborators.next(collaborators);
