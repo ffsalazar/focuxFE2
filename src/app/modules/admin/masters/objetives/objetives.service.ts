@@ -96,8 +96,8 @@ export class ObjetivesService {
 
                         objetiveFiltered = objetiveFiltered.filter(
                             (objetive) =>
-                                objetive.targetName &&
-                                objetive.targetName
+                                objetive.name &&
+                                objetive.name
                                     .toLowerCase()
                                     .includes(query.toLowerCase())
                         );
