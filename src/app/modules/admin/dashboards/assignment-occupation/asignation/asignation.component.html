@@ -1,9 +1,14 @@
 <div class="flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
-    
+
     <div class="w-full">
-        <fuse-alert
+
+        <div class="flex flex-col">
+            <div class="flex flex-row mt-0">
+                <div class="flex flex-col" style="width: 100%;">
+                    <div class="h-13" style="width: 180%;">
+                        <fuse-alert class="h-13" style="width: 100%;"
             *ngIf="activatedAlert"
-            [type]="'success'" 
+            [type]="'success'"
             [dismissible]="true"
             [dismissed]="true"
             [name]="'alertBox4'"
@@ -11,11 +16,9 @@
         >
             <span fuseAlertTitle>{{successSave}}</span>
         </fuse-alert>
-        <div class="flex flex-col">
-            <div class="flex flex-row mt-4">
-                <div class="flex flex-col" style="width: 60%;">
-                    <mat-label class="font-semibold mr-6 ml-1">Solicitud</mat-label>
-                    <mat-form-field class="">
+                    </div>
+                        <mat-label class="font-semibold mr-6 ml-1 " >Solicitud</mat-label>
+                        <mat-form-field>
                         <input type="text" [placeholder]="'US-300'" matInput [value]="request?.titleRequest || ''" readonly>
                         <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -24,7 +27,8 @@
                         </mat-autocomplete> -->
                     </mat-form-field>
                 </div>
-                <div class="flex flex-row justify-end items-center" style="width: 40%;">
+                <div class="flex flex-row justify-end items-center" style="width: 90%;">
+
                     <button
                         mat-fab
                         [color]="'accent'"
@@ -40,7 +44,7 @@
                     </button>
                 </div>
             </div>
-           
+
         <ng-container [formGroup]="formOcupation" *ngIf="collaboratorsArr.length">
             <ng-container formArrayName="collaboratorOccupation">
                 <ng-container *ngFor="let collaborator of collaboratorOccupation.controls; index as i">
@@ -49,9 +53,9 @@
                             <div class="flex flex-row gt-xs:flex-row justify-between">
                                 <div class="flex flex-row gt-xs:flex-row">
                                     <div class="flex flex-col mr-6">
-                                       
+
                                         <mat-label class="font-semibold">
-                                            <mat-icon *ngIf="collaboratorOccupation.at(i).valid" class="icon-size-5 text-green-500"  matPrefix [svgIcon]="'heroicons_solid:check-circle'">
+                                            <mat-icon *ngIf="collaboratorOccupation.at(i).valid" class="icon-size-4 text-green-500"  matPrefix [svgIcon]="'heroicons_solid:check-circle'">
                                             </mat-icon>
                                             Colaborador</mat-label>
                                         <mat-form-field class="w-100 " appearance="fill">
@@ -61,7 +65,7 @@
                                             </mat-icon>
                                             <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                                                         <mat-option [value]="this.collaboratorName">
-                                                            
+
                                                         </mat-option>
                                                     </mat-autocomplete> -->
                                         </mat-form-field>
@@ -81,10 +85,11 @@
                                             <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
                                             <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
                                         </mat-form-field>
-                                        
+
                                     </div> -->
                                 </div>
-                                <div class="flex flex-row gap-8 mr-6 justify-end" style="width: 60%;">
+                                <div class="flex flex-row gap-8 mr-6 justify-end" style="width: 80%;">
+                                    <mat-divider [vertical]="true"></mat-divider>
                                     <mat-form-field [ngClass]="formFieldHelpers" class="w-1/4">
                                         <mat-label class="font-semibold">Ocupación</mat-label>
 
@@ -92,6 +97,7 @@
                                         <mat-error *ngIf="!formOcupation.get('collaboratorOccupation').at(i).get('occupation').valid && (formOcupation.get('collaboratorOccupation').at(i).get('occupation').dirty || formOcupation.get('collaboratorOccupation').at(i).get('occupation').touched)">El campo es obligatorio</mat-error>
                                         <mat-error *ngIf="formOcupation.get('collaboratorOccupation').at(i).get('occupation').hasError('limitError')">La ocupación supera el 100%</mat-error>
                                     </mat-form-field>
+                                    <mat-divider [vertical]="true"></mat-divider>
                                     <mat-form-field class="w-1/4">
                                         <mat-label>Rol de solicitud</mat-label>
                                         <mat-select formControlName="roleRequest"  [readonly]="isDetail " [disabled]="isDetail">
@@ -105,6 +111,7 @@
                                             *ngIf="!step1.get('commercialArea').valid && (step1.get('commercialArea').dirty || step1.get('commercialArea').touched)">
                                             El campo es obligatorio</mat-error> -->
                                     </mat-form-field>
+                                    <mat-divider [vertical]="true"></mat-divider>
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Fecha ocupación</mat-label>
                                         <mat-date-range-input [rangePicker]="picker">
@@ -114,7 +121,7 @@
                                         <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
                                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                         <mat-date-range-picker #picker></mat-date-range-picker>
-                                      
+
                                         <!-- <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
                                         <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error> -->
                                     </mat-form-field>
@@ -161,7 +168,7 @@
                     </ng-container>
             </ng-container>
             </ng-container>
-                
+
                 </ng-container>
             <!-- No collaborators Selected -->
             <ng-container *ngIf="!collaboratorsArr.length">
@@ -169,7 +176,7 @@
             </ng-container>
         <div>
     </div>
-  
+
             <div class="flex flex-row mt-8 justify-end" *ngIf="collaboratorsArr.length">
                 <button (click)="goBack()" mat-stroked-button style="border-color:lightgray !important;">Cancelar
                 </button>
@@ -181,4 +188,3 @@
         </div>
     </div>
 </div>
-  

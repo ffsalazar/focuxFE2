@@ -7,7 +7,7 @@ import {TranslocoModule} from "@ngneat/transloco";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatMenuModule} from "@angular/material/menu";
- import {MatRadioModule} from '@angular/material/radio'; 
+ import {MatRadioModule} from '@angular/material/radio';
 import {MatRippleModule, MAT_DATE_LOCALE} from "@angular/material/core";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {RouterModule} from "@angular/router";
@@ -16,7 +16,7 @@ import {AssignmentOccupationRouter} from "./assignment-occupation.routing";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
- import {MatSliderModule} from '@angular/material/slider'; 
+ import {MatSliderModule} from '@angular/material/slider';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SearchBoxModule} from "../../../../shared/components/search-box/search-box.module";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -37,6 +37,7 @@ import { UpdateOccupationComponent } from './edit-assignment/update-occupation/u
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
 import { RolesRequestResolver } from './assignment.resolvers';
 import { DatePipe } from '@angular/common';
+import {MatDividerModule} from "@angular/material/divider";
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { DatePipe } from '@angular/common';
         MatTooltipModule,
         MatSliderModule,
         MatRadioModule,
+        MatDividerModule,
     ],
     schemas: [
           CUSTOM_ELEMENTS_SCHEMA,
@@ -83,6 +85,6 @@ import { DatePipe } from '@angular/common';
      providers   : [
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ],
-    
+
 })
 export class AssignmentOccupationModule { }
