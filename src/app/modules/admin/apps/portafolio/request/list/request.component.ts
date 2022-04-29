@@ -33,13 +33,13 @@ import { MatInput } from '@angular/material/input';
             th, td{
                 text-align: center !important;
             }
-           
+
            .mat-form-field.mat-form-field-appearance-fill
             .mat-form-field-wrapper
             .mat-form-field-flex {
                 padding-right: 2px !important;
             }
-            
+
             .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix{
                 padding-right: 4px !important;
             }
@@ -55,6 +55,17 @@ import { MatInput } from '@angular/material/input';
                 background: #99f6e4;
                 border-radius: 5px;
                 padding: 5px 10px;
+            }
+
+            #txtcuadro {
+                height:80px;
+                transition:all 1s;
+                -webkit-transition:all 1s;
+                resize: none;
+            }
+
+            #txtcuadro:focus {
+                height:400px;
             }
 
 
@@ -208,7 +219,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
-        
+
         //this._fuseAlertService.dismiss('alertBox4');
 
         // Create the selected request form
@@ -268,7 +279,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         });
 
         this.request$ = this._requestService.requests$;
-        
+
         this._requestService.requests$
             .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe((requests: any) => {
@@ -333,7 +344,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 .subscribe((commercialArea: CommercialArea[]) => {
                     // Update the commercialArea
                     this.commercialArea = commercialArea;
-                    
+
                     // Map for clients
                     this.commercialAreaSelected = this.commercialArea.map(item => {
                         return {
@@ -375,7 +386,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
                 });
-        
+
         // Get the Area technical
         this._requestService.areatech$.pipe(takeUntil(this._unsubscribeAll))
             .subscribe((technicalArea: TechnicalArea[]) => {
@@ -406,7 +417,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     //Mark for check
                     this._changeDetectorRef.markForCheck();
                 });
-        
+
         // Get the collaborators
         this._requestService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -416,7 +427,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     //Mark for check
                     this._changeDetectorRef.markForCheck();
                 });
-        
+
         // Get the departments
         this._requestService.departments$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -471,7 +482,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe();
 
         this.handleChangeClients();
-        
+
         this.filteredCustomerBranch = this.customerBranchControl.valueChanges.pipe(
             startWith(''),
             map((value) => (typeof value === 'string' ? value : this.lastFilter)),
@@ -508,7 +519,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      * After view init
      */
     ngAfterViewInit(): void
-    {   
+    {
         if ( this._sort && this._paginator )
         {
             // Set the initial sort
@@ -630,7 +641,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Get clients by bussinessType
-     * 
+     *
      */
     private _getClientsByBusinessType() {
         // Get clients by bussinessTypes
@@ -655,13 +666,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
     }
-    
+
     /**
      * Filter
-     * 
-     * @param filter 
-     * @param collection 
-     * @returns 
+     *
+     * @param filter
+     * @param collection
+     * @returns
      */
     filter(filter: string, collection: any[]): any[] {
         this.lastFilter = filter;
@@ -673,13 +684,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             return collection.slice();
         }
     }
-    
+
     /**
      * Sort Array
-     * 
-     * @param x 
-     * @param y 
-     * @returns 
+     *
+     * @param x
+     * @param y
+     * @returns
      */
     sortArray(x: any, y: any) {
         if ( x.name < y.name ) {return -1; }
@@ -831,7 +842,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                             ((this.businessTypeSelected.find(businessType => businessType.selected && businessType.name.includes(item?.client.businessType.name)) || this.businessTypeSelected.every(businessType => !businessType.selected ) ))
 
             ));
-            
+
             // Set request for filter
             this.requestOriginal = requests;
             // Set the requests
@@ -1114,7 +1125,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Create request
-     * 
+     *
      */
     createRequest(): void
     {
@@ -1133,8 +1144,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Get collaborators assigned
-     * 
-     * @param requestId 
+     *
+     * @param requestId
      */
     getCollaboratorsAssigned(requestId: number) {
         this._requestService.getCollaboratorsAssigned(requestId)
@@ -1231,8 +1242,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Show the nofication and close modal
-     * 
-     * @param message 
+     *
+     * @param message
      */
      showNotificationAndCloseModal(message: string) {
         // Clear Wizzard
@@ -1244,7 +1255,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Show notification update request
         this.showFlashMessage('success');
         this._fuseAlertService.show('alertBox4');
-        
+
         // Set message the notification
         this.successSave = message;
 
@@ -1257,7 +1268,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      *  Create the new request
-     * 
+     *
      * @param request
      */
     createNewRequest(request: any) {
@@ -1267,7 +1278,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         request.requestPeriod = {
             id: 1,
         };
- 
+
         this._requestService.createRequest(request)
             .subscribe((newRequest) => {
                 // Go to new request
@@ -1283,8 +1294,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Update the request
-     * 
-     * @param request 
+     *
+     * @param request
      */
     updateRequest(request: any) {
         this._requestService.updateRequest(request.id, request)
@@ -1360,7 +1371,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     // Update the request on the server
                     this.updateRequest(requestNew);
                 }
-                
+
 
             }
         });
@@ -1379,19 +1390,19 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Option clicked
-     * 
-     * @param event 
-     * @param selectedItem 
+     *
+     * @param event
+     * @param selectedItem
      */
     optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
         event.stopPropagation();
         this.toggleSelection(selectedItem, selectedCollection, option);
     }
-    
+
     /**
      * Handle change the checkbox
-     * 
-     * @param option 
+     *
+     * @param option
      */
     handleChangeCheckbox(option: string) {
         // Select action option
@@ -1413,25 +1424,25 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Toggle Selection
-     * 
-     * @param selectedFilter 
-     * @param collection 
+     *
+     * @param selectedFilter
+     * @param collection
      */
     toggleSelection(selectedFilter: any, selectedCollection: BusinessType[] | Client[], option: string) {
         // change status the selected
         selectedFilter.selected = !selectedFilter.selected;
         // update all as complete
         this.updateAllComplete(option);
-        
+
         // Handle change from checkbox
         this.handleChangeCheckbox(option);
-        
+
     }
 
     /**
      * Restarting list
-     * 
-     * @param control 
+     *
+     * @param control
      */
     restartingList(control: FormControl) {
         control.setValue('', {emitEvent: false});
@@ -1442,8 +1453,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Update selected item
-     * 
-     * @param selectedItem 
+     *
+     * @param selectedItem
      */
     updateSelectedItem(selectedItem: any) {
         if ( this.selectedItem ) {
@@ -1455,8 +1466,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Select only one item
-     * 
-     * @param selectedItem 
+     *
+     * @param selectedItem
      */
     selectOnlyItem(selectedItem: any, collection: any) {
         selectedItem.selected = true;
@@ -1471,10 +1482,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Check item
-     * 
-     * @param item 
-     * @param collection 
-     * @returns 
+     *
+     * @param item
+     * @param collection
+     * @returns
      */
     checkItem(item: any, collection: any) {
         return collection.find(element => element.name === item.name) === undefined ? false: true;
@@ -1482,11 +1493,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
     /**
      * Set all as selected
-     * 
-     * @param completed 
+     *
+     * @param completed
      */
     setAll(completed: boolean, collection: any, option: string) {
-        
+
         // Mark as completed all elements
         collection.forEach(item => item.selected = completed);
 
@@ -1510,22 +1521,22 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 break;
         }
 
-        
+
     }
 
     /**
      * Some complete
-     * 
+     *
      * @returns
      */
     someComplete(collection: any, allComplete: boolean): boolean {
         return collection.filter(item => item.selected).length > 0 && !allComplete;
     }
-    
+
     /**
      * Update all complete
-     * 
-     * @param option 
+     *
+     * @param option
      */
     updateAllComplete(option: string) {
 
@@ -1548,8 +1559,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
-    }  
-    
+    }
+
     /**
      * Set pause
      *
@@ -1565,7 +1576,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     isShowCollab() {
         this.hasCollab = !this.hasCollab;
     }
-    
+
     /**
      * Set pause
      *
@@ -1573,5 +1584,5 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     test() {
         console.log("heree")
     }
-    
+
 }
