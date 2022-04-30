@@ -3,6 +3,7 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -40,8 +41,8 @@ export const appRoutes: Route[] = [
     // Auth routes for authenticated users
     {
         path: '',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
+        canActivate: [GuardAuthGuard],
+        canActivateChild: [GuardAuthGuard],
         component: LayoutComponent,
         data: {
             layout: 'empty'
@@ -67,8 +68,8 @@ export const appRoutes: Route[] = [
     // Admin routes
     {
         path       : '',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
+        canActivate: [GuardAuthGuard],
+        canActivateChild: [GuardAuthGuard],
         component  : LayoutComponent,
         resolve    : {
             initialData: InitialDataResolver,

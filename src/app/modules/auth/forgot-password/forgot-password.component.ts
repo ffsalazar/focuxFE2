@@ -69,7 +69,7 @@ export class AuthForgotPasswordComponent implements OnInit
         this.showAlert = false;
 
         // Forgot password
-        this._authService.forgotPassword(this.forgotPasswordForm.get('email').value)
+        this._authService.forgotPassword(this.forgotPasswordForm.value)
             .pipe(
                 finalize(() => {
 

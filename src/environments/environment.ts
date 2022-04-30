@@ -11,8 +11,8 @@ export const environment = {
         storageBucket: "focux-f00d8.appspot.com",
         messagingSenderId: "1092658293299",
         appId: "1:1092658293299:web:088992f145dc3fd67fd146"
-    }
-
+    },
+    baseApiUrl: 'http://localhost:1616/'
 };
 
 /*
