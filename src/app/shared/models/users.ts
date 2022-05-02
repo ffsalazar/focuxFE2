@@ -1,4 +1,9 @@
-export interface Users {
-    authorities: {authority: string}[];
-    username: string
+import {Roles} from './roles';
+import {FollowupSchema} from './followup-schema';
+
+export interface Users extends FollowupSchema{
+    username: string;
+    password: string;
+    isActive: number;
+    roles: Roles[];
 }

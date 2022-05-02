@@ -694,7 +694,7 @@ export const demoCourseSteps = [
     },
     {
         order   : 7,
-        title   : 'Welcome New Users',
+        title   : 'Welcome New AuthUsers',
         subtitle: 'How to create a welcome message for the new users',
         content : `<h2 class="text-2xl sm:text-3xl">Welcome New Users</h1> ${demoCourseContent}`
     },

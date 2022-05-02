@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { AuthUtils } from 'app/core/auth/auth.utils';
-import { UserService } from 'app/core/user/user.service';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, switchMap} from 'rxjs/operators';
+import {AuthUtils} from 'app/core/auth/auth.utils';
+import {UserService} from 'app/core/user/user.service';
 import {environment} from '../../../environments/environment';
-import {Users} from "../../shared/models/users";
+import {AuthUsers} from '../../shared/models/auth-users';
+import {RegisterUserResponse} from '../../shared/models/register-user-response';
 
 @Injectable()
 export class AuthService
@@ -22,9 +23,9 @@ export class AuthService
     )
     {
     }
-    get roles() {return this._roles}
-    set roles(roles: {authority: string}[]) {this._roles = roles}
-    get authenticated() { return this._authenticated;}
+    get roles(): {authority: string}[] {return this._roles;}
+    set roles(roles: {authority: string}[]) {this._roles = roles;}
+    get authenticated(): boolean { return this._authenticated;}
     set authenticated(isAuthenticated: boolean) { this._authenticated = isAuthenticated;}
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -81,7 +82,7 @@ export class AuthService
      *
      * @param credentials
      */
-    signIn(credentials: { username: string; password: string }): Observable<Users>
+    signIn(credentials: { username: string; password: string }): Observable<AuthUsers>
     {
         // Throw error, if the user is already logged in
         if ( this._authenticated )
@@ -90,7 +91,7 @@ export class AuthService
         }
 
         return this._httpClient.post(environment.baseApiUrl + 'api/v1/followup/user/login', credentials).pipe(
-            switchMap((response: Users) => {
+            switchMap((response: AuthUsers) => {
 
                 console.log(response);
                 // // Store the access token in the local storage
@@ -162,9 +163,18 @@ export class AuthService
      *
      * @param user
      */
-    signUp(user: { name: string; email: string; password: string; company: string }): Observable<any>
+    signUp(user: { username: string; password: string }): Observable<RegisterUserResponse>
     {
-        return this._httpClient.post('api/auth/sign-up', user);
+        return this._httpClient.post( environment.baseApiUrl + 'api/v1/followup/user/register', user)
+            .pipe(
+                switchMap((response: RegisterUserResponse) => {
+                    if (response?.data && response?.success) {
+                        return of({data: response.data, success: response.success});
+                    } else {
+                        return of({error: response.error});
+                    }
+                })
+            );
     }
 
     /**
