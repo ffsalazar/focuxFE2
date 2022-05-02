@@ -122,10 +122,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        // Get collaborators assigned to Request
-        this.getCollaboratorsAssigned(8);
-
-        this.valueSlider.valueChanges.subscribe(resp => console.log("resp: ", resp));
         this._assignmentOccupationService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(collaborators => {
@@ -284,6 +280,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     item.name = item.name + ' ' + item.lastName;
                 });
                 this.dataCollab.data = collaborators;
+                // Mark as check
+                this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -309,7 +307,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      * @param collaborator
      */
-        editOccupation(collaborator: Collaborator) {
+    editOccupation(collaborator: Collaborator) {
         this.collaborator = collaborator;
         this._assignmentOccupationService.getOccupationsByCollaborator(collaborator.id)
             .pipe(finalize(() => this.isEditing = true))
@@ -365,6 +363,16 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         control.updateValueAndValidity({onlySelf: true, emitEvent: true});
         ///this.inputBranch.nativeElement.focus();
     }
+
+    /**
+     * Clear form client
+     * 
+     */
+    clearFormClientAndRequest(control: FormControl) {
+        this.dataCollab.data = [];
+        this.selectedRequest = null;
+        this.restartingList(control);
+    }
     
     /**
      * Handle event saved occupation
@@ -402,9 +410,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 if ( value ) {
                     this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
 
-                    console.log("selecte Responsible: ", this.selectedResponsible);
                     if ( this.selectedResponsible ) {
-                        console.log("entro");
                         // Get all request by responsible
                         this._getRequestByResponsible( this.selectedResponsible );
                     } else if ( this.selectedClient ) {
@@ -467,8 +473,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.knowledges$
             .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(knowledges => {
-
-                    console.log("knowledges:", knowledges);
                     knowledges.sort(this._sortArray);
                     this.knowledges = knowledges;
 
@@ -532,7 +536,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      */
     private _getRequestByClient(clientId: number) {
-        this._assignmentOccupationService.getRequestByClient( clientId, this.statusControl.value || 8 )
+        this._assignmentOccupationService.getRequestByClient( clientId, this.statusControl.value || null )
             .subscribe(requests => {
                 this.requests = requests;
                 this.requestControl.setValue('');
@@ -548,7 +552,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _handleChangeResponsible() {
         this.collaboratorControl.valueChanges
             .subscribe(value => {
-                const responsible = this.collaborators.find(item => item.name === value);
+                const responsible = this.collaborators.find(item => ( item.name + ' ' + item.lastName ) === value);
 
                 if ( responsible ) {
                     this.selectedResponsible = responsible;
@@ -559,7 +563,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     this._getRequestByClient(this.selectedClient.id);
                     // this.requests = [];
                     this.requestControl.setValue('');
+                    this.dataCollab.data = [];
+                    this.selectedRequest = null;
                 } else {
+                    this.dataCollab.data = [];
+                    this.selectedRequest = null;
                     this.requests = [];
                     this.requestControl.setValue('');
                 }
@@ -574,7 +582,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * @param responsible
      */
     private _getRequestByResponsible(responsible: Collaborator) {
-        this._assignmentOccupationService.getRequestByResponsible( responsible.id, this.statusControl.value || 8 )
+        this._assignmentOccupationService.getRequestByResponsible( responsible.id, this.statusControl.value || null )
             .subscribe(requests => {
                 this.requests = requests;
                 this.requestControl.setValue('');
@@ -585,12 +593,19 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     /**
      * _getCollaboratorsByRequest
+     * 
      */
     private _getCollaboratorsByRequest() {
         this.requestControl.valueChanges
             .subscribe(value => {
+                // Get instance selected request
+                const request = this.requests.find(item => item.titleRequest === value);
+                if ( request ) {
+                    // Get collaborators assigned to request
+                    this.getCollaboratorsAssigned(request.id);
+                }
                 // Get recommended
-                //this.getCollaboratorsRecommended();
+                this.getCollaboratorsRecommended();
             });
     }
 

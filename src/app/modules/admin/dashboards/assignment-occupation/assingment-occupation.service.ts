@@ -332,10 +332,17 @@ export class AssingmentOccupationService {
      * @returns 
      */
     getRequestByResponsible(responsibleId: number, statusId: number): Observable<any[]> {
-        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId, {
-            params: {
+        
+        let params;
+
+        if ( statusId ) {
+            params = {
                 statusId
             }
+        }
+        
+        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/responsible/' + responsibleId, {
+            params
         });
     }
     
@@ -348,14 +355,21 @@ export class AssingmentOccupationService {
      */
     getRequestByClient(clientId: number, statusId: number): Observable<any[]> {
 
-        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/client/' + clientId, {
-            params: {
+        let params;
+
+        if ( statusId ) {
+            params = {
                 statusId
             }
+        }
+
+        return this._httpClient.get<any[]>('http://localhost:1616/api/v1/followup/requests/client/' + clientId, {
+            params
         });
     }
 
     /**
+     * Get recommended
      * 
      * @param requestId 
      */
