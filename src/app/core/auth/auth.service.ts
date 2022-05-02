@@ -189,7 +189,7 @@ export class AuthService
         }
 
 
-        if (this.roles.length > 0)
+        if (this.roles?.length > 0)
         {
             return of(true);
         }
