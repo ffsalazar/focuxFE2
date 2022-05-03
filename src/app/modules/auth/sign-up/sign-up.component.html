@@ -72,14 +72,22 @@
                     </mat-error>
                 </mat-form-field>
 
-                <!-- Company field -->
+                <!-- Collaborator -->
                 <mat-form-field class="w-full">
-                    <mat-label>Company</mat-label>
-                    <input
-                        id="company-confirm"
-                        matInput
-                        [formControlName]="'company'">
+                    <mat-label>Colaborador</mat-label>
+                    <input type="text"
+                           placeholder="Pick one"
+                           aria-label="Number"
+                           matInput
+                           [formControlName]="'collaborator'"
+                           [matAutocomplete]="auto">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name + ' ' + option.lastName" (onSelectionChange)="collaboratorSelected(option)">
+                            {{option.name + ' ' + option.lastName}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
+
 
                 <!-- ToS and PP -->
                 <div class="inline-flex items-end w-full mt-1.5">

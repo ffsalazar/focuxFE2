@@ -7,6 +7,7 @@ import {UserService} from 'app/core/user/user.service';
 import {environment} from '../../../environments/environment';
 import {AuthUsers} from '../../shared/models/auth-users';
 import {RegisterUserResponse} from '../../shared/models/register-user-response';
+import {Collaborator} from '../../modules/admin/dashboards/collaborators/collaborators.types';
 
 @Injectable()
 export class AuthService
@@ -161,11 +162,21 @@ export class AuthService
     /**
      * Sign up
      *
-     * @param user
+     * @param username
+     * @param password
+     * @param collaboratorId
      */
-    signUp(user: { username: string; password: string }): Observable<RegisterUserResponse>
+    signUp(username, password, collaboratorId): Observable<RegisterUserResponse>
     {
-        return this._httpClient.post( environment.baseApiUrl + 'api/v1/followup/user/register', user)
+        const body = {
+            username,
+            password,
+            'isActive': 1,
+            'collaborator' : {
+                id: collaboratorId
+            }
+        };
+        return this._httpClient.post( environment.baseApiUrl + 'api/v1/followup/user/register', body)
             .pipe(
                 switchMap((response: RegisterUserResponse) => {
                     if (response?.data && response?.success) {
@@ -218,5 +229,20 @@ export class AuthService
 
         // If the access token exists and it didn't expire, sign in using it
         return this.signInUsingToken();
+    }
+
+    /*
+    * Get collaborators before to register
+    * */
+
+    getAllColaborators(): Observable<Collaborator[]>
+    {
+        return this._httpClient.get(environment.baseApiUrl + 'api/v1/followup/collaborators/all')
+            .pipe(
+                switchMap((response: Collaborator[]) => {
+                   console.log(response);
+                   return of(response);
+                })
+            );
     }
 }

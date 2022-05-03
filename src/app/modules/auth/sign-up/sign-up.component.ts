@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { fuseAnimations } from '@fuse/animations';
-import { FuseAlertType } from '@fuse/components/alert';
-import { AuthService } from 'app/core/auth/auth.service';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {fuseAnimations} from '@fuse/animations';
+import {FuseAlertType} from '@fuse/components/alert';
+import {AuthService} from 'app/core/auth/auth.service';
+import {Collaborator} from '../../admin/dashboards/collaborators/collaborators.types';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 @Component({
     selector     : 'auth-sign-up',
@@ -21,6 +24,9 @@ export class AuthSignUpComponent implements OnInit
     };
     signUpForm: FormGroup;
     showAlert: boolean = false;
+    collaborator: Collaborator[] = [];
+    filteredOptions: Observable<Collaborator[]>;
+
 
     /**
      * Constructor
@@ -31,6 +37,8 @@ export class AuthSignUpComponent implements OnInit
         private _router: Router
     )
     {
+        this._authService.getAllColaborators()
+            .subscribe( response => this.collaborator = response);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -46,9 +54,19 @@ export class AuthSignUpComponent implements OnInit
         this.signUpForm = this._formBuilder.group({
                 username      : ['', Validators.required],
                 password  : ['', Validators.required],
+                collaborator: ['', Validators.required],
+                collaboratorId: ['', Validators.required],
                 agreements: ['', Validators.requiredTrue]
             }
         );
+
+        // filtered option
+        this.filteredOptions = this.signUpForm.controls.collaborator.valueChanges
+            .pipe(
+              startWith(''),
+              map(value => this._filter(value))
+            );
+        this.signUpForm.controls.collaborator.valueChanges.subscribe(value => console.log(value));
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -73,7 +91,10 @@ export class AuthSignUpComponent implements OnInit
         this.showAlert = false;
 
         // Sign up
-        this._authService.signUp(this.signUpForm.value)
+        this._authService.signUp(
+            this.signUpForm.controls.username.value,
+            this.signUpForm.controls.password.value,
+            this.signUpForm.controls.collaboratorId.value)
             .subscribe(
                 (response) => {
 
@@ -82,6 +103,7 @@ export class AuthSignUpComponent implements OnInit
                 },
                 (response) => {
 
+                    console.log(response);
                     // Re-enable the form
                     this.signUpForm.enable();
 
@@ -98,5 +120,19 @@ export class AuthSignUpComponent implements OnInit
                     this.showAlert = true;
                 }
             );
+    }
+
+    collaboratorSelected(collaborator: Collaborator): void {
+       this.signUpForm.controls.collaboratorId.setValue(collaborator.id);
+    }
+
+
+    private _filter(value: string): Collaborator[] {
+        const filterValue = value.toLowerCase();
+
+        return this.collaborator
+            .filter(collaborator =>
+                collaborator.name.toLowerCase().includes(filterValue) ||
+                collaborator.lastName.toLowerCase().includes(filterValue));
     }
 }
