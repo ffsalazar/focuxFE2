@@ -1,50 +1,48 @@
-import {Injectable, TemplateRef} from '@angular/core';
+import { Injectable, TemplateRef } from '@angular/core';
 
-export interface Request{
-    id: number,
-    category: Category,
-    client: Client,
-    code: String
-    collaboratorsAssigned: [],
-    commentsClient: String,
-    commentsIntelix: String,
-    commercialArea: CommercialArea,
-    completionPercentage: number,
-    dateEndPause: Date,
-    dateInit: Date,
-    dateInitPause: Date,
-    datePlanEnd: Date,
-    dateRealEnd: Date,
-    dateRequest: Date,
-    deliverablesCompletedIntelix: String,
-    descriptionRequest: string,
-    deviationPercentage: number,
-    internalFeedbackIntelix: String,
-    isActive: number,
-    pendingActivitiesIntelix: String,
-    priorityOrder: number,
-    requestPeriod: RequestPeriod,
-    responsibleRequest: ResponsibleRequest,
-    solverGroup: SolverGroup,
-    status: Status,
-    technicalArea: TechnicalArea,
-    titleRequest: string,
-    totalPauseDays: number,
-    typeRequest: TypeRequest,
-    updateDate: Date,
+export interface Request {
+    id: number;
+    category: Category;
+    client: Client;
+    code: String;
+    collaboratorsAssigned: [];
+    commentsClient: String;
+    commentsIntelix: String;
+    commercialArea: CommercialArea;
+    completionPercentage: number;
+    dateEndPause: Date;
+    dateInit: Date;
+    dateInitPause: Date;
+    datePlanEnd: Date;
+    dateRealEnd: Date;
+    dateRequest: Date;
+    deliverablesCompletedIntelix: String;
+    descriptionRequest: string;
+    deviationPercentage: number;
+    internalFeedbackIntelix: String;
+    isActive: number;
+    pendingActivitiesIntelix: String;
+    priorityOrder: number;
+    requestPeriod: RequestPeriod;
+    responsibleRequest: ResponsibleRequest;
+    solverGroup: SolverGroup;
+    status: Status;
+    technicalArea: TechnicalArea;
+    titleRequest: string;
+    totalPauseDays: number;
+    typeRequest: TypeRequest;
+    updateDate: Date;
     knowledges: any;
-
 }
 
 export interface Category {
-    id:          number;
-    name:        string;
+    id: number;
+    name: string;
     description: string;
-    isActive:    number;
+    isActive: number;
 }
 
-export interface Client
-{
+export interface Client {
     id: number;
     name: string;
     description: string;
@@ -52,8 +50,7 @@ export interface Client
     businessType: BusinessType;
 }
 
-export interface BusinessType
-{
+export interface BusinessType {
     id: number;
     code: string;
     name: string;
@@ -62,22 +59,21 @@ export interface BusinessType
 }
 
 export interface CommercialArea {
-    id:          number;
-    code:        string;
-    name:        string;
+    id: number;
+    code: string;
+    name: string;
     description: string;
-    isActive:    number;
+    isActive: number;
 }
 
 export interface RequestPeriod {
-    id:          number;
-    name:        string;
+    id: number;
+    name: string;
     description: string;
-    isActive:    number;
+    isActive: number;
 }
 
-export interface Collaborator
-{
+export interface Collaborator {
     id: number;
     avatar?: string | null;
     background?: string | null;
@@ -86,19 +82,18 @@ export interface Collaborator
     nationality: string;
     lastName: string;
     employeePosition: EmployeePosition | null;
-    companyEntryDate:string;
-    organizationEntryDate:string;
-    gender:string;
-    bornDate:string;
+    companyEntryDate: string;
+    organizationEntryDate: string;
+    gender: string;
+    bornDate: string;
     assignedLocation?: string | null;
     knowledges: CollaboratorKnowledge[];
     phones: Phone[];
-    file?:string | null;
+    file?: string | null;
     isActive: number;
     client: Client;
 }
-export interface EmployeePosition
-{
+export interface EmployeePosition {
     id: number;
     name: String;
     description: String;
@@ -106,8 +101,7 @@ export interface EmployeePosition
     department: Department;
 }
 
-export interface Department
-{
+export interface Department {
     id: number;
     code: string;
     isActive: boolean;
@@ -115,66 +109,60 @@ export interface Department
     description: string;
 }
 
-export interface Phone
-{
+export interface Phone {
     id: number;
     number: string;
     type: string;
     isActive: number;
 }
 
-export interface CollaboratorKnowledge
-{
+export interface CollaboratorKnowledge {
     id?: number;
     level: number;
     knowledge: Knowledge;
     isActive: number;
 }
 
-export interface Knowledge
-{
+export interface Knowledge {
     id: number;
     type: string;
     description: string;
     name: string;
 }
 
-
 export interface TypeRequest {
-    id:          number;
-    code:        string;
-    name:        string;
+    id: number;
+    code: string;
+    name: string;
     description: string;
-    isActive:    number;
+    isActive: number;
 }
 
 export interface SolverGroup {
-    id:               number;
-    idFile:           number;
-    name:             string;
-    lastName:         string;
+    id: number;
+    idFile: number;
+    name: string;
+    lastName: string;
     employeePosition: EmployeePosition;
 }
 
-
 export interface TechnicalArea {
-    id:          number;
-    code:        string;
-    name:        string;
+    id: number;
+    code: string;
+    name: string;
     description: string;
-    isActive:    number;
+    isActive: number;
 }
 
 export interface Status {
-    id:           number;
-    typeStatus:   number;
-    name:         string;
-    description:  string;
-    isActive:     number;
+    id: number;
+    typeStatus: string;
+    name: string;
+    description: string;
+    isActive: number;
 }
 
-export interface Knowledge
-{
+export interface Knowledge {
     id: number;
     type: string;
     description: string;
@@ -183,37 +171,35 @@ export interface Knowledge
 }
 
 export interface ResponsibleRequest {
-    id:                    number;
-    idFile:                number;
-    name:                  string;
-    lastName:              string;
-    employeePosition:      EmployeePosition;
-    companyEntryDate:      Date;
+    id: number;
+    idFile: number;
+    name: string;
+    lastName: string;
+    employeePosition: EmployeePosition;
+    companyEntryDate: Date;
     organizationEntryDate: Date;
-    gender:                string;
-    bornDate:              Date;
-    nationality:           string;
-    mail:                  string;
-    isActive:              number;
-    assignedLocation:      string;
-    technicalSkills:       string;
-    knowledges:            Knowledge[];
-    phones:                Phone[];
-    client:                Client;
-    assigments:            Assigment[];
+    gender: string;
+    bornDate: Date;
+    nationality: string;
+    mail: string;
+    isActive: number;
+    assignedLocation: string;
+    technicalSkills: string;
+    knowledges: Knowledge[];
+    phones: Phone[];
+    client: Client;
+    assigments: Assigment[];
 }
-
 
 export interface Assigment {
-    id:                   number;
+    id: number;
     occupationPercentage: number;
-    assignmentStartDate:  Date;
-    assignmentEndDate:    Date;
-    code:                 string;
-    observations:         string;
-    isActive:             number;
+    assignmentStartDate: Date;
+    assignmentEndDate: Date;
+    code: string;
+    observations: string;
+    isActive: number;
 }
-
 
 export interface DialogOptions {
     width: number;
@@ -221,12 +207,12 @@ export interface DialogOptions {
     minHeight?: number;
     height?: number;
     panelClass?: string;
-  }
-  
-  export interface DialogData {
+}
+
+export interface DialogData {
     template?: TemplateRef<any>;
     component?: any;
     title?: string;
     hideCloseButton?: boolean;
     data?: any;
-  }
+}
