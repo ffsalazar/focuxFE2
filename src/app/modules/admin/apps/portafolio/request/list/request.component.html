@@ -399,7 +399,8 @@
                             <!-- DateEnd Pause -->
                             
                               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                              <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+                              <tr [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': 'bg-primary-50 dark:bg-hover'}" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                           </table>
                     </div>
                     <!-- <mat-paginator
@@ -1173,6 +1174,8 @@
                                                 <mat-label>Actividades completadas</mat-label>
                                                 <textarea
                                                     matInput
+                                                    id="txtcuadro"
+                                                    cols="50"
                                                     formControlName="deliverablesCompletedIntelix"
                                                     [readonly]="isDetail"
                                                     [rows]="3"
@@ -1180,10 +1183,14 @@
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                                             </mat-form-field>
+                                        </div>
+                                        <div class="flex space-x-4">
                                             <mat-form-field class="w-1/2 fuse-mat-textarea flex-auto">
                                                 <mat-label>Actividades pendientes de intellix</mat-label>
                                                 <textarea
                                                     matInput
+                                                    id="txtcuadro"
+                                                    cols="50"
                                                     formControlName="pendingActivitiesIntelix"
                                                     [readonly]="isDetail"
                                                     [rows]="3">
