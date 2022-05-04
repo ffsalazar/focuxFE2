@@ -1330,33 +1330,50 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 this.step1.setControl('customerBranch', new FormControl());
 
-                let requestNew = {...wizzard.step1, ...wizzard.step2, ...wizzard.step3, ...wizzard.step4, isActive: 1};
+                let requestNew = {
+                    ...wizzard.step1,
+                    ...wizzard.step2,
+                    ...wizzard.step3,
+                    ...wizzard.step4,
+                    isActive: 1
+                };
 
-                requestNew.client = this.clients.find(item => item.id === requestNew.client);
-                requestNew.typeRequest = this.typeRequest.find(item => item.id === requestNew.typeRequest);
-                requestNew.commercialArea = this.commercialArea.find(item => item.id === requestNew.commercialArea);
-                requestNew.category = this.categories.find(item => item.id === requestNew.category);
-                requestNew.status = this.status.find(item => item.id === requestNew.status);
-                requestNew.requestPeriod = this.requestp.find(item => item.id === requestNew.requestPeriod);
+                requestNew.client = this.clients.find(
+                    item => item.id === requestNew.client
+                );
+                requestNew.typeRequest = this.typeRequest.find(
+                    item => item.id === requestNew.typeRequest
+                );
+                requestNew.commercialArea = this.commercialArea.find(
+                    item => item.id === requestNew.commercialArea
+                );
+                requestNew.category = this.categories.find(
+                    item => item.id === requestNew.category
+                );
+                requestNew.status = this.status.find(
+                    item => item.id === requestNew.status
+                );
+                requestNew.requestPeriod = this.requestp.find(
+                    item => item.id === requestNew.requestPeriod
+                );
                 requestNew.knowledges = this.selectedRequest.knowledges;
-                requestNew.solverGroup = this.departments.find(item => item.id === requestNew.solverGroup);
-                //requestNew.technicalArea = this.technicalArea.find(item => item.id === requestNew.technicalArea);
+                requestNew.solverGroup = this.departments.find(
+                    item => item.id === requestNew.solverGroup
+                );
+                requestNew.technicalArea = this.technicalArea.find(
+                    item => item.id === requestNew.technicalArea
+                );
 
                 // requestNew.responsibleRequest = {
                 //     id: 1
                 // };
 
-
                 if ( !this.isEditing ) {
                     requestNew.responsibleRequest = null;
-                    requestNew.technicalArea = {
-                        id: 1
-                    };
                     // Create the request on the server
                     this.createNewRequest(requestNew);
                 } else {
                     requestNew.responsibleRequest = this.collaborators.find(item => item.id === 1);
-                    requestNew.technicalArea = this.technicalArea.find(item => item.id === requestNew.technicalArea);
                     // Update the request on the server
                     this.updateRequest(requestNew);
                 }
