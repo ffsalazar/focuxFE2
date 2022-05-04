@@ -3,7 +3,8 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
-import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
+import {CustomAuthGuard} from './core/guards/custom-auth.guard';
+import {RolesGuard} from './core/guards/roles.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -41,8 +42,8 @@ export const appRoutes: Route[] = [
     // Auth routes for authenticated users
     {
         path: '',
-        canActivate: [GuardAuthGuard],
-        canActivateChild: [GuardAuthGuard],
+        canActivate: [CustomAuthGuard],
+        canActivateChild: [CustomAuthGuard],
         component: LayoutComponent,
         data: {
             layout: 'empty'
@@ -68,8 +69,8 @@ export const appRoutes: Route[] = [
     // Admin routes
     {
         path       : '',
-        canActivate: [GuardAuthGuard],
-        canActivateChild: [GuardAuthGuard],
+        canActivate: [CustomAuthGuard],
+        canActivateChild: [CustomAuthGuard],
         component  : LayoutComponent,
         resolve    : {
             initialData: InitialDataResolver,
@@ -84,7 +85,9 @@ export const appRoutes: Route[] = [
                 {path: 'crypto', loadChildren: () => import('app/modules/admin/dashboards/crypto/crypto.module').then(m => m.CryptoModule)},
                 {path: 'requestPanel', loadChildren: () => import('app/modules/admin/dashboards/requestPanel/requestPanel.module').then(m => m.RequestPanelModule)},
                 {path: 'collaborators', loadChildren: () => import('app/modules/admin/dashboards/collaborators/collaborators.module').then(m => m.CollaboratorsModule)},
-                {path: 'assignment-occupation', loadChildren: () => import('app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module').then(m => m.AssignmentOccupationModule)},
+                {
+                    canActivate:[RolesGuard],
+                    path: 'assignment-occupation', loadChildren: () => import('app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module').then(m => m.AssignmentOccupationModule)},
                 {path: 'vacations', loadChildren: () => import('app/modules/admin/dashboards/vacations/vacations.module').then(m => m.VacationsModule)}
                 ]},
 
@@ -109,7 +112,8 @@ export const appRoutes: Route[] = [
                 ]},
 
             // Masters
-            {path: 'masters', children: [
+            {
+                path: 'masters', children: [
                    {path: 'clients', loadChildren: () => import('app/modules/admin/masters/clients/clients.module').then(m => m.ClientsModule)},
                    {path: 'employeePosition', loadChildren: () => import('app/modules/admin/masters/employeePosition/employeePosition.module').then(m => m.EmployeePositionModule)},
                     {path: 'departments', loadChildren: () => import('app/modules/admin/masters/departments/departments.module').then(m => m.DepartmentsModule)},

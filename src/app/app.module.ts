@@ -15,7 +15,7 @@ import { appRoutes } from 'app/app.routing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
-import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
+import {CustomAuthGuard} from "./core/guards/custom-auth.guard";
 
 
 registerLocaleData(localeEs);

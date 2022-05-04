@@ -5,9 +5,5 @@ export const authSignupRoutes: Route[] = [
     {
         path     : '',
         component: AuthSignUpComponent
-    },
-    {
-        path     : 'modern-reversed',
-        component: AuthSignUpComponent
     }
 ];

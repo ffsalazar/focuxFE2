@@ -108,8 +108,8 @@
                 // Admin routes
                 {
                     path       : '',
-                    canActivate: [AuthGuard],
-                    canActivateChild: [AuthGuard],
+                    canActivate: [CustomAuthGuard],
+                    canActivateChild: [CustomAuthGuard],
                     component  : LayoutComponent,
                     resolve    : {
                         initialData: InitialDataResolver,

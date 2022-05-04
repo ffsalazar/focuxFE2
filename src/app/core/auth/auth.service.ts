@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, of, throwError} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subject, throwError} from 'rxjs';
 import {catchError, switchMap} from 'rxjs/operators';
 import {AuthUtils} from 'app/core/auth/auth.utils';
 import {UserService} from 'app/core/user/user.service';
@@ -13,7 +13,7 @@ import {Collaborator} from '../../modules/admin/dashboards/collaborators/collabo
 export class AuthService
 {
     private _authenticated: boolean = false;
-    private _roles: {authority: string}[] = [];
+    private _roles: BehaviorSubject<{authority: string}[]> = new BehaviorSubject<{authority: string}[]>([]);
 
     /**
      * Constructor
@@ -24,8 +24,7 @@ export class AuthService
     )
     {
     }
-    get roles(): {authority: string}[] {return this._roles;}
-    set roles(roles: {authority: string}[]) {this._roles = roles;}
+    get roles(): Observable<{authority: string}[]> {return this._roles.asObservable();}
     get authenticated(): boolean { return this._authenticated;}
     set authenticated(isAuthenticated: boolean) { this._authenticated = isAuthenticated;}
     // -----------------------------------------------------------------------------------------------------
@@ -86,7 +85,7 @@ export class AuthService
     signIn(credentials: { username: string; password: string }): Observable<AuthUsers>
     {
         // Throw error, if the user is already logged in
-        if ( this._authenticated )
+        if ( this.authenticated )
         {
             return throwError('User is already logged in.');
         }
@@ -94,15 +93,18 @@ export class AuthService
         return this._httpClient.post(environment.baseApiUrl + 'api/v1/followup/user/login', credentials).pipe(
             switchMap((response: AuthUsers) => {
 
-                console.log(response);
+                console.log(response.authorization);
                 // // Store the access token in the local storage
                 // this.accessToken = response.accessToken;
                 //
                 // Set the authenticated flag to true
-                this._authenticated = true;
+                this.authenticated = true;
+                localStorage.setItem('isAuthenticated', this.authenticated.toString());
+
 
                 //Set roles
-                this._roles = response.authorities;
+                this._roles.next(response.authorization);
+                // localStorage.setItem('authorities', JSON.stringify(response.authorization));
 
                 // Store the user on the user service
                 // this._userService.user = response.user;
@@ -133,7 +135,7 @@ export class AuthService
                 this.accessToken = response.accessToken;
 
                 // Set the authenticated flag to true
-                this._authenticated = true;
+                this.authenticated = true;
 
                 // Store the user on the user service
                 this._userService.user = response.user;
@@ -153,7 +155,7 @@ export class AuthService
         localStorage.removeItem('accessToken');
 
         // Set the authenticated flag to false
-        this._authenticated = false;
+        this.authenticated = false;
 
         // Return the observable
         return of(true);
@@ -204,16 +206,13 @@ export class AuthService
     check(): Observable<boolean>
     {
         // Check if the user is logged in
-        if ( this._authenticated )
+        if ( this.authenticated )
         {
             return of(true);
         }
 
 
-        if (this.roles?.length > 0)
-        {
-            return of(true);
-        }
+        this.roles.subscribe( values => (values.length > 0) ? of(true) : of(false));
 
         // Check the access token availability
         if ( !this.accessToken )
