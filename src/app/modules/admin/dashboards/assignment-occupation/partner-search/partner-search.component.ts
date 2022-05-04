@@ -1,12 +1,26 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { Activity, Collaborator, Project, Client, Status, Knowledge } from "../assignment-occupation.types";
-import {AssingmentOccupationService} from "../assingment-occupation.service";
-import {AbstractControl, FormArray, FormControl} from "@angular/forms";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {map, startWith, takeUntil, finalize} from "rxjs/operators";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
-import {ActivatedRoute, Router} from "@angular/router";
+import {
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
+import {
+    Activity,
+    Collaborator,
+    Project,
+    Client,
+    Status,
+    Knowledge,
+} from '../assignment-occupation.types';
+import { AssingmentOccupationService } from '../assingment-occupation.service';
+import { AbstractControl, FormArray, FormControl } from '@angular/forms';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, startWith, takeUntil, finalize } from 'rxjs/operators';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
 //import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
@@ -16,13 +30,12 @@ import { RequestService } from 'app/modules/admin/apps/portafolio/request/reques
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-partner-search',
-  templateUrl: './partner-search.component.html',
-  styleUrls: ['./partner-search.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-partner-search',
+    templateUrl: './partner-search.component.html',
+    styleUrls: ['./partner-search.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class PartnerSearchComponent implements OnInit, OnDestroy {
-
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
     @ViewChild(MatTabGroup) private _tab: MatTabGroup;
@@ -34,7 +47,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     collaborators$: any;
 
     collaborators: Collaborator[] = [];
-    collaboratorsRecomm : Collaborator[] = [];
+    collaboratorsRecomm: Collaborator[] = [];
     collaborator: any;
     assigments: any = [];
     requests: any[] = [];
@@ -54,11 +67,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         clientControl: [''],
         collaboratorControl: [''],
         statusControl: [''],
-        selectControl: ['']
+        selectControl: [''],
     });
 
     collaboratorArrayForm: FormGroup = new FormGroup({
-        collaboratorSelected: new FormArray([])
+        collaboratorSelected: new FormArray([]),
     });
 
     // Observables
@@ -89,8 +102,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     dataCollab = new MatTableDataSource<any>();
 
-    displayColCollab : string[] = ['id','name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
-
+    displayColCollab: string[] = [
+        'id',
+        'name',
+        'roleName',
+        'occupationPercentage',
+        'startDate',
+        'endDate',
+    ];
 
     /**
      * Constructor
@@ -107,13 +126,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     ) {
         // Create form group for filter collaborators
         this.filterCollaboratorsGroup = this._fb.group({
-            filterClients       :   new FormArray([]),
-            filterKnowledges    :   new FormArray([]),
-            filterOccupation    :   [0],
-            filterDateInit      :   [''],
-            filterDateEnd       :   [''],
+            filterClients: new FormArray([]),
+            filterKnowledges: new FormArray([]),
+            filterOccupation: [0],
+            filterDateInit: [''],
+            filterDateEnd: [''],
         });
-
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -121,64 +139,82 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     ngOnInit(): void {
-
         this._assignmentOccupationService.collaborators$
             .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(collaborators => {
-                    this.collaboratorOccupation = collaborators;
-                    this._setCollaboratorsRecomm();
-                });
-     
-
-        this.filterCollaboratorsGroup.valueChanges
-            .subscribe(values => {
-                const filteredClients = values.filterClients.filter(item => item.checked && item.id);
-                const clientsId = filteredClients.map(item => item.id);
-                const filteredKnowledges = values.filterKnowledges.filter(item => item.checked && item.id);
-                const knowledgesId = filteredKnowledges.map(item => item.id);
-                const occupation = this.filterCollaboratorsGroup.get('filterOccupation').value;
-                const dateInit = this.filterCollaboratorsGroup.get('filterDateInit').value;
-                const dateEnd = this.filterCollaboratorsGroup.get('filterDateEnd').value;
-
-                this._assignmentOccupationService.getFilterCollaborator(clientsId, knowledgesId, occupation, dateInit, dateEnd)
-                    .subscribe(response => {
-                        //this._setCollaboratorsRecomm();
-                    });
+            .subscribe((collaborators) => {
+                this.collaboratorOccupation = collaborators;
+                this._setCollaboratorsRecomm();
             });
+
+        this.filterCollaboratorsGroup.valueChanges.subscribe((values) => {
+            const filteredClients = values.filterClients.filter(
+                (item) => item.checked && item.id
+            );
+            const clientsId = filteredClients.map((item) => item.id);
+            const filteredKnowledges = values.filterKnowledges.filter(
+                (item) => item.checked && item.id
+            );
+            const knowledgesId = filteredKnowledges.map((item) => item.id);
+            const occupation =
+                this.filterCollaboratorsGroup.get('filterOccupation').value;
+            const dateInit =
+                this.filterCollaboratorsGroup.get('filterDateInit').value;
+            const dateEnd =
+                this.filterCollaboratorsGroup.get('filterDateEnd').value;
+
+            this._assignmentOccupationService
+                .getFilterCollaborator(
+                    clientsId,
+                    knowledgesId,
+                    occupation,
+                    dateInit,
+                    dateEnd
+                )
+                .subscribe((response) => {
+                    //this._setCollaboratorsRecomm();
+                });
+        });
 
         this.filteredClients = this.clientControl.valueChanges.pipe(
             startWith(''),
-            map(value => this._filterClient(value)),
+            map((value) => this._filterClient(value))
         );
 
-        this.collaboratorControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filterCollaborator(value)),
-            ).subscribe(value => {
+        this.collaboratorControl.valueChanges
+            .pipe(
+                startWith(''),
+                map((value) => this._filterCollaborator(value))
+            )
+            .subscribe((value) => {
                 this.filteredCollaborators = value;
                 this._changeDetectorRef.markForCheck();
             });
 
-        this.requestControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filterRequest(value)),
-            ).subscribe(value => {
+        this.requestControl.valueChanges
+            .pipe(
+                startWith(''),
+                map((value) => this._filterRequest(value))
+            )
+            .subscribe((value) => {
                 this.filteredRequest = value;
                 this._changeDetectorRef.markForCheck();
             });
 
         this.status$ = this._assignmentOccupationService.status$;
-        
+
         this._assignmentOccupationService.collaboratorsSelected = [];
 
-        this._assignmentOccupationService.collaboratorSelectedRemove$
-            .subscribe(collaboratorId => {
-                if ( collaboratorId !== null ) {
+        this._assignmentOccupationService.collaboratorSelectedRemove$.subscribe(
+            (collaboratorId) => {
+                if (collaboratorId !== null) {
                     //this.collaboratorSelected.at(index).setValue(false);
                     //this._checkCollaboratorsSelected();
 
                     for (let i = 0; i < this.collaboratorSelected.length; i++) {
-                        if ( this.collaboratorSelected.at(i).value.id === collaboratorId ) {
+                        if (
+                            this.collaboratorSelected.at(i).value.id ===
+                            collaboratorId
+                        ) {
                             this.collaboratorSelected.at(i).setValue({
                                 id: collaboratorId,
                                 checked: false,
@@ -188,21 +224,20 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            });
-        
-        
+            }
+        );
+
         this._handleEventSavedOccupation();
         this._handleChangeStatus();
         this._getStatus();
         this._getClients();
         this._getKnowledges();
         this._getResponsibleByClient();
-        this._handleChangeResponsible()
+        this._handleChangeResponsible();
         this._getCollaboratorsByRequest();
         this._handleEventTab();
         this._getAllCollaboratorOccupation();
     }
-
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -211,8 +246,10 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     /**
      * collaboratorSelected
      */
-    get collaboratorSelected(){
-        return this.collaboratorArrayForm.get('collaboratorSelected') as FormArray;
+    get collaboratorSelected() {
+        return this.collaboratorArrayForm.get(
+            'collaboratorSelected'
+        ) as FormArray;
     }
 
     /**
@@ -254,7 +291,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Filter knowledges
      */
     get filterKnowledges(): FormArray {
-        return this.filterCollaboratorsGroup.get('filterKnowledges') as FormArray;
+        return this.filterCollaboratorsGroup.get(
+            'filterKnowledges'
+        ) as FormArray;
     }
 
     /**
@@ -263,20 +302,21 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     get filterOccupation(): AbstractControl {
         return this.filterCollaboratorsGroup.get('filterOccupation');
     }
-    
+
     // -----------------------------------------------------------------------------------------------------
     // @ Methods
     // -----------------------------------------------------------------------------------------------------
 
     /**
      * Get collaborators assigned
-     * 
-     * @param requestId 
+     *
+     * @param requestId
      */
-     getCollaboratorsAssigned(requestId: number) {
-        this._requestService.getCollaboratorsAssigned(requestId)
-            .subscribe(collaborators => {
-                collaborators.forEach(item => {
+    getCollaboratorsAssigned(requestId: number) {
+        this._requestService
+            .getCollaboratorsAssigned(requestId)
+            .subscribe((collaborators) => {
+                collaborators.forEach((item) => {
                     item.name = item.name + ' ' + item.lastName;
                 });
                 this.dataCollab.data = collaborators;
@@ -290,16 +330,14 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      */
     private _handleEventTab() {
-        this._assignmentOccupationService.tabIndex$
-            .subscribe((tabIndex) => {
-                if ( tabIndex === 0 ) {
-                    this.isEditing = false;
-                    
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-                }
+        this._assignmentOccupationService.tabIndex$.subscribe((tabIndex) => {
+            if (tabIndex === 0) {
+                this.isEditing = false;
 
-            });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            }
+        });
     }
 
     /**
@@ -309,12 +347,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     editOccupation(collaborator: Collaborator) {
         this.collaborator = collaborator;
-        this._assignmentOccupationService.getOccupationsByCollaborator(collaborator.id)
-            .pipe(finalize(() => this.isEditing = true))
-                .subscribe(response => {
-                    this.assigments = response;
-                });
-
+        this._assignmentOccupationService
+            .getOccupationsByCollaborator(collaborator.id)
+            .pipe(finalize(() => (this.isEditing = true)))
+            .subscribe((response) => {
+                this.assigments = response;
+            });
     }
 
     /**
@@ -347,8 +385,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      */
     private _getAllCollaboratorOccupation() {
-        this._assignmentOccupationService.getAllColaboratorOccupation()
-            .subscribe(collaborators => {
+        this._assignmentOccupationService
+            .getAllColaboratorOccupation()
+            .subscribe((collaborators) => {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -358,76 +397,73 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Restarting list
      *
      */
-     restartingList(control: FormControl) {
-        control.setValue('', {emitEvent: false});
-        control.updateValueAndValidity({onlySelf: true, emitEvent: true});
+    restartingList(control: FormControl) {
+        control.setValue('', { emitEvent: false });
+        control.updateValueAndValidity({ onlySelf: true, emitEvent: true });
         ///this.inputBranch.nativeElement.focus();
     }
 
     /**
      * Clear form client
-     * 
+     *
      */
     clearFormClientAndRequest(control: FormControl) {
         this.dataCollab.data = [];
         this.selectedRequest = null;
         this.restartingList(control);
     }
-    
+
     /**
      * Handle event saved occupation
-     * 
+     *
      */
     private _handleEventSavedOccupation() {
-        this._assignmentOccupationService.isSuccess$
-            .subscribe((success) => {
-                if ( success ) {
-                    this._getAllCollaboratorOccupation();
-                    this.selectedResponsible = null;
-                    this.selectedClient = null;
-                    this.selectedRequest = null;
-                    this.hasCheckedCollaborator = false;
-                    this._assignmentOccupationService.collaboratorsSelected = [];
-                    // Clear form array of collaborator selected
-                    this.collaboratorSelected.clear();
-                    this.filterForm.setValue({
-                        myControl: '',
-                        requestControl: '',
-                        clientControl: '',
-                        collaboratorControl: '',
-                        statusControl: '',
-                        selectControl: ''
-                    });
-
-                }
-
-            });
+        this._assignmentOccupationService.isSuccess$.subscribe((success) => {
+            if (success) {
+                this._getAllCollaboratorOccupation();
+                this.selectedResponsible = null;
+                this.selectedClient = null;
+                this.selectedRequest = null;
+                this.hasCheckedCollaborator = false;
+                this._assignmentOccupationService.collaboratorsSelected = [];
+                // Clear form array of collaborator selected
+                this.collaboratorSelected.clear();
+                this.filterForm.setValue({
+                    myControl: '',
+                    requestControl: '',
+                    clientControl: '',
+                    collaboratorControl: '',
+                    statusControl: '',
+                    selectControl: '',
+                });
+            }
+        });
     }
 
     private _handleChangeStatus() {
-        this.statusControl.valueChanges
-            .subscribe(value => {
-                if ( value ) {
-                    this._assignmentOccupationService.selectedFiltered.status = this.status.find(item => item.id === value).name;
+        this.statusControl.valueChanges.subscribe((value) => {
+            if (value) {
+                this._assignmentOccupationService.selectedFiltered.status =
+                    this.status.find((item) => item.id === value).name;
 
-                    if ( this.selectedResponsible ) {
-                        // Get all request by responsible
-                        this._getRequestByResponsible( this.selectedResponsible );
-                    } else if ( this.selectedClient ) {
-                        // Get all collaborators by client
-                        this._getCollaboratorsByClient( this.selectedClient.id );
-                        // Get all request by client
-                        this._getRequestByClient( this.selectedClient.id );
-                    }
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
+                if (this.selectedResponsible) {
+                    // Get all request by responsible
+                    this._getRequestByResponsible(this.selectedResponsible);
+                } else if (this.selectedClient) {
+                    // Get all collaborators by client
+                    this._getCollaboratorsByClient(this.selectedClient.id);
+                    // Get all request by client
+                    this._getRequestByClient(this.selectedClient.id);
                 }
-
-            });
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            }
+        });
     }
 
     private _getStatus() {
-        this._assignmentOccupationService.getStatus()
+        this._assignmentOccupationService
+            .getStatus()
             .subscribe((status: Status[]) => {
                 this.status = status;
                 // Mark for check
@@ -442,26 +478,25 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _getClients() {
         this._assignmentOccupationService.clients$
             .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(clients => {
-                    clients.sort(this._sortArray);
-                    this.clients = clients;
+            .subscribe((clients) => {
+                clients.sort(this._sortArray);
+                this.clients = clients;
 
-                    // Create form array filterClients
-                    for (let i = 0; i < this.clients.length; i++) {
-                        this.filterClients.push(this._fb.group({
+                // Create form array filterClients
+                for (let i = 0; i < this.clients.length; i++) {
+                    this.filterClients.push(
+                        this._fb.group({
                             id: [this.clients[i].id],
                             name: [this.clients[i].name],
                             checked: [false],
-                        }), {emitEvent: false});
-                    }
+                        }),
+                        { emitEvent: false }
+                    );
+                }
 
-                    
-
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-                    
-                })
-       
+                // Mark for check
+                this._changeDetectorRef.markForCheck();
+            });
 
         //this.collaborators$ = this._assignmentOccupationService.collaborators$;
     }
@@ -472,44 +507,20 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _getKnowledges() {
         this._assignmentOccupationService.knowledges$
             .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(knowledges => {
-                    knowledges.sort(this._sortArray);
-                    this.knowledges = knowledges;
+            .subscribe((knowledges) => {
+                knowledges.sort(this._sortArray);
+                this.knowledges = knowledges;
 
-                    // Create form array filterClients
-                    for (let i = 0; i < this.knowledges.length; i++) {
-                        this.filterKnowledges.push(this._fb.group({
+                // Create form array filterClients
+                for (let i = 0; i < this.knowledges.length; i++) {
+                    this.filterKnowledges.push(
+                        this._fb.group({
                             id: [this.knowledges[i].id],
                             name: [this.knowledges[i].name],
                             checked: [false],
-                        }), {emitEvent: false});
-                    }
-
-                    // Mark for check
-                    this._changeDetectorRef.markForCheck();
-                    
-                })
-    }
-
-    /**
-     * Get all responsible by client
-     *
-     */
-    private _getResponsibleByClient() {
-        this.clientControl.valueChanges
-            .subscribe(value => {
-                const client = this.clients.find(item => item.name === value);
-
-                if ( client ) {
-                    this.selectedClient = client;
-                    this._assignmentOccupationService.selectedFiltered.client = client.name;
-                    this._getCollaboratorsByClient( this.selectedClient.id );
-                    this._getRequestByClient( this.selectedClient.id );
-                } else {
-                    this.selectedClient = null;
-                    this.collaborators = [];
-                    this.requestControl.setValue('');
-                    this.collaboratorControl.setValue('');
+                        }),
+                        { emitEvent: false }
+                    );
                 }
 
                 // Mark for check
@@ -518,17 +529,44 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Get all responsible by client
+     *
+     */
+    private _getResponsibleByClient() {
+        this.clientControl.valueChanges.subscribe((value) => {
+            const client = this.clients.find((item) => item.name === value);
+
+            if (client) {
+                this.selectedClient = client;
+                this._assignmentOccupationService.selectedFiltered.client =
+                    client.name;
+                this._getCollaboratorsByClient(this.selectedClient.id);
+                this._getRequestByClient(this.selectedClient.id);
+            } else {
+                this.selectedClient = null;
+                this.collaborators = [];
+                this.requestControl.setValue('');
+                this.collaboratorControl.setValue('');
+            }
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+    }
+
+    /**
      * Get all collaborators by client
      *
      */
     private _getCollaboratorsByClient(clientId: number) {
-        this._assignmentOccupationService.getCollaboratorsByClient( clientId )
-            .subscribe(collaborators => {
+        this._assignmentOccupationService
+            .getCollaboratorsByClient(clientId)
+            .subscribe((collaborators) => {
                 this.collaborators = collaborators;
                 this.collaboratorControl.setValue('');
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            })
+            });
     }
 
     /**
@@ -536,8 +574,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      */
     private _getRequestByClient(clientId: number) {
-        this._assignmentOccupationService.getRequestByClient( clientId, this.statusControl.value || null )
-            .subscribe(requests => {
+        this._assignmentOccupationService
+            .getRequestByClient(clientId, this.statusControl.value || null)
+            .subscribe((requests) => {
                 this.requests = requests;
                 this.requestControl.setValue('');
                 // Mark for check
@@ -550,30 +589,32 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      */
     private _handleChangeResponsible() {
-        this.collaboratorControl.valueChanges
-            .subscribe(value => {
-                const responsible = this.collaborators.find(item => ( item.name + ' ' + item.lastName ) === value);
+        this.collaboratorControl.valueChanges.subscribe((value) => {
+            const responsible = this.collaborators.find(
+                (item) => item.name + ' ' + item.lastName === value
+            );
 
-                if ( responsible ) {
-                    this.selectedResponsible = responsible;
-                    this._assignmentOccupationService.selectedFiltered.responsible = responsible.name;
-                    this._getRequestByResponsible(this.selectedResponsible);
-                } else if ( this.selectedResponsible && value === '' ) {
-                    this.selectedResponsible = null;
-                    this._getRequestByClient(this.selectedClient.id);
-                    // this.requests = [];
-                    this.requestControl.setValue('');
-                    this.dataCollab.data = [];
-                    this.selectedRequest = null;
-                } else {
-                    this.dataCollab.data = [];
-                    this.selectedRequest = null;
-                    this.requests = [];
-                    this.requestControl.setValue('');
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+            if (responsible) {
+                this.selectedResponsible = responsible;
+                this._assignmentOccupationService.selectedFiltered.responsible =
+                    responsible.name;
+                this._getRequestByResponsible(this.selectedResponsible);
+            } else if (this.selectedResponsible && value === '') {
+                this.selectedResponsible = null;
+                this._getRequestByClient(this.selectedClient.id);
+                // this.requests = [];
+                this.requestControl.setValue('');
+                this.dataCollab.data = [];
+                this.selectedRequest = null;
+            } else {
+                this.dataCollab.data = [];
+                this.selectedRequest = null;
+                this.requests = [];
+                this.requestControl.setValue('');
+            }
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**
@@ -582,18 +623,22 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * @param responsible
      */
     private _getRequestByResponsible(responsible: Collaborator) {
-        this._assignmentOccupationService.getRequestByResponsible( responsible.id, this.statusControl.value || null )
-            .subscribe(requests => {
+        this._assignmentOccupationService
+            .getRequestByResponsible(
+                responsible.id,
+                this.statusControl.value || null
+            )
+            .subscribe((requests) => {
                 this.requests = requests;
                 this.requestControl.setValue('');
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            })
+            });
     }
 
     /**
      * _getCollaboratorsByRequest
-     * 
+     *
      */
     private _getCollaboratorsByRequest() {
         this.requestControl.valueChanges
@@ -619,11 +664,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Select Tab
      */
     selectTab() {
-
         this.collaboratorsRecomm = [];
 
-        switch ( this._tab.selectedIndex ) {
-
+        switch (this._tab.selectedIndex) {
             case 0:
                 this.getCollaboratorsRecommended();
                 break;
@@ -645,9 +688,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Get collaborators recommended
      */
     getCollaboratorsRecommended() {
-        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+        const request = this.requests.find(
+            (item) => item.titleRequest === this.requestControl.value
+        );
 
-        if ( request ) {
+        if (request) {
             this._assignmentOccupationService.requestSelected = request;
             this.selectedRequest = true;
         } else {
@@ -660,17 +705,20 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Get collaboratorsByClient
      */
     getCollaboratorsByClients() {
-        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+        const request = this.requests.find(
+            (item) => item.titleRequest === this.requestControl.value
+        );
 
-        if ( request ) {
-            this._assignmentOccupationService.getCollaboratorsRecommendedByClient( request.id )
-                .subscribe(collaborators => {
+        if (request) {
+            this._assignmentOccupationService
+                .getCollaboratorsRecommendedByClient(request.id)
+                .subscribe((collaborators) => {
                     this.collaboratorsRecomm = collaborators;
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
-                })
+                });
         } else {
             this.collaboratorsRecomm = [];
             // Mark for check
@@ -682,17 +730,20 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Get collaboratorsByClient
      */
     getCollaboratorRecommendedByKnowledge() {
-        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+        const request = this.requests.find(
+            (item) => item.titleRequest === this.requestControl.value
+        );
 
-        if ( request ) {
-            this._assignmentOccupationService.getCollaboratorRecommendedByKnowledge( request.id )
-                .subscribe(collaborators => {
+        if (request) {
+            this._assignmentOccupationService
+                .getCollaboratorRecommendedByKnowledge(request.id)
+                .subscribe((collaborators) => {
                     this.collaboratorsRecomm = collaborators;
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
-                })
+                });
         } else {
             this.collaboratorsRecomm = [];
             // Mark for check
@@ -704,17 +755,20 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Get collaboratorsByClient
      */
     getCollaboratorRecommendedByFree() {
-        const request = this.requests.find(item => item.titleRequest === this.requestControl.value);
+        const request = this.requests.find(
+            (item) => item.titleRequest === this.requestControl.value
+        );
 
-        if ( request ) {
-            this._assignmentOccupationService.getCollaboratorRecommendedByFree( request.id )
-                .subscribe(collaborators => {
+        if (request) {
+            this._assignmentOccupationService
+                .getCollaboratorRecommendedByFree(request.id)
+                .subscribe((collaborators) => {
                     this.collaboratorsRecomm = collaborators;
                     // Update the collaboatorsRecomm
                     this._setCollaboratorsRecomm();
                     // Mark for check
                     this._changeDetectorRef.markForCheck();
-                })
+                });
         } else {
             this.collaboratorsRecomm = [];
             // Mark for check
@@ -728,9 +782,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     private _checkCollaboratorsSelected() {
         for (let i = 0; i < this.collaboratorSelected.length; i++) {
-            const collaboratorSelected = this._assignmentOccupationService.collaboratorsSelected.find(item => item.id === this.collaboratorSelected.at(i).value.id);
+            const collaboratorSelected =
+                this._assignmentOccupationService.collaboratorsSelected.find(
+                    (item) =>
+                        item.id === this.collaboratorSelected.at(i).value.id
+                );
 
-            if ( collaboratorSelected ) {
+            if (collaboratorSelected) {
                 this.collaboratorSelected.at(i).setValue({
                     id: this.collaboratorSelected.at(i).value.id,
                     checked: true,
@@ -741,13 +799,13 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     /**
      * Set CollaboratorsRecomm
-     * 
+     *
      */
     private _setCollaboratorsRecomm() {
         // Clear formArray
         this.collaboratorSelected.clear();
         // Set formArray
-        this.collaboratorOccupation.forEach(item => {
+        this.collaboratorOccupation.forEach((item) => {
             // Create form group of collaborator
             const collaboratorGroup = this._fb.group({
                 id: [item.id],
@@ -756,7 +814,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
             this.collaboratorSelected.push(collaboratorGroup);
             // value.collaboratorSelected[i] = this.collaborators[i];
-
         });
 
         this._checkCollaboratorsSelected();
@@ -771,18 +828,30 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      */
     private _handleChangeArrayForm() {
         this.collaboratorOccupation.forEach((item, index) => {
-            this.collaboratorSelected.at(index).valueChanges
-                .subscribe((collaborator) => {
+            this.collaboratorSelected
+                .at(index)
+                .valueChanges.subscribe((collaborator) => {
                     //find if collaborator already selected
-                    const collaboratorIndex = this._assignmentOccupationService.collaboratorsSelected.findIndex(item => item.id === collaborator.id);
+                    const collaboratorIndex =
+                        this._assignmentOccupationService.collaboratorsSelected.findIndex(
+                            (item) => item.id === collaborator.id
+                        );
 
+                    collaboratorIndex >= 0
+                        ? this._assignmentOccupationService.collaboratorsSelected.splice(
+                              collaboratorIndex,
+                              1
+                          )
+                        : this._assignmentOccupationService.collaboratorsSelected.push(
+                              item
+                          );
 
-                    collaboratorIndex >= 0 ? this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1) :
-                                             this._assignmentOccupationService.collaboratorsSelected.push(item);
-
-                    this.hasCheckedCollaborator = this._assignmentOccupationService.collaboratorsSelected.length > 0 ? true : false;
+                    this.hasCheckedCollaborator =
+                        this._assignmentOccupationService.collaboratorsSelected
+                            .length > 0
+                            ? true
+                            : false;
                 });
-
         });
     }
 
@@ -793,28 +862,36 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     private _filterClient(value: any): string[] {
         const filterValue = value.toLowerCase();
 
-        let val = this.clients.map(option => option.name);
-        return val.filter(option => option.toLowerCase().includes(filterValue));
+        let val = this.clients.map((option) => option.name);
+        return val.filter((option) =>
+            option.toLowerCase().includes(filterValue)
+        );
     }
 
     /**
      * _filterCollaborator
      * @param value
      */
-    private _filterCollaborator(value: string): string[]{
+    private _filterCollaborator(value: string): string[] {
         const filterValue = value.toLowerCase();
-        const val = this.collaborators.map(option => option.name + " " + option.lastName);
-        return val.filter(option => option.toLowerCase().includes(filterValue));
+        const val = this.collaborators.map(
+            (option) => option.name + ' ' + option.lastName
+        );
+        return val.filter((option) =>
+            option.toLowerCase().includes(filterValue)
+        );
     }
 
     /**
      * _filterRequest
      * @param value
      */
-    private _filterRequest(value: string): string[]{
+    private _filterRequest(value: string): string[] {
         const filterValue = value.toLowerCase();
-        const val = this.requests.map(option => option.titleRequest);
-        return val.filter(option => option.toLowerCase().includes(filterValue));
+        const val = this.requests.map((option) => option.titleRequest);
+        return val.filter((option) =>
+            option.toLowerCase().includes(filterValue)
+        );
     }
 
     /**
@@ -822,8 +899,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      */
     validateCollaborator() {
-        if ( this.requests.length <= 0 ) {
-            this.showFlashMessage('error', 'No hay solicitudes para este cliente');
+        if (this.requests.length <= 0) {
+            this.showFlashMessage(
+                'error',
+                'No hay solicitudes para este cliente'
+            );
         }
     }
 
@@ -831,13 +911,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      *
      * @param name
      */
-    dismissFuse(name){
+    dismissFuse(name) {
         this.successSave = 'No hay solicitudes para este cliente';
         this._fuseAlertService.dismiss(name);
     }
 
-    showFlashMessage(type: 'success' | 'error' | 'info', message: string): void
-    {
+    showFlashMessage(
+        type: 'success' | 'error' | 'info',
+        message: string
+    ): void {
         // Show the message
         this.flashMessage = 'info';
 
@@ -850,7 +932,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         // Hide it after 3 seconds
         setTimeout(() => {
-
             this.flashMessage = null;
 
             // Mark for check
@@ -858,18 +939,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         }, 3000);
     }
 
-
     /**
      * Track by function for ngFor loops
      *
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
-
 
     assignActivity(collaborator) {
         this._assignmentOccupationService.setCollaboratorByAssign(collaborator);
@@ -879,8 +957,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -894,8 +971,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * @returns
      */
     private _sortArray(x, y): number {
-        if (x.name < y.name) {return -1; }
-        if (x.name > y.name) {return 1; }
+        if (x.name < y.name) {
+            return -1;
+        }
+        if (x.name > y.name) {
+            return 1;
+        }
         return 0;
     }
 
@@ -903,15 +984,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Change tab
      *
      */
-    changeTab () {
+    changeTab() {
         this._assignmentOccupationService.setTabIndex(1);
     }
 
     handleCheckEvent(client: any) {
         //client = !client.selected;
 
-        this.selectedClients.forEach(item => {
-            if ( item.name === client.name ) {
+        this.selectedClients.forEach((item) => {
+            if (item.name === client.name) {
                 item.selected = !item.selected;
             }
         });
@@ -919,5 +1000,4 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         // Mark as check
         this._changeDetectorRef.markForCheck();
     }
-
 }
