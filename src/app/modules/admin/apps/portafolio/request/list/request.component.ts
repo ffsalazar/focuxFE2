@@ -57,6 +57,16 @@ import { MatInput } from '@angular/material/input';
                 padding: 5px 10px;
             }
 
+            #txtcuadro {
+                height:80px;
+                transition:all 1s;
+                -webkit-transition:all 1s;
+                resize: none;
+            }
+
+            #txtcuadro:focus {
+                height:400px;
+            }
 
             .inventory-grid {
                 grid-template-columns: 48px auto 40px;
