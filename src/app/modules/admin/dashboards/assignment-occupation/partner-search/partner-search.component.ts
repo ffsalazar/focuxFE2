@@ -600,9 +600,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe(value => {
                 // Get instance selected request
                 const request = this.requests.find(item => item.titleRequest === value);
+                
                 if ( request ) {
                     // Get collaborators assigned to request
                     this.getCollaboratorsAssigned(request.id);
+                    this._assignmentOccupationService.getAllColaboratorOccupation(request.id)
+                        .subscribe(collaborators => {
+                            // Mark for check
+                            this._changeDetectorRef.markForCheck();
+                        });
                 }
                 // Get recommended
                 this.getCollaboratorsRecommended();

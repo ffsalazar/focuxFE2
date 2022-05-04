@@ -497,11 +497,23 @@ export class AssingmentOccupationService {
      * 
      * @returns
      */
-    getAllColaboratorOccupation(): Observable<any> {
+    getAllColaboratorOccupation(requestId: number = -1): Observable<any> {
+
+        let params;
+
+        if ( requestId >= 0 ) {
+            params = {
+                requestId
+            }
+        }
+
+        console.log("req: ", requestId);
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
         
-        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage')
+        return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage', {
+            params
+        })
             .pipe(
                 tap(collaborators => {
                     /** spinner ends after 5 seconds */
