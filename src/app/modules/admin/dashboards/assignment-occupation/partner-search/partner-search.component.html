@@ -1,158 +1,415 @@
-<div class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
+<div
+    class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50"
+>
     <div class="w-full">
-            <div class="flex flex-col">
-                <ng-container *ngIf="!isEditing">
+        <div class="flex flex-col">
+            <ng-container *ngIf="!isEditing">
+                <div class="flex flex-auto mt-4 mb-8">
+                    <form
+                        [formGroup]="filterForm"
+                        class="example-form flex flex-col"
+                        style="width: 100% !important"
+                    >
+                        <div class="flex w-full">
+                            <div
+                                class="container-filter flex flex-col justify-start"
+                                style="width: 28%"
+                            >
+                                <div>
+                                    <h1
+                                        class="text-base md:text-3xl mb-3 font-semibold tracking-tight leading-5 md:leading-snug truncate ng-star-inserted"
+                                    >
+                                        Solicitud
+                                    </h1>
+                                </div>
+                                <div class="flex items-center justify-start">
+                                    <!-- <span class="ml-2 mb-3 font-semibold">Filtros (4)</span> -->
+                                </div>
+                                <div style="width: 100%">
+                                    <div class="flex flex-col">
+                                        <mat-label class="font-semibold"
+                                            >Cliente</mat-label
+                                        >
+                                        <mat-form-field
+                                            class="mr-6"
+                                            appearance="fill"
+                                        >
+                                            <input
+                                                type="text"
+                                                matInput
+                                                [placeholder]="'Cliente'"
+                                                formControlName="clientControl"
+                                                [matAutocomplete]="client"
+                                            />
 
-                    <div class="flex flex-auto mt-4 mb-8">
-                        <form [formGroup]="filterForm" class="example-form flex flex-col" style="width: 100% !important;">
-                            
-                            <div class="flex w-full">
-                                <div class="container-filter flex flex-col justify-start " style="width: 28%;">
-                                    <div>
-                                        <h1 class="text-base md:text-3xl mb-3 font-semibold tracking-tight leading-5 md:leading-snug truncate ng-star-inserted">Solicitud</h1>
+                                            <mat-autocomplete
+                                                #client="matAutocomplete"
+                                            >
+                                                <mat-option
+                                                    *ngFor="
+                                                        let option of filteredClients
+                                                            | async
+                                                    "
+                                                    [value]="option"
+                                                >
+                                                    {{ option }}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                            <mat-icon
+                                                style="cursor: pointer"
+                                                *ngIf="
+                                                    filterForm.get(
+                                                        'clientControl'
+                                                    ).value !== '' &&
+                                                    filterForm.get(
+                                                        'clientControl'
+                                                    ).value !== null
+                                                "
+                                                (click)="
+                                                    clearFormClientAndRequest(
+                                                        filterForm.get(
+                                                            'clientControl'
+                                                        )
+                                                    )
+                                                "
+                                                matSuffix
+                                                >clear</mat-icon
+                                            >
+                                            <mat-icon
+                                                style="cursor: pointer"
+                                                *ngIf="
+                                                    filterForm.get(
+                                                        'clientControl'
+                                                    ).value === '' ||
+                                                    filterForm.get(
+                                                        'clientControl'
+                                                    ).value === null
+                                                "
+                                                >arrow_drop_down</mat-icon
+                                            >
+                                        </mat-form-field>
                                     </div>
-                                    <div class="flex items-center justify-start">
-                                        <!-- <span class="ml-2 mb-3 font-semibold">Filtros (4)</span> -->
-                                    </div>
-                                    <div style="width: 100%;">
-                                        <div class="flex flex-col">
-                                            <mat-label class="font-semibold">Cliente</mat-label>
-                                            <mat-form-field class="mr-6" appearance="fill"> 
-                                                <input
-                                                    type="text"
-                                                    matInput
-                                                    [placeholder]="'Cliente'"
-                                                    formControlName="clientControl"
-                                                    [matAutocomplete]="client">
-                            
-                                                <mat-autocomplete #client="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredClients | async" [value]="option">
-                                                        {{option}}
-                                                    </mat-option>
-                                                </mat-autocomplete>
-                                                <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('clientControl').value !== '' && filterForm.get('clientControl').value !== null" (click)="restartingList(filterForm.get('clientControl'))" matSuffix>clear</mat-icon>
-                                                <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('clientControl').value === '' || filterForm.get('clientControl').value === null">arrow_drop_down</mat-icon>
-        
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                    <div style="width: 100%;">
-                                        <div class="flex flex-col mr-6">
-                                        <mat-label class="font-semibold">Responsable</mat-label>
+                                </div>
+                                <div style="width: 100%">
+                                    <div class="flex flex-col mr-6">
+                                        <mat-label class="font-semibold"
+                                            >Responsable</mat-label
+                                        >
                                         <mat-form-field>
                                             <input
                                                 type="text"
                                                 [placeholder]="'Responsable'"
                                                 matInput
                                                 formControlName="collaboratorControl"
-                                                [matAutocomplete]="autoCollaborator"
+                                                [matAutocomplete]="
+                                                    autoCollaborator
+                                                "
                                                 matTooltip="No hay Responsables"
-                                                [matTooltipDisabled]="filteredCollaborators.length > 0"
-                                                [matTooltipClass]="'matTooltipResponsibleCustom'"
+                                                [matTooltipDisabled]="
+                                                    filteredCollaborators.length >
+                                                    0
+                                                "
+                                                [matTooltipClass]="
+                                                    'matTooltipResponsibleCustom'
+                                                "
                                                 [matTooltipPosition]="'right'"
+                                            />
+
+                                            <mat-autocomplete
+                                                #autoCollaborator="matAutocomplete"
                                             >
-                                                
-                                            <mat-autocomplete #autoCollaborator="matAutocomplete">
-                                                <mat-option *ngFor="let collaborator of filteredCollaborators" [value]="collaborator">
-                                                    {{collaborator}}
+                                                <mat-option
+                                                    *ngFor="
+                                                        let collaborator of filteredCollaborators
+                                                    "
+                                                    [value]="collaborator"
+                                                >
+                                                    {{ collaborator }}
                                                 </mat-option>
                                             </mat-autocomplete>
-                                            <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('collaboratorControl').value !== '' && filterForm.get('collaboratorControl').value !== null" (click)="restartingList(filterForm.get('collaboratorControl'))" matSuffix>clear</mat-icon>
-                                            <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('collaboratorControl').value === '' || filterForm.get('collaboratorControl').value === null">arrow_drop_down</mat-icon>
+                                            <mat-icon
+                                                style="cursor: pointer"
+                                                *ngIf="
+                                                    filterForm.get(
+                                                        'collaboratorControl'
+                                                    ).value !== '' &&
+                                                    filterForm.get(
+                                                        'collaboratorControl'
+                                                    ).value !== null
+                                                "
+                                                (click)="
+                                                    restartingList(
+                                                        filterForm.get(
+                                                            'collaboratorControl'
+                                                        )
+                                                    )
+                                                "
+                                                matSuffix
+                                                >clear</mat-icon
+                                            >
+                                            <mat-icon
+                                                style="cursor: pointer"
+                                                *ngIf="
+                                                    filterForm.get(
+                                                        'collaboratorControl'
+                                                    ).value === '' ||
+                                                    filterForm.get(
+                                                        'collaboratorControl'
+                                                    ).value === null
+                                                "
+                                                >arrow_drop_down</mat-icon
+                                            >
                                         </mat-form-field>
-                                        </div>
-                                    </div>
-                                    <div style="width: 100%;">
-                                        <div class="flex flex-col mr-6">
-                                            <mat-label class="font-semibold">Estatus</mat-label>
-                                            <mat-form-field>
-                                                <mat-select style="padding-right: 16px;" [formControl]="statusControl">
-                                                    <ng-container *ngFor="let status of status$ | async">
-                                                        <mat-option [value]="status.id">
-                                                            {{status.name}}
-                                                        </mat-option>
-                                                    </ng-container>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                    
                                     </div>
                                 </div>
-                                <mat-divider
-                                    [vertical]="'true'"
-                                    class="border mb-4"
-                                ></mat-divider>
-                                <div class="flex flex-col w-full justify-center justify-items-center items-center mr-6">
-                                    <div style="width: 60%;" class="self-end" >
-                                        <mat-label class="font-semibold">Solicitudes</mat-label>
-                                        <mat-form-field (click)="validateCollaborator()" class="" style="width: 100%;" appearance="fill">
-                                            <input
-                                                type="text" placeholder="Solicitud"
-                                                aria-label="Number"
-                                                matInput
-                                                formControlName="requestControl"
-                                                [matAutocomplete]="auto"
-                                                matTooltip="No hay solicitudes"
-                                                [matTooltipDisabled]="filteredRequest.length > 0"
-                                                [matTooltipClass]="'matTooltipCustom'"
-                                                [matTooltipClass]="'matTooltipResponsibleCustom'"
-                                                [matTooltipPosition]="'left'"
+                                <div style="width: 100%">
+                                    <div class="flex flex-col mr-6">
+                                        <mat-label class="font-semibold"
+                                            >Estatus</mat-label
+                                        >
+                                        <mat-form-field>
+                                            <mat-select
+                                                style="padding-right: 16px"
+                                                [formControl]="statusControl"
                                             >
-                                            
-                                                <mat-autocomplete #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredRequest" [value]="option">
-                                                        {{option}}
+                                                <ng-container
+                                                    *ngFor="
+                                                        let status of status$
+                                                            | async
+                                                    "
+                                                >
+                                                    <mat-option
+                                                        [value]="status.id"
+                                                    >
+                                                        {{ status.name }}
                                                     </mat-option>
-                                                </mat-autocomplete>
-                                                <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('requestControl').value !== '' && filterForm.get('requestControl').value !== null" (click)="restartingList(filterForm.get('requestControl'))" matSuffix>clear</mat-icon>
-                                                <mat-icon style="cursor: pointer;" *ngIf="filterForm.get('requestControl').value === '' || filterForm.get('requestControl').value === null">arrow_drop_down</mat-icon>
+                                                </ng-container>
+                                            </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="flex flex-col self-end flex-auto w-full pl-10 overflow-hidden sm:overflow-y-auto">
-                                        <div>
-                                            <h1 class="text-base md:text-3xl mb-3 font-semibold tracking-tight leading-5 md:leading-snug truncate ng-star-inserted">Colaboradores asignados</h1>
-                                        </div>
-                                        <table mat-table  [dataSource]="dataCollab">
-                                            <ng-container matColumnDef="id">
-                                                <th mat-header-cell *matHeaderCellDef> # </th>
-                                                <td mat-cell *matCellDef="let element; let i = index;" class="th-left">{{i + 1}}</td>
-                                              </ng-container>
-                                            <ng-container matColumnDef="name">
-                                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
-                                                <td mat-cell *matCellDef="let element; let i = index;" class="th-left">  {{element.name}}</td>
-                                              </ng-container>
-                                            <ng-container matColumnDef="roleName">
-                                                <th mat-header-cell *matHeaderCellDef>  Rol </th>
-                                                <td mat-cell *matCellDef="let element"> {{element.roleName}} </td>
-                                              </ng-container>
-                                            <ng-container matColumnDef="occupationPercentage">
-                                                <th mat-header-cell *matHeaderCellDef>  Ocupación % </th>
-                                                <td mat-cell *matCellDef="let element">
-                                                    <!-- <mat-progress-bar
+                                </div>
+                            </div>
+                            <mat-divider
+                                [vertical]="'true'"
+                                class="border mb-4"
+                            ></mat-divider>
+                            <div class="flex flex-col w-full items-end mr-6">
+                                <div style="width: 60%" class="self-end">
+                                    <mat-label class="font-semibold"
+                                        >Solicitudes</mat-label
+                                    >
+                                    <mat-form-field
+                                        (click)="validateCollaborator()"
+                                        class=""
+                                        style="width: 100%"
+                                        appearance="fill"
+                                    >
+                                        <input
+                                            type="text"
+                                            placeholder="Solicitud"
+                                            aria-label="Number"
+                                            matInput
+                                            formControlName="requestControl"
+                                            [matAutocomplete]="auto"
+                                            matTooltip="No hay solicitudes"
+                                            [matTooltipDisabled]="
+                                                filteredRequest.length > 0
+                                            "
+                                            [matTooltipClass]="
+                                                'matTooltipCustom'
+                                            "
+                                            [matTooltipClass]="
+                                                'matTooltipResponsibleCustom'
+                                            "
+                                            [matTooltipPosition]="'left'"
+                                        />
+                                        <mat-autocomplete
+                                            #auto="matAutocomplete"
+                                        >
+                                            <mat-option
+                                                *ngFor="
+                                                    let option of filteredRequest
+                                                "
+                                                [value]="option"
+                                            >
+                                                {{ option }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-icon
+                                            style="cursor: pointer"
+                                            *ngIf="
+                                                filterForm.get('requestControl')
+                                                    .value !== '' &&
+                                                filterForm.get('requestControl')
+                                                    .value !== null
+                                            "
+                                            (click)="
+                                                clearFormClientAndRequest(
+                                                    filterForm.get(
+                                                        'requestControl'
+                                                    )
+                                                )
+                                            "
+                                            matSuffix
+                                            >clear</mat-icon
+                                        >
+                                        <mat-icon
+                                            style="cursor: pointer"
+                                            *ngIf="
+                                                filterForm.get('requestControl')
+                                                    .value === '' ||
+                                                filterForm.get('requestControl')
+                                                    .value === null
+                                            "
+                                            >arrow_drop_down</mat-icon
+                                        >
+                                    </mat-form-field>
+                                </div>
+                                <div
+                                    class="flex flex-col self-end flex-auto w-full pl-10 overflow-hidden sm:overflow-y-auto"
+                                    *ngIf="
+                                        dataCollab.data.length > 0 &&
+                                            selectedRequest;
+                                        else noneCollaborators
+                                    "
+                                >
+                                    <div>
+                                        <h1
+                                            class="text-base md:text-3xl mb-3 font-semibold tracking-tight leading-5 md:leading-snug truncate ng-star-inserted"
+                                        >
+                                            Colaboradores asignados
+                                        </h1>
+                                    </div>
+                                    <table mat-table [dataSource]="dataCollab">
+                                        <ng-container matColumnDef="id">
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                #
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="
+                                                    let element;
+                                                    let i = index
+                                                "
+                                                class="th-left"
+                                            >
+                                                {{ i + 1 }}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="name">
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                Nombre
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="
+                                                    let element;
+                                                    let i = index
+                                                "
+                                                class="th-left"
+                                            >
+                                                {{ element.name }}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="roleName">
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                Rol
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                            >
+                                                {{ element.roleName }}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container
+                                            matColumnDef="occupationPercentage"
+                                        >
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                Ocupación %
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                            >
+                                                <!-- <mat-progress-bar
                                                         class="mt-3 rounded-full w-60"
                                                         [mode]="'determine'"
                                                         [color]="element.occupationPercentage >= 100 ? 'primary' : 'warn'"
                                                         [value]="element.occupationPercentage"
                                                     >
                                                     </mat-progress-bar> -->
-                                                    {{element.occupationPercentage + '%'}}
-                                                </td>
-                                              </ng-container>
-                                            <ng-container matColumnDef="startDate">
-                                                <th mat-header-cell *matHeaderCellDef>  Fecha de Inicio </th>
-                                                <td mat-cell *matCellDef="let element"> 20-08-2022 </td>
-                                              </ng-container>
-                                            <ng-container matColumnDef="endDate">
-                                                <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
-                                                <td mat-cell *matCellDef="let element">20-09-2022</td>
-                                              </ng-container>
-                                            <!-- DateEnd Pause -->
-                                            
-                                              <tr mat-header-row *matHeaderRowDef="displayColCollab"></tr>
-                                              <tr mat-row *matRowDef="let row; columns: displayColCollab;"></tr>
-                                          </table>
-                                        </div>
-                                    <!-- <div class="flex flex-row justify-end items-end" style="width: 40%;">
+                                                {{
+                                                    element.occupationPercentage +
+                                                        "%"
+                                                }}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="startDate">
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                Fecha de Inicio
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                            >
+                                                20-08-2022
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="endDate">
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                Fecha Fin
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                            >
+                                                20-09-2022
+                                            </td>
+                                        </ng-container>
+                                        <!-- DateEnd Pause -->
+
+                                        <tr
+                                            mat-header-row
+                                            *matHeaderRowDef="displayColCollab"
+                                        ></tr>
+                                        <tr
+                                            mat-row
+                                            *matRowDef="
+                                                let row;
+                                                columns: displayColCollab
+                                            "
+                                        ></tr>
+                                    </table>
+                                </div>
+
+                                <ng-template #noneCollaborators>
+                                    <div
+                                        class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center self-center"
+                                        *ngIf="selectedRequest"
+                                    >
+                                        No tiene colaboradores asignados
+                                    </div>
+                                </ng-template>
+                                <!-- <div class="flex flex-row justify-end items-end" style="width: 40%;">
                                         <button
                                             mat-fab
                                             [color]="'accent'"
@@ -160,7 +417,7 @@
                                             [disabled]="!selectedRequest || !hasCheckedCollaborator"
                                             (click)="changeTab()"
                                             matTooltip="Siguiente"
-                                            
+
                                         >
                                             <mat-icon
                                                 class="icon-size-7"
@@ -169,13 +426,12 @@
                                             </mat-icon>
                                         </button>
                                     </div> -->
-                                </div>
                             </div>
-                            
-                        </form>         
-                    </div>
-                    <!-- <fuse-alert
-                        [type]="'success'" 
+                        </div>
+                    </form>
+                </div>
+                <!-- <fuse-alert
+                        [type]="'success'"
                         [dismissible]="true"
                         [dismissed]="true"
                         [name]="'alertBox4'"
@@ -183,51 +439,189 @@
                         >
                             <span fuseAlertTitle>{{successSave}}</span>
                     </fuse-alert> -->
-                    <mat-divider class="border-t mb-4"></mat-divider>
-                    <!-- <div class="divide-solid" style="height: 1px; width: 100%;"></div> -->
-                    <div>
-                        <h1 class="text-base md:text-3xl mb-3 font-semibold tracking-tight leading-5 md:leading-snug truncate ng-star-inserted">Colaboradores</h1>
-                    </div>
-                    <div class="flex flex-row gap-4 ">
-                        <div class="flex flex-col" style="width: 20%;">
-                            <div class="flex items-center justify-start">
-                                <span class="ml-2 mb-3 font-semibold">Filtros (4)</span>
+                <mat-divider class="border-t mb-4"></mat-divider>
+                <!-- <div class="divide-solid" style="height: 1px; width: 100%;"></div> -->
+                <div>
+                    <h1
+                        class="text-base md:text-3xl mb-3 font-semibold tracking-tight leading-5 md:leading-snug truncate ng-star-inserted"
+                    >
+                        Colaboradores
+                    </h1>
+                </div>
+                <div class="flex flex-row gap-4">
+                    <div class="flex flex-col" style="width: 20%">
+                        <div class="flex items-center justify-start">
+                            <span class="ml-2 mb-3 font-semibold"
+                                >Filtros (3)</span
+                            >
+                        </div>
+                        <form
+                            [formGroup]="filterCollaboratorsGroup"
+                            class="flex flex-col shadow px-2"
+                            style="background: white"
+                        >
+                            <div
+                                class="flex flex-col filter-item pt-4 pb-4 border-b"
+                                style="height: auto"
+                            >
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        [ngClass]="{
+                                            'font-semibold':
+                                                selectedFilterClient,
+                                            flex: true
+                                        }"
+                                    >
+                                        <mat-icon class="icon-size-5 mr-1">{{
+                                            "location_on"
+                                        }}</mat-icon>
+                                        Cliente</span
+                                    >
+                                    <mat-icon
+                                        class="icon-size-5 pointer arrow-icon"
+                                        (click)="
+                                            selectedFilterClient =
+                                                !selectedFilterClient
+                                        "
+                                        >{{
+                                            !selectedFilterClient
+                                                ? "keyboard_arrow_right"
+                                                : "keyboard_arrow_down"
+                                        }}</mat-icon
+                                    >
+                                </div>
+                                <div
+                                    *ngIf="selectedFilterClient"
+                                    class="flex flex-col mt-3 px-3"
+                                >
+                                    <ng-container>
+                                        <ng-container>
+                                            <div
+                                                class="flex items-center gap-2"
+                                            >
+                                                <mat-checkbox
+                                                    [color]="'primary'"
+                                                >
+                                                </mat-checkbox>
+                                                <span>Todos</span>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container
+                                            formArrayName="filterClients"
+                                        >
+                                            <ng-container
+                                                *ngFor="
+                                                    let client of filterClients.controls;
+                                                    index as i
+                                                "
+                                            >
+                                                <div
+                                                    [formGroupName]="i"
+                                                    class="flex items-center gap-2"
+                                                >
+                                                    <mat-checkbox
+                                                        [color]="'primary'"
+                                                        formControlName="checked"
+                                                    >
+                                                    </mat-checkbox>
+                                                    <span>{{
+                                                        filterClients.at(i)
+                                                            .controls.name.value
+                                                    }}</span>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <!-- <div class="flex items-center gap-2">
+                                            <mat-checkbox
+                                                [color]="'primary'"
+                                                formControlName="checked">
+                                            </mat-checkbox>
+                                            <span>Epa</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <mat-checkbox
+                                                [color]="'primary'"
+                                                formControlName="checked">
+                                            </mat-checkbox>
+                                            <span>Beconsult</span>
+                                        </div> -->
+                                </div>
                             </div>
-                            <form [formGroup]="filterCollaboratorsGroup"  class="flex flex-col shadow px-2" style="background: white;">
-                                
-                                <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto; ">
-                                    <div class="flex items-center justify-between">
-                                        <span [ngClass]="{'font-semibold': selectedFilterClient, 'flex': true}">
-                                            <mat-icon class="icon-size-5 mr-1">{{ 'location_on' }}</mat-icon>
-                                            Cliente</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterClient = !selectedFilterClient;">{{ !selectedFilterClient ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
-                                    </div>
-                                    <div *ngIf="selectedFilterClient" class="flex flex-col mt-3 px-3">
+                            <div
+                                class="flex flex-col filter-item border-b pt-4 pb-4"
+                                style="height: auto"
+                            >
+                                <div class="flex items-center justify-between">
+                                    <!-- <div><span><mat-icon></mat-icon>Conocimiento</span></div> -->
+
+                                    <span
+                                        [ngClass]="{
+                                            'font-semibold':
+                                                selectedFilterKnowledge,
+                                            flex: true
+                                        }"
+                                    >
+                                        <mat-icon class="icon-size-5 mr-1"
+                                            >bookmark</mat-icon
+                                        >Conocimiento</span
+                                    >
+                                    <mat-icon
+                                        class="icon-size-5 pointer arrow-icon"
+                                        (click)="
+                                            selectedFilterKnowledge =
+                                                !selectedFilterKnowledge
+                                        "
+                                        >{{
+                                            !selectedFilterKnowledge
+                                                ? "keyboard_arrow_right"
+                                                : "keyboard_arrow_down"
+                                        }}</mat-icon
+                                    >
+                                </div>
+                                <div
+                                    *ngIf="selectedFilterKnowledge"
+                                    class="flex flex-col mt-3 px-3"
+                                >
+                                    <ng-container>
                                         <ng-container>
-                                            <ng-container>
-                                                <div class="flex items-center gap-2">
+                                            <div
+                                                class="flex items-center gap-2"
+                                            >
+                                                <mat-checkbox
+                                                    [color]="'primary'"
+                                                >
+                                                </mat-checkbox>
+                                                <span>Todos</span>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container
+                                            formArrayName="filterKnowledges"
+                                        >
+                                            <ng-container
+                                                *ngFor="
+                                                    let knowledge of filterKnowledges.controls;
+                                                    index as i
+                                                "
+                                            >
+                                                <div
+                                                    [formGroupName]="i"
+                                                    class="flex items-center gap-2"
+                                                >
                                                     <mat-checkbox
                                                         [color]="'primary'"
-                                                        >
+                                                        formControlName="checked"
+                                                    >
                                                     </mat-checkbox>
-                                                    <span>Todos</span>
+                                                    <span>{{
+                                                        filterKnowledges.at(i)
+                                                            .controls.name.value
+                                                    }}</span>
                                                 </div>
                                             </ng-container>
-                                            <ng-container formArrayName="filterClients">
-                                                <ng-container *ngFor="let client of filterClients.controls; index as i;">
-                                                    <div [formGroupName]="i" class="flex items-center gap-2">
-                                                        <mat-checkbox
-                                                            [color]="'primary'"
-                                                            formControlName="checked"
-                                                        >
-                                                        </mat-checkbox>
-                                                        <span>{{ filterClients.at(i).controls.name.value }}</span>
-                                                    </div>
-                                                </ng-container>
-                                            </ng-container>
-                                            
                                         </ng-container>
-                                        <!-- <div class="flex items-center gap-2">
+                                    </ng-container>
+                                    <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 formControlName="checked">
@@ -241,65 +635,43 @@
                                             </mat-checkbox>
                                             <span>Beconsult</span>
                                         </div> -->
-                                    </div>
                                 </div>
-                                <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
-                                    <div class="flex items-center justify-between">
-                                        <!-- <div><span><mat-icon></mat-icon>Conocimiento</span></div> -->
-                                        
-                                        <span [ngClass]="{'font-semibold': selectedFilterKnowledge, 'flex': true}"> <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterKnowledge = !selectedFilterKnowledge;">{{ !selectedFilterKnowledge ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
-                                    </div>
-                                    <div *ngIf="selectedFilterKnowledge" class="flex flex-col mt-3 px-3">
-                                        <ng-container>
-                                            <ng-container>
-                                                <div class="flex items-center gap-2">
-                                                    <mat-checkbox
-                                                        [color]="'primary'"
-                                                        >
-                                                    </mat-checkbox>
-                                                    <span>Todos</span>
-                                                </div>
-                                            </ng-container>
-                                            <ng-container formArrayName="filterKnowledges">
-                                                <ng-container *ngFor="let knowledge of filterKnowledges.controls; index as i;">
-                                                    <div [formGroupName]="i" class="flex items-center gap-2">
-                                                        <mat-checkbox
-                                                            [color]="'primary'"
-                                                            formControlName="checked"
-                                                        >
-                                                        </mat-checkbox>
-                                                        <span>{{ filterKnowledges.at(i).controls.name.value }}</span>
-                                                    </div>
-                                                </ng-container>
-                                            </ng-container>
-                                            
-                                        </ng-container>
-                                        <!-- <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Epa</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Beconsult</span>
-                                        </div> -->
-                                    </div>
+                            </div>
+                            <div
+                                class="flex flex-col filter-item border-b pt-4 pb-4"
+                                style="height: auto"
+                            >
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        [ngClass]="{
+                                            'font-semibold':
+                                                selectedFilterOccupation,
+                                            flex: true
+                                        }"
+                                    >
+                                        <mat-icon class="icon-size-5 mr-1"
+                                            >access_time</mat-icon
+                                        >
+                                        Disponibilidad</span
+                                    >
+                                    <mat-icon
+                                        class="icon-size-5 pointer arrow-icon"
+                                        (click)="
+                                            selectedFilterOccupation =
+                                                !selectedFilterOccupation
+                                        "
+                                        >{{
+                                            !selectedFilterOccupation
+                                                ? "keyboard_arrow_right"
+                                                : "keyboard_arrow_down"
+                                        }}</mat-icon
+                                    >
                                 </div>
-                                <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
-                                    <div class="flex items-center justify-between">
-                                        <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
-                                            <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
-                                            Disponibilidad</span>
-                                        <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
-                                    </div>
-                                    <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
-                                        <!-- <mat-radio-group
+                                <div
+                                    *ngIf="selectedFilterOccupation"
+                                    class="flex flex-col mt-3 px-3"
+                                >
+                                    <!-- <mat-radio-group
                                             aria-labelledby="example-radio-group-label"
                                             class="example-radio-group"
                                             [color]="'primary'"
@@ -308,7 +680,7 @@
                                                 {{occupation + '%'}}
                                             </mat-radio-button>
                                         </mat-radio-group> -->
-                                        <!-- <div class="flex items-center gap-2">
+                                    <!-- <div class="flex items-center gap-2">
                                             <mat-checkbox
                                                 [color]="'primary'"
                                                 >
@@ -336,27 +708,43 @@
                                             </mat-checkbox>
                                             <span>100%</span>
                                         </div> -->
-                                        
-                                        <div class="flex flex-col w-full flex-auto mt-2" style="width: 100% !important;">
-                                            <!-- <div class="">
+
+                                    <div
+                                        class="flex flex-col w-full flex-auto mt-2"
+                                        style="width: 100% !important"
+                                    >
+                                        <!-- <div class="">
                                                 <span>100%</span>
                                             </div> -->
-                                            <div class="flex justify-between" [class]="'example-label-horizontal'">
-                                                <label id="example-name-label" class="example-name-label">Ocupación</label>
-                                                <label class="example-value-label">{{ filterOccupation.value }}%</label>
-                                              </div>
-                                            <mat-slider
-                                                aria-label="unit(s)"
-                                                [thumbLabel]="true"
-                                                [step]="5"
-                                                [color]="'primary'"
-                                                formControlName="filterOccupation"
-                                            ></mat-slider>
+                                        <div
+                                            class="flex justify-between"
+                                            [class]="'example-label-horizontal'"
+                                        >
+                                            <label
+                                                id="example-name-label"
+                                                class="example-name-label"
+                                                >Ocupación</label
+                                            >
+                                            <label class="example-value-label"
+                                                >{{
+                                                    filterOccupation.value
+                                                }}%</label
+                                            >
                                         </div>
+                                        <mat-slider
+                                            aria-label="unit(s)"
+                                            [thumbLabel]="true"
+                                            [step]="5"
+                                            [color]="'primary'"
+                                            formControlName="filterOccupation"
+                                        ></mat-slider>
+                                    </div>
 
-                                        <div class="flex w-full flex-auto" style="width: 100% !important;">
-
-                                            <!-- <mat-form-field class="fuse-mat-no-subscript w-1/3">
+                                    <div
+                                        class="flex w-full flex-auto"
+                                        style="width: 100% !important"
+                                    >
+                                        <!-- <mat-form-field class="fuse-mat-no-subscript w-1/3">
                                                 <mat-label>Fecha fin pausa</mat-label>
                                                 <mat-icon
                                                     matPrefix
@@ -373,7 +761,7 @@
                                                 </mat-datepicker-toggle>
                                                 <mat-datepicker #dateEndPausePicker></mat-datepicker>
                                             </mat-form-field> -->
-                                            <!-- <mat-form-field class="fuse-mat-no-subscript w-1/3">
+                                        <!-- <mat-form-field class="fuse-mat-no-subscript w-1/3">
                                                 <mat-label>Fecha fin pausa</mat-label>
                                                 <mat-icon
                                                     matPrefix
@@ -391,23 +779,59 @@
                                                 <mat-datepicker #dateEndaPausePicker></mat-datepicker>
                                             </mat-form-field> -->
 
-                                            <mat-form-field style="width: 100% !important">
-                                                <mat-label>Fecha Disponible</mat-label>
-                                                <mat-date-range-input [rangePicker]="picker">
-                                                  <input matStartDate formControlName="filterDateInit" placeholder="Start date">
-                                                  <input matEndDate formControlName="filterDateEnd" placeholder="End date">
-                                                </mat-date-range-input>
-                                                <mat-hint>Fecha Inicio – Fecha Fin</mat-hint>
-                                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                                <mat-date-range-picker #picker></mat-date-range-picker>
-                                              
-                                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Fecha Invalida</mat-error>
-                                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fecha Invalida</mat-error>
-                                              </mat-form-field>
-                                        </div>
+                                        <mat-form-field
+                                            style="width: 100% !important"
+                                        >
+                                            <mat-label
+                                                >Fecha Disponible</mat-label
+                                            >
+                                            <mat-date-range-input
+                                                [rangePicker]="picker"
+                                            >
+                                                <input
+                                                    matStartDate
+                                                    formControlName="filterDateInit"
+                                                    placeholder="Start date"
+                                                />
+                                                <input
+                                                    matEndDate
+                                                    formControlName="filterDateEnd"
+                                                    placeholder="End date"
+                                                />
+                                            </mat-date-range-input>
+                                            <mat-hint
+                                                >Fecha Inicio – Fecha
+                                                Fin</mat-hint
+                                            >
+                                            <mat-datepicker-toggle
+                                                matSuffix
+                                                [for]="picker"
+                                            ></mat-datepicker-toggle>
+                                            <mat-date-range-picker
+                                                #picker
+                                            ></mat-date-range-picker>
+
+                                            <mat-error
+                                                *ngIf="
+                                                    range.controls.start.hasError(
+                                                        'matStartDateInvalid'
+                                                    )
+                                                "
+                                                >Fecha Invalida</mat-error
+                                            >
+                                            <mat-error
+                                                *ngIf="
+                                                    range.controls.end.hasError(
+                                                        'matEndDateInvalid'
+                                                    )
+                                                "
+                                                >Fecha Invalida</mat-error
+                                            >
+                                        </mat-form-field>
                                     </div>
                                 </div>
-                                <!-- <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
+                            </div>
+                            <!-- <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto;">
                                     <div class="flex items-center justify-between">
                                         <span [ngClass]="{'font-semibold': selectedFilterOccupation, 'flex': true}">
                                             <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
@@ -415,7 +839,7 @@
                                         <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation = !selectedFilterOccupation;">{{ !selectedFilterOccupation ? 'keyboard_arrow_right' : 'keyboard_arrow_down'  }}</mat-icon>
                                     </div>
                                     <div *ngIf="selectedFilterOccupation" class="flex flex-col mt-3 px-3">
-                                        
+
                                         <mat-form-field appearance="fill">
                                             <mat-label>Rango de fecha</mat-label>
                                             <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -425,176 +849,321 @@
                                             <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
                                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                             <mat-date-range-picker #picker></mat-date-range-picker>
-                                          
+
                                             <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
                                             <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
                                           </mat-form-field>
                                     </div>
                                 </div> -->
-                            </form>
-    
-                            
-                        </div>
-                        <div class="bg-card py-3 mt-8 px-6 rounded shadow  flex flex-col" style="width: 80%; height: 100%;">
-                            <!-- <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
+                        </form>
+                    </div>
+                    <div
+                        class="bg-card py-3 mt-8 px-6 rounded shadow flex flex-col"
+                        style="width: 80%; height: 100%"
+                    >
+                        <!-- <mat-tab-group (selectedTabChange)="selectTab()" class="flex flex-row justify-center">
                                 <mat-tab label="Recomendado"></mat-tab>
                                 <mat-tab label="Cliente"></mat-tab>
                                 <mat-tab label="Conocimiento"></mat-tab>
                                 <mat-tab label="Ocupacion"></mat-tab>
                             </mat-tab-group> -->
-        
-                            <div class="relative">
-                                
-                                <ng-container [formGroup]="collaboratorArrayForm">
-                                    <ng-container *ngIf="collaboratorOccupation.length; else noCollaborators">
-                                            <ng-container formArrayName="collaboratorSelected">
-                                                
-                                                <ng-container *ngFor="let collaborator of collaboratorSelected.controls; index as i; ">
-                                                    <ng-container [formGroupName]="i">
-                                                        <!-- Group -->
-                                                        <ng-container
-                                                            *ngIf="i === 0 || collaboratorOccupation[i]?.name.charAt(0) !== collaboratorOccupation[i - 1]?.name.charAt(0)">
+
+                        <div class="relative">
+                            <ng-container [formGroup]="collaboratorArrayForm">
+                                <ng-container
+                                    *ngIf="
+                                        collaboratorOccupation.length;
+                                        else noCollaborators
+                                    "
+                                >
+                                    <ng-container
+                                        formArrayName="collaboratorSelected"
+                                    >
+                                        <ng-container
+                                            *ngFor="
+                                                let collaborator of collaboratorSelected.controls;
+                                                index as i
+                                            "
+                                        >
+                                            <ng-container [formGroupName]="i">
+                                                <!-- Group -->
+                                                <ng-container
+                                                    *ngIf="
+                                                        i === 0 ||
+                                                        collaboratorOccupation[
+                                                            i
+                                                        ]?.name.charAt(0) !==
+                                                            collaboratorOccupation[
+                                                                i - 1
+                                                            ]?.name.charAt(0)
+                                                    "
+                                                >
+                                                    <div
+                                                        class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900"
+                                                    >
+                                                        {{
+                                                            collaboratorOccupation[
+                                                                i
+                                                            ]?.name.charAt(0)
+                                                        }}
+                                                    </div>
+                                                </ng-container>
+                                                <!-- Collaborator -->
+
+                                                <span
+                                                    class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"
+                                                    [class.tab-select]="
+                                                        tabIndex === 1
+                                                    "
+                                                    [ngClass]="{
+                                                        'hover:bg-gray-100 dark:hover:bg-hover':
+                                                            !selectedCollaborator ||
+                                                            selectedCollaborator.id !==
+                                                                collaboratorOccupation[
+                                                                    i
+                                                                ]?.id,
+                                                        'bg-primary-50 dark:bg-hover':
+                                                            selectedCollaborator &&
+                                                            selectedCollaborator.id ===
+                                                                collaboratorOccupation[
+                                                                    i
+                                                                ]?.id
+                                                    }"
+                                                >
+                                                    <div class="flex flex-row">
+                                                        <div class="mt-2 mr-2">
+                                                            <mat-checkbox
+                                                                [color]="
+                                                                    'primary'
+                                                                "
+                                                                formControlName="checked"
+                                                            >
+                                                            </mat-checkbox>
+                                                        </div>
+
+                                                        <div
+                                                            class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden"
+                                                        >
+                                                            <ng-container
+                                                                *ngIf="
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]?.avatar
+                                                                "
+                                                            >
+                                                                <img
+                                                                    class="object-cover w-full h-full"
+                                                                    [src]="
+                                                                        collaboratorOccupation[
+                                                                            i
+                                                                        ]
+                                                                            ?.avatar
+                                                                    "
+                                                                    alt="Collaborator avatar"
+                                                                />
+                                                            </ng-container>
+                                                            <ng-container
+                                                                *ngIf="
+                                                                    !collaboratorOccupation[
+                                                                        i
+                                                                    ]?.avatar
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                                                                >
+                                                                    {{
+                                                                        collaboratorOccupation[
+                                                                            i
+                                                                        ]?.name.charAt(
+                                                                            0
+                                                                        )
+                                                                    }}
+                                                                </div>
+                                                            </ng-container>
+                                                        </div>
+                                                        <div
+                                                            class="min-w-0 ml-4"
+                                                        >
                                                             <div
-                                                                class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                                                {{collaboratorOccupation[i]?.name.charAt(0)}}
+                                                                class="font-medium leading-5 truncate"
+                                                            >
+                                                                {{
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]?.name
+                                                                }}
+                                                                {{
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]?.lastName
+                                                                }}
                                                             </div>
-                                                        </ng-container> 
-                                                        <!-- Collaborator -->
-                                                        
-                                                        <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"  [class.tab-select]="tabIndex === 1"
-                                                            [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCollaborator || selectedCollaborator.id !== collaboratorOccupation[i]?.id,
-                                                                                    'bg-primary-50 dark:bg-hover': selectedCollaborator && selectedCollaborator.id === collaboratorOccupation[i]?.id}">
-                                                        
-                                                                                    
-                                                            <div class="flex flex-row ">
-                                                                <div class="mt-2 mr-2">
-                                                                    <mat-checkbox
-                                                                    [color]="'primary'"
-                                                                    formControlName="checked">
-                                                                </mat-checkbox>
-                                                                </div>
-                                                                
-                                                                <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                                                    
-                                                                    <ng-container *ngIf="collaboratorOccupation[i]?.avatar">
-                                                                        <img class="object-cover w-full h-full" [src]="collaboratorOccupation[i]?.avatar"
-                                                                            alt="Collaborator avatar" />
-                                                                    </ng-container>
-                                                                    <ng-container *ngIf="!collaboratorOccupation[i]?.avatar">
-                                                                        <div
-                                                                            class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                                            {{collaboratorOccupation[i]?.name.charAt(0)}}
-                                                                        </div>
-                                                                    </ng-container>
-                                                                </div>
-                                                                <div class="min-w-0 ml-4">
-                                                                    <div class="font-medium leading-5 truncate">{{collaboratorOccupation[i]?.name}} {{collaboratorOccupation[i]?.lastName}}</div>
-                                                                    <div class="leading-5 truncate text-secondary">{{collaboratorOccupation[i]?.employeePosition.name}}</div>
-                                                                </div>
-                                                                
+                                                            <div
+                                                                class="leading-5 truncate text-secondary"
+                                                            >
+                                                                {{
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]
+                                                                        ?.employeePosition
+                                                                        .name
+                                                                }}
                                                             </div>
-                                                            <!--  Knowledge -->
-                                                        <div class="flex">
-                                                                <ng-container *ngIf="collaboratorOccupation">
-                                                                    <div class="flex flex-wrap items-center mt-2 mr-16">
-                                                                    
-                                                                        <ng-container >
-                                                                            <div
-                                                                                class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                                                <span class="text-sm font-medium whitespace-nowrap">{{collaboratorOccupation[i]?.client.name}}</span>
-                                                                            </div>
-                                                                        </ng-container>
-                                                                    
+                                                        </div>
+                                                    </div>
+                                                    <!--  Knowledge -->
+                                                    <div class="flex">
+                                                        <ng-container
+                                                            *ngIf="
+                                                                collaboratorOccupation
+                                                            "
+                                                        >
+                                                            <div
+                                                                class="flex flex-wrap items-center mt-2 mr-16"
+                                                            >
+                                                                <ng-container>
+                                                                    <div
+                                                                        class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
+                                                                    >
+                                                                        <span
+                                                                            class="text-sm font-medium whitespace-nowrap"
+                                                                            >{{
+                                                                                collaboratorOccupation[
+                                                                                    i
+                                                                                ]
+                                                                                    ?.client
+                                                                                    .name
+                                                                            }}</span
+                                                                        >
                                                                     </div>
                                                                 </ng-container>
-                                                            
-                                                            <div class="flex flex-col mr-16">
-                                                                <mat-label>Ocupación {{ collaboratorOccupation[i]?.occupationPercentage }} % </mat-label>
-                                                                <mat-progress-bar
-                                                                    class="mt-3 rounded-full w-60"
-                                                                    [mode]="'determine'"
-                                                                    [color]="collaboratorOccupation[i]?.occupationPercentage >= 100 ? 'primary' : 'warn'"
-                                                                    [value]="collaboratorOccupation[i]?.occupationPercentage"
-                                                                >
-                                                                </mat-progress-bar>
                                                             </div>
-                                                            <button
-                                                                class="min-w-10 min-h-7 h-7 mr-2 px-2 leading-6"
-                                                                matTooltip="Siguiente"
-                                                                mat-stroked-button
-                                                                matTooltip="Editar ocupaciones"
-                                                                (click)="editOccupation(collaboratorOccupation[i])">
-                                                                <mat-icon class="icon-size-5"
-                                                                    [svgIcon]="'heroicons_solid:pencil'">
-                                                                </mat-icon>
-                                                            </button>
-                                                            <!-- <mat-checkbox
+                                                        </ng-container>
+
+                                                        <div
+                                                            class="flex flex-col mr-16"
+                                                        >
+                                                            <mat-label
+                                                                >Ocupación
+                                                                {{
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]
+                                                                        ?.occupationPercentage
+                                                                }}
+                                                                %
+                                                            </mat-label>
+                                                            <mat-progress-bar
+                                                                class="mt-3 rounded-full w-60"
+                                                                [mode]="
+                                                                    'determine'
+                                                                "
+                                                                [color]="
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]
+                                                                        ?.occupationPercentage >=
+                                                                    100
+                                                                        ? 'primary'
+                                                                        : 'warn'
+                                                                "
+                                                                [value]="
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]
+                                                                        ?.occupationPercentage
+                                                                "
+                                                            >
+                                                            </mat-progress-bar>
+                                                        </div>
+                                                        <button
+                                                            class="min-w-10 min-h-7 h-7 mr-2 px-2 leading-6"
+                                                            matTooltip="Siguiente"
+                                                            mat-stroked-button
+                                                            matTooltip="Editar ocupaciones"
+                                                            (click)="
+                                                                editOccupation(
+                                                                    collaboratorOccupation[
+                                                                        i
+                                                                    ]
+                                                                )
+                                                            "
+                                                        >
+                                                            <mat-icon
+                                                                class="icon-size-5"
+                                                                [svgIcon]="
+                                                                    'heroicons_solid:pencil'
+                                                                "
+                                                            >
+                                                            </mat-icon>
+                                                        </button>
+                                                        <!-- <mat-checkbox
                                                                 [color]="'primary'"
                                                                 formControlName="checked">
                                                             </mat-checkbox> -->
-                                                        </div>
-                                                    </span>
-                                                    </ng-container>
-                                                </ng-container>
+                                                    </div>
+                                                </span>
                                             </ng-container>
+                                        </ng-container>
                                     </ng-container>
                                 </ng-container>
-                            
-                                <!-- No collaborators -->
-                                <ng-template #noCollaborators>
-                                    
-                                    <!-- <button
+                            </ng-container>
+
+                            <!-- No collaborators -->
+                            <ng-template #noCollaborators>
+                                <!-- <button
                                         mat-fab
                                         style="background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;;
                                         "
                                         type="button"
                                         matTooltip="Siguiente"
-                                        
+
                                     >
                                         <mat-icon
                                             style="background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;"
-    
+
                                             class="icon-size-10"
                                         >
                                             error
                                         </mat-icon>
                                     </button> -->
-                                    <div class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center">No hay colaboradores!</div>
-                                </ng-template>
-                            
-                            </div>
-                            
-
-                            <button
-                                mat-fab
-                                [color]="'accent'"
-                                type="button"
-                                [disabled]="!selectedRequest || !hasCheckedCollaborator"
-                                (click)="changeTab()"
-                                matTooltip="Siguiente"
-                                class="float"
-                                
-                            >
-                                <mat-icon
-                                    class="icon-size-7"
+                                <div
+                                    class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center"
                                 >
-                                    keyboard_arrow_right
-                                </mat-icon>
-                            </button>
+                                    No hay colaboradores!
+                                </div>
+                            </ng-template>
                         </div>
+
+                        <button
+                            mat-fab
+                            [color]="'accent'"
+                            type="button"
+                            [disabled]="
+                                !selectedRequest || !hasCheckedCollaborator
+                            "
+                            (click)="changeTab()"
+                            matTooltip="Siguiente"
+                            class="float"
+                        >
+                            <mat-icon class="icon-size-7">
+                                keyboard_arrow_right
+                            </mat-icon>
+                        </button>
                     </div>
-                </ng-container>
-                <ngx-spinner></ngx-spinner>
-                <app-update-occupation
-                    *ngIf="isEditing"
-                    [fullName]="collaborator.name + ' ' + collaborator.lastName"
-                    [collaboratorAssigment]="assigments"
-                    [collaborator]="collaborator"
-                    (returnPrevious)="onReturnPrevious($event)"
-                    (deleteAssignment)="onDeleteAssignment()"
-                >
-                </app-update-occupation>
-                
-            </div>
+                </div>
+            </ng-container>
+            <ngx-spinner></ngx-spinner>
+            <app-update-occupation
+                *ngIf="isEditing"
+                [fullName]="collaborator.name + ' ' + collaborator.lastName"
+                [collaboratorAssigment]="assigments"
+                [collaborator]="collaborator"
+                (returnPrevious)="onReturnPrevious($event)"
+                (deleteAssignment)="onDeleteAssignment()"
+            >
+            </app-update-occupation>
         </div>
     </div>
+</div>

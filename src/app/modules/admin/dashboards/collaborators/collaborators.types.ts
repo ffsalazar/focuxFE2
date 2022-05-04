@@ -104,9 +104,6 @@ export interface Assigments {
 
 export interface Ocupation
 {
-
-
-
     request: string;
     requestId:number;
     client: string;

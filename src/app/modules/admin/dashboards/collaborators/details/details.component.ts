@@ -347,7 +347,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 this.request={
                     id:request.id,
                     titleRequest:request.titleRequest,
-                    responsibleRequest:request.responsibleRequest.name,
+                    responsibleRequest:request.responsibleRequest?.name,
                     descriptionRequest:request.descriptionRequest,
                     datePlanEnd:request.datePlanEnd,
                     client:request.client.name,
@@ -614,10 +614,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 console.log(urlImage);
 
                 this.collaboratorForm.get('image').setValue(urlImage);
-                this.updateCollaborator();
-                location.reload();
-
-
+                this.updateCollaborator();                
+                // no borrando esto hasta que estemos seguro de que es seguro removerlo
+                //location.reload();
             });
         }
 
