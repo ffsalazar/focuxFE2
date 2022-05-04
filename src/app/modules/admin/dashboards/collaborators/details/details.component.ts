@@ -614,10 +614,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy
                 console.log(urlImage);
 
                 this.collaboratorForm.get('image').setValue(urlImage);
-                this.updateCollaborator();
-                location.reload();
-
-
+                this.updateCollaborator();                
+                // no borrando esto hasta que estemos seguro de que es seguro removerlo
+                //location.reload();
             });
         }
 
