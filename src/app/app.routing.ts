@@ -5,6 +5,7 @@ import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
 import {CustomAuthGuard} from './core/guards/custom-auth.guard';
 import {RolesGuard} from './core/guards/roles.guard';
+import {AdminRoleGuard} from './core/guards/admin-role.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -79,7 +80,9 @@ export const appRoutes: Route[] = [
 
             // Dashboards
             {path: 'dashboards', children: [
-                {path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.module').then(m => m.ProjectModule)},
+                {
+                    canActivate: [RolesGuard],
+                    path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.module').then(m => m.ProjectModule)},
                 {path: 'analytics', loadChildren: () => import('app/modules/admin/dashboards/analytics/analytics.module').then(m => m.AnalyticsModule)},
                 {path: 'finance', loadChildren: () => import('app/modules/admin/dashboards/finance/finance.module').then(m => m.FinanceModule)},
                 {path: 'crypto', loadChildren: () => import('app/modules/admin/dashboards/crypto/crypto.module').then(m => m.CryptoModule)},
@@ -113,6 +116,7 @@ export const appRoutes: Route[] = [
 
             // Masters
             {
+                canActivate: [AdminRoleGuard],
                 path: 'masters', children: [
                    {path: 'clients', loadChildren: () => import('app/modules/admin/masters/clients/clients.module').then(m => m.ClientsModule)},
                    {path: 'employeePosition', loadChildren: () => import('app/modules/admin/masters/employeePosition/employeePosition.module').then(m => m.EmployeePositionModule)},

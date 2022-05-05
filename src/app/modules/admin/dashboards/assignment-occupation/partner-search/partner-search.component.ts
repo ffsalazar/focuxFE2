@@ -645,11 +645,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe(value => {
                 // Get instance selected request
                 const request = this.requests.find(item => item.titleRequest === value);
-                
+
                 if ( request ) {
                     // Get collaborators assigned to request
                     this.getCollaboratorsAssigned(request.id);
-                    this._assignmentOccupationService.getAllColaboratorOccupation(request.id)
+                    this._assignmentOccupationService.getAllColaboratorOccupation()
                         .subscribe(collaborators => {
                             // Mark for check
                             this._changeDetectorRef.markForCheck();
@@ -736,7 +736,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
         if (request) {
             this._assignmentOccupationService
-                .getCollaboratorRecommendedByKnowledge(request.id)
+                .getCollaboratorsRecommendedByClient(request.id)
                 .subscribe((collaborators) => {
                     this.collaboratorsRecomm = collaborators;
                     // Update the collaboatorsRecomm

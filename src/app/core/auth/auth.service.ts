@@ -13,7 +13,7 @@ import {Collaborator} from '../../modules/admin/dashboards/collaborators/collabo
 export class AuthService
 {
     private _authenticated: boolean = false;
-    private _roles: BehaviorSubject<{authority: string}[]> = new BehaviorSubject<{authority: string}[]>([]);
+    private _roles: {authority: string}[] = [];
 
     /**
      * Constructor
@@ -24,7 +24,8 @@ export class AuthService
     )
     {
     }
-    get roles(): Observable<{authority: string}[]> {return this._roles.asObservable();}
+    get roles(): {authority: string}[] {return this._roles;}
+    set roles(roles: {authority: string}[]) {this._roles = roles;}
     get authenticated(): boolean { return this._authenticated;}
     set authenticated(isAuthenticated: boolean) { this._authenticated = isAuthenticated;}
     // -----------------------------------------------------------------------------------------------------
@@ -103,8 +104,7 @@ export class AuthService
 
 
                 //Set roles
-                this._roles.next(response.authorization);
-                // localStorage.setItem('authorities', JSON.stringify(response.authorization));
+                this._roles = response.authorization;
 
                 // Store the user on the user service
                 // this._userService.user = response.user;
@@ -212,7 +212,9 @@ export class AuthService
         }
 
 
-        this.roles.subscribe( values => (values.length > 0) ? of(true) : of(false));
+        if(this.roles.length > 0) {
+            return of(true);
+        }
 
         // Check the access token availability
         if ( !this.accessToken )
