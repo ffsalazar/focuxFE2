@@ -19,6 +19,11 @@ export class RequestPanelComponent implements OnInit, OnDestroy
     chartWeeklyExpenses: ApexOptions = {};
     chartMonthlyExpenses: ApexOptions = {};
     chartYearlyExpenses: ApexOptions = {};
+    chartNewVsReturning: ApexOptions;
+    chartGender: ApexOptions;
+    chartAge: ApexOptions;
+    chartLanguage: ApexOptions;
+    chartRequests : ApexOptions = {};
     data: any;
     selectedProject: string = 'Portafolio';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -429,6 +434,166 @@ export class RequestPanelComponent implements OnInit, OnDestroy
                     formatter: (val): string => `$${val}`
                 }
             }
+        };
+                // Distribución por area reclutadora
+        this.chartNewVsReturning = {
+            chart      : {
+                animations: {
+                    speed           : 400,
+                    animateGradually: {
+                        enabled: false
+                    }
+                },
+                fontFamily: 'inherit',
+                foreColor : 'inherit',
+                height    : '100%',
+                type      : 'donut',
+                sparkline : {
+                    enabled: true
+                }
+            },
+            colors     : ['#3182CE', '#63B3ED', '#63B43B', '#638988', '#B23412'],
+            labels     : this.data.newVsReturning.labels,
+            plotOptions: {
+                pie: {
+                    customScale  : 1,
+                    expandOnClick: false,
+                    donut        : {
+                        size: '60%'
+                    }
+                }
+            },
+            series     : this.data.newVsReturning.series,
+            states     : {
+                hover : {
+                    filter: {
+                        type: 'none'
+                    }
+                },
+                active: {
+                    filter: {
+                        type: 'none'
+                    }
+                }
+            },
+            tooltip    : {
+                enabled        : true,
+                fillSeriesColor: false,
+                theme          : 'dark',
+                custom         : ({
+                                      seriesIndex,
+                                      w
+                                  }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
+                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
+                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
+                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+                                                </div>`
+            }
+        };
+
+        // Distribución por area comercial
+        this.chartGender = {
+            chart      : {
+                animations: {
+                    speed           : 400,
+                    animateGradually: {
+                        enabled: false
+                    }
+                },
+                
+                fontFamily: 'inherit',
+                foreColor : 'inherit',
+                height    : '100%',
+                type      : 'donut',
+                sparkline : {
+                    enabled: true
+                }
+            },
+              legend: {
+              position: 'bottom',
+              offsetX: -10,
+              offsetY: 0
+            },
+            colors     : ['#319795', '#4FD1C5', '#526266', '#282'],
+            labels     : this.data.gender.labels,
+            plotOptions: {
+                pie: {
+                    customScale  : 0.9,
+                    expandOnClick: false,
+                    donut        : {
+                        size: '60%'
+                    }
+                }
+            },
+            series     : this.data.gender.series,
+            states     : {
+                hover : {
+                    filter: {
+                        type: 'none'
+                    }
+                },
+                active: {
+                    filter: {
+                        type: 'none'
+                    }
+                }
+            },
+            tooltip    : {
+                enabled        : true,
+                fillSeriesColor: false,
+                theme          : 'dark',
+                custom         : ({
+                                      seriesIndex,
+                                      w
+                                  }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
+                                                     <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
+                                                     <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
+                                                     <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+                                                 </div>`
+            }
+        };
+
+
+        //Activas y finalizadas por mes
+ var options = {
+        
+        };
+
+           this.chartRequests = {
+            chart  : {
+                animations: {
+                    enabled: false
+                },
+                fontFamily: 'inherit',
+                foreColor : 'inherit',
+                height    : '400px',
+                width     : '400px',
+                type      : 'bar',
+                stacked : true
+            },
+             responsive: [{
+             breakpoint: 480,
+        }],
+           plotOptions: {
+            bar: {
+                horizontal: false,
+                borderRadius: 8
+            },
+            },
+            colors : ['gray', '#234234','#f77333', 'lightblue'],
+            series : this.data.requests.series,
+             labels: this.data.requests.labels,
+            stroke : {
+                curve: 'smooth'
+            },
+           
+            xaxis  : {
+               
+            },
+            yaxis  : {
+               
+            },
+            
         };
     }
 }

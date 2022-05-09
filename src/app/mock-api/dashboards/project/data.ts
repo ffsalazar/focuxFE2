@@ -321,5 +321,65 @@ export const project = {
             phone : '+1-990-457-2106',
             title : 'Consultant'
         }
+    ],
+    newVsReturning     : {
+    uniqueVisitors: 46085,
+    series        : [20, 20, 20, 20, 20],
+    labels        : [
+        'Proyectos',
+        'Procesos',
+        'Operaciones',
+        'Infraestructura',
+        'Aplicaciones'
     ]
+    },  
+    gender             : {
+        uniqueVisitors: 46085,
+        series        : [10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+        labels        : [
+            'Sistemas',
+            'ventas',   
+            'Control',
+            'Personal',
+            'Logistica',
+            'Todos',
+            'Compras',
+            'Mercadeo',
+            'Inmobiliario',
+            'Otros',
+        ]
+    },
+    age                : {
+        uniqueVisitors: 46085,
+        series        : [35, 65],
+        labels        : [
+            'Debajo de 30',
+            'Encima de 30'
+        ]
+    },
+    language           : {
+        uniqueVisitors: 46085,
+        series        : [25, 75],
+        labels        : [
+            'Ingles',
+            'Otros'
+        ]
+    },
+    requests : {
+         series: [{ 
+          data: [44, 55, 41, 67, 22, 43]
+        }, { 
+          data: [13, 23, 20, 8, 13, 27]
+        }, { 
+          data: [11, 17, 15, 15, 21, 14]
+        }, { 
+          data: [21, 7, 25, 13, 22, 8]
+        }],
+        labels:[
+            'PRODUCT A',
+            'PRODUCT B',
+            'PRODUCT C',
+            'PRODUCT D',
+        ]
+    }
 };
