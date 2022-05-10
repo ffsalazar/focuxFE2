@@ -1102,29 +1102,20 @@
                                         <mat-form-field
                                             class="fuse-mat-no-subscript flex-auto"
                                         >
-                                            {{
-                                                knowledge.get("knowledge")[
-                                                    "controols"
-                                                ]
-                                            }}
                                             <mat-label *ngIf="first"
                                                 >Conocimiento</mat-label
                                             >
-
                                             <mat-select
                                                 [placeholder]="'Conocimiento'"
                                                 [formControl]="
                                                     knowledge.get('knowledge')
-                                                "
-                                                (selectionChange)="
-                                                    selectedKnowledgeDetector(i)
                                                 "
                                             >
                                                 <mat-option
                                                     *ngFor="
                                                         let knowledgeOption of knowledges
                                                     "
-                                                    [value]="knowledgeOption.id"
+                                                    [value]="knowledgeOption"
                                                 >
                                                     {{ knowledgeOption.name }}
                                                 </mat-option>

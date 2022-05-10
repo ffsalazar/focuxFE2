@@ -368,26 +368,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
             (this.collaboratorForm.get('knowledges') as FormArray).removeAt(0);
             // Open the drawer in case it is closed
             this._collaboratorsListComponent.matDrawer.open();
-
-            this.collaboratorForm
-                .get('knowledges')
-                .setValue(this.collaborator.knowledges);
         }
-
-        if (this.collaborator) {
-            //this.filteredKnowledges = this.collaborator.knowledges;
-        }
-
-        // this.knowledges.forEach(filteredKnowledges => {
-        //     let filteredKnowledge = {
-        //         id : filteredKnowledges.id,
-        //         level: 0,
-        //         knowledge: filteredKnowledges,
-        //         isActive: 1
-        //     };
-
-        //     this.filteredKnowledges.push(filteredKnowledge);
-        // });
     }
 
     /**
@@ -526,12 +507,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
             (value) => value.id == collaborator.employeePosition
         );
 
-        collaborator.knowledges.forEach((elem) => {
-            elem.knowledge = this.knowledges.filter((knowledge) => {
-                knowledge.id == elem.knowledge;
-            });
-        });
-
         collaborator.client = this.clients.find(
             (value) => value.id === collaborator.client
         );
@@ -577,12 +552,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         collaborator.employeePosition = this.employeePositions.find(
             (value) => value.id == collaborator.employeePosition
         );
-
-        collaborator.knowledges.forEach((elem) => {
-            elem.knowledge = this.knowledges.filter((knowledge) => {
-                knowledge.id == elem.knowledge;
-            });
-        });
 
         collaborator.client = this.clients.find(
             (value) => value.id === collaborator.client
@@ -859,20 +828,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Detect the selected  knowledges field
-     */
-    selectedKnowledgeDetector(index: number): void {
-        /*const knowledgeFormArray = this.collaboratorForm.get(
-            'knowledges'
-        ) as FormArray;
-
-        const name = knowledgeFormArray.at(index).value.knowledge.name;
-        knowledgeFormArray
-            .at(index)
-            .patchValue(this.knowledges.filter((elem) => elem.name == name));*/
     }
 
     /**
