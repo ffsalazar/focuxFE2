@@ -31,6 +31,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { MatTableModule } from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
     declarations: [
@@ -67,6 +68,7 @@ import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/p
         MatTableModule,
         MatProgressSpinnerModule,
         PriorityRequestModule,
+        MatExpansionModule,
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA,

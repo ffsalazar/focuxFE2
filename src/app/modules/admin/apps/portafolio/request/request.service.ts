@@ -23,6 +23,7 @@ import {
     Knowledge,
     Collaborator,
     Department,
+    Pause
 } from './request.types';
 import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -77,6 +78,9 @@ export class RequestService {
     private _departments: BehaviorSubject<Department[] | null> =
         new BehaviorSubject(null);
     private _isOpenModal: Subject<boolean | null> = new Subject();
+    private _pause: BehaviorSubject<Pause | null> = new BehaviorSubject(null);
+    private _pauses: BehaviorSubject<Pause[] | null> = new BehaviorSubject(null);
+
 
     public requests: Request[];
 
@@ -171,7 +175,18 @@ export class RequestService {
     get clients$(): Observable<Client[]> {
         return this._clients.asObservable();
     }
+    get pause$(): Observable<Pause>
+    {
+        return this._pause.asObservable();
+    }
 
+    /**
+     * Getter for clients
+     */
+    get pauses$(): Observable<Pause[]>
+    {
+        return this._pauses.asObservable();
+    }
     /**
      * Getter for request
      */
@@ -638,6 +653,69 @@ export class RequestService {
      * @param id
      * @param request
      */
+    createPause(pause: Pause): Observable<Pause>
+    {
+        // Generate a new client
+        return this.pauses$.pipe(
+            take(1),
+            switchMap(pauses => this._httpClient.post<Pause>('http://localhost:1616/api/v1/followup/requestpause/save', pause).pipe(
+                map((newPause) => {
+                    // Update the clients with the new client
+                    this._pauses.next([...pauses, newPause]);
+
+                    // Return the new client
+                    return newPause;
+                })
+            ))
+        );
+    }
+    updatePause(id: number, pause: Pause): Observable<Pause>
+    {
+        console.log(JSON.stringify(pause));
+        return this.pauses$.pipe(
+            take(1),
+            switchMap(pauses =>
+                this._httpClient.put<Pause>('http://localhost:1616/api/v1/followup/requestpause/requestpause/' + pause.id,
+                    pause
+                ).pipe(
+                    map((updatedPause) => {
+
+                        // Find the index of the updated client
+                        const index = pauses.findIndex(item => item.id === id);
+
+                        // Update the client
+                        // pauses[index] = updatedPause;
+
+                        /*function compare(a: Pause, b: Pause) {
+                            if (a.name < b.name) return -1;
+                            if (a.name > b.name) return 1;
+
+
+                            return 0;
+                        }
+                        clients.sort(compare);*/
+
+                        // Update the clients
+                        this._pauses.next(pauses);
+
+                        // Return the updated client
+                        return updatedPause;
+                    }),
+                    switchMap(updatedPause => this.pause$.pipe(
+                        take(1),
+                        filter(item => item && item.id === id),
+                        tap(() => {
+
+                            // Update the client if it's selected
+                            this._pause.next(updatedPause);
+
+                            // Return the updated client
+                            return updatedPause;
+                        })
+                    ))
+                ))
+        );
+    }
     deleteRequest(id: number, request: Request): Observable<boolean> {
         return this.requests$.pipe(
             take(1),
