@@ -56,7 +56,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
     editMode: boolean = false;
     knowledges: Knowledge[];
     knowledgesEditMode: boolean = false;
-    filteredKnowledges: CollaboratorKnowledge[] = [];
+    //filteredKnowledges: CollaboratorKnowledge[] = [];
     collaborator: Collaborator = null;
     request: Request;
     collaboratorForm: FormGroup;
@@ -76,7 +76,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
     employeePositions: EmployeePosition[];
     filteredEmployeePositions: EmployeePosition[];
     isCreate: boolean = false;
-    selectedKnowledges = [];
+    //selectedKnowledges = [];
     background: any =
         'firebasestorage.googleapis.com/v0/b/focux-f00d8.appspot.com/o/banners%2Funnamed.jpg?alt=media&token=a78e3f7a-575a-48e8-81d7-b6dec2829ceb';
 
@@ -160,7 +160,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                 if (this.collaborator) {
                     // Clear the emails and phoneNumbers form arrays
 
-                    this.selectedKnowledges = this.collaborator.knowledges;
+                    //this.selectedKnowledges = this.collaborator.knowledges;
 
                     (this.collaboratorForm.get('phones') as FormArray).clear();
 
@@ -232,13 +232,15 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                                 })
                             );
                         });
+
+                        console.log(knowledgesFormGroups);
                     } else {
                         // Create a phone number form group
                         knowledgesFormGroups.push(
                             this._formBuilder.group({
                                 id: [''],
                                 knowledge: [''],
-                                level: [''],
+                                level: [1],
                                 isActive: [1],
                             })
                         );
@@ -353,6 +355,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
             this.collaboratorForm.reset();
             this.collaboratorForm.get('id').setValue(this.collaborator.id);
             (this.collaboratorForm.get('phones') as FormArray).removeAt(0);
+            (this.collaboratorForm.get('knowledges') as FormArray).removeAt(0);
             this.collaboratorForm
                 .get('knowledges')
                 .setValue(this.collaborator.knowledges);
@@ -362,14 +365,17 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         if (!this.collaborator) {
             this.editMode = true;
             (this.collaboratorForm.get('phones') as FormArray).removeAt(0);
+            (this.collaboratorForm.get('knowledges') as FormArray).removeAt(0);
             // Open the drawer in case it is closed
             this._collaboratorsListComponent.matDrawer.open();
 
-            //this.collaboratorForm.get('knowledges').setValue(this.collaborator.knowledges);
+            this.collaboratorForm
+                .get('knowledges')
+                .setValue(this.collaborator.knowledges);
         }
 
         if (this.collaborator) {
-            this.filteredKnowledges = this.collaborator.knowledges;
+            //this.filteredKnowledges = this.collaborator.knowledges;
         }
 
         // this.knowledges.forEach(filteredKnowledges => {
@@ -519,6 +525,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         collaborator.employeePosition = this.employeePositions.find(
             (value) => value.id == collaborator.employeePosition
         );
+
+        collaborator.knowledges.forEach((elem) => {
+            elem.knowledge = this.knowledges.filter((knowledge) => {
+                knowledge.id == elem.knowledge;
+            });
+        });
+
         collaborator.client = this.clients.find(
             (value) => value.id === collaborator.client
         );
@@ -564,6 +577,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         collaborator.employeePosition = this.employeePositions.find(
             (value) => value.id == collaborator.employeePosition
         );
+
+        collaborator.knowledges.forEach((elem) => {
+            elem.knowledge = this.knowledges.filter((knowledge) => {
+                knowledge.id == elem.knowledge;
+            });
+        });
+
         collaborator.client = this.clients.find(
             (value) => value.id === collaborator.client
         );
@@ -807,25 +827,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Filter knowledges
-     *
-     * @param event
-     */
-    filterKnowledges(event): void {
-        // Get the value
-        const knowledgeId = this.collaboratorForm
-            .get('knowledges')
-            .get('knowledge').value;
-        const knowledge = this.knowledges.find(
-            (elem) => elem.id == knowledgeId
-        );
-        this.collaboratorForm
-            .get('knowledges')
-            .get('knowledge')
-            .patchValue(knowledge);
-    }
-
-    /**
      * Add the email field
      */
     addEmailField(): void {
@@ -861,6 +862,20 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Detect the selected  knowledges field
+     */
+    selectedKnowledgeDetector(index: number): void {
+        /*const knowledgeFormArray = this.collaboratorForm.get(
+            'knowledges'
+        ) as FormArray;
+
+        const name = knowledgeFormArray.at(index).value.knowledge.name;
+        knowledgeFormArray
+            .at(index)
+            .patchValue(this.knowledges.filter((elem) => elem.name == name));*/
+    }
+
+    /**
      * Add an empty knowledge field
      */
     addknowledgeField(): void {
@@ -868,7 +883,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         const knowledgeFormGroup = this._formBuilder.group({
             id: [''],
             knowledge: [''],
-            level: [''],
+            level: [1],
             isActive: [1],
         });
 

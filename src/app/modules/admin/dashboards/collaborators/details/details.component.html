@@ -350,7 +350,7 @@
                                         "
                                     >
                                         <ng-container
-                                            *ngIf="phoneNumber.isActive != 0"
+                                            *ngIf="phoneNumber.isActive !== 0"
                                         >
                                             <div
                                                 class="flex items-center leading-6"
@@ -1102,16 +1102,22 @@
                                         <mat-form-field
                                             class="fuse-mat-no-subscript flex-auto"
                                         >
+                                            {{
+                                                knowledge.get("knowledge")[
+                                                    "controols"
+                                                ]
+                                            }}
                                             <mat-label *ngIf="first"
                                                 >Conocimiento</mat-label
                                             >
+
                                             <mat-select
                                                 [placeholder]="'Conocimiento'"
                                                 [formControl]="
                                                     knowledge.get('knowledge')
                                                 "
                                                 (selectionChange)="
-                                                    filterKnowledges()
+                                                    selectedKnowledgeDetector(i)
                                                 "
                                             >
                                                 <mat-option
@@ -1119,10 +1125,9 @@
                                                         let knowledgeOption of knowledges
                                                     "
                                                     [value]="knowledgeOption.id"
-                                                    >{{
-                                                        knowledgeOption.name
-                                                    }}</mat-option
                                                 >
+                                                    {{ knowledgeOption.name }}
+                                                </mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <mat-form-field
@@ -1131,24 +1136,22 @@
                                             <mat-label *ngIf="first"
                                                 >Nivel</mat-label
                                             >
-                                            <mat-icon
-                                                matPrefix
-                                                class="hidden sm:flex icon-size-5"
-                                                [svgIcon]="
-                                                    'heroicons_solid:tag'
-                                                "
-                                            ></mat-icon>
-                                            <input
-                                                mdInput
-                                                type="number"
-                                                min="1"
-                                                max="3"
-                                                [value]="1"
+                                            <mat-select
+                                                [placeholder]="'Nivel'"
                                                 [formControl]="
                                                     knowledge.get('level')
                                                 "
-                                                [placeholder]="'Nivel'"
-                                            />
+                                            >
+                                                <mat-option [value]="1">
+                                                    1
+                                                </mat-option>
+                                                <mat-option [value]="2">
+                                                    2
+                                                </mat-option>
+                                                <mat-option [value]="3">
+                                                    3
+                                                </mat-option>
+                                            </mat-select>
                                         </mat-form-field>
 
                                         <ng-container *ngIf="!(first && last)">
@@ -1162,7 +1165,7 @@
                                                     (click)="
                                                         removeknowledgeField(
                                                             i,
-                                                            knowledges.get('id')
+                                                            knowledge.get('id')
                                                                 .value
                                                         )
                                                     "
