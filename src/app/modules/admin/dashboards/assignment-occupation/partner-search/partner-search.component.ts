@@ -152,41 +152,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe((values) => {
                 // Get collaborator by filter
                 this.getCollaboratorsByFilter();
-
-                // const controls = this.filterCollaboratorsGroup.getRawValue();
-
-
-                // this.valuesFiltered = values;
-
-                // const filteredClients = values.filterClients.filter(
-                //     (item) => item.checked && item.id
-                // );
-                // this.clientsId = filteredClients.map(
-                //     (item) => item.id
-                // );
-                // const filteredKnowledges = values.filterKnowledges.filter(
-                //     (item) => item.checked && item.id
-                // );
-                // this.knowledgesId = filteredKnowledges.map((item) => item.id);
-                
-                // const occupation =
-                //     this.filterCollaboratorsGroup.get('filterOccupation').value;
-                // const dateInit =
-                //     this.filterCollaboratorsGroup.get('filterDateInit').value;
-                // const dateEnd =
-                //     this.filterCollaboratorsGroup.get('filterDateEnd').value;
-
-                // this._assignmentOccupationService
-                //     .getFilterCollaborator(
-                //         this.clientsId,
-                //         this.knowledgesId,
-                //         occupation,
-                //         dateInit,
-                //         dateEnd
-                //     )
-                //     .subscribe((response) => {
-                //         //this._setCollaboratorsRecomm();
-                //     });
         });
 
         this.filteredClients = this.clientControl.valueChanges.pipe(
