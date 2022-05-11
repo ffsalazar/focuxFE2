@@ -119,8 +119,8 @@ export const appRoutes: Route[] = [
     // Admin routes
     {
         path       : '',
-        canActivate: [GuardAuthGuard],
-        canActivateChild: [GuardAuthGuard],
+        canActivate: [],
+        canActivateChild: [],
         component  : LayoutComponent,
         resolve    : {
             initialData: InitialDataResolver,
