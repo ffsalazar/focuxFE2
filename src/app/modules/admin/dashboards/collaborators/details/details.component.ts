@@ -163,7 +163,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                     //this.selectedKnowledges = this.collaborator.knowledges;
 
                     (this.collaboratorForm.get('phones') as FormArray).clear();
-
+                    (
+                        this.collaboratorForm.get('knowledges') as FormArray
+                    ).clear();
                     // Patch values to the form
                     this.collaboratorForm.patchValue(collaborator);
 
@@ -226,7 +228,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                             knowledgesFormGroups.push(
                                 this._formBuilder.group({
                                     id: [knowledge.id],
-                                    knowledge: [knowledge.knowledge],
+                                    knowledge: [knowledge.knowledge.id],
                                     level: [knowledge.level],
                                     isActive: [knowledge.isActive],
                                 })
@@ -497,15 +499,18 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
 
     createCollaborator(): void {
         this.collaboratorForm.removeControl('id', { emitEvent: false });
-        /*this.collaboratorForm
-            .get('knowledges')
-            .setValue(this.selectedKnowledges);*/
 
         // Get the collaborator object
         let collaborator = this.collaboratorForm.getRawValue();
         collaborator.employeePosition = this.employeePositions.find(
             (value) => value.id == collaborator.employeePosition
         );
+
+        collaborator.knowledges.forEach((elem) => {
+            elem.knowledge = this.knowledges.filter(
+                (e) => e.id == elem.knowledge
+            )[0];
+        });
 
         collaborator.client = this.clients.find(
             (value) => value.id === collaborator.client
@@ -552,6 +557,12 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         collaborator.employeePosition = this.employeePositions.find(
             (value) => value.id == collaborator.employeePosition
         );
+
+        collaborator.knowledges.forEach((elem) => {
+            elem.knowledge = this.knowledges.filter(
+                (e) => e.id == elem.knowledge
+            )[0];
+        });
 
         collaborator.client = this.clients.find(
             (value) => value.id === collaborator.client
