@@ -1008,15 +1008,89 @@
                                                           [svgIcon]="'heroicons_solid:document-report'"></mat-icon>
                                             </mat-form-field>
                                         </div>
-                                        <mat-slide-toggle
-                                            class="example-margin"
-                                            [color]="'primary'"
-                                            [checked]="isToggle"
-                                            (toggleChange)="setPause()"
-                                            [disabled]="step3.get('totalPauseDays').value > 0"
-                                        >
-                                            ¿Existe alguna pausa?
-                                        </mat-slide-toggle>
+                                        <div *ngIf="isEditing">
+                                            <mat-slide-toggle
+                                                class="example-margin"
+                                                [color]="'primary'"
+                                                [checked]="isToggle"
+                                                (toggleChange)="setPause()"
+                                            >
+                                                ¿Existe alguna pausa?
+                                            </mat-slide-toggle>
+
+                                            <form  *ngIf="hasPause" [formGroup]="pauseForm">
+                                                <p class="my-2 font-medium">
+                                                    Agregar pausa
+                                                </p>
+                                                <div class="flex space-x-4 mt-4">
+
+                                                    <mat-form-field class="fuse-mat-no-subscript w-1/3">
+                                                        <mat-label>Fecha inicial de pausa</mat-label>
+                                                        <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                        <input
+                                                            matInput
+                                                            [matDatepicker]="dateInitPausePicker"
+                                                            formControlName="dateInitPause"
+                                                            [readonly]="isDetail"
+                                                            [disabled]="isDetail"
+                                                        >
+                                                        <mat-datepicker-toggle
+                                                            matSuffix
+                                                            [for]="dateInitPausePicker">
+                                                        </mat-datepicker-toggle>
+                                                        <mat-datepicker #dateInitPausePicker></mat-datepicker>
+                                                    </mat-form-field>
+                                                    <mat-form-field class="fuse-mat-no-subscript w-1/3">
+                                                        <mat-label>Fecha fin pausa</mat-label>
+                                                        <mat-icon
+                                                            matPrefix
+                                                            class="hidden sm:flex icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                                        <input
+                                                            matInput
+                                                            [matDatepicker]="dateEndPausePicker"
+                                                            formControlName="dateEndPause"
+                                                            [readonly]="isDetail"
+                                                            [disabled]="isDetail"
+                                                        >
+                                                        <mat-datepicker-toggle
+                                                            matSuffix
+                                                            [for]="dateEndPausePicker">
+                                                        </mat-datepicker-toggle>
+                                                        <mat-datepicker #dateEndPausePicker></mat-datepicker>
+                                                    </mat-form-field>
+                                                    <!--<mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
+                                                        <mat-label>Total días de pausa</mat-label>
+                                                        <input
+                                                            type="number"
+                                                            matInput
+                                                            formControlName="totalPauseDays"
+                                                            [readonly]="isDetail"
+                                                            >
+                                                        <mat-icon class="icon-size-5" matPrefix
+                                                            [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                                    </mat-form-field>
+                                                    -->
+
+                                                </div>
+                                                <div>
+                                                    <mat-form-field class="w-200 mt-5">
+                                                        <mat-label>Comentarios Pausa</mat-label>
+                                                        <textarea
+                                                            ng-focus="test()"
+                                                            matInput
+                                                            formControlName="comments"
+                                                            [readonly]="isDetail"
+                                                            [rows]="2"
+                                                        ></textarea>
+                                                        <mat-icon class="icon-size-5" matPrefix
+                                                                  [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+
+                                            </form>
+                                        </div>
+
                                         <ng-container *ngIf="hasPause || step3.get('totalPauseDays').value > 0">
                                             <p class="my-6 font-medium">
                                                 Periodo de pausa
@@ -1056,10 +1130,12 @@
                                                             <th mat-header-cell *matHeaderCellDef> Descripcion </th>
                                                             <td mat-cell *matCellDef="let element; let i = index;" class="th-left">
                                                                 <div style="width: 70%;margin:0 auto" >
-                                                                <mat-expansion-panel class="mat-elevation-z0">
+                                                                <mat-expansion-panel class="mat-elevation-z0" (opened)="panelOpenState[i] = true"
+                                                                                     (closed)="panelOpenState[i] = false">
                                                                     <mat-expansion-panel-header>
                                                                         <mat-panel-title>
-                                                                            <h2>Descripción</h2>
+                                                                            <h2 *ngIf="(element.comments.length > 40)">{{panelOpenState[i] ? 'Descripción' : element.comments.substring(0, 40)+'...'}}</h2>
+                                                                            <h2 *ngIf="(element.comments.length < 40)">{{panelOpenState[i] ? 'Descripción' :  element.comments}}</h2>
                                                                         </mat-panel-title>
                                                                     </mat-expansion-panel-header>
                                                                     <p class="pausecomment" >{{element.comments}}</p>
@@ -1073,77 +1149,6 @@
                                                         <tr mat-row *matRowDef="let row; columns: displayPauses;"></tr>
                                                     </table>
                                                 </div>
-                                                <form  *ngIf="isEditing" [formGroup]="pauseForm">
-                                                    <p class="my-2 font-medium">
-                                                        Agregar de pausa
-                                                    </p>
-                                                    <div class="flex space-x-4 mt-4">
-
-                                                        <mat-form-field class="fuse-mat-no-subscript w-1/3">
-                                                            <mat-label>Fecha inicial de pausa</mat-label>
-                                                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-                                                            <input
-                                                                matInput
-                                                                [matDatepicker]="dateInitPausePicker"
-                                                                formControlName="dateInitPause"
-                                                                [readonly]="isDetail"
-                                                                [disabled]="isDetail"
-                                                            >
-                                                            <mat-datepicker-toggle
-                                                                matSuffix
-                                                                [for]="dateInitPausePicker">
-                                                            </mat-datepicker-toggle>
-                                                            <mat-datepicker #dateInitPausePicker></mat-datepicker>
-                                                        </mat-form-field>
-                                                        <mat-form-field class="fuse-mat-no-subscript w-1/3">
-                                                            <mat-label>Fecha fin pausa</mat-label>
-                                                            <mat-icon
-                                                                matPrefix
-                                                                class="hidden sm:flex icon-size-5"
-                                                                [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-                                                            <input
-                                                                matInput
-                                                                [matDatepicker]="dateEndPausePicker"
-                                                                formControlName="dateEndPause"
-                                                                [readonly]="isDetail"
-                                                                [disabled]="isDetail"
-                                                            >
-                                                            <mat-datepicker-toggle
-                                                                matSuffix
-                                                                [for]="dateEndPausePicker">
-                                                            </mat-datepicker-toggle>
-                                                            <mat-datepicker #dateEndPausePicker></mat-datepicker>
-                                                        </mat-form-field>
-                                                        <!--<mat-form-field class="w-1/3 fuse-mat-textarea flex-auto">
-                                                            <mat-label>Total días de pausa</mat-label>
-                                                            <input
-                                                                type="number"
-                                                                matInput
-                                                                formControlName="totalPauseDays"
-                                                                [readonly]="isDetail"
-                                                                >
-                                                            <mat-icon class="icon-size-5" matPrefix
-                                                                [svgIcon]="'heroicons_solid:clock'"></mat-icon>
-                                                        </mat-form-field>
-                                                        -->
-
-                                                    </div>
-                                                    <div>
-                                                        <mat-form-field class="w-200 mt-5">
-                                                            <mat-label>Comentarios Pausa</mat-label>
-                                                            <textarea
-                                                                ng-focus="test()"
-                                                                matInput
-                                                                formControlName="comments"
-                                                                [readonly]="isDetail"
-                                                                [rows]="2"
-                                                            ></textarea>
-                                                            <mat-icon class="icon-size-5" matPrefix
-                                                                      [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
-                                                        </mat-form-field>
-                                                    </div>
-
-                                                </form>
                                             </div>
                                         </ng-container>
                                         <p class="my-6 font-medium">

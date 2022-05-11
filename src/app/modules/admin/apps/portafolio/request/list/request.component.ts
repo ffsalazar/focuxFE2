@@ -191,6 +191,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     showPause: boolean = false;
     isToggle:  boolean = false;
     hasCollab: boolean = false;
+    panelOpenState = [];
 
     /*
     /**
@@ -1051,8 +1052,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         // Fill the formGroup step4
         this.step4.patchValue(request);
 
-        this.isToggle = this.step3.get('totalPauseDays').value > 0 ? true: false;
-        this.hasPause = this.step3.get('totalPauseDays').value > 0 ? true: false;
         // Mark for check
         this._changeDetectorRef.markForCheck();
     }
@@ -1635,6 +1634,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         });
     }
     // eslint-disable-next-line @typescript-eslint/member-ordering
+
     updatePause(): void
     {
         // Get the client object
