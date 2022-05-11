@@ -16,7 +16,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
-import { TemplateEvaluationComponent } from './modules/dashboards/evaluation/template-evaluation/template-evaluation.component';
 
 
 registerLocaleData(localeEs);
@@ -29,7 +28,6 @@ const routerConfig: ExtraOptions = {
 @NgModule({
     declarations: [
         AppComponent,
-        TemplateEvaluationComponent,
     ],
     imports     : [
         BrowserModule,

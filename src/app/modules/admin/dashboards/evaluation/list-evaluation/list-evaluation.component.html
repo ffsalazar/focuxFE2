@@ -17,7 +17,7 @@
                 <mat-form-field class="w-1/4">
                     <mat-label>Seleccionar Departamento</mat-label>
                     <mat-select >
-                        <ng-container *ngFor="let department of departments | async as departments">
+                        <ng-container *ngFor="let department of departments$ | async as departments">
                             <mat-option [value]="department.id">
                                 {{ department.name }}
                             </mat-option>
