@@ -1,3 +1,175 @@
-<div>
-    Template evaluation
+<div class="flex flex-col items-end w-full">
+    <div class="flex flex-col items-end w-full">
+        <mat-form-field class="w-1/4">
+            <mat-label>Seleccionar Periodo</mat-label>
+            <mat-select>
+                <ng-container *ngFor="let period of periods">
+                    <mat-option [value]="period">
+                        {{ period.dateInit }} - {{ period.dateEnd }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="flex flex-col items-end w-full">
+        <mat-form-field class="w-1/4">
+            <mat-label>Seleccionar Departamento</mat-label>
+            <mat-select>
+                <ng-container *ngFor="let department of departments$ | async as departments">
+                    <mat-option [value]="department.id">
+                        {{ department.name }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
 </div>
+
+
+
+
+
+
+<mat-accordion style="margin:0;height: 200px;margin-bottom: 10px;">
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          
+            <mat-panel-title style="width:20%;" class="font-semibold mb-3">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:user-circle'"
+                style="width: 15px;height: 15px;"></mat-icon>
+                Natasha Romanoff
+            </mat-panel-title>
+            <mat-panel-title  style="width: 20%;" class="font-semibold mb-3">
+                Plantilla - Semi-Senior
+            </mat-panel-title>
+
+            <div style="width: 30%;margin-right:3%;" class="font-semibold mb-3">
+                <mat-label class="font-semibold mb-3">Total Evaluado </mat-label>
+                <mat-progress-bar class="rounded-full w-80" [mode]="'determine'" [color]="'primary'" [value]="10">
+                </mat-progress-bar>
+            </div>
+
+        </mat-expansion-panel-header>
+        <div style="display:flex;justify-content:space-between; margin: 10px;">
+            <mat-panel-title>
+                Mes
+            </mat-panel-title>
+            <mat-panel-title>
+                Tipo de Obj
+            </mat-panel-title>
+            <mat-panel-title>
+                Tipo de Ind
+            </mat-panel-title>
+            <mat-panel-title>
+                Objetivo
+            </mat-panel-title>
+            <mat-panel-title>
+                Indicador
+            </mat-panel-title>
+            <mat-panel-title>
+                Peso
+            </mat-panel-title>
+            <mat-panel-title>
+                Resultado
+            </mat-panel-title>
+            <mat-panel-title>
+                Meta
+            </mat-panel-title>
+            <mat-panel-title>
+                Acciones/Observación
+            </mat-panel-title>
+            <mat-panel-title>
+
+            </mat-panel-title>
+        </div>
+
+        <div style="display: flex;justify-content: flex-end;">
+            <button mat-button color="primary" (click)="nextStep()"
+            mat-flat-button
+            [color]="'primary'"
+                >
+               Guardar
+            </button>
+            
+        </div>
+
+        <div *ngFor="let item of USER_DATA">
+            <mat-form-field appearance="outline" style="width: 7%;margin-right:5px;">
+                <mat-label>Mes</mat-label>
+                    <mat-select>
+                        <ng-container *ngFor="let month of months">
+                            <mat-option [value]="period">
+                                {{ month.dateInit }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 11%;margin:5px;">
+                    <mat-label>Tipo Obj</mat-label>
+                        <mat-select>
+                            <ng-container *ngFor="let objetive of objetives$ | async as objetives">
+                                <mat-option [value]="period">
+                                    {{ objetive.name }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                    <mat-label>Tipo de Ind</mat-label>
+                        <mat-select>
+                            <ng-container *ngFor="let indicator of indicatorsType">
+                                <mat-option [value]="period">
+                                    {{ indicator.type }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 8%;margin:5px;">
+                <mat-label>Objetivo</mat-label>
+                <input matInput value="Atención CI">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                <mat-label>Indicador</mat-label>
+                <mat-select>
+                    <ng-container *ngFor="let indicator of indicators$ | async as indicators">
+                        <mat-option [value]="period">
+                            {{ indicator.name }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 6%;margin:5px;">
+                <mat-label>Peso</mat-label>
+                <input matInput type="number">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                <mat-label>Resultado</mat-label>
+                <input matInput>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                <mat-label>Meta</mat-label>
+                <input matInput>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 15%;margin:5px;margin-right: 8px;">
+                <mat-label> Acciones/Observación</mat-label>
+                <input matInput>
+            </mat-form-field>
+
+            <button>
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:trash'"
+                    style="color:red;width: 15px;height: 15px;"></mat-icon>
+            </button>
+        </div>
+
+
+        <mat-action-row>
+            <button mat-button color="primary" (click)="nextStep()">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:plus-circle'"
+                    style="color:red;width: 15px;height: 15px;"></mat-icon>Nuevo
+            </button>
+        </mat-action-row>
+    </mat-expansion-panel>
+</mat-accordion>
+
+

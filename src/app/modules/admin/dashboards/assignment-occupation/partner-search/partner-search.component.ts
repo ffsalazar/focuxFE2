@@ -75,6 +75,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     });
 
     request = null;
+    hasRequest: boolean = true;
     // Observables
     filteredOptions: Observable<string[]>;
     filteredClients: Observable<string[]>;
@@ -111,6 +112,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         'occupationPercentage',
         'startDate',
         'endDate',
+        'options',
     ];
 
     /**
@@ -152,41 +154,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .subscribe((values) => {
                 // Get collaborator by filter
                 this.getCollaboratorsByFilter();
-
-                // const controls = this.filterCollaboratorsGroup.getRawValue();
-
-
-                // this.valuesFiltered = values;
-
-                // const filteredClients = values.filterClients.filter(
-                //     (item) => item.checked && item.id
-                // );
-                // this.clientsId = filteredClients.map(
-                //     (item) => item.id
-                // );
-                // const filteredKnowledges = values.filterKnowledges.filter(
-                //     (item) => item.checked && item.id
-                // );
-                // this.knowledgesId = filteredKnowledges.map((item) => item.id);
-                
-                // const occupation =
-                //     this.filterCollaboratorsGroup.get('filterOccupation').value;
-                // const dateInit =
-                //     this.filterCollaboratorsGroup.get('filterDateInit').value;
-                // const dateEnd =
-                //     this.filterCollaboratorsGroup.get('filterDateEnd').value;
-
-                // this._assignmentOccupationService
-                //     .getFilterCollaborator(
-                //         this.clientsId,
-                //         this.knowledgesId,
-                //         occupation,
-                //         dateInit,
-                //         dateEnd
-                //     )
-                //     .subscribe((response) => {
-                //         //this._setCollaboratorsRecomm();
-                //     });
         });
 
         this.filteredClients = this.clientControl.valueChanges.pipe(
@@ -221,9 +188,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._assignmentOccupationService.collaboratorSelectedRemove$.subscribe(
             (collaboratorId) => {
                 if (collaboratorId !== null) {
-                    //this.collaboratorSelected.at(index).setValue(false);
-                    //this._checkCollaboratorsSelected();
-
                     for (let i = 0; i < this.collaboratorSelected.length; i++) {
                         if (
                             this.collaboratorSelected.at(i).value.id ===
@@ -365,9 +329,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * @param requestId
      */
     getCollaboratorsAssigned(requestId: number) {
-        this._requestService
-            .getCollaboratorsAssigned(requestId)
+        this._requestService.getCollaboratorsAssigned(requestId)
             .subscribe((collaborators) => {
+                console.log("getCollaboratorsAssigned: ", collaborators);
                 collaborators.forEach((item) => {
                     item.name = item.name + ' ' + item.lastName;
                 });
@@ -463,6 +427,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.dataCollab.data = [];
         this.selectedRequest = null;
         this.request = null;
+        this.hasRequest = true;
         // Get collaborators by filter
         this.getCollaboratorsByFilter();
         // Restarting list
@@ -592,10 +557,11 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this.clientControl.valueChanges.subscribe((value) => {
             const client = this.clients.find((item) => item.name === value);
 
+            this.showFlashMessage('success', 'Asignación eliminada con éxito');
+
             if (client) {
                 this.selectedClient = client;
-                this._assignmentOccupationService.selectedFiltered.client =
-                    client.name;
+                this._assignmentOccupationService.selectedFiltered.client = client.name;
                 this._getCollaboratorsByClient(this.selectedClient.id);
                 this._getRequestByClient(this.selectedClient.id);
             } else {
@@ -634,6 +600,9 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
             .getRequestByClient(clientId, this.statusControl.value || null)
             .subscribe((requests) => {
                 this.requests = requests;
+
+                this.hasRequest = this.requests.length > 0 ? true : false;
+
                 this.requestControl.setValue('');
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -978,10 +947,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._fuseAlertService.dismiss(name);
     }
 
-    showFlashMessage(
-        type: 'success' | 'error' | 'info',
-        message: string
-    ): void {
+    showFlashMessage(type: 'success' | 'error' | 'info', message: string): void {
         // Show the message
         this.flashMessage = 'info';
 
@@ -993,12 +959,12 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
 
         // Hide it after 3 seconds
-        setTimeout(() => {
-            this.flashMessage = null;
+        // setTimeout(() => {
+        //     this.flashMessage = null;
 
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        }, 3000);
+        //     // Mark for check
+        //     this._changeDetectorRef.markForCheck();
+        // }, 3000);
     }
 
     /**

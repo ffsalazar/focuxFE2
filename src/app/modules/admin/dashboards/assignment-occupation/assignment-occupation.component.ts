@@ -37,22 +37,8 @@ export class AssignmentOccupationComponent implements OnInit {
      * 
      */
     selectTab() {
-        switch ( this._tab.selectedIndex ) {
-            // case 0:
-            //     this._assingmentOccupationService.setTabIndex(0);
-            //     break;
-            case 0:
-            console.log("tab: ",  this._tab.selectedIndex);
-                //this._assingmentOccupationService.setTabIndex(0);
-                //this._assingmentOccupationService.setCollaboratorSelected();
-                break;
-            case 1:
-                console.log("Tab: ", this._tab.selectedIndex);
-                this._assingmentOccupationService.setCollaboratorSelected();
-                break;
-        
-            default:
-                break;
+        if ( this._tab?.selectedIndex && this._tab.selectedIndex === 1 ) {
+            this._assingmentOccupationService.setCollaboratorSelected();
         }
     }
 

@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import {EvaluationComponent} from "./evaluation.component";
-import { CollaboratorsEvaluationResolver, DepartmentsResolver } from './evaluation.resolver';
+import { CollaboratorsEvaluationResolver, DepartmentsResolver, ObjetivesResolver, IndicatorsResolver } from './evaluation.resolver';
 
 const routes: Routes = [{
     path: '',
@@ -9,6 +10,8 @@ const routes: Routes = [{
     resolve: {
       collaborators: CollaboratorsEvaluationResolver,
       departments: DepartmentsResolver,
+      objetives: ObjetivesResolver,
+      indicators: IndicatorsResolver
     }
 }];
 

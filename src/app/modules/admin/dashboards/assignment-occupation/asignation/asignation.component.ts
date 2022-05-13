@@ -189,25 +189,28 @@ export class AsignationComponent implements OnInit, OnDestroy {
         for (let i = 0; i < this.collaboratorOccupation.length; i++) {
 
             this.collaboratorOccupation.at(i).statusChanges
-                .subscribe(value => {
-                    if ( value === 'VALID' ){
-                        this.activatedAlert = true;
-                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
-                    }
-                })
+                .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe(value => {
+                        if ( value === 'VALID' ){
+                            this.activatedAlert = true;
+                            this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                        }
+                    })
 
             this.collaboratorOccupation.at(i).valueChanges
-                .subscribe(value => {
-                    // if ( value === 'VALID' ){
-                    //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
-                    // }
+                .pipe(takeUntil(this._unsubscribeAll))
 
-                    const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
+                    .subscribe(value => {
+                        // if ( value === 'VALID' ){
+                        //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                        // }
 
-                    if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
-                        this.collaboratorOccupation.at(i).get('occupation').setValue('');
-                    }
-                })
+                        const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
+
+                        if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
+                            this.collaboratorOccupation.at(i).get('occupation').setValue('');
+                        }
+                    })
             
         }
     }
@@ -305,35 +308,36 @@ export class AsignationComponent implements OnInit, OnDestroy {
         });
 
         // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) => {
+        confirmation.afterClosed()
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((result) => {
+                // If the confirm button pressed...
+                if ( result === 'confirmed' )
+                {
+                    this.activatedAlert = true;
 
-            // If the confirm button pressed...
-            if ( result === 'confirmed' )
-            {
-                this.activatedAlert = true;
+                    const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
+                    
+                    if ( collaboratorIndex != null ) {
+                        // remove collaborator from collaboratorsArr
+                        this.collaboratorsArr.splice(collaboratorIndex, 1);
+                        // Emit index the collaborator
+                        this._assignmentOccupationService.removeCollaboratorSelected(this._assignmentOccupationService.collaboratorsSelected[collaboratorIndex].id);
+                        // remove collaborator from collaboratorSelected
+                        this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
+                        // remove form group from collaborator occupation
+                        this.collaboratorOccupation.removeAt(i);
+                        // Show notification update request
+                        this.showFlashMessage('success', 'Asignación eliminada con éxito');
+                    }
 
-                const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
-                
-                if ( collaboratorIndex != null ) {
-                    // remove collaborator from collaboratorsArr
-                    this.collaboratorsArr.splice(collaboratorIndex, 1);
-                    // Emit index the collaborator
-                    this._assignmentOccupationService.removeCollaboratorSelected(this._assignmentOccupationService.collaboratorsSelected[collaboratorIndex].id);
-                    // remove collaborator from collaboratorSelected
-                    this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
-                    // remove form group from collaborator occupation
-                    this.collaboratorOccupation.removeAt(i);
-                    // Show notification update request
-                    this.showFlashMessage('success', 'Asignación eliminada con éxito');
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 }
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            }
-
-            //this._assignmentOccupationService.collaboratorSelectedRemove$.unsubscribe();
-            //this.confirmUpdate$.unsubscribe();
-        });
+                //this._assignmentOccupationService.collaboratorSelectedRemove$.unsubscribe();
+                //this.confirmUpdate$.unsubscribe();
+            });
     }
 
     /**
@@ -384,8 +388,9 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 });
 
         // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) => {
-
+        confirmation.afterClosed()
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((result) => {
                 // If the confirm button pressed...
                 if ( result === 'confirmed' )
                 {

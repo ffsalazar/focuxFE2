@@ -7,6 +7,8 @@ import {
 import { Observable, of } from 'rxjs';
 import { EvaluationService } from './evaluation.service';
 import { Collaborator, Department } from './evaluation.types';
+import { Objetive } from '../../masters/objetives/objetives.types';
+import { Indicator } from '../../masters/indicators/indicators.types';
 
 @Injectable({
 	providedIn: 'root'
@@ -78,4 +80,62 @@ export class DepartmentsResolver implements Resolve<any>
     }
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+export class ObjetivesResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+		private _evaluationService: EvaluationService
+	)
+    {
+    }
 
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Objetive[]>
+    {
+        return this._evaluationService.getObjectives();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class IndicatorsResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+		private _evaluationService: EvaluationService
+	)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Indicator[]>
+    {
+        return this._evaluationService.getIndicators();
+    }
+}

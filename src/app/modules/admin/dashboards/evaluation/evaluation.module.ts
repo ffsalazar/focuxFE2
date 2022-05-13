@@ -23,6 +23,10 @@ import {FuseAlertModule} from "../../../../../@fuse/components/alert";
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgxSpinnerModule } from "ngx-spinner";
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCardModule} from '@angular/material/card'
+
+
 
 import { EvaluationRoutingModule } from './evaluation-routing.module';
 import {TranslocoModule} from "@ngneat/transloco";
@@ -69,6 +73,8 @@ import { TemplateEvaluationComponent } from './template-evaluation/template-eval
       MatSliderModule,
       MatRadioModule,
       MatDividerModule,
+      MatExpansionModule,
+      MatCardModule
   ]
 })
 export class EvaluationModule { }

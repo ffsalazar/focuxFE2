@@ -72,7 +72,7 @@
                                 <mat-label>Cliente</mat-label>
                                 <mat-select [formControlName]="'clientControl'" multiple="multiple">
                                     <ng-container >
-                                        <mat-option #allSelectedClients (click)="toggleAllSelectionClients()" [value]="0">All</mat-option>
+                                        <mat-option #allSelectedClients (click)="toggleAllSelectionClients()" [value]="0">Seleccionar todo</mat-option>
                                         <mat-option (mouseover)="updateSelectedItem(i)"  *ngFor="let client of clients; let i = index" [value]="client.name">{{client.name}}
                                             <span *ngIf="indexActive == i">
                                                 <i [ngClass]="updateSpan(i) ? 'visible' : 'invisible'"
@@ -90,8 +90,8 @@
                                 <mat-label>L&iacute;der</mat-label>
                                 <mat-select [formControlName]="'leaderControl'" multiple="multiple">
                                     <ng-container>
-                                        <mat-option #allSelectedLeaders (click)="toggleAllSelectionLeaders()" [value]="0">All</mat-option>
-                                        <mat-option (mouseover)="updateSelectedItem(i)" *ngFor="let leader of leaders; let i = index" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase}} {{leader.lastName.split(' ')[0] | titlecase}}
+                                        <mat-option #allSelectedLeaders (click)="toggleAllSelectionLeaders()" [value]="0">Seleccionar todo</mat-option>
+                                        <!--mat-option (mouseover)="updateSelectedItem(i)" *ngFor="let leader of leaders; let i = index" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase }}  titlecase leader.name.split(' ')[1] | titlecase {{leader.lastName.split(' ')[0] | titlecase}}
                                             <span *ngIf="indexActive == i">
                                                 <i [ngClass]="updateSpan(i) ? 'visible' : 'invisible'"
                                                    (click)="selectOnlyLeader(leader)"
@@ -99,7 +99,7 @@
                                                    style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;"
                                                 >{{updateSpan(i) ? 'SOLAMENTE' : ''}}</i>
                                             </span>
-                                        </mat-option>
+                                        </mat-option-->
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
@@ -109,7 +109,7 @@
                                 <mat-label>Estatus</mat-label>
                                 <mat-select  [formControlName]="'statusControl'" multiple="multiple">
                                     <ng-container >
-                                        <mat-option #allSelectedStatuses (click)="toggleAllSelectionStatuses()" [value]="0">All</mat-option>
+                                        <mat-option #allSelectedStatuses (click)="toggleAllSelectionStatuses()" [value]="0">Seleccionar todo</mat-option>
                                         <mat-option (mouseover)="updateSelectedItem(i)" (mouseleave)="updateUnselectItem(i)" *ngFor="let status of statuses; let i = index" [value]="status.name">{{status.name}}
                                             <span  *ngIf="indexActive == i">
                                                 <i
