@@ -129,16 +129,15 @@
                                     </div>
                                     <div class="mt-8">
                                         <div class="-my-3 divide-y">
-                                            <ng-container *ngFor="let dataset of data.newVsReturning.series; let i = index">
+                                            <ng-container *ngFor="let dataset of chartNewVsReturning.series; let i = index">
                                                 <div class="grid grid-cols-3 py-3">
                                                     <div class="flex items-center">
                                                         <div class="flex-0 w-2 h-2 rounded-full"
                                                             [style.backgroundColor]="chartNewVsReturning.colors[i]"></div>
-                                                        <div class="ml-3 truncate">{{data.newVsReturning.labels[i]}}</div>
+                                                        <div class="ml-3 truncate">{{chartNewVsReturning.labels[i]}}</div>
                                                     </div>
-                                                    <div class="font-medium text-right">{{data.newVsReturning.uniqueVisitors * dataset / 100 |
-                                                        number:'1.0-0'}}</div>
-                                                    <div class="text-right text-secondary">{{dataset}}%</div>
+                                                    <div class="font-medium text-right"></div>
+                                                    <div class="text-right text-secondary">{{chartNewVsReturning.series[i]}}%</div>
                                                 </div>
                                             </ng-container>
                                         </div>
@@ -168,17 +167,16 @@
                                     </div>
                                     <div class="mt-8">
                                         <div class="-my-3 divide-y">
-                                            <ng-container *ngFor="let dataset of data.gender.series; let i = index">
+                                            <ng-container *ngFor="let dataset of chartGender.series; let i = index">
                                                 <div class="grid grid-cols-3 py-3">
                                                     <div class="flex items-center">
                                                         <div class="flex-0 w-2 h-2 rounded-full"
                                                             [style.backgroundColor]="chartGender.colors[i]">
                                                         </div>
-                                                        <div class="ml-3 truncate">{{data.gender.labels[i]}}</div>
+                                                        <div class="ml-3 truncate">{{chartGender.labels[i]}}</div>
                                                     </div>
-                                                    <div class="font-medium text-right">{{data.gender.uniqueVisitors * dataset / 100 |
-                                                        number:'1.0-0'}}</div>
-                                                    <div class="text-right text-secondary">{{dataset}}%</div>
+                                                    <div class="font-medium text-right"></div>
+                                                    <div class="text-right text-secondary">{{chartGender.series[i]}}%</div>
                                                 </div>
                                             </ng-container>
                                         </div>

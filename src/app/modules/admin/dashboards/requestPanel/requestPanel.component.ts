@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ApexOptions } from 'ng-apexcharts';
 import { RequestPanelService } from 'app/modules/admin/dashboards/RequestPanel/RequestPanel.service';
+import { PieCharts,ColumnCharts } from './requestPanel.types';
 
 @Component({
     selector       : 'project',
@@ -23,8 +24,12 @@ export class RequestPanelComponent implements OnInit, OnDestroy
     chartGender: ApexOptions;
     chartAge: ApexOptions;
     chartLanguage: ApexOptions;
-    chartRequests : ApexOptions = {};
+    chartRequests: ApexOptions = {};
     data: any;
+    requestsByDepartment: PieCharts;
+    requestsByArea: PieCharts;
+    requestsByBusiness: ColumnCharts;
+
     selectedProject: string = 'Portafolio';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -54,9 +59,8 @@ export class RequestPanelComponent implements OnInit, OnDestroy
 
                 // Store the data
                 this.data = data;
-
                 // Prepare the chart data
-                this._prepareChartData();
+                //this._prepareChartData();
             });
 
         // Attach SVG fill fixer to all ApexCharts
@@ -72,6 +76,32 @@ export class RequestPanelComponent implements OnInit, OnDestroy
                 }
             }
         };
+
+        this._requestPanelService.getRequestsByDepartment()
+            .pipe(
+            takeUntil(this._unsubscribeAll))
+            .subscribe((data) => {
+                this.requestsByDepartment = data;
+
+                this._requestPanelService.getRequestsByArea()
+                    .pipe(
+                    takeUntil(this._unsubscribeAll))
+                    .subscribe((byArea) => {
+                        this.requestsByArea = byArea;
+
+                        this._prepareChartData();
+                    });
+            });
+
+        this._requestPanelService.getRequestsByBusiness()
+            .pipe(
+            takeUntil(this._unsubscribeAll))
+            .subscribe((data) => {
+                console.log(data);
+                this.requestsByBusiness = data;
+
+                this._prepareChartData();
+            });
     }
 
     /**
@@ -435,7 +465,7 @@ export class RequestPanelComponent implements OnInit, OnDestroy
                 }
             }
         };
-                // Distribución por area reclutadora
+        // Distribución por departamento
         this.chartNewVsReturning = {
             chart      : {
                 animations: {
@@ -453,7 +483,7 @@ export class RequestPanelComponent implements OnInit, OnDestroy
                 }
             },
             colors     : ['#3182CE', '#63B3ED', '#63B43B', '#638988', '#B23412'],
-            labels     : this.data.newVsReturning.labels,
+            labels     : this.requestsByDepartment.labels,
             plotOptions: {
                 pie: {
                     customScale  : 1,
@@ -463,7 +493,7 @@ export class RequestPanelComponent implements OnInit, OnDestroy
                     }
                 }
             },
-            series     : this.data.newVsReturning.series,
+            series     : this.requestsByDepartment.series,
             states     : {
                 hover : {
                     filter: {
@@ -515,7 +545,7 @@ export class RequestPanelComponent implements OnInit, OnDestroy
               offsetY: 0
             },
             colors     : ['#319795', '#4FD1C5', '#526266', '#282'],
-            labels     : this.data.gender.labels,
+            labels     : this.requestsByArea.labels,
             plotOptions: {
                 pie: {
                     customScale  : 0.9,
@@ -525,7 +555,7 @@ export class RequestPanelComponent implements OnInit, OnDestroy
                     }
                 }
             },
-            series     : this.data.gender.series,
+            series     : this.requestsByArea.series,
             states     : {
                 hover : {
                     filter: {
@@ -581,8 +611,8 @@ export class RequestPanelComponent implements OnInit, OnDestroy
             },
             },
             colors : ['gray', '#234234','#f77333', 'lightblue'],
-            series : this.data.requests.series,
-             labels: this.data.requests.labels,
+            series : this.requestsByBusiness.series,
+             labels: this.requestsByBusiness.categories,
             stroke : {
                 curve: 'smooth'
             },
