@@ -1,10 +1,10 @@
 <div class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
     <div class="w-full">
-        <div class="flex flex-col items-end w-full">
+        <div [formGroup]="filterCollaboratorForm" class="flex flex-col items-end w-full">
             <div class="flex flex-col items-end w-full">
                 <mat-form-field class="w-1/4">
                     <mat-label>Seleccionar Periodo</mat-label>
-                    <mat-select >
+                    <mat-select formControlName="period">
                         <ng-container *ngFor="let period of periods">
                             <mat-option [value]="period">
                                 {{ period.dateInit }} - {{ period.dateEnd }}
@@ -16,7 +16,7 @@
             <div class="flex flex-col items-end w-full">
                 <mat-form-field class="w-1/4">
                     <mat-label>Seleccionar Departamento</mat-label>
-                    <mat-select >
+                    <mat-select formControlName="department">
                         <ng-container *ngFor="let department of departments$ | async as departments">
                             <mat-option [value]="department.id">
                                 {{ department.name }}
@@ -171,6 +171,7 @@
                                                     <div class="mt-2 mr-2">
                                                         <mat-checkbox
                                                             [color]="'primary'"
+                                                            (change)="handleEventCheckbox(collaborators[i])"
                                                             formControlName="checked"
                                                         >
                                                         </mat-checkbox>
@@ -341,6 +342,19 @@
                             </div>
                         </ng-template>
                     </div>
+                    <button
+                            mat-fab
+                            [color]="'accent'"
+                            type="button"
+                            (click)="changeTab()"
+                            [disabled]="filterCollaboratorForm.invalid || !hasCheckedCollaborator"
+                            matTooltip="Siguiente"
+                            class="float"
+                        >
+                            <mat-icon class="icon-size-7">
+                                keyboard_arrow_right
+                            </mat-icon>
+                        </button>
                 </div>
             </div>
         </div>

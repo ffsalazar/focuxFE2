@@ -975,9 +975,8 @@
                                                     <div class="flex flex-row">
                                                         <div class="mt-2 mr-2">
                                                             <mat-checkbox
-                                                                [color]="
-                                                                    'primary'
-                                                                "
+                                                                [color]="'primary'"
+                                                                (change)="handleEventCheckbox(collaborator)"
                                                                 formControlName="checked"
                                                             >
                                                             </mat-checkbox>

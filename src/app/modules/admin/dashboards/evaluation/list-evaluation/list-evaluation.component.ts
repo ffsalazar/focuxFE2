@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { EvaluationService } from '../evaluation.service';
 import { Collaborator, Department } from '../evaluation.types';
 @Component({
@@ -12,6 +12,8 @@ import { Collaborator, Department } from '../evaluation.types';
 export class ListEvaluationComponent implements OnInit {
     
     private _collaborators$: Observable<Collaborator[]>;
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+
     departments$: Observable<Department[]>;
 
     periods: any[] = [
@@ -37,26 +39,37 @@ export class ListEvaluationComponent implements OnInit {
         },
 
     ];
+    hasCheckedCollaborator: boolean = false;
     tabIndex: number = 0;
     collaborators: Collaborator[];
     filterCollaboratorsGroup: FormGroup;
     selectedFilterClient: boolean = false;
     selectedFilterKnowledge: boolean = false;
     selectedFilterOccupation: boolean = false;
-    range: FormGroup = new FormGroup({
-        start: new FormControl(),
-        end: new FormControl(),
-    });
+    range: FormGroup;
+    collaboratorArrayForm: FormGroup;
+    filterCollaboratorForm: FormGroup;
 
-    collaboratorArrayForm: FormGroup = new FormGroup({
-        collaboratorSelected: new FormArray([]),
-    });
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
 
     constructor(
         private _formBuilder: FormBuilder,
         private _changeDetectorRef: ChangeDetectorRef,
         private _evaluationService: EvaluationService,
     )  {
+
+        this.collaboratorArrayForm = new FormGroup({
+            collaboratorSelected: new FormArray([]),
+        });
+
+        // Form group for range
+        this.range = new FormGroup({
+            start: new FormControl(),
+            end: new FormControl(),
+        });
+
         // Create form group for filter collaborators
         this.filterCollaboratorsGroup = this._formBuilder.group({
             filterClients: new FormArray([]),
@@ -65,14 +78,35 @@ export class ListEvaluationComponent implements OnInit {
             filterDateInit: [''],
             filterDateEnd: [''],
         });
+
+        // Create form group for filter collaborators
+        this.filterCollaboratorForm = this._formBuilder.group({
+            period       : ['', [Validators.required]],
+            department   : ['', [Validators.required]],
+        });
     }
 
+    /**
+     * On init
+     * 
+     */
     ngOnInit(): void {
-
+        
         this._collaborators$ = this._evaluationService.collaborators$;
         this.departments$ = this._evaluationService.departments$;
 
         this._setFormArrayCollaborators();
+
+    }
+
+    /**
+     * On destroy
+     * 
+     */
+    ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -116,6 +150,24 @@ export class ListEvaluationComponent implements OnInit {
     // -----------------------------------------------------------------------------------------------------
 
     /**
+     * Handle event checkbox
+     * 
+     * @param collaborator 
+     */
+    handleEventCheckbox(collaborator) {
+        
+        // find if collaborator already selected
+        const collaboratorIndex = this._evaluationService.collaboratorsSelected.findIndex(
+            (item) => item.id === collaborator.value.id
+        );
+
+        collaboratorIndex >= 0 ? this._evaluationService.collaboratorsSelected.splice(collaboratorIndex, 1)
+                                : this._evaluationService.collaboratorsSelected.push(collaborator.value);
+
+        this.hasCheckedCollaborator = this._evaluationService.collaboratorsSelected.length > 0 ? true : false;
+    }
+
+    /**
      *  Set form array the collaborators
      *
      */
@@ -141,8 +193,15 @@ export class ListEvaluationComponent implements OnInit {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
-        )
-        
+        );
+    }
+
+    /**
+     * Change tab
+     *
+     */
+     changeTab() {
+        this._evaluationService.setTabIndex(1);
     }
 
 }

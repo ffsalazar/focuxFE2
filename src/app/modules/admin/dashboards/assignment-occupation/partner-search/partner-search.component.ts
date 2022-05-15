@@ -28,6 +28,7 @@ import { FuseAlertService } from '@fuse/components/alert';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { RequestService } from 'app/modules/admin/apps/portafolio/request/request.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 
 @Component({
     selector: 'app-partner-search',
@@ -215,6 +216,15 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         this._getCollaboratorsByRequest();
         this._handleEventTab();
         this._getAllCollaboratorOccupation();
+    }
+
+    /**
+     * On destroy
+     */
+     ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -856,33 +866,26 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
 
     /**
      * handle ChangeArrayForm
+     * 
      */
     private _handleChangeArrayForm() {
         this.collaboratorOccupation.forEach((item, index) => {
-            this.collaboratorSelected
-                .at(index)
-                .valueChanges.subscribe((collaborator) => {
-                    //find if collaborator already selected
-                    const collaboratorIndex =
-                        this._assignmentOccupationService.collaboratorsSelected.findIndex(
-                            (item) => item.id === collaborator.id
-                        );
+            this.collaboratorSelected.at(index).valueChanges
+                    .pipe(takeUntil(this._unsubscribeAll))
+                        .subscribe((collaborator) => {
+                            // find if collaborator already selected
+                            const collaboratorIndex =
+                                this._assignmentOccupationService.collaboratorsSelected.findIndex(
+                                    (item) => item.id === collaborator.id
+                                );
 
-                    collaboratorIndex >= 0
-                        ? this._assignmentOccupationService.collaboratorsSelected.splice(
-                              collaboratorIndex,
-                              1
-                          )
-                        : this._assignmentOccupationService.collaboratorsSelected.push(
-                              item
-                          );
+                            collaboratorIndex >= 0
+                                ? this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1)
+                                : this._assignmentOccupationService.collaboratorsSelected.push(item);
 
-                    this.hasCheckedCollaborator =
-                        this._assignmentOccupationService.collaboratorsSelected
-                            .length > 0
-                            ? true
-                            : false;
-                });
+                            this.hasCheckedCollaborator =
+                                this._assignmentOccupationService.collaboratorsSelected.length > 0 ? true : false;
+                        });
         });
     }
 
@@ -980,15 +983,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     assignActivity(collaborator) {
         this._assignmentOccupationService.setCollaboratorByAssign(collaborator);
         this._assignmentOccupationService.setTabIndex(1);
-    }
-
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next();
-        this._unsubscribeAll.complete();
     }
 
     /**

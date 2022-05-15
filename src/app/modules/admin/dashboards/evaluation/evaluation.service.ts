@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, from } from 'rxjs';
+import { BehaviorSubject, Observable, of, from, Subject } from 'rxjs';
 import { map, switchMap, filter, toArray, tap, } from 'rxjs/operators';
 import { Collaborator, Department } from './evaluation.types';
 import { Objetive } from '../../masters/objetives/objetives.types';
@@ -11,11 +11,13 @@ import { Indicator } from '../../masters/indicators/indicators.types';
 export class EvaluationService {
 
 	private _collaborators: BehaviorSubject<Collaborator[]> = new BehaviorSubject(null);
-	private _collaboratorsSelected: Collaborator[] = [];
 	private _department: BehaviorSubject<Department | null> = new BehaviorSubject(null);
 	private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
 	private _objetives: BehaviorSubject<Objetive[] | null> = new BehaviorSubject(null);
 	private _indicators: BehaviorSubject<Indicator[] | null> = new BehaviorSubject(null);
+	private _collaboratorSelected: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
+    private _tabIndex: Subject<number> = new Subject<number>();
+	private _collaboratorsSelected: Collaborator[] = [];
 
 	constructor(
 		private _httpClient: HttpClient
@@ -65,7 +67,7 @@ export class EvaluationService {
 	set collaboratorsSelected(collaborators: Collaborator[]) {
 		this._collaboratorsSelected = collaborators;
 	}
-
+	
 	/**
 	 * Getter for _collaboratorsSelected
 	 * 
@@ -74,6 +76,14 @@ export class EvaluationService {
 		return this._collaboratorsSelected;
 	}
 
+	/**
+     * Tab index
+     *
+     */
+	 get tabIndex$(): Observable<number> {
+        return this._tabIndex.asObservable();
+    }
+	
 	// -----------------------------------------------------------------------------------------------------
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
@@ -171,8 +181,23 @@ export class EvaluationService {
 			);
 	}
 
-
-
+	/**
+     * Set collaborator selected
+     *
+     */
+	 setCollaboratorSelected(): void {
+        // Update collaborators selected
+        this._collaboratorSelected.next(this.collaboratorsSelected);
+    }
+	
+	/**
+     * Set tab index
+     *
+     * @param id
+     */
+	 setTabIndex(id: number) {
+        this._tabIndex.next(id);
+    }
 
 }
 

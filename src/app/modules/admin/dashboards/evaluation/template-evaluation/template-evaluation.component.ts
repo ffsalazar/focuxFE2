@@ -129,6 +129,9 @@ export class TemplateEvaluationComponent implements OnInit {
   panelOpenState = false;
 
 
+  // -----------------------------------------------------------------------------------------------------
+  // @ Lifecycle hooks
+  // -----------------------------------------------------------------------------------------------------
 
   constructor(
     private _evaluationService: EvaluationService,
@@ -141,6 +144,10 @@ export class TemplateEvaluationComponent implements OnInit {
     });
   }
 
+  /**
+   * On init
+   * 
+   */
   ngOnInit(): void {
 
     this.departments$ = this._evaluationService.departments$;
@@ -150,6 +157,20 @@ export class TemplateEvaluationComponent implements OnInit {
     this.indicators$.subscribe(res => console.log(res));
     this._setTemplates();
   }
+
+  /**
+   * On destroy
+   * 
+   */
+   ngOnDestroy(): void {
+    // Unsubscribe from all subscriptions
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
+  }
+
+  // -----------------------------------------------------------------------------------------------------
+	// @ Accessors
+	// -----------------------------------------------------------------------------------------------------
 
   get evaluations() {
     return this.template.get('evaluations') as FormArray;

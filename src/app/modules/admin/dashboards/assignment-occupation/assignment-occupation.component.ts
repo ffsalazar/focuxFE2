@@ -4,6 +4,8 @@ import {AssingmentOccupationService} from "./assingment-occupation.service";
 import { MatTabGroup } from '@angular/material/tabs';
 import { NgxSpinnerService } from "ngx-spinner";
 import { LoadingSpinnerService } from 'app/core/services/loading-spinner/loading-spinner.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-assignment-occupation',
@@ -14,15 +16,25 @@ export class AssignmentOccupationComponent implements OnInit {
 
 	@ViewChild(MatTabGroup) private _tab: MatTabGroup;
 
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+
     tabIndex = 0;
 
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
+    
   	constructor(
 		private _router: Router,
         private _assingmentOccupationService: AssingmentOccupationService,
         private spinner: NgxSpinnerService,
         private _loadingSpinnerService: LoadingSpinnerService) {
 		}
-
+    
+    /**
+     * On init
+     * 
+     */
 	ngOnInit(): void {
         this._handleEventSavedOccupation();
         
@@ -31,6 +43,20 @@ export class AssignmentOccupationComponent implements OnInit {
                 startLoading ? this.spinner.show() : this.spinner.hide();
             });
 	}
+
+    /**
+     * On destroy
+     * 
+     */
+    ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Methods
+    // -----------------------------------------------------------------------------------------------------
 
     /**
      * Select Tab
@@ -48,12 +74,10 @@ export class AssignmentOccupationComponent implements OnInit {
      */
     private _handleEventSavedOccupation() {
         this._assingmentOccupationService.tabIndex$
-            .subscribe((tabIndex) => {
-                this._tab.selectedIndex = tabIndex;
-                // if ( this._tab.selectedIndex !== 0 ) {
-                //     this.selectTab();
-                // }
-            });
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((tabIndex) => {
+                    this._tab.selectedIndex = tabIndex;
+                });
 
             this.selectTab();
 
