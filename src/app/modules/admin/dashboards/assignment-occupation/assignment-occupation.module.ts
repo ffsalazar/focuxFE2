@@ -37,6 +37,7 @@ import { UpdateOccupationComponent } from './edit-assignment/update-occupation/u
 import { ListCollaboratorsComponent } from './edit-assignment/list-collaborators/list-collaborators.component';
 import { RolesRequestResolver } from './assignment.resolvers';
 import { DatePipe } from '@angular/common';
+import {MatDividerModule} from "@angular/material/divider";
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { DatePipe } from '@angular/common';
         MatTooltipModule,
         MatSliderModule,
         MatRadioModule,
+        MatDividerModule,
     ],
     schemas: [
           CUSTOM_ELEMENTS_SCHEMA,

@@ -8,8 +8,11 @@
 
             <!-- Title -->
             <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Ingresar</div>
-
-
+            <!--  Sign up           -->
+            <div class="flex items-baseline mt-0.5 font-medium">
+                &iquest;Eres colaborador y aun no tienes una cuenta&quest;
+            </div>
+            <a href="/sign-up/modern-reversed" class="ml-1 text-primary-500 hover:underline">Registrate aquí</a>
             <!-- Alert -->
             <fuse-alert
                 class="mt-8 -mb-4"
@@ -27,17 +30,17 @@
                 [formGroup]="signInForm"
                 #signInNgForm="ngForm">
 
-                <!-- Email field -->
+                <!-- username field -->
                 <mat-form-field class="w-full">
                     <mat-label>Usuario</mat-label>
                     <input
-                        id="email"
+                        id="username"
                         matInput
-                        [formControlName]="'email'">
-                    <mat-error *ngIf="signInForm.get('email').hasError('required')">
+                        [formControlName]="'username'">
+                    <mat-error *ngIf="signInForm.get('username').hasError('required')">
                         Usuario requerido
                     </mat-error>
-                    <mat-error *ngIf="signInForm.get('email').hasError('email')">
+                    <mat-error *ngIf="signInForm.get('username').hasError('email')">
                         Por favor ingrese un usuario v&aacute;lido
                     </mat-error>
                 </mat-form-field>
@@ -73,8 +76,8 @@
                 <!-- Actions -->
                 <div class="inline-flex items-end justify-between w-full mt-1.5">
                     <mat-checkbox
-                        [color]="'primary'"
-                        [formControlName]="'rememberMe'">
+                        [color]="'primary'">
+<!--                        [formControlName]="'rememberMe'">-->
                         Recordar
                     </mat-checkbox>
                     <a

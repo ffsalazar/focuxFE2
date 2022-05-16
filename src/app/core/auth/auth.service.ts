@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { AuthUtils } from 'app/core/auth/auth.utils';
-import { UserService } from 'app/core/user/user.service';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, switchMap} from 'rxjs/operators';
+import {AuthUtils} from 'app/core/auth/auth.utils';
+import {UserService} from 'app/core/user/user.service';
+import {environment} from '../../../environments/environment';
+import {AuthUsers} from '../../shared/models/auth-users';
+import {RegisterUserResponse} from '../../shared/models/register-user-response';
 
 @Injectable()
 export class AuthService
 {
     private _authenticated: boolean = false;
+    private _roles: {authority: string}[] = [];
 
     /**
      * Constructor
@@ -19,7 +23,10 @@ export class AuthService
     )
     {
     }
-
+    get roles(): {authority: string}[] {return this._roles;}
+    set roles(roles: {authority: string}[]) {this._roles = roles;}
+    get authenticated(): boolean { return this._authenticated;}
+    set authenticated(isAuthenticated: boolean) { this._authenticated = isAuthenticated;}
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
@@ -48,7 +55,16 @@ export class AuthService
      */
     forgotPassword(email: string): Observable<any>
     {
-        return this._httpClient.post('api/auth/forgot-password', email);
+        const headers = new HttpHeaders()
+            .append('Content-type', 'application/json');
+        return this._httpClient.put( environment.baseApiUrl + 'api/v1/followup/user/forgotpassword', email, {
+            headers
+        }).pipe(
+            switchMap( (response) => {
+                console.log(response);
+                return of(response);
+            })
+        );
     }
 
     /**
@@ -66,7 +82,7 @@ export class AuthService
      *
      * @param credentials
      */
-    signIn(credentials: { email: string; password: string }): Observable<any>
+    signIn(credentials: { username: string; password: string }): Observable<AuthUsers>
     {
         // Throw error, if the user is already logged in
         if ( this._authenticated )
@@ -74,17 +90,21 @@ export class AuthService
             return throwError('User is already logged in.');
         }
 
-        return this._httpClient.post('api/auth/sign-in', credentials).pipe(
-            switchMap((response: any) => {
+        return this._httpClient.post(environment.baseApiUrl + 'api/v1/followup/user/login', credentials).pipe(
+            switchMap((response: AuthUsers) => {
 
-                // Store the access token in the local storage
-                this.accessToken = response.accessToken;
-
+                console.log(response);
+                // // Store the access token in the local storage
+                // this.accessToken = response.accessToken;
+                //
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
+                //Set roles
+                this._roles = response.authorities;
+
                 // Store the user on the user service
-                this._userService.user = response.user;
+                // this._userService.user = response.user;
 
                 // Return a new observable with the response
                 return of(response);
@@ -143,9 +163,18 @@ export class AuthService
      *
      * @param user
      */
-    signUp(user: { name: string; email: string; password: string; company: string }): Observable<any>
+    signUp(user: { username: string; password: string }): Observable<RegisterUserResponse>
     {
-        return this._httpClient.post('api/auth/sign-up', user);
+        return this._httpClient.post( environment.baseApiUrl + 'api/v1/followup/user/register', user)
+            .pipe(
+                switchMap((response: RegisterUserResponse) => {
+                    if (response?.data && response?.success) {
+                        return of({data: response.data, success: response.success});
+                    } else {
+                        return of({error: response.error});
+                    }
+                })
+            );
     }
 
     /**
@@ -165,6 +194,12 @@ export class AuthService
     {
         // Check if the user is logged in
         if ( this._authenticated )
+        {
+            return of(true);
+        }
+
+
+        if (this.roles?.length > 0)
         {
             return of(true);
         }

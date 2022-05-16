@@ -46,7 +46,7 @@ export class AssingmentOccupationService {
         new BehaviorSubject(null);
     private _rolesRequest: BehaviorSubject<RolesRequest[] | null> =
         new BehaviorSubject(null);
-
+        
     collaborators: any;
 
     selectedFiltered: any = {
@@ -580,7 +580,6 @@ export class AssingmentOccupationService {
             }
         }
 
-        console.log("req: ", requestId);
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
         
@@ -712,11 +711,12 @@ export class AssingmentOccupationService {
      * @returns
      */
     getFilterCollaborator(
-        clientsId: number[],
-        knowledgesId: number[],
+        clientsId: number[] = [],
+        knowledgesId: number[] = [],
         occupation: number,
         dateInit: Date,
-        dateEnd: Date
+        dateEnd: Date,
+        requestId: number,
     ): Observable<any> {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
@@ -737,22 +737,30 @@ export class AssingmentOccupationService {
             params = params.append('occupation', occupation);
         }
 
+        if ( Number.isInteger(requestId) ) {
+            params = params.append('requestId', requestId);
+        }
+
         const startDate = moment(dateInit).format('L').split('/').join('-');
         const endDate = moment(dateEnd).format('L').split('/').join('-');
 
         if (
-            (dateInit.toString() !== '' || !startDate.includes('Invalid')) &&
-            (dateEnd.toString() !== '' || !endDate.includes('Invalid'))
+            ( dateInit && ( dateInit.toString() !== '' || !startDate.includes('Invalid') )) &&
+            ( dateEnd && ( dateEnd.toString() !== '' || !endDate.includes('Invalid') ))
         ) {
             params = params.append('dateInit', startDate);
             params = params.append('dateEnd', endDate);
         }
 
+        console.log("dateInit: ", dateInit);
+        console.log("dateInit: ", dateEnd);
+        console.log("params: ", params);
+
         return this._httpClient
             .get<any>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby',
                 {
-                    params,
+                    params
                 }
             )
             .pipe(

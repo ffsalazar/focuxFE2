@@ -65,6 +65,27 @@ import { MatInput } from '@angular/material/input';
                 text-justify: inter-word;
             }
 
+            #txtcuadro {
+                 height:80px;
+                 transition:all 1s;
+                 -webkit-transition:all 1s;
+                 resize: none;
+             }
+
+            #txtcuadro:focus {
+                height:400px;
+            }
+            #txtcuadroe {
+                height:10px;
+                transition:all 1s;
+                -webkit-transition:all 1s;
+                resize: none;
+            }
+
+            #txtcuadroe:focus {
+                height:400px;
+            }
+
             .inventory-grid {
                 grid-template-columns: 48px auto 40px;
 
@@ -80,6 +101,7 @@ import { MatInput } from '@angular/material/input';
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
             }
+
 
 
         `
@@ -118,6 +140,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     tagsEditMode: boolean = false;
     horizontalStepperForm;
     pauseForm: FormGroup;
+    pauseFormEdit: FormGroup;
 
     requestOriginal: Request[] = [];
     showListRequest = true;
@@ -142,10 +165,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     successSave: String = "";
     dataCollab = new MatTableDataSource<any>();
     dataPause = new MatTableDataSource<any>();
+    dataPauseEdit = new MatTableDataSource<any>();
 
     // dataSource: Request[]
     displayColCollab : string[] = ['id','name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
-    displayPauses : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause'];
+    displayPauses : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause', 'button'];
+    displayPausesEdit : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause', 'button'];
     displayedColumns: string[] = ['id', 'ramo','code', 'client', 'titleRequest',
     'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage','dateEndPause', 'Detalle' ];
 
@@ -189,9 +214,16 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     activatedAlert: boolean = false;
     hasPause: boolean = false;
     showPause: boolean = false;
+    showPauseEdit: boolean = false;
     isToggle:  boolean = false;
     hasCollab: boolean = false;
     panelOpenState = [];
+    panelOpenStateEdit = [];
+    lengthPauses: number;
+    arrayPausesEdit = [];
+    pausesEditSource: Pause[];
+    pauseEditRaw: any;
+
 
     /*
     /**
@@ -279,6 +311,15 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             customerBranchControl   : [],
         });
         this.pauseForm = this._formBuilder.group({
+            id : [null],
+            createdOn : [''],
+            totalPausedDays : [1],
+            dateInitPause: [''],
+            comments: [''],
+            dateEndPause: [''],
+            createdBy: [1],
+        });
+        this.pauseFormEdit = this._formBuilder.group({
             id : [null],
             createdOn : [''],
             totalPausedDays : [1],
@@ -649,6 +690,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     // }
 
+
     /**
      * Get clients by bussinessType
      *
@@ -898,7 +940,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         let newKnowledge: any = {
             knowledge: knowledge,
             isActive: 1
-        }
+        };
 
          // Add the knowledge
          this.selectedRequest.knowledges.unshift(newKnowledge);
@@ -1165,7 +1207,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             });
     }
     getPausesAssigned(request: any) {
+        this.lengthPauses = request.pauses.length;
         this.dataPause.data = request.pauses;
+        this.arrayPausesEdit[0] = request.pauses[this.lengthPauses-1];
+        this.dataPauseEdit.data = this.arrayPausesEdit;
     }
 
     /**
@@ -1388,13 +1433,23 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 requestNew.technicalArea = this.technicalArea.find(
                     item => item.id === requestNew.technicalArea
                 );
-                if (!((pauses.dateInitPause === "" || pauses.dateEndPause ===  "" || pauses.comments ===  "") || (pauses.dateInitPause === null || pauses.dateEndPause ===  null || pauses.comments ===  null))) {
-                    requestNew.pauses.push(pauses);
+                if(this.showPauseEdit){
+                    requestNew.pauses[0] = this.pauseFormEdit.getRawValue();
                 }
+                if (!((pauses.dateInitPause === "" || pauses.dateEndPause ===  "" || pauses.comments ===  "") || (pauses.dateInitPause === null || pauses.dateEndPause ===  null || pauses.comments ===  null))) {
+                    requestNew.pauses.unshift(pauses);
+                }
+
+
                 //Reset Pause Form
                 this.pauseForm.get('comments').reset();
                 this.pauseForm.get('dateInitPause').reset();
                 this.pauseForm.get('dateEndPause').reset();
+
+                this.showPauseEdit = false;
+
+
+
 
                 // requestNew.responsibleRequest = {
                 //     id: 1
@@ -1605,6 +1660,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     setPause() {
         this.hasPause = !this.hasPause;
+        this.showPauseEdit = false;
+        this.pauseForm.get('comments').reset();
+        this.pauseForm.get('dateInitPause').reset();
+        this.pauseForm.get('dateEndPause').reset();
     }
 
     /**
@@ -1635,18 +1694,23 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     }
     // eslint-disable-next-line @typescript-eslint/member-ordering
 
-    updatePause(): void
+
+
+    editPause(pause : any): void
     {
-        // Get the client object
-        const pause = this.pauseForm.getRawValue();
-        ///client.businessType = this.businessTypes.find(value => value.id == client.businessType)
-        // Update the client on the server
+        if (this.hasPause == false){
+            this.showPauseEdit = !this.showPauseEdit;
 
-        this._requestService.updatePause(pause.id, pause).subscribe(() => {
 
-            // Toggle the edit mode off
-            /////this.toggleEditMode(false);
-        });
+            this.pauseFormEdit.setValue(pause);
+            this.pauseForm.get('comments').reset();
+            this.pauseForm.get('dateInitPause').reset();
+            this.pauseForm.get('dateEndPause').reset();
+
+
+        }
+
+
     }
 
 }

@@ -598,6 +598,7 @@ export class RequestService {
      * @param request
      */
     updateRequest(id: number, request: Request): Observable<any> {
+
         return this.requests$.pipe(
             take(1),
             switchMap((requests) =>
@@ -684,7 +685,7 @@ export class RequestService {
                         const index = pauses.findIndex(item => item.id === id);
 
                         // Update the client
-                        // pauses[index] = updatedPause;
+                        //pauses[index] = updatedPause;
 
                         /*function compare(a: Pause, b: Pause) {
                             if (a.name < b.name) return -1;

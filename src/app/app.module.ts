@@ -15,6 +15,7 @@ import { appRoutes } from 'app/app.routing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
 
 
 registerLocaleData(localeEs);
@@ -52,7 +53,7 @@ const routerConfig: ExtraOptions = {
     bootstrap   : [
         AppComponent
     ],
-    providers : [{ provide: LOCALE_ID, useValue: 'es' },]
+    providers : [{ provide: LOCALE_ID, useValue: 'es' }]
 })
 export class AppModule
 {
