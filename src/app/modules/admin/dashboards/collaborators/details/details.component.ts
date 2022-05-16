@@ -163,7 +163,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                     //this.selectedKnowledges = this.collaborator.knowledges;
 
                     (this.collaboratorForm.get('phones') as FormArray).clear();
-
+                    (
+                        this.collaboratorForm.get('knowledges') as FormArray
+                    ).clear();
                     // Patch values to the form
                     this.collaboratorForm.patchValue(collaborator);
 
@@ -226,7 +228,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                             knowledgesFormGroups.push(
                                 this._formBuilder.group({
                                     id: [knowledge.id],
-                                    knowledge: [knowledge.knowledge],
+                                    knowledge: [knowledge.knowledge.id],
                                     level: [knowledge.level],
                                     isActive: [knowledge.isActive],
                                 })
@@ -368,26 +370,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
             (this.collaboratorForm.get('knowledges') as FormArray).removeAt(0);
             // Open the drawer in case it is closed
             this._collaboratorsListComponent.matDrawer.open();
-
-            this.collaboratorForm
-                .get('knowledges')
-                .setValue(this.collaborator.knowledges);
         }
-
-        if (this.collaborator) {
-            //this.filteredKnowledges = this.collaborator.knowledges;
-        }
-
-        // this.knowledges.forEach(filteredKnowledges => {
-        //     let filteredKnowledge = {
-        //         id : filteredKnowledges.id,
-        //         level: 0,
-        //         knowledge: filteredKnowledges,
-        //         isActive: 1
-        //     };
-
-        //     this.filteredKnowledges.push(filteredKnowledge);
-        // });
     }
 
     /**
@@ -516,9 +499,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
 
     createCollaborator(): void {
         this.collaboratorForm.removeControl('id', { emitEvent: false });
-        /*this.collaboratorForm
-            .get('knowledges')
-            .setValue(this.selectedKnowledges);*/
 
         // Get the collaborator object
         let collaborator = this.collaboratorForm.getRawValue();
@@ -527,9 +507,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         );
 
         collaborator.knowledges.forEach((elem) => {
-            elem.knowledge = this.knowledges.filter((knowledge) => {
-                knowledge.id == elem.knowledge;
-            });
+            elem.knowledge = this.knowledges.filter(
+                (e) => e.id == elem.knowledge
+            )[0];
         });
 
         collaborator.client = this.clients.find(
@@ -579,9 +559,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         );
 
         collaborator.knowledges.forEach((elem) => {
-            elem.knowledge = this.knowledges.filter((knowledge) => {
-                knowledge.id == elem.knowledge;
-            });
+            elem.knowledge = this.knowledges.filter(
+                (e) => e.id == elem.knowledge
+            )[0];
         });
 
         collaborator.client = this.clients.find(
@@ -862,20 +842,6 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Detect the selected  knowledges field
-     */
-    selectedKnowledgeDetector(index: number): void {
-        /*const knowledgeFormArray = this.collaboratorForm.get(
-            'knowledges'
-        ) as FormArray;
-
-        const name = knowledgeFormArray.at(index).value.knowledge.name;
-        knowledgeFormArray
-            .at(index)
-            .patchValue(this.knowledges.filter((elem) => elem.name == name));*/
-    }
-
-    /**
      * Add an empty knowledge field
      */
     addknowledgeField(): void {
@@ -908,6 +874,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         ) as FormArray;
         const knowledge = knowledgeFormArray.at(index).value;
         knowledge.isActive = 0;
+        knowledge.knowledge = this.knowledges.filter(
+            (e) => e.id === knowledge.knowledge
+        )[0];
         // Remove the phone number field
         knowledgeFormArray.removeAt(index);
 

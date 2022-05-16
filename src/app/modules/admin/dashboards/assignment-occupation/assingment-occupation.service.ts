@@ -745,12 +745,16 @@ export class AssingmentOccupationService {
         const endDate = moment(dateEnd).format('L').split('/').join('-');
 
         if (
-            (dateInit.toString() !== '' || !startDate.includes('Invalid')) &&
-            (dateEnd.toString() !== '' || !endDate.includes('Invalid'))
+            ( dateInit && ( dateInit.toString() !== '' || !startDate.includes('Invalid') )) &&
+            ( dateEnd && ( dateEnd.toString() !== '' || !endDate.includes('Invalid') ))
         ) {
             params = params.append('dateInit', startDate);
             params = params.append('dateEnd', endDate);
         }
+
+        console.log("dateInit: ", dateInit);
+        console.log("dateInit: ", dateEnd);
+        console.log("params: ", params);
 
         return this._httpClient
             .get<any>(
