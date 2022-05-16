@@ -874,6 +874,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         ) as FormArray;
         const knowledge = knowledgeFormArray.at(index).value;
         knowledge.isActive = 0;
+        knowledge.knowledge = this.knowledges.filter(
+            (e) => e.id === knowledge.knowledge
+        )[0];
         // Remove the phone number field
         knowledgeFormArray.removeAt(index);
 
