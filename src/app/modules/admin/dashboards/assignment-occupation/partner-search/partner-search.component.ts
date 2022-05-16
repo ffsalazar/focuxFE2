@@ -341,7 +341,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     getCollaboratorsAssigned(requestId: number) {
         this._requestService.getCollaboratorsAssigned(requestId)
             .subscribe((collaborators) => {
-                console.log("getCollaboratorsAssigned: ", collaborators);
                 collaborators.forEach((item) => {
                     item.name = item.name + ' ' + item.lastName;
                 });
