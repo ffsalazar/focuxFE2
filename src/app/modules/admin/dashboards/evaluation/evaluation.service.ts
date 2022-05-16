@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, from, Subject } from 'rxjs';
 import { map, switchMap, filter, toArray, tap, } from 'rxjs/operators';
-import { Collaborator, Department } from './evaluation.types';
+import { Client, Collaborator, Department, Knowledge } from './evaluation.types';
 import { Objetive } from '../../masters/objetives/objetives.types';
 import { Indicator } from '../../masters/indicators/indicators.types';
 @Injectable({
@@ -13,6 +13,8 @@ export class EvaluationService {
 	private _collaborators: BehaviorSubject<Collaborator[]> = new BehaviorSubject(null);
 	private _department: BehaviorSubject<Department | null> = new BehaviorSubject(null);
 	private _departments: BehaviorSubject<Department[] | null> = new BehaviorSubject(null);
+	private _clients: BehaviorSubject<Client[] | null> = new BehaviorSubject(null);
+	private _knowledges: BehaviorSubject<Knowledge[] | null> = new BehaviorSubject(null);
 	private _objetives: BehaviorSubject<Objetive[] | null> = new BehaviorSubject(null);
 	private _indicators: BehaviorSubject<Indicator[] | null> = new BehaviorSubject(null);
 	private _collaboratorSelected: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
@@ -36,7 +38,7 @@ export class EvaluationService {
 	}
 
 	/**
-	 * Getter for _collaborators
+	 * Getter for collaborators
 	 * 
 	 */
 	get collaborators$(): Observable<Collaborator[]> {
@@ -44,7 +46,7 @@ export class EvaluationService {
 	}
 
 	/**
-	 * Getter for _objetives
+	 * Getter for objetives
 	 * 
 	 */
 	get objetives$(): Observable<Objetive[]> {
@@ -53,12 +55,27 @@ export class EvaluationService {
 
 
 	/**
-	 * Getter for _indicators
+	 * Getter for indicators
 	 * 
 	 */
 	get indicators$(): Observable<Indicator[]> {
 		return this._indicators.asObservable();
 	}
+
+	/**
+	 * Getter for clients
+	 * 
+	 */
+	get clients$(): Observable<Client[]> {
+        return this._clients.asObservable();
+    }
+
+	/**
+     * Getter for knowledges
+     */
+	 get knowledges$(): Observable<Knowledge[]> {
+        return this._knowledges.asObservable();
+    }
 
 	/**
 	 * Setter for _collaboratorsSelected
@@ -75,6 +92,13 @@ export class EvaluationService {
 	get collaboratorsSelected() {
 		return this._collaboratorsSelected;
 	}
+
+	/**
+     * Getter for ollaboratorSelected
+     */
+	 get collaboratorSelected$(): Observable<Collaborator[]> {
+        return this._collaboratorSelected.asObservable();
+    }
 
 	/**
      * Tab index
@@ -97,6 +121,40 @@ export class EvaluationService {
 		if (a.name > b.name) return 1;
 		return 0;
 	}
+
+	/**
+     * Get Clients
+     *
+     */
+	 getClients(): Observable<Client[]> {
+        return this._httpClient
+            .get<Client[]>('http://localhost:1616/api/v1/followup/clients/all')
+            .pipe(
+                tap((clients) => {
+                    clients = clients.filter((item) => item.isActive === 1);
+                    this._clients.next(clients);
+                })
+            );
+    }
+
+    /**
+     * Get knowledges
+     *
+     */
+    getKnowledges(): Observable<Knowledge[]> {
+        return this._httpClient
+            .get<Knowledge[]>(
+                'http://localhost:1616/api/v1/followup/knowledges/all'
+            )
+            .pipe(
+                switchMap((knowledges) => knowledges),
+                filter((knowledges) => knowledges.isActive !== 0),
+                toArray(),
+                tap((knowledges) => {
+                    this._knowledges.next(knowledges);
+                })
+            );
+    }
 
 	/**
 	 * Get departments
@@ -195,8 +253,9 @@ export class EvaluationService {
      *
      * @param id
      */
-	 setTabIndex(id: number) {
-        this._tabIndex.next(id);
+	 setTabIndex(tabValue: number) {
+		 console.log("tabValue: ", tabValue);
+        this._tabIndex.next(tabValue);
     }
 
 }
