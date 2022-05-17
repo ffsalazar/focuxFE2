@@ -34,7 +34,8 @@ import {MatDividerModule} from "@angular/material/divider";
 import {EvaluationComponent} from "./evaluation.component";
 import { ListEvaluationComponent } from './list-evaluation/list-evaluation.component';
 import { TemplateEvaluationComponent } from './template-evaluation/template-evaluation.component';
-
+import { FocuxPopupComponent } from '../../apps/portafolio/request/focux-popup/focux-popup.component';
+import { RequestService } from '../../masters/portafolio/request/request.service';
 
 @NgModule({
   declarations: [
