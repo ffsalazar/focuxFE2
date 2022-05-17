@@ -3,7 +3,7 @@ import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validat
 import { MatTabGroup } from '@angular/material/tabs';
 import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { EvaluationService } from '../evaluation.service';
 import { Client, Collaborator, Department, Knowledge } from '../evaluation.types';
 import { RequestService } from 'app/modules/admin/apps/portafolio/request/request.service';
@@ -96,11 +96,11 @@ export class ListEvaluationComponent implements OnInit {
         
         this._collaborators$ = this._evaluationService.collaborators$;
         this.departments$ = this._evaluationService.departments$;
-
+        
         this._getClients();
         this._getKnowledges();
-        this._setFormArrayCollaborators();
-
+        this._getCollaboratorsEvaluated();
+        this._handleChangeFilterCollaboratorForm();
     }
 
     /**
@@ -129,54 +129,33 @@ export class ListEvaluationComponent implements OnInit {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
     
+    /**
+     * Handle change filter collaborator form
+     * 
+     */
+    private _handleChangeFilterCollaboratorForm() {
+        this.filterCollaboratorForm.valueChanges.
+            pipe(
+                switchMap(({period, department}) => {
+                    return this._evaluationService.getCollaboratorsEvaluated(period, department);
+                })
+            ).subscribe(response => {
+                console.log(response);
+            });
+    }
 
     handleEventFilter(filterValues) {
-
         console.log("filterValues: ", filterValues);
     }
 
     /**
-     * Handle event checkbox
-     * 
-     * @param collaborator 
-     */
-    handleEventCheckbox(collaborator) {
-        console.log("collaborator: ", collaborator)
-        console.log("Evaluation service: ", this._evaluationService.collaboratorsSelected);
-        // find if collaborator already selected
-        const collaboratorIndex = this._evaluationService.collaboratorsSelected.findIndex(
-            (item) => item.id === collaborator.id
-        );
-
-        collaboratorIndex >= 0 ? this._evaluationService.collaboratorsSelected.splice(collaboratorIndex, 1)
-                                : this._evaluationService.collaboratorsSelected.push(collaborator);
-
-        this.hasCheckedCollaborator = this._evaluationService.collaboratorsSelected.length > 0 ? true : false;
-    }
-
-    /**
-     *  Set form array the collaborators
+     *  Get collaborators evaluated
      *
      */
-     private _setFormArrayCollaborators() {
-
+     private _getCollaboratorsEvaluated() {
         this._collaborators$.subscribe(
             collaborators => {
                 this.collaborators = collaborators;
-                // Clear formArray
-                this.collaboratorSelected.clear();
-                // Set formArray
-                collaborators.forEach((item) => {
-                    // Create form group of collaborator
-                    const collaboratorGroup = this._formBuilder.group({
-                        id: [item.id],
-                        checked: [false],
-                    });
-        
-                    this.collaboratorSelected.push(collaboratorGroup);
-                    // value.collaboratorSelected[i] = this.collaborators[i];
-                });
-        
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             }
@@ -187,35 +166,33 @@ export class ListEvaluationComponent implements OnInit {
      * Change tab
      *
      */
-     changeTab() {
+    changeTab() {
         this._modalFocuxService.closeModal();
         this._evaluationService.setTabIndex(1);
-       
     }
+
     /**
      * showModalEvaluation
-     * 
      *
      */
-     showModal() {
-        this.openPopup();
+    showModal() {
+        this._openPopup();
     }
 
     /**
      * Open popup
      *
-     * 
      */
-     openPopup(): void  {
-
+    private _openPopup() {
         let actionOption;
+
         actionOption = 'evaluation-template';
+
         this._modalFocuxService.open({
             template: this.tplDetail, title: actionOption,
           },
           {width: 300, height: 2880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
             if ( confirm ) {
-                console.log("hiii")
                 this._changeDetectorRef.markForCheck();
             }
         });

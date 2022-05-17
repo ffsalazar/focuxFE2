@@ -113,7 +113,7 @@ export class ObjetivesResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class IndicatorsResolver implements Resolve<any>
+export class IndicatorsResolver implements Resolve<Indicator[]>
 {
     /**
      * Constructor
@@ -143,7 +143,7 @@ export class IndicatorsResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class ClientsResolver implements Resolve<any>
+export class ClientsResolver implements Resolve<Client[]>
 {
     /**
      * Constructor
@@ -173,7 +173,7 @@ export class ClientsResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class KnowledgesResolver implements Resolve<any>
+export class KnowledgesResolver implements Resolve<Knowledge[]>
 {
     /**
      * Constructor
@@ -197,5 +197,35 @@ export class KnowledgesResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Knowledge[]>
     {
         return this._evaluationService.getKnowledges();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CollaboratorsEvaluatedResolver implements Resolve<Collaborator[]>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+		private _evaluationService: EvaluationService
+	)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Collaborator[]>
+    {
+        return this._evaluationService.getCollaboratorsEvaluated();
     }
 }

@@ -1,270 +1,86 @@
 <div class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
     <div class="w-full">
-        <div [formGroup]="filterCollaboratorForm" class="flex flex-col items-end w-full">
-            <div class="flex flex-col items-end w-full">
-                <mat-form-field class="w-1/4">
-                    <mat-label>Seleccionar Periodo</mat-label>
-                    <mat-select formControlName="period">
-                        <ng-container *ngFor="let period of periods">
-                            <mat-option [value]="period">
-                                {{ period.dateInit }} - {{ period.dateEnd }}
-                            </mat-option>
-                        </ng-container>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="flex flex-col items-end w-full">
-                <mat-form-field class="w-1/4">
-                    <mat-label>Seleccionar Departamento</mat-label>
-                    <mat-select formControlName="department">
-                        <ng-container *ngFor="let department of departments$ | async as departments">
-                            <mat-option [value]="department.id">
-                                {{ department.name }}
-                            </mat-option>
-                        </ng-container>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-        <app-content-main>
-            <app-panel-filter
-                panel
-                [clients]="clients"
-                [knowledges]="knowledges"
-                (changeFilter)="handleEventFilter($event)"
-            ></app-panel-filter>
-            <div main class="flex flex-col w-4/5">
-                <div class="bg-card py-3 mt-8 px-6 rounded shadow flex flex-col w-full" style="height: 100%">
-                    <div class="relative">
-                        <ng-container [formGroup]="collaboratorArrayForm">
-                            <ng-container *ngIf="collaborators.length; else noCollaborators">
-                                <ng-container formArrayName="collaboratorSelected">
-                                    <ng-container
-                                        *ngFor="let collaborator of collaboratorSelected.controls; index as i">
-                                        <ng-container [formGroupName]="i">
-                                            <!-- Group -->
-                                            <ng-container
-                                                *ngIf="i === 0 || collaborators[i]?.name.charAt(0) !== collaborators[i - 1]?.name.charAt(0)">
-                                                <div
-                                                    class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                                    {{
-                                                    collaborators[i]?.name.charAt(0)
-                                                    }}
-                                                </div>
-                                            </ng-container>
-                                            <!-- Collaborator -->
-
-                                            <span
-                                                class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"
-                                                [class.tab-select]="tabIndex === 1" [ngClass]="{
-                                                    'hover:bg-gray-100 dark:hover:bg-hover':
-                                                        !selectedCollaborator ||
-                                                        selectedCollaborator.id !==
-                                                            collaborators[
-                                                                i
-                                                            ]?.id,
-                                                    'bg-primary-50 dark:bg-hover':
-                                                        selectedCollaborator &&
-                                                        selectedCollaborator.id ===
-                                                            collaborators[
-                                                                i
-                                                            ]?.id
-                                                }">
-                                                <div class="flex flex-row" style="width: 50%;">
-                                                    <!-- Start Checkbox -->
-                                                    <div class="mt-2 mr-2">
-                                                        <mat-checkbox [color]="'primary'"
-                                                            (change)="handleEventCheckbox(collaborators[i])"
-                                                            formControlName="checked">
-                                                        </mat-checkbox>
-                                                    </div>
-                                                    <!-- End Checkbox -->
-
-                                                    <!-- Start Avatar -->
-                                                    <div
-                                                        class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                                        <!-- If has avatar, then show image -->
-                                                        <ng-container *ngIf="collaborators[i]?.avatar">
-                                                            <img class="object-cover w-full h-full"
-                                                                [src]="collaborators[i]?.avatar"
-                                                                alt="Collaborator avatar" />
-                                                        </ng-container>
-                                                        <!-- If has not avatar, then show letter -->
-                                                        <ng-container *ngIf="!collaborators[i]?.avatar">
-                                                            <div
-                                                                class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                                {{
-                                                                collaborators[i]?.name.charAt(0)
-                                                                }}
-                                                            </div>
-                                                        </ng-container>
-                                                    </div>
-                                                    <!-- End Avatar -->
-
-                                                    <!-- Start fullName collaborator -->
-                                                    <div class="min-w-0 ml-4">
-                                                        <div class="font-medium leading-5 truncate">
-                                                            {{
-                                                            collaborators[
-                                                            i
-                                                            ]?.name
-                                                            }}
-                                                            {{
-                                                            collaborators[
-                                                            i
-                                                            ]?.lastName
-                                                            }}
-                                                        </div>
-                                                        <div class="leading-5 truncate text-secondary">
-                                                            {{
-                                                            collaborators[
-                                                            i
-                                                            ]
-                                                            ?.employeePosition
-                                                            .name
-                                                            }}
-                                                        </div>
-                                                    </div>
-                                                    <!-- End fullName collaborator -->
-
-                                                </div>
-                                                <!--  Knowledge -->
-                                                <div class="flex justify-between" style="width: 50%;">
-                                                    <ng-container *ngIf="
-                                                            collaborators
-                                                        ">
-                                                        <div class="flex flex-wrap items-center mt-2 mr-16">
-                                                            <ng-container>
-                                                                <div
-                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                                    <span
-                                                                        class="text-sm font-medium whitespace-nowrap">{{
-                                                                        collaborators[
-                                                                        i
-                                                                        ]
-                                                                        ?.client
-                                                                        .name
-                                                                        }}</span>
-                                                                </div>
-                                                            </ng-container>
-                                                        </div>
-                                                    </ng-container>
-                                                    <ng-container *ngIf="
-                                                            collaborators
-                                                        ">
-                                                        <div class="flex flex-wrap items-center mt-2 mr-16">
-                                                            <ng-container>
-                                                                <div
-                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                                                    <span
-                                                                        class="text-sm font-medium whitespace-nowrap">{{
-                                                                        'Evaluado'
-                                                                        }}</span>
-                                                                </div>
-                                                            </ng-container>
-                                                        </div>
-                                                    </ng-container>
-                                                </div>
-                                                <!-- <div class="flex">
-                                                    <ng-container
-                                                        *ngIf="
-                                                            collaborators
-                                                        "
-                                                    >
-                                                        <div
-                                                            class="flex flex-wrap items-center mt-2 mr-16"
-                                                        >
-                                                            <ng-container>
-                                                                <div
-                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                                                                >
-                                                                    <span
-                                                                        class="text-sm font-medium whitespace-nowrap"
-                                                                        >{{
-                                                                            'Evaluado'
-                                                                        }}</span
-                                                                    >
-                                                                </div>
-                                                            </ng-container>
-                                                        </div>
-                                                    </ng-container>
-                                                </div> -->
-                                            </span>
-                                        </ng-container>
-                                    </ng-container>
-                                </ng-container>
+        <!-- Start filter for collaborators -->
+            <div [formGroup]="filterCollaboratorForm" class="flex flex-col items-end w-full">
+                <div class="flex flex-col items-end w-full">
+                    <mat-form-field class="w-1/4">
+                        <mat-label>Seleccionar Periodo</mat-label>
+                        <mat-select formControlName="period">
+                            <ng-container *ngFor="let period of periods">
+                                <mat-option [value]="period.id">
+                                    {{ period.dateInit }} - {{ period.dateEnd }}
+                                </mat-option>
                             </ng-container>
-                        </ng-container>
-
-                        <!-- No collaborators -->
-                        <ng-template #noCollaborators>
-                            <!-- <button
-                                    mat-fab
-                                    style="background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;;
-                                    "
-                                    type="button"
-                                    matTooltip="Siguiente"
-
-                                >
-                                    <mat-icon
-                                        style="background-color: rgba(245, 158, 11, var(--tw-text-opacity)) !important;"
-
-                                        class="icon-size-10"
-                                    >
-                                        error
-                                    </mat-icon>
-                                </button> -->
-                            <div class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center">
-                                No hay colaboradores!
-                            </div>
-                        </ng-template>
-                    </div>
-                    <ng-template #evaluationOptiosModal>
-                        <div [formGroup]="filterTemplate">
-                            <label id="example-radio-group-label">Selecciona la plantilla a emplear</label>
-                            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
-                            formControlName="teamplateradio">
-                                <mat-radio-button class="example-radio-button" *ngFor="let template of templates"
-                                    [value]="template.name">
-                                    {{template.name}}
-                                </mat-radio-button>
-                            </mat-radio-group>
-                            <!-- <div> Selección: {{favoriteSeason}}</div>
-                            <mat-form-field appearance="outline" style="width: 50%;margin-right:5px;">
-                                <mat-label>Plantilla</mat-label>
-                                <mat-select formControlName="template">
-                                    <ng-container *ngFor="let template of templates">
-                                        <mat-option [value]="template.id">
-                                            {{ template.name }}
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field> -->
-
-                            <div style="display:flex;justify-content: flex-end;">
-                                <button class="px-8 justify-self-end" mat-flat-button [color]="'primary'" [disabled]="filterTemplate.invalid" type="button"
-                                    (click)="changeTab()">
-                                    Continuar
-                                </button>
-                            </div>
-                        </div>
-
-                    </ng-template>
-                    <button mat-fab [color]="'accent'" type="button" (click)="showModal()"
-                        [disabled]="filterCollaboratorForm.invalid || !hasCheckedCollaborator" matTooltip="Siguiente"
-                        class="float">
-                        <mat-icon class="icon-size-7">
-                            keyboard_arrow_right
-                        </mat-icon>
-                    </button>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-col items-end w-full">
+                    <mat-form-field class="w-1/4">
+                        <mat-label>Seleccionar Departamento</mat-label>
+                        <mat-select formControlName="department">
+                            <ng-container *ngFor="let department of departments$ | async as departments">
+                                <mat-option [value]="department.id">
+                                    {{ department.name }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
             </div>
+        <!-- End filter for collaborators -->
+        <app-content-main>
+            <!-- Start panel filter -->
+                <app-panel-filter
+                    panel
+                    [clients]="clients"
+                    [knowledges]="knowledges"
+                    (changeFilter)="handleEventFilter($event)"
+                ></app-panel-filter>
+            <!-- End panel filter -->
+            
+            <!-- Start list collaborators -->
+                <app-list-collaborators
+                    main
+                    [collaborators]="collaborators"
+                    [filterCollaboratorForm]="filterCollaboratorForm"
+                    (handleEventClick)="showModal()"
+                ></app-list-collaborators>
+            <!-- End list collaborators -->
         </app-content-main>
-            <!-- <div class="w-1/5">
-                
-            </div> -->
-            
-            
-        <!-- </div> -->
     </div>
 </div>
+
+<ng-template #evaluationOptiosModal>
+    <div [formGroup]="filterTemplate">
+        <label id="example-radio-group-label">Selecciona la plantilla a emplear</label>
+        <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+        formControlName="teamplateradio">
+            <mat-radio-button class="example-radio-button" *ngFor="let template of templates"
+                [value]="template.name">
+                {{template.name}}
+            </mat-radio-button>
+        </mat-radio-group>
+        <!-- <div> Selección: {{favoriteSeason}}</div>
+        <mat-form-field appearance="outline" style="width: 50%;margin-right:5px;">
+            <mat-label>Plantilla</mat-label>
+            <mat-select formControlName="template">
+                <ng-container *ngFor="let template of templates">
+                    <mat-option [value]="template.id">
+                        {{ template.name }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field> -->
+
+        <div class="flex justify-end">
+            <button
+                class="px-8 justify-self-end"
+                mat-flat-button [color]="'primary'"
+                [disabled]="filterTemplate.invalid"
+                type="button"
+                (click)="changeTab()">
+                Continuar
+            </button>
+        </div>
+    </div>
+</ng-template>

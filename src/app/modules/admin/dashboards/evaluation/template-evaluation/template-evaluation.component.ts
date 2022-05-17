@@ -7,6 +7,7 @@ import { ObjetivesService } from '../../../masters/objetives/objetives.service';
 import { filter, switchMap, takeUntil, map } from 'rxjs/operators';
 import { Indicator } from 'app/modules/admin/masters/indicators/indicators.types';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 
 @Component({
   selector: 'app-template-evaluation',
@@ -20,6 +21,7 @@ export class TemplateEvaluationComponent implements OnInit {
 	objetivesCount: number = 0;
 	templates: any[] = [];
 	template: FormGroup;
+	collaboratorsPerformace: any[] = [];
 
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -162,7 +164,7 @@ export class TemplateEvaluationComponent implements OnInit {
 				let aux = collaboratorSelected || [];
 				
 				// this.collaboratorsArr = [...aux];
-				this._setTemplates();
+				this._setTemplates(aux);
 
 				// // Set the form ocupation
 				// this._setFormOcupation();
@@ -199,77 +201,59 @@ export class TemplateEvaluationComponent implements OnInit {
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
 
-	private _setTemplates() {
+	private _setTemplates(selectedCollaborators: any[]) {
+		this.collaboratorsPerformace = [];
 
-		// Loop for collaborators
-		// for (let i = 0; i < 3; i++) {
-		//   let template: FormArray = this._formBuilder.array([]);
+		selectedCollaborators.forEach(collaborator => {
+			// Create new collaborator performance
+			let collaboratorPerformace: any = {
+				name						: collaborator.name,
+				lastName					: collaborator.lastName,
+				evaluations					: this._formBuilder.group({
+					evaluationsControls		: this._formBuilder.array([])
+				})
+			};
 
-		// Loop for evaluations
-		for (let j = 0; j < 2; j++) {
-			this.evaluations.push(this._formBuilder.group({
-			month             : [1],
-			typeIndicator     : [1],
-			typeObjetive     : [1],
-			indicator         : [1],
-			objetive         : [2],
-			weight            : [20],
-			result            : [100],
-			goal              : [100],
-			observation       : ['Cargado con exito'],
-			}));
+			// Loop for each month
+			for (let i = 1; i < 4; i++) {
+				// Loop for each the template
+				for (let j = 0; j < 2; j++) {
+					// Add form group for each evaluation the template
+					(collaboratorPerformace.evaluations.get('evaluationsControls') as FormArray).push(this._formBuilder.group({
+						month            : [i],
+						typeIndicator    : [{value: 1, disabled: true}],
+						typeObjetive     : [{value: 1, disabled: true}],
+						indicator        : [{value: 1, disabled: true}],
+						objetive         : [{value: 1, disabled: true}],
+						weight           : [{value: 1, disabled: true}],
+						result           : [100],
+						goal             : [{value: 1, disabled: true}],
+						observation      : ['Cargado con exito'],
+					}));
+				}
+			}
 			
-		}
-		for (let j = 0; j < 2; j++) {
-			this.evaluations.push(this._formBuilder.group({
-			month             : [2],
-			typeIndicator     : [1],
-			typeObjetive     : [1],
-			indicator         : [1],
-			objetive         : [2],
-			weight            : [20],
-			result            : [100],
-			goal              : [100],
-			observation       : ['Cargado con exito'],
-			}));
-			
-		}
-		for (let j = 0; j < 2; j++) {
-			this.evaluations.push(this._formBuilder.group({
-			month             : [3],
-			typeIndicator     : [1],
-			typeObjetive     : [1],
-			indicator         : [1],
-			objetive         : [2],
-			weight            : [20],
-			result            : [100],
-			goal              : [100],
-			observation       : ['Cargado con exito'],
-			}));
-			
-		}
-
-		//   this.templates.push(template);
-		
-		// }
+			// Add new collaborator performance
+			this.collaboratorsPerformace.push(collaboratorPerformace);
+		});
 	}
 
-	newEvaluation() {
-		this.evaluations.push(this._formBuilder.group({
-		month             : [''],
-		typeIndicator     : [''],
-		typeObjetive     : [''],
-		indicator         : [''],
-		objective         : [''],
-		weight            : [''],
-		result            : [''],
-		goal              : [''],
-		observation       : [''],
+	newEvaluation(collaborator: any) {
+		(collaborator.evaluations.get('evaluationsControls') as FormArray).push(this._formBuilder.group({
+			month		     : [''],
+			typeIndicator    : [''],
+			typeObjetive     : [''],
+			indicator        : [''],
+			objetive         : [''],
+			weight           : [''],
+			result           : [''],
+			goal             : [''],
+			observation      : [''],
 		}));
 	}
 
-	removeEvaluation(i: number) {
-		this.evaluations.removeAt(i);
+	removeEvaluation(collaborator: any, index: number) {
+		(collaborator.evaluations.get('evaluationsControls') as FormArray).removeAt(index);
 	}
 
 	setStep(index: number) {

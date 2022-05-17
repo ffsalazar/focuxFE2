@@ -23,7 +23,6 @@ export interface Collaborator
     isCentralAmerican:number;
     status: Status;
     image:string;
-
 }
 
 export interface Department

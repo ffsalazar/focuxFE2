@@ -26,8 +26,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCardModule} from '@angular/material/card'
 
-
-
 import { EvaluationRoutingModule } from './evaluation-routing.module';
 import {TranslocoModule} from "@ngneat/transloco";
 import {MatDividerModule} from "@angular/material/divider";
@@ -38,13 +36,15 @@ import { FocuxPopupComponent } from '../../apps/portafolio/request/focux-popup/f
 import { RequestService } from '../../masters/portafolio/request/request.service';
 import { PanelFilterModule } from 'app/shared/components/panel-filter/panel-filter.module';
 import { ContentMainModule } from 'app/shared/components/content-main/content-main.module';
+import { ListCollaboratorsComponent } from './list-collaborators/list-collaborators.component';
 
 
 @NgModule({
   declarations: [
       EvaluationComponent,
       ListEvaluationComponent,
-      TemplateEvaluationComponent
+      TemplateEvaluationComponent,
+      ListCollaboratorsComponent
 
   ],
   imports: [

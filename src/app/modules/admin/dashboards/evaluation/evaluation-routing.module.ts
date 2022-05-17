@@ -8,19 +8,21 @@ import {
   ObjetivesResolver,
   IndicatorsResolver,
   ClientsResolver,
-  KnowledgesResolver
+  KnowledgesResolver,
+  CollaboratorsEvaluatedResolver
 } from './evaluation.resolver';
 
 const routes: Routes = [{
     path: '',
     component: EvaluationComponent,
     resolve: {
-      collaborators   :   CollaboratorsEvaluationResolver,
-      departments     :   DepartmentsResolver,
-      objetives       :   ObjetivesResolver,
-      indicators      :   IndicatorsResolver,
-      clients         :   ClientsResolver,
-      knowledges      :   KnowledgesResolver,
+      //collaborators           :   CollaboratorsEvaluationResolver,
+      departments             :   DepartmentsResolver,
+      objetives               :   ObjetivesResolver,
+      indicators              :   IndicatorsResolver,
+      clients                 :   ClientsResolver,
+      knowledges              :   KnowledgesResolver,
+      collaboratorsEvaluated  : CollaboratorsEvaluatedResolver
     }
 }];
 

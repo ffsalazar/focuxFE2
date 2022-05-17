@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, from, Subject } from 'rxjs';
 import { map, switchMap, filter, toArray, tap, } from 'rxjs/operators';
@@ -193,7 +193,6 @@ export class EvaluationService {
 		return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all')
 			.pipe(
 				switchMap((collaborators: Collaborator[]) => from(collaborators)),
-				tap(collaborator => console.log("collaborator: ", collaborator)),
 				filter(collaborator => collaborator.isActive !== 0),
 				toArray(),
 				tap(collaborators => {
@@ -204,12 +203,39 @@ export class EvaluationService {
 	}
 
 	/**
-     * Get indicators
-     */
+	 * Get collaborators evaluated
+	 * 
+	 * @returns 
+	 */
+	 getCollaboratorsEvaluated(period: number = 1, departmentId: number = 1): Observable<Collaborator[]> {
+
+		let params = new HttpParams();
+
+		params = params.append('year', 2022);
+		params = params.append('period', period);
+
+		return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/evaluationperformance/collaboratorsevaluated', {
+			params
+		}).pipe(
+			switchMap((collaborators: Collaborator[]) => from(collaborators)),
+			filter(collaborator => collaborator.isActive !== 0),
+			toArray(),
+			tap(collaborators => {
+				// Update the collaborators
+				this._collaborators.next(collaborators);
+			}),
+		);
+	}
+
+	/**
+	 * Get Indicators
+	 * 
+	 * @returns 
+	 */
 	 getIndicators(): Observable<Indicator[]>
 	 {
-		 return this._httpClient.get<Indicator[]>('http://localhost:1616/api/v1/followup/indicator/all').pipe(
-			 tap((indicators) => {
+		return this._httpClient.get<Indicator[]>('http://localhost:1616/api/v1/followup/indicator/all').pipe(
+			tap((indicators) => {
 	
 	
 				 let indicatorFiltered : any[]=[];
@@ -227,24 +253,23 @@ export class EvaluationService {
 						 indicatorFiltered.push(indicator);
 					 }
 				 });
-				 console.log("indicators", indicators)
-				 this._indicators.next(indicatorFiltered);
+
+				this._indicators.next(indicatorFiltered);
 	
 			 })
 		 );
 	 }
 
 	/**
-		 * Get objetives
-		 * 
-		 * @returns 
-		 */
+	 * Get objetives
+	 * 
+	 * @returns 
+	 */
 	getObjectives(): Observable<Objetive[]> {
 		return this._httpClient
 			.get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all')
 			.pipe(
 				tap((objetives) => {
-					console.log("objetives", objetives)
 					this._objetives.next(objetives);
 				})
 			);
@@ -265,7 +290,6 @@ export class EvaluationService {
      * @param id
      */
 	 setTabIndex(tabValue: number) {
-		 console.log("tabValue: ", tabValue);
         this._tabIndex.next(tabValue);
     }
 
@@ -275,9 +299,8 @@ export class EvaluationService {
      * 
      */
 	 closeModal() {
-          // Close focuxPopup
-		  console.log("hey XD")
-		  this._isOpenModal.next(false);
+		// Close focuxPopup
+		this._isOpenModal.next(false);
     }
 
 	 
