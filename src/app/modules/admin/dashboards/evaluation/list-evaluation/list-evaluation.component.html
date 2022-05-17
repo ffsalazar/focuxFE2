@@ -229,7 +229,7 @@
                                     {{template.name}}
                                 </mat-radio-button>
                             </mat-radio-group>
-                            <div> Selección: {{favoriteSeason}}</div>
+                            <!-- <div> Selección: {{favoriteSeason}}</div>
                             <mat-form-field appearance="outline" style="width: 50%;margin-right:5px;">
                                 <mat-label>Plantilla</mat-label>
                                 <mat-select formControlName="template">
@@ -239,10 +239,10 @@
                                         </mat-option>
                                     </ng-container>
                                 </mat-select>
-                            </mat-form-field>
+                            </mat-form-field> -->
 
                             <div style="display:flex;justify-content: flex-end;">
-                                <button class="px-8 justify-self-end" mat-flat-button [color]="'primary'" type="button"
+                                <button class="px-8 justify-self-end" mat-flat-button [color]="'primary'" [disabled]="filterTemplate.invalid" type="button"
                                     (click)="changeTab()">
                                     Continuar
                                 </button>

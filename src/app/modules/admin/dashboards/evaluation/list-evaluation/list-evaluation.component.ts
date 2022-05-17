@@ -80,7 +80,7 @@ export class ListEvaluationComponent implements OnInit {
 
         // Create form group for filter collaborators
         this.filterTemplate = this._formBuilder.group({
-            template       : ['', [Validators.required]],
+            template       : ['', []],
             teamplateradio : ['', [Validators.required]],
         });
     }
