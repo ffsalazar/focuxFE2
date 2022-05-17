@@ -72,15 +72,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
         
         this._fuseAlertService.dismiss('alertBox4');
 
-        // this._assignmentOccupationService.collaborators$
-        //     .pipe(takeUntil(this._unsubscribeAll))
-        //         .subscribe(collaborators => {
-        //             this.collaboratorOccupation = collaborators;
-        //             console.log("Entro: ", collaborators);
-        //             this._setCollaboratorsRecomm();
-
-        //         });
-
         this.rolesRequest$ = this._assignmentOccupationService.rolesRequest$
             .pipe(takeUntil(this._unsubscribeAll));
                 

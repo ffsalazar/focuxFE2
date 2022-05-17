@@ -1,84 +1,86 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabGroup } from '@angular/material/tabs';
 import { NgxSpinnerService } from "ngx-spinner";
 import { LoadingSpinnerService } from 'app/core/services/loading-spinner/loading-spinner.service';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 import { EvaluationService } from './evaluation.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-evaluation',
-  templateUrl: './evaluation.component.html',
-  styleUrls: ['./evaluation.component.scss']
+	selector: 'app-evaluation',
+	templateUrl: './evaluation.component.html',
+	styleUrls: ['./evaluation.component.scss']
 })
 export class EvaluationComponent implements OnInit {
 
-    @ViewChild(MatTabGroup) private _tab: MatTabGroup;
+	@ViewChild(MatTabGroup) private _tab: MatTabGroup;
 
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+	private _unsubscribeAll: Subject<any> = new Subject<any>();
+	private _tabIndex$: Observable<number>;
 
-    tabIndex = 0;
+	tabIndex = 0;
 
-    
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
 
-    constructor(
-        private _router: Router,
-        private spinner: NgxSpinnerService,
-        private _evaluationService: EvaluationService,
-        private _loadingSpinnerService: LoadingSpinnerService,
-      ) {
-    }
+	// -----------------------------------------------------------------------------------------------------
+	// @ Lifecycle hooks
+	// -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On Init
-     * 
-     */
-    ngOnInit(): void {
-      this._handleEventSavedOccupation();
-    }
+	constructor(
+		private _router: Router,
+		private spinner: NgxSpinnerService,
+		private _evaluationService: EvaluationService,
+		private _loadingSpinnerService: LoadingSpinnerService,
+	) {
+	}
 
-    /**
-     * On destroy
-     * 
-     */
-     ngOnDestroy(): void {
-      // Unsubscribe from all subscriptions
-      this._unsubscribeAll.next();
-      this._unsubscribeAll.complete();
-    }
+	/**
+	 * On Init
+	 * 
+	 */
+	ngOnInit(): void {
+		this._handleEventSavedOccupation();
+	}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Methods
-    // -----------------------------------------------------------------------------------------------------
-    
-    /**
-     * Select Tab
-     * 
-     */
-     selectTab() {
-      if ( this._tab?.selectedIndex && this._tab.selectedIndex === 1 ) {
-          this._evaluationService.setCollaboratorSelected();
-      }
-    }
-    
-    /**
-     * Handle event saved occupation
-     * 
-     */
-     private _handleEventSavedOccupation() {
-      this._evaluationService.tabIndex$
-          .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tabIndex) => {
-                this._tab.selectedIndex = tabIndex;
-            });
+	/**
+	 * On destroy
+	 * 
+	 */
+	ngOnDestroy(): void {
+		// Unsubscribe from all subscriptions
+		this._unsubscribeAll.next();
+		this._unsubscribeAll.complete();
+	}
 
-          this.selectTab();
+	// -----------------------------------------------------------------------------------------------------
+	// @ Methods
+	// -----------------------------------------------------------------------------------------------------
 
-  }
+	/**
+	 * Select Tab
+	 * 
+	 */
+	selectTab() {
+		if (this._tab?.selectedIndex && this._tab.selectedIndex === 1) {
+			this._evaluationService.setCollaboratorSelected();
+		}
+	}
+
+	/**
+	 * Handle event saved occupation
+	 * 
+	 */
+	private _handleEventSavedOccupation() {
+		this._tabIndex$ = this._evaluationService.tabIndex$
+							.pipe(takeUntil(this._unsubscribeAll));
+
+		this._tabIndex$
+			.subscribe((tabIndex) => {
+				this._tab.selectedIndex = tabIndex;
+				//this.selectTab();
+			});
+
+	}
 
 }
 

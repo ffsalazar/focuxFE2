@@ -1,0 +1,103 @@
+<div class="flex flex-col w-full">
+    <div class="flex items-center justify-start">
+        <span class="ml-2 mb-3 font-semibold">Filtros (3)</span>
+    </div>
+    <form [formGroup]="filterCollaboratorsGroup" class="flex flex-col shadow px-2" style="background: white">
+        <div  class="flex flex-col filter-item pt-4 pb-4 border-b" style="height: auto">
+            <div class="flex items-center justify-between">
+                        <span [ngClass]="{ 'font-semibold': selectedFilterClient, flex: true}">
+                            <mat-icon class="icon-size-5 mr-1">{{"location_on"}}</mat-icon>
+                            Cliente
+                        </span>
+                <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterClient =!selectedFilterClient " >{{!selectedFilterClient ? "keyboard_arrow_right": "keyboard_arrow_down"}}</mat-icon>
+            </div>
+            <div  *ngIf="selectedFilterClient" class="flex flex-col mt-3 px-3">
+                <ng-container>
+                    <ng-container>
+                        <div class="flex items-center gap-2">
+                            <mat-checkbox [color]="'primary'">
+                            </mat-checkbox>
+                            <span>Todos</span>
+                        </div>
+                    </ng-container>
+                    <ng-container formArrayName="filterClients" >
+                        <ng-container *ngFor=" let client of filterClients.controls;index as i  " >
+                            <div  [formGroupName]="i"  class="flex items-center gap-2" >
+                                <mat-checkbox [color]="'primary'"  formControlName="checked" >   </mat-checkbox>
+                                <span>{{client.value?.name}}</span>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+
+            </div>
+        </div>
+        <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto">
+            <div class="flex items-center justify-between">
+
+
+                <span [ngClass]="{ 'font-semibold': selectedFilterKnowledge, flex: true }" >
+                            <mat-icon class="icon-size-5 mr-1">bookmark</mat-icon>Conocimiento</span>
+                <mat-icon class="icon-size-5 pointer arrow-icon"(click)=" selectedFilterKnowledge =!selectedFilterKnowledge" >{{!selectedFilterKnowledge ? "keyboard_arrow_right" : "keyboard_arrow_down"}}</mat-icon>
+            </div>
+            <div *ngIf="selectedFilterKnowledge"class="flex flex-col mt-3 px-3">
+                <ng-container>
+                    <ng-container>
+                        <div class="flex items-center gap-2">
+                            <mat-checkbox [color]="'primary'">
+                            </mat-checkbox>
+                            <span>Todos</span>
+                        </div>
+                    </ng-container>
+                    <ng-container formArrayName="filterKnowledges">
+                        <ng-container *ngFor="let knowledge of filterKnowledges.controls;index as i">
+                            <div [formGroupName]="i" class="flex items-center gap-2">
+                                <mat-checkbox [color]="'primary'"formControlName="checked"></mat-checkbox>
+                                <span>{{knowledge.value?.name}}</span>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+
+            </div>
+        </div>
+        <div class="flex flex-col filter-item border-b pt-4 pb-4" style="height: auto">
+            <div class="flex items-center justify-between">
+                        <span [ngClass]="{  'font-semibold':selectedFilterOccupation,flex: true}">
+                            <mat-icon class="icon-size-5 mr-1">access_time</mat-icon>
+                            Disponibilidad
+                        </span>
+                <mat-icon class="icon-size-5 pointer arrow-icon" (click)="selectedFilterOccupation =!selectedFilterOccupation">{{!selectedFilterOccupation ? "keyboard_arrow_right": "keyboard_arrow_down"}}</mat-icon>
+            </div>
+            <div *ngIf="selectedFilterOccupation"  class="flex flex-col mt-3 px-3">
+
+                <div class="flex flex-col w-full flex-auto mt-2" style="width: 100% !important">
+
+                    <div class="flex justify-between" [class]="'example-label-horizontal'">
+                        <label id="example-name-label" class="example-name-label">Ocupación</label>
+                        <label class="example-value-label">{{filterOccupation?.value}}%</label>
+                    </div>
+                    <mat-slider aria-label="unit(s)" [thumbLabel]="true"  [step]="5"[color]="'primary'" formControlName="filterOccupation"></mat-slider>
+                </div>
+
+                <div class="flex w-full flex-auto"style="width: 100% !important"  >
+
+                    <mat-form-field    style="width: 100% !important">
+                        <mat-label>Fecha Disponible</mat-label>
+                        <mat-date-range-input  [rangePicker]="picker">
+                            <input matStartDate formControlName="filterDateInit" placeholder="Start date" />
+                            <input matEndDate  formControlName="filterDateEnd" placeholder="End date"/>
+                        </mat-date-range-input>
+                        <mat-hint>Fecha Inicio – Fecha Fin</mat-hint >
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+
+                        <mat-error *ngIf="range.controls.start.hasError(  'matStartDateInvalid')">Fecha Invalida</mat-error>
+                        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fecha Invalida</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>

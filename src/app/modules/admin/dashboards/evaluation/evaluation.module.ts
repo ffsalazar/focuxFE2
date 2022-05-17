@@ -36,6 +36,9 @@ import { ListEvaluationComponent } from './list-evaluation/list-evaluation.compo
 import { TemplateEvaluationComponent } from './template-evaluation/template-evaluation.component';
 import { FocuxPopupComponent } from '../../apps/portafolio/request/focux-popup/focux-popup.component';
 import { RequestService } from '../../masters/portafolio/request/request.service';
+import { PanelFilterModule } from 'app/shared/components/panel-filter/panel-filter.module';
+import { ContentMainModule } from 'app/shared/components/content-main/content-main.module';
+
 
 @NgModule({
   declarations: [
@@ -46,6 +49,8 @@ import { RequestService } from '../../masters/portafolio/request/request.service
   ],
   imports: [
     CommonModule,
+    PanelFilterModule,
+    ContentMainModule,
     EvaluationRoutingModule,
       CommonModule,
       TranslocoModule,

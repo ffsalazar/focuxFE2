@@ -265,8 +265,8 @@
                                         >
                                     </mat-form-field>
                                 </div>
-                                <div class="flex justify-end items-center w-full" style="margin: auto">
-                                    <fuse-alert class="h-13" style="width: 80%;"
+                                <!-- <div class="flex justify-center tems-center w-full" style="margin: auto">
+                                    <fuse-alert class="" style="width: 38%; height: 100px !important;"
                                         [type]="'warning'"
                                         [dismissible]="false"
                                         [dismissed]="true"
@@ -276,7 +276,7 @@
                                     >
                                         <span fuseAlertTitle>{{successSave}}</span>
                                     </fuse-alert>
-                                </div>
+                                </div> -->
                                <div *ngIf="selectedClient && !hasRequest" class="flex justify-center items-center w-full" style="margin: auto">
                                     <div class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center">
                                         No tiene solicitudes
@@ -418,6 +418,7 @@
                                                     matTooltip="Siguiente"
                                                     mat-stroked-button
                                                     matTooltip="Editar ocupaciones"
+                                                    (click)="setOccupation(element)"
                                                 >
                                                     <mat-icon
                                                         class="icon-size-5"
@@ -1123,13 +1124,7 @@
                                                             matTooltip="Siguiente"
                                                             mat-stroked-button
                                                             matTooltip="Editar ocupaciones"
-                                                            (click)="
-                                                                editOccupation(
-                                                                    collaboratorOccupation[
-                                                                        i
-                                                                    ]
-                                                                )
-                                                            "
+                                                            (click)="editOccupation(collaboratorOccupation[i])"
                                                         >
                                                             <mat-icon
                                                                 class="icon-size-5"
@@ -1198,7 +1193,6 @@
             <ngx-spinner></ngx-spinner>
             <app-update-occupation
                 *ngIf="isEditing"
-                [fullName]="collaborator.name + ' ' + collaborator.lastName"
                 [collaboratorAssigment]="assigments"
                 [collaborator]="collaborator"
                 (returnPrevious)="onReturnPrevious($event)"

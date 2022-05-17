@@ -727,8 +727,7 @@ export class RequestService {
 
     getCollaboratorsAssigned(requestId: number): Observable<Collaborator[]> {
         return this._httpClient
-            .get<Collaborator[]>(
-                'http://localhost:1616/api/v1/followup/requests/assigned/' +
+            .get<Collaborator[]>('http://localhost:1616/api/v1/followup/requests/assigned/' +
                     requestId
             )
             .pipe(

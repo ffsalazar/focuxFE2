@@ -170,3 +170,14 @@ mat-slider {
     .mat-form-field-flex {
     padding-right: 0;
 }
+
+
+::ng-deep {
+
+.fuse-alert-container {
+        height: 75px !important;
+        text-align: center;
+        align-items: center;
+        font-size: 16px;
+    
+}}

@@ -6,7 +6,7 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { EvaluationService } from './evaluation.service';
-import { Collaborator, Department } from './evaluation.types';
+import { Client, Collaborator, Department, Knowledge } from './evaluation.types';
 import { Objetive } from '../../masters/objetives/objetives.types';
 import { Indicator } from '../../masters/indicators/indicators.types';
 
@@ -137,5 +137,65 @@ export class IndicatorsResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Indicator[]>
     {
         return this._evaluationService.getIndicators();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ClientsResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+		private _evaluationService: EvaluationService
+	)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Client[]>
+    {
+        return this._evaluationService.getClients();
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class KnowledgesResolver implements Resolve<any>
+{
+    /**
+     * Constructor
+     */
+    constructor(
+		private _evaluationService: EvaluationService
+	)
+    {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Knowledge[]>
+    {
+        return this._evaluationService.getKnowledges();
     }
 }

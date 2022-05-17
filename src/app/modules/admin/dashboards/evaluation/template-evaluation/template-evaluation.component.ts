@@ -4,7 +4,7 @@ import { Department } from '../evaluation.types';
 import { EvaluationService } from '../evaluation.service';
 import { Objetive } from '../../../masters/objetives/objetives.types';
 import { ObjetivesService } from '../../../masters/objetives/objetives.service';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, map } from 'rxjs/operators';
 import { Indicator } from 'app/modules/admin/masters/indicators/indicators.types';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
@@ -14,256 +14,273 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./template-evaluation.component.scss']
 })
 export class TemplateEvaluationComponent implements OnInit {
-  departments$: Observable<Department[]>;
-  objetives$: Observable<Objetive[]>;
-  indicators$: Observable<Indicator[]>;
-  objetivesCount: number = 0;
-  templates: any[] = [];
-  template: FormGroup;
+	departments$: Observable<Department[]>;
+	objetives$: Observable<Objetive[]>;
+	indicators$: Observable<Indicator[]>;
+	objetivesCount: number = 0;
+	templates: any[] = [];
+	template: FormGroup;
 
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
+	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  periods: any[] = [
-    {
-      id: 1,
-      dateInit: 'Enero',
-      dateEnd: 'Marzo'
-    },
-    {
-      id: 2,
-      dateInit: 'Abril',
-      dateEnd: 'Junio'
-    },
-    {
-      id: 3,
-      dateInit: 'Julio',
-      dateEnd: 'Septiembre'
-    },
-    {
-      id: 4,
-      dateInit: 'Octubre',
-      dateEnd: 'Diciembre'
-    },
-  ];
+	periods: any[] = [
+		{
+		id: 1,
+		dateInit: 'Enero',
+		dateEnd: 'Marzo'
+		},
+		{
+		id: 2,
+		dateInit: 'Abril',
+		dateEnd: 'Junio'
+		},
+		{
+		id: 3,
+		dateInit: 'Julio',
+		dateEnd: 'Septiembre'
+		},
+		{
+		id: 4,
+		dateInit: 'Octubre',
+		dateEnd: 'Diciembre'
+		},
+	];
 
-  months: any[] = [
-    {
-      id: 1,
-      dateInit: 'Enero'
-    },
-    {
-      id: 2,
-      dateInit: 'Febrero'
-    },
-    {
-      id: 3,
-      dateInit: 'Marzo'
+	months: any[] = [
+		{
+		id: 1,
+		dateInit: 'Enero'
+		},
+		{
+		id: 2,
+		dateInit: 'Febrero'
+		},
+		{
+		id: 3,
+		dateInit: 'Marzo'
 
-    },
-    {
-      id: 4,
-      dateInit: 'Abril'
-    },
-    {
-      id: 5,
-      dateInit: 'Mayo'
-    },
-    {
-      id: 6,
-      dateInit: 'Junio'
-    },
-    {
-      id: 7,
-      dateInit: 'Julio'
-    },
-    {
-      id: 8,
-      dateInit: 'Agosto'
-    },
-    {
-      id: 9,
-      dateInit: 'Septiembre'
-    },
-    {
-      id: 10,
-      dateInit: 'Octubre'
-    }, {
-      id: 11,
-      dateInit: 'Noviembre'
-    },
-    {
-      id: 12,
-      dateInit: 'Diciembre'
-    },
-  ];
+		},
+		{
+		id: 4,
+		dateInit: 'Abril'
+		},
+		{
+		id: 5,
+		dateInit: 'Mayo'
+		},
+		{
+		id: 6,
+		dateInit: 'Junio'
+		},
+		{
+		id: 7,
+		dateInit: 'Julio'
+		},
+		{
+		id: 8,
+		dateInit: 'Agosto'
+		},
+		{
+		id: 9,
+		dateInit: 'Septiembre'
+		},
+		{
+		id: 10,
+		dateInit: 'Octubre'
+		}, {
+		id: 11,
+		dateInit: 'Noviembre'
+		},
+		{
+		id: 12,
+		dateInit: 'Diciembre'
+		},
+	];
 
-  indicatorsType = [
-    {
-      id: 1,
-      type: 'Ascendente'
-    },
-    {
-      id: 2,
-      type: 'Descendente'
-    }
-  ];
+	indicatorsType = [
+		{
+		id: 1,
+		type: 'Ascendente'
+		},
+		{
+		id: 2,
+		type: 'Descendente'
+		}
+	];
 
-  typeOperators = [
-    {
-      id: 1,
-      type: 'Solicitud'
-    },
-    {
-      id: 2,
-      type: 'Operacion'
-    }
-  ];
+	typeOperators = [
+		{
+		id: 1,
+		type: 'Solicitud'
+		},
+		{
+		id: 2,
+		type: 'Operacion'
+		}
+	];
 
-  USER_DATA = [
-    { "name": "John Smith", "occupation": "Advisor", "age": 36 },
-    { "name": "Muhi Masri", "occupation": "Developer", "age": 28 },
-    { "name": "Peter Adams", "occupation": "HR", "age": 20 },
-    { "name": "Lora Bay", "occupation": "Marketing", "age": 43 }
-  ];
+	USER_DATA = [
+		{ "name": "John Smith", "occupation": "Advisor", "age": 36 },
+		{ "name": "Muhi Masri", "occupation": "Developer", "age": 28 },
+		{ "name": "Peter Adams", "occupation": "HR", "age": 20 },
+		{ "name": "Lora Bay", "occupation": "Marketing", "age": 43 }
+	];
 
-  panelOpenState = false;
+	panelOpenState = false;
 
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  constructor(
-    private _evaluationService: EvaluationService,
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _objetivesService: ObjetivesService,
-    private _formBuilder: FormBuilder,
-  ) {
-    this.template = this._formBuilder.group({
-      evaluations: this._formBuilder.array([])
-    });
-  }
-
-  /**
-   * On init
-   * 
-   */
-  ngOnInit(): void {
-
-    this.departments$ = this._evaluationService.departments$;
-    this.objetives$ = this._evaluationService.objetives$;
-    this.indicators$ = this._evaluationService.indicators$;
-
-    this.indicators$.subscribe(res => console.log(res));
-    this._setTemplates();
-  }
-
-  /**
-   * On destroy
-   * 
-   */
-   ngOnDestroy(): void {
-    // Unsubscribe from all subscriptions
-    this._unsubscribeAll.next();
-    this._unsubscribeAll.complete();
-  }
-
-  // -----------------------------------------------------------------------------------------------------
-	// @ Accessors
+	// -----------------------------------------------------------------------------------------------------
+	// @ Lifecycle hooks
 	// -----------------------------------------------------------------------------------------------------
 
-  get evaluations() {
-    return this.template.get('evaluations') as FormArray;
-  }
+	constructor(
+		private _evaluationService: EvaluationService,
+		private _changeDetectorRef: ChangeDetectorRef,
+		private _objetivesService: ObjetivesService,
+		private _formBuilder: FormBuilder,
+	) {
+		this.template = this._formBuilder.group({
+		evaluations: this._formBuilder.array([])
+		});
+	}
 
-  step = 0;
+	/**
+	 * On init
+	 * 
+	 */
+	ngOnInit(): void {
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Public methods
-  // -----------------------------------------------------------------------------------------------------
+		this.departments$ = this._evaluationService.departments$;
+		this.objetives$ = this._evaluationService.objetives$;
+		this.indicators$ = this._evaluationService.indicators$;
 
-  private _setTemplates() {
+		this._evaluationService.collaboratorSelected$
+			.subscribe(collaboratorSelected => {
 
-    // Loop for collaborators
-    // for (let i = 0; i < 3; i++) {
-    //   let template: FormArray = this._formBuilder.array([]);
+				console.log("collaboratorSelected: ", collaboratorSelected);
+				// Set collaborator selected
+				let aux = collaboratorSelected || [];
+				
+				// this.collaboratorsArr = [...aux];
+				this._setTemplates();
 
-      // Loop for evaluations
-      for (let j = 0; j < 2; j++) {
-        this.evaluations.push(this._formBuilder.group({
-          month             : [1],
-          typeIndicator     : [1],
-          typeObjetive     : [1],
-          indicator         : [1],
-          objetive         : [2],
-          weight            : [20],
-          result            : [100],
-          goal              : [100],
-          observation       : ['Cargado con exito'],
-        }));
-        
-      }
-      for (let j = 0; j < 2; j++) {
-        this.evaluations.push(this._formBuilder.group({
-          month             : [2],
-          typeIndicator     : [1],
-          typeObjetive     : [1],
-          indicator         : [1],
-          objetive         : [2],
-          weight            : [20],
-          result            : [100],
-          goal              : [100],
-          observation       : ['Cargado con exito'],
-        }));
-        
-      }
-      for (let j = 0; j < 2; j++) {
-        this.evaluations.push(this._formBuilder.group({
-          month             : [3],
-          typeIndicator     : [1],
-          typeObjetive     : [1],
-          indicator         : [1],
-          objetive         : [2],
-          weight            : [20],
-          result            : [100],
-          goal              : [100],
-          observation       : ['Cargado con exito'],
-        }));
-        
-      }
+				// // Set the form ocupation
+				// this._setFormOcupation();
 
-    //   this.templates.push(template);
-      
-    // }
-  }
+				// // Set request selected
+				// this.request = this._assignmentOccupationService.requestSelected;
 
-  newEvaluation() {
-    this.evaluations.push(this._formBuilder.group({
-      month             : [''],
-      typeIndicator     : [''],
-      typeObjetive     : [''],
-      indicator         : [''],
-      objective         : [''],
-      weight            : [''],
-      result            : [''],
-      goal              : [''],
-      observation       : [''],
-    }));
-  }
+				// Mark for check
+				this._changeDetectorRef.markForCheck();
+			});
+	}
 
-  removeEvaluation(i: number) {
-    this.evaluations.removeAt(i);
-  }
+	/**
+	 * On destroy
+	 * 
+	 */
+	ngOnDestroy(): void {
+		// Unsubscribe from all subscriptions
+		this._unsubscribeAll.next();
+		this._unsubscribeAll.complete();
+	}
 
-  setStep(index: number) {
-    this.step = index;
-  }
+	// -----------------------------------------------------------------------------------------------------
+		// @ Accessors
+		// -----------------------------------------------------------------------------------------------------
 
-  nextStep() {
-    this.step++;
-  }
+	get evaluations() {
+		return this.template.get('evaluations') as FormArray;
+	}
 
-  prevStep() {
-    this.step--;
-  }
+	step = 0;
+
+	// -----------------------------------------------------------------------------------------------------
+	// @ Public methods
+	// -----------------------------------------------------------------------------------------------------
+
+	private _setTemplates() {
+
+		// Loop for collaborators
+		// for (let i = 0; i < 3; i++) {
+		//   let template: FormArray = this._formBuilder.array([]);
+
+		// Loop for evaluations
+		for (let j = 0; j < 2; j++) {
+			this.evaluations.push(this._formBuilder.group({
+			month             : [1],
+			typeIndicator     : [1],
+			typeObjetive     : [1],
+			indicator         : [1],
+			objetive         : [2],
+			weight            : [20],
+			result            : [100],
+			goal              : [100],
+			observation       : ['Cargado con exito'],
+			}));
+			
+		}
+		for (let j = 0; j < 2; j++) {
+			this.evaluations.push(this._formBuilder.group({
+			month             : [2],
+			typeIndicator     : [1],
+			typeObjetive     : [1],
+			indicator         : [1],
+			objetive         : [2],
+			weight            : [20],
+			result            : [100],
+			goal              : [100],
+			observation       : ['Cargado con exito'],
+			}));
+			
+		}
+		for (let j = 0; j < 2; j++) {
+			this.evaluations.push(this._formBuilder.group({
+			month             : [3],
+			typeIndicator     : [1],
+			typeObjetive     : [1],
+			indicator         : [1],
+			objetive         : [2],
+			weight            : [20],
+			result            : [100],
+			goal              : [100],
+			observation       : ['Cargado con exito'],
+			}));
+			
+		}
+
+		//   this.templates.push(template);
+		
+		// }
+	}
+
+	newEvaluation() {
+		this.evaluations.push(this._formBuilder.group({
+		month             : [''],
+		typeIndicator     : [''],
+		typeObjetive     : [''],
+		indicator         : [''],
+		objective         : [''],
+		weight            : [''],
+		result            : [''],
+		goal              : [''],
+		observation       : [''],
+		}));
+	}
+
+	removeEvaluation(i: number) {
+		this.evaluations.removeAt(i);
+	}
+
+	setStep(index: number) {
+		this.step = index;
+	}
+
+	nextStep() {
+		this.step++;
+	}
+
+	prevStep() {
+		this.step--;
+	}
 }

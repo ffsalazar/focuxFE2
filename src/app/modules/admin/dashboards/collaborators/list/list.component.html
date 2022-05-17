@@ -91,15 +91,15 @@
                                 <mat-select [formControlName]="'leaderControl'" multiple="multiple">
                                     <ng-container>
                                         <mat-option #allSelectedLeaders (click)="toggleAllSelectionLeaders()" [value]="0">Seleccionar todo</mat-option>
-                                        <!--mat-option (mouseover)="updateSelectedItem(i)" *ngFor="let leader of leaders; let i = index" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase }}  titlecase leader.name.split(' ')[1] | titlecase {{leader.lastName.split(' ')[0] | titlecase}}
+                                        <mat-option (mouseover)="updateSelectedItem(i)" *ngFor="let leader of leaders; let i = index" [value]="leader.id">{{leader.name.split(' ')[0] | titlecase }} {{ leader.name.split(' ')[1] | titlecase }} {{leader.lastName.split(' ')[0] | titlecase}} {{leader.lastName.split(' ')[1] | titlecase}}
                                             <span *ngIf="indexActive == i">
                                                 <i [ngClass]="updateSpan(i) ? 'visible' : 'invisible'"
-                                                   (click)="selectOnlyLeader(leader)"
-                                                   class="underline not-italic text-xs "
-                                                   style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;"
+                                                (click)="selectOnlyLeader(leader)"
+                                                class="underline not-italic text-xs "
+                                                style="background: #99f6e4; border-radius: 5px; padding: 5px 10px;"
                                                 >{{updateSpan(i) ? 'SOLAMENTE' : ''}}</i>
                                             </span>
-                                        </mat-option-->
+                                        </mat-option>
                                     </ng-container>
                                 </mat-select>
                             </mat-form-field>
