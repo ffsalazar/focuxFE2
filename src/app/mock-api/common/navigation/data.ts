@@ -153,10 +153,10 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         link: '/masters/categories',
                     },
                     {
-                        id   : 'masters.portafolio.indicator',
+                        id: 'masters.portafolio.indicator',
                         title: 'Indicadores',
-                        type : 'basic',
-                        link : '/masters/indicators'
+                        type: 'basic',
+                        link: '/masters/indicators',
                     },
                     {
                         id: 'masters.portafolio.objetive',
@@ -164,8 +164,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         type: 'basic',
                         link: '/masters/objetives',
                     },
-                ]
-                        
+                    {
+                        id: 'masters.portafolio.evaluation',
+                        title: 'Evaluaciones',
+                        type: 'basic',
+                        link: '/masters/evaluations',
+                    },
+                ],
             },
             {
                 id: 'masters.collaborator',

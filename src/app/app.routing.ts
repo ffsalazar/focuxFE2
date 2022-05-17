@@ -3,7 +3,7 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
-import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
+import { GuardAuthGuard } from './core/guards/guard-auth.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -118,11 +118,11 @@ export const appRoutes: Route[] = [
 
     // Admin routes
     {
-        path       : '',
+        path: '',
         canActivate: [],
         canActivateChild: [],
-        component  : LayoutComponent,
-        resolve    : {
+        component: LayoutComponent,
+        resolve: {
             initialData: InitialDataResolver,
         },
         children: [
@@ -327,18 +327,71 @@ export const appRoutes: Route[] = [
                             ).then((m) => m.BusinessTypesModule),
                     },
                     //{path: 'typesStatus', loadChildren: () => import('app/modules/admin/masters/typeStatus/typeStatus.module').then(m => m.TypeStatusModule)},
-                    {path: 'typesRequest', loadChildren: () => import('app/modules/admin/masters/typeRequest/typeRequest.module').then(m => m.TypeRequestModule)},
-                    {path: 'requestRole', loadChildren: () => import('app/modules/admin/masters/requestRole/requestRole.module').then(m => m.RequestRoleModule)},
-                    {path: 'categories', loadChildren: () => import('app/modules/admin/masters/categories/categories.module').then(m => m.CategoriesModule)},
-                    {path: 'technicalAreas', loadChildren: () => import('app/modules/admin/masters/technicalAreas/technicalAreas.module').then(m => m.TechnicalAreasModule)},
-                    {path: 'commercialAreas', loadChildren: () => import('app/modules/admin/masters/commercialAreas/commercialAreas.module').then(m => m.CommercialAreasModule)},
-                    {path: 'statuses', loadChildren: () => import('app/modules/admin/masters/statuses/statuses.module').then(m => m.StatusesModule)},
-                    {path: 'indicators', loadChildren: () => import('app/modules/admin/masters/indicators/indicators.module').then(m => m.IndicatorsModule)},
-                    {path: 'objetives', loadChildren: () => import('app/modules/admin/masters/objetives/objetives.module').then((m) => m.ObjetivesModule),},
-                ]},
-
-
-
+                    {
+                        path: 'typesRequest',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/typeRequest/typeRequest.module'
+                            ).then((m) => m.TypeRequestModule),
+                    },
+                    {
+                        path: 'requestRole',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/requestRole/requestRole.module'
+                            ).then((m) => m.RequestRoleModule),
+                    },
+                    {
+                        path: 'categories',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/categories/categories.module'
+                            ).then((m) => m.CategoriesModule),
+                    },
+                    {
+                        path: 'technicalAreas',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/technicalAreas/technicalAreas.module'
+                            ).then((m) => m.TechnicalAreasModule),
+                    },
+                    {
+                        path: 'commercialAreas',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/commercialAreas/commercialAreas.module'
+                            ).then((m) => m.CommercialAreasModule),
+                    },
+                    {
+                        path: 'statuses',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/statuses/statuses.module'
+                            ).then((m) => m.StatusesModule),
+                    },
+                    {
+                        path: 'indicators',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/indicators/indicators.module'
+                            ).then((m) => m.IndicatorsModule),
+                    },
+                    {
+                        path: 'objetives',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/objetives/objetives.module'
+                            ).then((m) => m.ObjetivesModule),
+                    },
+                    {
+                        path: 'evaluations',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/masters/evaluations/evaluations.module'
+                            ).then((m) => m.EvaluationsModule),
+                    },
+                ],
+            },
 
             // Pages
             {

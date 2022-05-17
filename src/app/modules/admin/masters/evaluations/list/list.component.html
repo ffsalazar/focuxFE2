@@ -1,0 +1,155 @@
+<div class="absolute inset-0 flex flex-col min-w-100 overflow-hidden">
+    <mat-drawer-container
+        class="flex-auto h-full bg-card dark:bg-transparent"
+        (backdropClick)="onBackdropClicked()"
+    >
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full md:w-160 dark:bg-gray-900"
+            [mode]="'over'"
+            [opened]="false"
+            [position]="'end'"
+            [disableClose]="true"
+            #matDrawer
+        >
+            <router-outlet></router-outlet>
+        </mat-drawer>
+
+        <mat-drawer-content class="flex flex-col">
+            <!-- Main -->
+            <div class="flex-auto">
+                <!-- Header -->
+                <div
+                    class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b"
+                >
+                    <!-- Title -->
+                    <div>
+                        <div
+                            class="text-4xl font-extrabold tracking-tight leading-none"
+                        >
+                            Evaluacion
+                            <button
+                                class="ml-4"
+                                mat-flat-button
+                                [color]="'primary'"
+                                (click)="createEvaluation()"
+                            >
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:plus'"
+                                ></mat-icon>
+                                <span class="ml-2 mr-1">Agregar</span>
+                            </button>
+                        </div>
+
+                        <div class="ml-0.5 font-medium text-secondary">
+                            <ng-container *ngIf="evaluationsCount > 0">
+                                {{ evaluationsCount }}
+                            </ng-container>
+                            {{
+                                evaluationsCount
+                                    | i18nPlural
+                                        : {
+                                              "=0": "No hay Evaluacion",
+                                              "=1": "Evaluacion",
+                                              other: "Evaluaciones"
+                                          }
+                            }}
+                        </div>
+                    </div>
+
+                    <!-- Main actions -->
+                    <div class="flex items-center mt-4 sm:mt-0 md:mt-4">
+                        <!-- Search -->
+                        <div class="flex-auto">
+                            <mat-form-field
+                                class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-50"
+                            >
+                                <mat-icon
+                                    class="icon-size-5"
+                                    matPrefix
+                                    [svgIcon]="'heroicons_solid:search'"
+                                ></mat-icon>
+                                <input
+                                    matInput
+                                    [formControl]="searchInputControl"
+                                    [autocomplete]="'off'"
+                                    [placeholder]="'Buscar Evaluacion'"
+                                />
+                            </mat-form-field>
+                        </div>
+                        <!-- Add evaluation button -->
+                    </div>
+                </div>
+
+                <!-- Evaluations list -->
+                <div class="relative">
+                    <ng-container *ngIf="evaluations$ | async as evaluations">
+                        <ng-container
+                            *ngIf="evaluations.length; else noEvaluations"
+                        >
+                            <ng-container
+                                *ngFor="
+                                    let evaluation of evaluations;
+                                    let i = index;
+                                    trackBy: trackByFn
+                                "
+                            >
+                                <ng-container *ngIf="evaluation.isActive != 0">
+                                    <!-- Group -->
+                                    <ng-container
+                                        *ngIf="
+                                            i === 0 ||
+                                            evaluation.name.charAt(0) !==
+                                                evaluations[i - 1].name.charAt(
+                                                    0
+                                                )
+                                        "
+                                    >
+                                        <div
+                                            class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900"
+                                        >
+                                            {{ evaluation.name.charAt(0) }}
+                                        </div>
+                                    </ng-container>
+
+                                    <!-- Evaluation -->
+                                    <a
+                                        class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
+                                        [ngClass]="{
+                                            'hover:bg-gray-100 dark:hover:bg-hover':
+                                                !selectedEvaluation ||
+                                                selectedEvaluation.id !==
+                                                    evaluation.id,
+                                            'bg-primary-50 dark:bg-hover':
+                                                selectedEvaluation &&
+                                                selectedEvaluation.id ===
+                                                    evaluation.id
+                                        }"
+                                        [routerLink]="['./', evaluation.id]"
+                                    >
+                                        <div class="min-w-0 ml-4">
+                                            <div
+                                                class="font-medium leading-5 truncate"
+                                            >
+                                                {{ evaluation.name }}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+
+                    <!-- No evaluations -->
+                    <ng-template #noEvaluations>
+                        <div
+                            class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center"
+                        >
+                            No hay evaluacions!
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</div>
