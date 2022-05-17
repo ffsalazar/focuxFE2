@@ -5,6 +5,11 @@ import { map, switchMap, filter, toArray, tap, } from 'rxjs/operators';
 import { Client, Collaborator, Department, Knowledge } from './evaluation.types';
 import { Objetive } from '../../masters/objetives/objetives.types';
 import { Indicator } from '../../masters/indicators/indicators.types';
+import { DialogData } from 'app/modules/admin/apps/portafolio/request/request.types';
+import { DialogOptions } from 'app/modules/admin/apps/portafolio/request/request.types';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FocuxPopupComponent } from 'app/modules/admin/apps/portafolio/request/focux-popup/focux-popup.component';
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -20,9 +25,10 @@ export class EvaluationService {
 	private _collaboratorSelected: BehaviorSubject<Collaborator[] | null> = new BehaviorSubject(null);
     private _tabIndex: Subject<number> = new Subject<number>();
 	private _collaboratorsSelected: Collaborator[] = [];
-
+	private _isOpenModal: Subject<boolean | null> = new Subject();
 	constructor(
-		private _httpClient: HttpClient
+		private _httpClient: HttpClient,
+		private dialog: MatDialog
 	) { }
 
 	// -----------------------------------------------------------------------------------------------------
@@ -108,6 +114,11 @@ export class EvaluationService {
         return this._tabIndex.asObservable();
     }
 	
+
+	get isOpenModal$(): Observable<Boolean> {
+        return this._isOpenModal.asObservable();
+    }
+
 	// -----------------------------------------------------------------------------------------------------
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
@@ -258,6 +269,19 @@ export class EvaluationService {
         this._tabIndex.next(tabValue);
     }
 
+	/**
+     * Close modal
+     *
+     * 
+     */
+	 closeModal() {
+          // Close focuxPopup
+		  console.log("hey XD")
+		  this._isOpenModal.next(false);
+    }
+
+	 
+	
 }
 
 

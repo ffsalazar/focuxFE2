@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
@@ -6,13 +6,15 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EvaluationService } from '../evaluation.service';
 import { Client, Collaborator, Department, Knowledge } from '../evaluation.types';
+import { RequestService } from 'app/modules/admin/apps/portafolio/request/request.service';
+import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 @Component({
   selector: 'app-list-evaluation',
   templateUrl: './list-evaluation.component.html',
   styleUrls: ['./list-evaluation.component.scss']
 })
 export class ListEvaluationComponent implements OnInit {
-    
+
     private _collaborators$: Observable<Collaborator[]>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -51,6 +53,8 @@ export class ListEvaluationComponent implements OnInit {
     selectedFilterOccupation: boolean = false;
     collaboratorArrayForm: FormGroup;
     filterCollaboratorForm: FormGroup;
+    filterTemplate: FormGroup;
+    @ViewChild('evaluationOptiosModal') private tplDetail: TemplateRef<any>;
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -60,6 +64,8 @@ export class ListEvaluationComponent implements OnInit {
         private _formBuilder: FormBuilder,
         private _changeDetectorRef: ChangeDetectorRef,
         private _evaluationService: EvaluationService,
+        private _requestService   : RequestService,
+        private _modalFocuxService : ModalFocuxService
     )  {
 
         this.collaboratorArrayForm = new FormGroup({
@@ -71,7 +77,16 @@ export class ListEvaluationComponent implements OnInit {
             period       : ['', [Validators.required]],
             department   : ['', [Validators.required]],
         });
+
+        // Create form group for filter collaborators
+        this.filterTemplate = this._formBuilder.group({
+            template       : ['', [Validators.required]],
+            teamplateradio : ['', [Validators.required]],
+        });
     }
+
+    favoriteSeason: string;
+    templates= [{id: 1, name: 'Plantilla Trainee'}, {id: 2, name: 'Plantilla Jr'}, {id: 3, name: 'Plantilla S-Sr'},{id: 4, name: 'Plantilla Sr'}];
 
     /**
      * On init
@@ -173,7 +188,37 @@ export class ListEvaluationComponent implements OnInit {
      *
      */
      changeTab() {
+        this._modalFocuxService.closeModal();
         this._evaluationService.setTabIndex(1);
+       
+    }
+    /**
+     * showModalEvaluation
+     * 
+     *
+     */
+     showModal() {
+        this.openPopup();
+    }
+
+    /**
+     * Open popup
+     *
+     * 
+     */
+     openPopup(): void  {
+
+        let actionOption;
+        actionOption = 'evaluation-template';
+        this._modalFocuxService.open({
+            template: this.tplDetail, title: actionOption,
+          },
+          {width: 300, height: 2880, disableClose: true, panelClass: 'summary-panel'}).subscribe(confirm => {
+            if ( confirm ) {
+                console.log("hiii")
+                this._changeDetectorRef.markForCheck();
+            }
+        });
     }
 
     /**

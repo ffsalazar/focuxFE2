@@ -43,18 +43,20 @@
                                         *ngFor="let collaborator of collaboratorSelected.controls; index as i">
                                         <ng-container [formGroupName]="i">
                                             <!-- Group -->
-                                            <ng-container *ngIf="i === 0 || collaborators[i]?.name.charAt(0) !== collaborators[i - 1]?.name.charAt(0)">
-                                                <div class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
+                                            <ng-container
+                                                *ngIf="i === 0 || collaborators[i]?.name.charAt(0) !== collaborators[i - 1]?.name.charAt(0)">
+                                                <div
+                                                    class="z-10 sticky top-0 -mt-px px-6 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
                                                     {{
-                                                        collaborators[i]?.name.charAt(0)
+                                                    collaborators[i]?.name.charAt(0)
                                                     }}
                                                 </div>
                                             </ng-container>
                                             <!-- Collaborator -->
 
-                                            <span class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"
-                                                [class.tab-select]="tabIndex === 1"
-                                                [ngClass]="{
+                                            <span
+                                                class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b justify-between"
+                                                [class.tab-select]="tabIndex === 1" [ngClass]="{
                                                     'hover:bg-gray-100 dark:hover:bg-hover':
                                                         !selectedCollaborator ||
                                                         selectedCollaborator.id !==
@@ -67,38 +69,32 @@
                                                             collaborators[
                                                                 i
                                                             ]?.id
-                                                }"
-                                                >
+                                                }">
                                                 <div class="flex flex-row" style="width: 50%;">
                                                     <!-- Start Checkbox -->
                                                     <div class="mt-2 mr-2">
-                                                        <mat-checkbox
-                                                            [color]="'primary'"
+                                                        <mat-checkbox [color]="'primary'"
                                                             (change)="handleEventCheckbox(collaborators[i])"
-                                                            formControlName="checked"
-                                                        >
+                                                            formControlName="checked">
                                                         </mat-checkbox>
                                                     </div>
                                                     <!-- End Checkbox -->
 
                                                     <!-- Start Avatar -->
                                                     <div
-                                                        class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden"
-                                                    >
+                                                        class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
                                                         <!-- If has avatar, then show image -->
                                                         <ng-container *ngIf="collaborators[i]?.avatar">
                                                             <img class="object-cover w-full h-full"
                                                                 [src]="collaborators[i]?.avatar"
-                                                                alt="Collaborator avatar"
-                                                            />
+                                                                alt="Collaborator avatar" />
                                                         </ng-container>
                                                         <!-- If has not avatar, then show letter -->
                                                         <ng-container *ngIf="!collaborators[i]?.avatar">
                                                             <div
-                                                                class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                                                            >
+                                                                class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                                                 {{
-                                                                    collaborators[i]?.name.charAt(0)
+                                                                collaborators[i]?.name.charAt(0)
                                                                 }}
                                                             </div>
                                                         </ng-container>
@@ -106,32 +102,26 @@
                                                     <!-- End Avatar -->
 
                                                     <!-- Start fullName collaborator -->
-                                                    <div
-                                                        class="min-w-0 ml-4"
-                                                    >
-                                                        <div
-                                                            class="font-medium leading-5 truncate"
-                                                        >
+                                                    <div class="min-w-0 ml-4">
+                                                        <div class="font-medium leading-5 truncate">
                                                             {{
-                                                                collaborators[
-                                                                    i
-                                                                ]?.name
+                                                            collaborators[
+                                                            i
+                                                            ]?.name
                                                             }}
                                                             {{
-                                                                collaborators[
-                                                                    i
-                                                                ]?.lastName
+                                                            collaborators[
+                                                            i
+                                                            ]?.lastName
                                                             }}
                                                         </div>
-                                                        <div
-                                                            class="leading-5 truncate text-secondary"
-                                                        >
+                                                        <div class="leading-5 truncate text-secondary">
                                                             {{
-                                                                collaborators[
-                                                                    i
-                                                                ]
-                                                                    ?.employeePosition
-                                                                    .name
+                                                            collaborators[
+                                                            i
+                                                            ]
+                                                            ?.employeePosition
+                                                            .name
                                                             }}
                                                         </div>
                                                     </div>
@@ -140,50 +130,36 @@
                                                 </div>
                                                 <!--  Knowledge -->
                                                 <div class="flex justify-between" style="width: 50%;">
-                                                    <ng-container
-                                                        *ngIf="
+                                                    <ng-container *ngIf="
                                                             collaborators
-                                                        "
-                                                    >
-                                                        <div
-                                                            class="flex flex-wrap items-center mt-2 mr-16"
-                                                        >
+                                                        ">
+                                                        <div class="flex flex-wrap items-center mt-2 mr-16">
                                                             <ng-container>
                                                                 <div
-                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                                                                >
+                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
                                                                     <span
-                                                                        class="text-sm font-medium whitespace-nowrap"
-                                                                        >{{
-                                                                            collaborators[
-                                                                                i
-                                                                            ]
-                                                                                ?.client
-                                                                                .name
-                                                                        }}</span
-                                                                    >
+                                                                        class="text-sm font-medium whitespace-nowrap">{{
+                                                                        collaborators[
+                                                                        i
+                                                                        ]
+                                                                        ?.client
+                                                                        .name
+                                                                        }}</span>
                                                                 </div>
                                                             </ng-container>
                                                         </div>
                                                     </ng-container>
-                                                    <ng-container
-                                                        *ngIf="
+                                                    <ng-container *ngIf="
                                                             collaborators
-                                                        "
-                                                    >
-                                                        <div
-                                                            class="flex flex-wrap items-center mt-2 mr-16"
-                                                        >
+                                                        ">
+                                                        <div class="flex flex-wrap items-center mt-2 mr-16">
                                                             <ng-container>
                                                                 <div
-                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                                                                >
+                                                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
                                                                     <span
-                                                                        class="text-sm font-medium whitespace-nowrap"
-                                                                        >{{
-                                                                            'Evaluado'
-                                                                        }}</span
-                                                                    >
+                                                                        class="text-sm font-medium whitespace-nowrap">{{
+                                                                        'Evaluado'
+                                                                        }}</span>
                                                                 </div>
                                                             </ng-container>
                                                         </div>
@@ -238,26 +214,49 @@
                                         error
                                     </mat-icon>
                                 </button> -->
-                            <div
-                                class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center"
-                            >
+                            <div class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center">
                                 No hay colaboradores!
                             </div>
                         </ng-template>
                     </div>
-                    <button
-                            mat-fab
-                            [color]="'accent'"
-                            type="button"
-                            (click)="changeTab()"
-                            [disabled]="filterCollaboratorForm.invalid || !hasCheckedCollaborator"
-                            matTooltip="Siguiente"
-                            class="float"
-                        >
-                            <mat-icon class="icon-size-7">
-                                keyboard_arrow_right
-                            </mat-icon>
-                        </button>
+                    <ng-template #evaluationOptiosModal>
+                        <div [formGroup]="filterTemplate">
+                            <label id="example-radio-group-label">Selecciona la plantilla a emplear</label>
+                            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                            formControlName="teamplateradio">
+                                <mat-radio-button class="example-radio-button" *ngFor="let template of templates"
+                                    [value]="template.name">
+                                    {{template.name}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                            <div> Selección: {{favoriteSeason}}</div>
+                            <mat-form-field appearance="outline" style="width: 50%;margin-right:5px;">
+                                <mat-label>Plantilla</mat-label>
+                                <mat-select formControlName="template">
+                                    <ng-container *ngFor="let template of templates">
+                                        <mat-option [value]="template.id">
+                                            {{ template.name }}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div style="display:flex;justify-content: flex-end;">
+                                <button class="px-8 justify-self-end" mat-flat-button [color]="'primary'" type="button"
+                                    (click)="changeTab()">
+                                    Continuar
+                                </button>
+                            </div>
+                        </div>
+
+                    </ng-template>
+                    <button mat-fab [color]="'accent'" type="button" (click)="showModal()"
+                        [disabled]="filterCollaboratorForm.invalid || !hasCheckedCollaborator" matTooltip="Siguiente"
+                        class="float">
+                        <mat-icon class="icon-size-7">
+                            keyboard_arrow_right
+                        </mat-icon>
+                    </button>
                 </div>
             </div>
         </app-content-main>
