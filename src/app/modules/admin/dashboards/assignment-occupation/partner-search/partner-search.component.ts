@@ -373,7 +373,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * @param collaborator
      */
     setOccupation(collaborator: any) {
-        console.log("selectedRequest: ", this.requestControl.value);
         this.assigments = {
             assigments: [{
                 id                      : collaborator.occupationId,
