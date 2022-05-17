@@ -63,9 +63,11 @@
 
                 <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
                     <!-- Code -->
-                    <ng-container *ngIf="evaluation.type">
+                    <ng-container *ngIf="evaluation.code">
                         <div class="flex sm:items-center">
                             <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_outline:briefcase'"
                             ></mat-icon>
                             <div class="ml-6 leading-6">
@@ -138,7 +140,7 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"
+                                [svgIcon]="'heroicons_outline:briefcase'"
                             ></mat-icon>
                             <input
                                 matInput
@@ -156,12 +158,11 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"
+                                [svgIcon]="'heroicons_outline:clipboard-check'"
                             ></mat-icon>
                             <mat-select
                                 placeholder="Objetivo"
                                 formControlName="target"
-                                (selectionChange)="filterPositionsByTarget()"
                             >
                                 <mat-option
                                     *ngFor="let objetive of objetives"
@@ -179,12 +180,11 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"
+                                [svgIcon]="'heroicons_outline:clipboard-check'"
                             ></mat-icon>
                             <mat-select
                                 placeholder="Objetivo"
                                 formControlName="indicator"
-                                (selectionChange)="filterPositionsByIndicator()"
                             >
                                 <mat-option
                                     *ngFor="let indicator of indicators"
@@ -202,10 +202,12 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"
+                                [svgIcon]="'heroicons_solid:menu-alt-2'"
                             ></mat-icon>
                             <input
                                 matInput
+                                min="0"
+                                max="100"
                                 type="number"
                                 formControlName="minimumPercentage"
                                 [placeholder]="'% minimo'"
@@ -217,14 +219,15 @@
                     <!-- Maximun Percentage -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>% Maximo</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:briefcase'"
+                                [svgIcon]="'heroicons_solid:menu-alt-2'"
                             ></mat-icon>
                             <input
                                 matInput
+                                min="0"
+                                max="100"
                                 type="number"
                                 formControlName="maximumPercentage"
                                 [placeholder]="'% maximo'"

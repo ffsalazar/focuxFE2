@@ -149,8 +149,8 @@ export class EvaluationsService {
         // Generate a new evaluation
         const newEvaluation = {
             isActive: 1,
-            minimumPercentage: 80,
-            maximumPercentage: 100,
+            minimumPercentage: 0,
+            maximumPercentage: 0,
             target: { id: 1 },
             indicator: { id: 1 },
             name: 'Nuevo evaluacion',

@@ -92,12 +92,18 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
         // Create the evaluation form
         this.evaluationForm = this._formBuilder.group({
             id: [''],
-            name: [''],
-            target: [''],
-            indicator: [''],
-            minimumPercentage: [''],
-            maximumPercentage: [''],
-            code: [''],
+            name: ['', [Validators.required]],
+            target: ['', [Validators.required]],
+            indicator: ['', [Validators.required]],
+            minimumPercentage: [
+                0,
+                [Validators.required, Validators.min(0), Validators.max(100)],
+            ],
+            maximumPercentage: [
+                0,
+                [Validators.required, Validators.min(0), Validators.max(100)],
+            ],
+            code: ['', [Validators.required]],
             isActive: [''],
         });
 
@@ -128,7 +134,6 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
                 this.evaluationForm
                     .get('target')
                     .setValue(evaluation.target.id);
-                console.log(this.evaluationForm);
 
                 // Toggle the edit mode off
                 this.toggleEditMode(false);
@@ -141,7 +146,13 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
         this._objetivesServices.objetives$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((objetives: Objetive[]) => {
-                this.objetives = objetives;
+                let filteredObjetives: Objetive[] = [];
+                objetives.forEach((objetive) => {
+                    if (objetive.isActive != 0) {
+                        filteredObjetives.push(objetive);
+                    }
+                });
+                this.objetives = filteredObjetives;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -151,7 +162,13 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
         this._indicatorsServices.indicators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((indicators: Indicator[]) => {
-                this.indicators = indicators;
+                let filteredIndicators: Indicator[] = [];
+                indicators.forEach((indicator) => {
+                    if (indicator.isActive != 0) {
+                        filteredIndicators.push(indicator);
+                    }
+                });
+                this.indicators = filteredIndicators;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
