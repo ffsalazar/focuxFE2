@@ -341,6 +341,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     getCollaboratorsAssigned(requestId: number) {
         this._requestService.getCollaboratorsAssigned(requestId)
             .subscribe((collaborators) => {
+                console.log("collaborators: ", collaborators);
                 collaborators.forEach((item) => {
                     item.name = item.name + ' ' + item.lastName;
                 });
@@ -349,6 +350,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
     }
+    
 
     /**
      * Handle event tab
@@ -366,18 +368,49 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Set occupation for collaborator
+     * 
+     * @param collaborator
+     */
+    setOccupation(collaborator: any) {
+        console.log("selectedRequest: ", this.requestControl.value);
+        this.assigments = {
+            assigments: [{
+                id                      : collaborator.occupationId,
+                requestId               : collaborator.requestId,
+                request           : this.requestControl.value,
+                occupationPercentage    : collaborator.occupationPercentage,
+                assignmentStartDate     : collaborator.startDate,
+                assignmentEndDate       : collaborator.endDate,
+                roleId                  : collaborator.roleId,
+                observations            : collaborator.observations,
+                isActive                : 1,
+            }]
+        };
+
+        this.collaborator = {
+            id          : collaborator.collaboratorId,
+            name        : collaborator.name,
+            lastName    : collaborator.lastName
+        };
+
+        this.isEditing = true
+    }
+
+    /**
      * Edit occupation
      *
      * @param collaborator
      */
     editOccupation(collaborator: Collaborator) {
         this.collaborator = collaborator;
+        // Get occupations for collaborator
         this._assignmentOccupationService
             .getOccupationsByCollaborator(collaborator.id)
-            .pipe(finalize(() => (this.isEditing = true)))
-            .subscribe((response) => {
-                this.assigments = response;
-            });
+                .pipe(finalize(() => (this.isEditing = true)))
+                    .subscribe((response) => {
+                        this.assigments = response;
+                    });
     }
 
     /**

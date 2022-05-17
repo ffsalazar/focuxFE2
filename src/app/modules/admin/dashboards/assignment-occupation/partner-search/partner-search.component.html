@@ -418,6 +418,7 @@
                                                     matTooltip="Siguiente"
                                                     mat-stroked-button
                                                     matTooltip="Editar ocupaciones"
+                                                    (click)="setOccupation(element)"
                                                 >
                                                     <mat-icon
                                                         class="icon-size-5"
@@ -1123,13 +1124,7 @@
                                                             matTooltip="Siguiente"
                                                             mat-stroked-button
                                                             matTooltip="Editar ocupaciones"
-                                                            (click)="
-                                                                editOccupation(
-                                                                    collaboratorOccupation[
-                                                                        i
-                                                                    ]
-                                                                )
-                                                            "
+                                                            (click)="editOccupation(collaboratorOccupation[i])"
                                                         >
                                                             <mat-icon
                                                                 class="icon-size-5"
@@ -1198,7 +1193,6 @@
             <ngx-spinner></ngx-spinner>
             <app-update-occupation
                 *ngIf="isEditing"
-                [fullName]="collaborator.name + ' ' + collaborator.lastName"
                 [collaboratorAssigment]="assigments"
                 [collaborator]="collaborator"
                 (returnPrevious)="onReturnPrevious($event)"
