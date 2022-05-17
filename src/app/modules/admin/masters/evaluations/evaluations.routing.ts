@@ -6,6 +6,8 @@ import { CanDeactivateEvaluationsDetails } from './evaluations.guards';
 import {
     EvaluationsEvaluationResolver,
     EvaluationsResolver,
+    ObjetivesResolver,
+    IndicatorsResolver,
 } from './evaluations.resolvers';
 
 export const evaluationsRoutes: Route[] = [
@@ -19,6 +21,8 @@ export const evaluationsRoutes: Route[] = [
                 component: EvaluationsListComponent,
                 resolve: {
                     tasks: EvaluationsResolver,
+                    objetives: ObjetivesResolver,
+                    indicators: IndicatorsResolver,
                 },
                 children: [
                     {

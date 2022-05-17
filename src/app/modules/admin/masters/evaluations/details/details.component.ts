@@ -28,10 +28,8 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Evaluation } from '../evaluations.types';
 import { EvaluationsListComponent } from '../list/list.component';
 import { EvaluationsService } from '../evaluations.service';
-import { ObjetivesService } from '../../objetives/objetives.service';
 import { Objetive } from '../../objetives/objetives.types';
 import { Indicator } from '../../indicators/indicators.types';
-import { IndicatorsService } from '../../indicators/indicators.service';
 
 @Component({
     selector: 'evaluations-details',
@@ -53,7 +51,6 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
     evaluations: Evaluation[];
     objetives: Objetive[];
     indicators: Indicator[];
-    filteredTarget: Objetive;
     filteredIndicator: Indicator;
 
     private _tagsPanelOverlayRef: OverlayRef;
@@ -68,8 +65,6 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _evaluationsListComponent: EvaluationsListComponent,
         private _evaluationsService: EvaluationsService,
-        private _objetivesServices: ObjetivesService,
-        private _indicatorsServices: IndicatorsService,
         private _formBuilder: FormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _renderer2: Renderer2,
@@ -143,7 +138,7 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
             });
 
         // Get the objetives
-        this._objetivesServices.objetives$
+        this._evaluationsService.objetives$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((objetives: Objetive[]) => {
                 let filteredObjetives: Objetive[] = [];
@@ -159,7 +154,7 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
             });
 
         // Get the indicators
-        this._indicatorsServices.indicators$
+        this._evaluationsService.indicators$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((indicators: Indicator[]) => {
                 let filteredIndicators: Indicator[] = [];
@@ -220,6 +215,13 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
+    filterPositionsByIndicator(): void {
+        let indicatorSelected = this.evaluationForm.get('indicator').value;
+        this.filteredIndicator = this.indicators.filter(
+            (indicator) => indicator.id == indicatorSelected
+        )[0];
+    }
+
     /**
      * Update the evaluation
      */
@@ -230,9 +232,7 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
             (objetive) => objetive.id == evaluation.target
         )[0];
 
-        evaluation.indicator = this.indicators.filter(
-            (indicator) => indicator.id == evaluation.indicator
-        )[0];
+        evaluation.indicator = this.filteredIndicator;
 
         // Update the evaluation on the server
         this._evaluationsService

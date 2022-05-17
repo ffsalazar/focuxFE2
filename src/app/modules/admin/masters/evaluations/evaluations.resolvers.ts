@@ -9,6 +9,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Evaluation } from './evaluations.types';
 import { EvaluationsService } from './evaluations.service';
+import { Objetive } from '../objetives/objetives.types';
+import { Indicator } from '../indicators/indicators.types';
 
 @Injectable({
     providedIn: 'root',
@@ -84,5 +86,59 @@ export class EvaluationsEvaluationResolver implements Resolve<any> {
                     return throwError(error);
                 })
             );
+    }
+}
+
+@Injectable({
+    providedIn: 'root',
+})
+export class ObjetivesResolver implements Resolve<any> {
+    /**
+     * Constructor
+     */
+    constructor(private _evaluationsService: EvaluationsService) {}
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<Objetive[]> {
+        return this._evaluationsService.getObjetives();
+    }
+}
+
+@Injectable({
+    providedIn: 'root',
+})
+export class IndicatorsResolver implements Resolve<any> {
+    /**
+     * Constructor
+     */
+    constructor(private _evaluationsService: EvaluationsService) {}
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<Indicator[]> {
+        return this._evaluationsService.getIndicators();
     }
 }

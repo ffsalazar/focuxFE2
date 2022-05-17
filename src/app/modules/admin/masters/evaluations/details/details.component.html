@@ -185,56 +185,90 @@
                             <mat-select
                                 placeholder="Objetivo"
                                 formControlName="indicator"
+                                (selectionChange)="filterPositionsByIndicator()"
                             >
                                 <mat-option
                                     *ngFor="let indicator of indicators"
                                     [value]="indicator.id"
-                                    >{{ indicator.name }}</mat-option
+                                    >{{
+                                        indicator.name + " / " + indicator?.type
+                                    }}</mat-option
                                 >
                             </mat-select>
                         </mat-form-field>
                     </div>
 
-                    <!-- Minimun Percentage -->
-                    <div class="mt-8">
-                        <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>% Minimo</mat-label>
-                            <mat-icon
-                                matPrefix
-                                class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:menu-alt-2'"
-                            ></mat-icon>
-                            <input
-                                matInput
-                                min="0"
-                                max="100"
-                                type="number"
-                                formControlName="minimumPercentage"
-                                [placeholder]="'% minimo'"
-                                [spellcheck]="false"
-                            />
-                        </mat-form-field>
-                    </div>
+                    <section *ngIf="filteredIndicator">
+                        <!-- Minimun Percentage -->
+                        <div class="mt-8">
+                            <div
+                                *ngIf="
+                                    filteredIndicator?.type === 'Ascendente';
+                                    else Descendente
+                                "
+                            >
+                                <mat-label>% Minimo</mat-label>
+                            </div>
 
-                    <!-- Maximun Percentage -->
-                    <div class="mt-8">
-                        <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-icon
-                                matPrefix
-                                class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:menu-alt-2'"
-                            ></mat-icon>
-                            <input
-                                matInput
-                                min="0"
-                                max="100"
-                                type="number"
-                                formControlName="maximumPercentage"
-                                [placeholder]="'% maximo'"
-                                [spellcheck]="false"
-                            />
-                        </mat-form-field>
-                    </div>
+                            <ng-template #Descendente>
+                                <mat-label>Valor Minimo</mat-label>
+                            </ng-template>
+
+                            <mat-form-field
+                                class="mt-1 fuse-mat-no-subscript w-full"
+                            >
+                                <mat-icon
+                                    matPrefix
+                                    class="hidden sm:flex icon-size-5"
+                                    [svgIcon]="'heroicons_solid:menu-alt-2'"
+                                ></mat-icon>
+                                <input
+                                    matInput
+                                    min="0"
+                                    max="100"
+                                    type="number"
+                                    formControlName="minimumPercentage"
+                                    [placeholder]="'% minimo'"
+                                    [spellcheck]="false"
+                                />
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Maximun Percentage -->
+                        <div class="mt-8">
+                            <div
+                                *ngIf="
+                                    filteredIndicator?.type === 'Ascendente';
+                                    else Descendente2
+                                "
+                            >
+                                <mat-label>% Maximo</mat-label>
+                            </div>
+
+                            <ng-template #Descendente2>
+                                <mat-label>Valor Maximo</mat-label>
+                            </ng-template>
+
+                            <mat-form-field
+                                class="mt-1 fuse-mat-no-subscript w-full"
+                            >
+                                <mat-icon
+                                    matPrefix
+                                    class="hidden sm:flex icon-size-5"
+                                    [svgIcon]="'heroicons_solid:menu-alt-2'"
+                                ></mat-icon>
+                                <input
+                                    matInput
+                                    min="0"
+                                    max="100"
+                                    type="number"
+                                    formControlName="maximumPercentage"
+                                    [placeholder]="'% maximo'"
+                                    [spellcheck]="false"
+                                />
+                            </mat-form-field>
+                        </div>
+                    </section>
 
                     <!-- Actions -->
                     <div
