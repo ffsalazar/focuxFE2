@@ -1,227 +1,338 @@
 <div class="flex flex-col w-full">
-
     <!-- View mode -->
     <ng-container *ngIf="!editMode">
-
         <!-- Header -->
-        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+        <div
+            class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700"
+        >
             <!-- Background -->
             <ng-container>
                 <img
                     class="absolute inset-0 object-cover w-full h-full"
-                    src = "https://firebasestorage.googleapis.com/v0/b/focux-f00d8.appspot.com/o/banners%2FNosotros_BG.png?alt=media&token=8559c462-e458-4650-a45b-4befdbbe9603">
-                    >
+                    src="https://firebasestorage.googleapis.com/v0/b/focux-f00d8.appspot.com/o/banners%2FNosotros_BG.png?alt=media&token=8559c462-e458-4650-a45b-4befdbbe9603"
+                />
+                >
             </ng-container>
             <!-- Close button -->
-            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+            <div
+                class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6"
+            >
                 <button
                     mat-icon-button
                     [matTooltip]="'Close'"
-                    [routerLink]="['../../']">
+                    [routerLink]="['../../']"
+                >
                     <mat-icon
                         class="text-white"
-                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        [svgIcon]="'heroicons_outline:x'"
+                    ></mat-icon>
                 </button>
             </div>
         </div>
 
         <!-- Collaborator -->
-        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+        <div
+            class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0"
+        >
             <div class="w-full max-w-3xl">
-
                 <!-- Avatar and actions -->
                 <div class="flex flex-auto items-end -mt-16">
                     <!-- Avatar -->
-                    <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                    <div
+                        class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card"
+                    >
                         <img
                             class="object-cover w-full h-full"
                             *ngIf="collaborator?.image"
-                            [src]="collaborator?.image">
+                            [src]="collaborator?.image"
+                        />
                         <div
                             class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                            *ngIf="!collaborator?.image">
-                            {{collaborator.name.charAt(0)}}
+                            *ngIf="!collaborator?.image"
+                        >
+                            {{ collaborator.name.charAt(0) }}
                         </div>
                     </div>
                     <!-- Actions -->
                     <div class="flex items-center ml-auto mb-1">
                         <button
                             mat-stroked-button
-                            (click)="toggleEditMode(true)">
+                            (click)="toggleEditMode(true)"
+                        >
                             <mat-icon
                                 class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:pencil-alt'"
+                            ></mat-icon>
                             <span class="ml-2">Editar</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Name -->
-                <div class="mt-3 text-4xl font-bold truncate">{{collaborator.name}} {{collaborator.lastName}}</div>
+                <div class="mt-3 text-4xl font-bold truncate">
+                    {{ collaborator.name }} {{ collaborator.lastName }}
+                </div>
 
                 <!-- Knowledges -->
                 <ng-container *ngIf="collaborator?.knowledges.length">
                     <div class="flex flex-wrap items-center mt-2">
                         <!-- Knowledge -->
-                        <ng-container *ngFor="let knowledge of collaborator.knowledges">
+                        <ng-container
+                            *ngFor="let knowledge of collaborator.knowledges"
+                        >
                             <ng-container *ngIf="knowledge.isActive != 0">
-                                <div class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                    <span class="text-sm font-medium whitespace-nowrap">{{knowledge.knowledge.name}}</span>
+                                <div
+                                    class="flex items-center justify-center py-1 px-3 mr-3 mb-3 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
+                                >
+                                    <span
+                                        class="text-sm font-medium whitespace-nowrap"
+                                        >{{ knowledge.knowledge.name }}</span
+                                    >
                                 </div>
                             </ng-container>
                         </ng-container>
                     </div>
                 </ng-container>
 
-
-
-                    <!-- Tabs ASSIGNMENT-OCCUPATION -->
-                    <div class="flex flex-row ">
-                        <div
-                            class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1) mr-2"
-                            [ngClass]="{' tab-select': profileTag, null: !profileTag}"
-                             >
-                            <div class="flex items-center">
-                                <div class="overflow-hidden">
-                                    <div class="font-medium leading-6 truncate"  (click)="tagProfile()">Perfil</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1) mr-2"
-                            [ngClass]="{' tab-select': ocupationTag, null: !ocupationTag}"
-                            >
-                            <div class="flex items-center">
-                                <div class="overflow-hidden">
-                                    <div class="font-medium leading-6 truncate"  (click)="tagOcupation()">Ocupación</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1)"
-                            [ngClass]="{' tab-select': vacationTag, null: vacationTag}"
-                        >
-                            <div class="flex items-center">
-                                <div class="overflow-hidden">
-                                    <div class="font-medium leading-6 truncate"  (click)="tagVacation()">Vacaciones</div>
+                <!-- Tabs ASSIGNMENT-OCCUPATION -->
+                <div class="flex flex-row">
+                    <div
+                        class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1) mr-2"
+                        [ngClass]="{
+                            ' tab-select': profileTag,
+                            null: !profileTag
+                        }"
+                    >
+                        <div class="flex items-center">
+                            <div class="overflow-hidden">
+                                <div
+                                    class="font-medium leading-6 truncate"
+                                    (click)="tagProfile()"
+                                >
+                                    Perfil
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div
+                        class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1) mr-2"
+                        [ngClass]="{
+                            ' tab-select': ocupationTag,
+                            null: !ocupationTag
+                        }"
+                    >
+                        <div class="flex items-center">
+                            <div class="overflow-hidden">
+                                <div
+                                    class="font-medium leading-6 truncate"
+                                    (click)="tagOcupation()"
+                                >
+                                    Ocupación
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="relative flex self-start pt-2 pb-1 pl-5 pr-4 cursor-pointer overflow-hidden rounded-t-xl border border-b-0 bg-rgba(51, 65, 85, 0.1)"
+                        [ngClass]="{
+                            ' tab-select': vacationTag,
+                            null: vacationTag
+                        }"
+                    >
+                        <div class="flex items-center">
+                            <div class="overflow-hidden">
+                                <div
+                                    class="font-medium leading-6 truncate"
+                                    (click)="tagVacation()"
+                                >
+                                    Vacaciones
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="flex flex-col pt-6 space-y-8 border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-100" >
+                <div
+                    class="flex flex-col pt-6 space-y-8 border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-100"
+                >
                     <ng-container *ngIf="profileTag">
-
-
                         <!-- Role in the company -->
                         <ng-container *ngIf="collaborator?.idFile">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-list'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="
+                                        'heroicons_outline:clipboard-list'
+                                    "
+                                ></mat-icon>
                                 <span class="mx-2 font-medium">Ficha</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.idFile}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{ collaborator.idFile }}
+                                </div>
                             </div>
                         </ng-container>
-
 
                         <!-- Role in the company -->
                         <ng-container *ngIf="collaborator?.employeePosition">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:briefcase'"
+                                ></mat-icon>
                                 <span class="mx-2 font-medium">Cargo</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.employeePosition.name}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{ collaborator.employeePosition.name }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Department -->
-                        <ng-container *ngIf="collaborator?.employeePosition.department">
+                        <ng-container
+                            *ngIf="collaborator?.employeePosition.department"
+                        >
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
-                                <span class="mx-2 font-medium">Departamento</span>
+                                <mat-icon
+                                    [svgIcon]="
+                                        'heroicons_outline:clipboard-check'
+                                    "
+                                ></mat-icon>
+                                <span class="mx-2 font-medium"
+                                    >Departamento</span
+                                >
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.employeePosition.department.name}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{
+                                        collaborator.employeePosition.department
+                                            .name
+                                    }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Client -->
                         <ng-container *ngIf="collaborator?.client">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="
+                                        'heroicons_outline:office-building'
+                                    "
+                                ></mat-icon>
                                 <span class="mx-2 font-medium">Cliente</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.client.name}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{ collaborator.client.name }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- leader -->
                         <ng-container *ngIf="collaborator?.leader">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-                                <span class="mx-2 font-medium">L&iacute;der</span>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:user-circle'"
+                                ></mat-icon>
+                                <span class="mx-2 font-medium"
+                                    >L&iacute;der</span
+                                >
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.leader.name.split(' ')[0] | titlecase}} {{collaborator.leader.lastName.split(' ')[0] | titlecase}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{
+                                        collaborator.leader.name.split(" ")[0]
+                                            | titlecase
+                                    }}
+                                    {{
+                                        collaborator.leader.lastName.split(
+                                            " "
+                                        )[0] | titlecase
+                                    }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Status -->
                         <ng-container *ngIf="collaborator?.status">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-copy'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="
+                                        'heroicons_outline:clipboard-copy'
+                                    "
+                                ></mat-icon>
                                 <span class="mx-2 font-medium">Estatus</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.status.name}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{ collaborator.status.name }}
+                                </div>
                             </div>
                         </ng-container>
                         <!-- Gender -->
                         <ng-container *ngIf="collaborator?.gender">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:user'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:user'"
+                                ></mat-icon>
                                 <span class="mx-2 font-medium">Sexo</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.gender == 'M' ? 'Masculino' : 'Femenino'}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{
+                                        collaborator.gender == "M"
+                                            ? "Masculino"
+                                            : "Femenino"
+                                    }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Nationality -->
                         <ng-container *ngIf="collaborator?.nationality">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:map'"></mat-icon>
-                                <span class="mx-2 font-medium">Nacionalidad</span>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:map'"
+                                ></mat-icon>
+                                <span class="mx-2 font-medium"
+                                    >Nacionalidad</span
+                                >
                                 <span class="mx-2">&bull;</span>
                                 <span
                                     class="sm:flex w-6 h-4 mr-1 overflow-hidden"
-                                    [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
+                                    [style.background]="
+                                        'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'
+                                    "
                                     [style.backgroundSize]="'24px 3876px'"
-                                    [style.backgroundPosition]="getCountryByIso(collaborator.nationality).flagImagePos"></span>
-
-
+                                    [style.backgroundPosition]="
+                                        getCountryByIso(
+                                            collaborator.nationality
+                                        ).flagImagePos
+                                    "
+                                ></span>
                             </div>
                         </ng-container>
 
                         <!-- Emails -->
                         <ng-container *ngIf="collaborator?.mail">
                             <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:mail'"
+                                ></mat-icon>
                                 <div class="min-w-0 ml-6 space-y-1">
-
-                                        <div class="flex items-center leading-6">
-                                            <div
-                                                class="text-md truncate text-secondary"
-                                                *ngIf="collaborator.mail">
-                                                <span class="font-medium mr-2">E-mail</span>
-
-
-                                            </div>
-                                            <a
-                                                class="hover:underline text-primary-500"
-                                                [href]="'mailto:' + collaborator.mail"
-                                                target="_blank">
-                                                {{collaborator.mail}}
-                                            </a>
-
+                                    <div class="flex items-center leading-6">
+                                        <div
+                                            class="text-md truncate text-secondary"
+                                            *ngIf="collaborator.mail"
+                                        >
+                                            <span class="font-medium mr-2"
+                                                >E-mail</span
+                                            >
                                         </div>
-
+                                        <a
+                                            class="hover:underline text-primary-500"
+                                            [href]="
+                                                'mailto:' + collaborator.mail
+                                            "
+                                            target="_blank"
+                                        >
+                                            {{ collaborator.mail }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
@@ -229,11 +340,21 @@
                         <!-- Phone -->
                         <ng-container *ngIf="collaborator?.phones">
                             <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:phone'"
+                                ></mat-icon>
                                 <div class="min-w-0 ml-6 space-y-1">
-                                    <ng-container *ngFor="let phoneNumber of collaborator.phones">
-                                        <ng-container *ngIf="phoneNumber.isActive != 0">
-                                            <div class="flex items-center leading-6">
+                                    <ng-container
+                                        *ngFor="
+                                            let phoneNumber of collaborator.phones
+                                        "
+                                    >
+                                        <ng-container
+                                            *ngIf="phoneNumber.isActive !== 0"
+                                        >
+                                            <div
+                                                class="flex items-center leading-6"
+                                            >
                                                 <!-- <div
                                                     class="hidden sm:flex w-6 h-4 overflow-hidden"
                                                     [matTooltip]="getCountryByIso(phoneNumber.country).name"
@@ -244,12 +365,21 @@
 
                                                 <div
                                                     class="text-md truncate text-secondary"
-                                                    *ngIf="phoneNumber">
-                                                    <span class="mx-2 font-medium">{{phoneNumber.type}}</span>
-                                                    <span class="mx-2">&bull;</span>
-
+                                                    *ngIf="phoneNumber"
+                                                >
+                                                    <span
+                                                        class="mx-2 font-medium"
+                                                        >{{
+                                                            phoneNumber.type
+                                                        }}</span
+                                                    >
+                                                    <span class="mx-2"
+                                                        >&bull;</span
+                                                    >
                                                 </div>
-                                                <div class="ml-2.5 font-mono">{{phoneNumber.number}}</div>
+                                                <div class="ml-2.5 font-mono">
+                                                    {{ phoneNumber.number }}
+                                                </div>
                                             </div>
                                         </ng-container>
                                     </ng-container>
@@ -257,44 +387,78 @@
                             </div>
                         </ng-container>
 
-
                         <!-- Address -->
                         <ng-container *ngIf="collaborator?.assignedLocation">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="
+                                        'heroicons_outline:location-marker'
+                                    "
+                                ></mat-icon>
                                 <span class="mx-2 font-medium">Sede</span>
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.assignedLocation}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{ collaborator.assignedLocation }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Birthday -->
                         <ng-container *ngIf="collaborator?.bornDate">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:cake'"></mat-icon>
-                                <span class="mx-2 font-medium">Fecha de nacimiento</span>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:cake'"
+                                ></mat-icon>
+                                <span class="mx-2 font-medium"
+                                    >Fecha de nacimiento</span
+                                >
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.bornDate | date:'longDate'}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{
+                                        collaborator.bornDate | date: "longDate"
+                                    }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Birthday -->
                         <ng-container *ngIf="collaborator?.companyEntryDate">
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                <span class="mx-2 font-medium">Fecha de ingreso a la Empresa</span>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:calendar'"
+                                ></mat-icon>
+                                <span class="mx-2 font-medium"
+                                    >Fecha de ingreso a la Empresa</span
+                                >
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.companyEntryDate | date:'longDate'}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{
+                                        collaborator.companyEntryDate
+                                            | date: "longDate"
+                                    }}
+                                </div>
                             </div>
                         </ng-container>
 
                         <!-- Birthday -->
-                        <ng-container *ngIf="collaborator?.organizationEntryDate">
+                        <ng-container
+                            *ngIf="collaborator?.organizationEntryDate"
+                        >
                             <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                <span class="mx-2 font-medium">Fecha de ingreso a la organizaci&oacute;n</span>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:calendar'"
+                                ></mat-icon>
+                                <span class="mx-2 font-medium"
+                                    >Fecha de ingreso a la
+                                    organizaci&oacute;n</span
+                                >
                                 <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{collaborator.organizationEntryDate | date:'longDate'}}</div>
+                                <div class="ml-2 leading-6">
+                                    {{
+                                        collaborator.organizationEntryDate
+                                            | date: "longDate"
+                                    }}
+                                </div>
                             </div>
                         </ng-container>
 
@@ -311,276 +475,401 @@
 
                     <!-- Tag Ocupation-->
                     <ng-container *ngIf="ocupationTag">
-
                         <!-- Emails -->
                         <ng-container *ngIf="ocupations">
                             <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:chart-pie'"></mat-icon>
+                                <mat-icon
+                                    [svgIcon]="'heroicons_outline:chart-pie'"
+                                ></mat-icon>
                                 <div class="min-w-0 ml-6 space-y-1">
-
                                     <div class="flex items-center leading-6">
                                         <div
                                             class="text-md truncate text-secondary"
-                                            >
-
+                                        >
                                             <span>General </span>
                                         </div>
                                         <a
                                             class="hover:underline text-primary-500 mx-2"
-                                            >
-                                            {{ocupations.totalOccupation}}%
+                                        >
+                                            {{ ocupations.totalOccupation }}%
                                         </a>
-
                                     </div>
-
                                 </div>
                             </div>
                         </ng-container>
-
 
                         <ng-container *ngIf="ocupations.assigments">
                             <div class="flex flex-col">
-                                <ng-container *ngFor="let ocupation of ocupations.assigments">
-
-
-                                <div class="min-w-100 ml-6 px-2 panel-ocupation"
-                                (click)="openPopup(ocupation.requestId)">
-
-                                    <a class="px-6 py-4 md:px-8">
-
-                                        <div class="flex sm:items-center">
-                                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
-                                            <div class="ml-6 leading-6">{{ocupation.client}}</div>
-                                        </div>
-
-
-                                            <div class="flex items-center leading-6 mt-4">
-                                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                               <div class="ml-2.5">
-                                                   <span class="font-medium">Fecha Inicio</span>
-                                                   </div>
-                                                <div
-                                                    class="text-md truncate text-secondary"
-                                                    *ngIf="ocupation.assignmentStartDate">
-                                                    <span class="mx-2">&bull;</span>
-                                                    {{ocupation.assignmentStartDate | date: 'longDate'}}
-
+                                <ng-container
+                                    *ngFor="
+                                        let ocupation of ocupations.assigments
+                                    "
+                                >
+                                    <div
+                                        class="min-w-100 ml-6 px-2 panel-ocupation"
+                                        (click)="openPopup(ocupation.requestId)"
+                                    >
+                                        <a class="px-6 py-4 md:px-8">
+                                            <div class="flex sm:items-center">
+                                                <mat-icon
+                                                    [svgIcon]="
+                                                        'heroicons_outline:briefcase'
+                                                    "
+                                                ></mat-icon>
+                                                <div class="ml-6 leading-6">
+                                                    {{ ocupation.client }}
                                                 </div>
                                             </div>
 
-                                            <div class="flex items-center leading-6 mt-4">
-                                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                                            <div
+                                                class="flex items-center leading-6 mt-4"
+                                            >
+                                                <mat-icon
+                                                    [svgIcon]="
+                                                        'heroicons_outline:calendar'
+                                                    "
+                                                ></mat-icon>
                                                 <div class="ml-2.5">
-                                                    <span class="font-medium">Fecha Finalizacion</span>
-                                                   </div>
+                                                    <span class="font-medium"
+                                                        >Fecha Inicio</span
+                                                    >
+                                                </div>
                                                 <div
                                                     class="text-md truncate text-secondary"
-                                                    *ngIf="ocupation.assignmentEndDate">
-                                                    <span class="mx-2">&bull;</span>
-                                                    {{ocupation.assignmentEndDate | date: 'longDate'}}
-
+                                                    *ngIf="
+                                                        ocupation.assignmentStartDate
+                                                    "
+                                                >
+                                                    <span class="mx-2"
+                                                        >&bull;</span
+                                                    >
+                                                    {{
+                                                        ocupation.assignmentStartDate
+                                                            | date: "longDate"
+                                                    }}
                                                 </div>
                                             </div>
 
-                                            <div class="flex items-center leading-6 mt-4">
-                                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-copy'"></mat-icon>
+                                            <div
+                                                class="flex items-center leading-6 mt-4"
+                                            >
+                                                <mat-icon
+                                                    [svgIcon]="
+                                                        'heroicons_outline:calendar'
+                                                    "
+                                                ></mat-icon>
                                                 <div class="ml-2.5">
-                                                    {{ocupation.occupationPercentage}}%</div>
+                                                    <span class="font-medium"
+                                                        >Fecha
+                                                        Finalizacion</span
+                                                    >
+                                                </div>
                                                 <div
                                                     class="text-md truncate text-secondary"
-                                                    *ngIf="ocupation.occupationPercentage">
-                                                    <span class="mx-2">&bull;</span>
-                                                    <span class="font-medium">Porcentaje parcial</span>
+                                                    *ngIf="
+                                                        ocupation.assignmentEndDate
+                                                    "
+                                                >
+                                                    <span class="mx-2"
+                                                        >&bull;</span
+                                                    >
+                                                    {{
+                                                        ocupation.assignmentEndDate
+                                                            | date: "longDate"
+                                                    }}
                                                 </div>
                                             </div>
 
-                                    </a>
-
-                                </div>
-                            </ng-container>
+                                            <div
+                                                class="flex items-center leading-6 mt-4"
+                                            >
+                                                <mat-icon
+                                                    [svgIcon]="
+                                                        'heroicons_outline:clipboard-copy'
+                                                    "
+                                                ></mat-icon>
+                                                <div class="ml-2.5">
+                                                    {{
+                                                        ocupation.occupationPercentage
+                                                    }}%
+                                                </div>
+                                                <div
+                                                    class="text-md truncate text-secondary"
+                                                    *ngIf="
+                                                        ocupation.occupationPercentage
+                                                    "
+                                                >
+                                                    <span class="mx-2"
+                                                        >&bull;</span
+                                                    >
+                                                    <span class="font-medium"
+                                                        >Porcentaje
+                                                        parcial</span
+                                                    >
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </ng-container>
                             </div>
                         </ng-container>
-
                     </ng-container>
                     <!-- Tag Ocupation-->
-                    <ng-container *ngIf="vacationTag">
-
-
-
-                    </ng-container>
+                    <ng-container *ngIf="vacationTag"> </ng-container>
                     <ng-template #requestDetailsTemplate>
-                    <div class="flex flex-col pt-6 space-y-8 border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 bg-gray-100 mt-4" >
-                        <!-- Role in the company -->
-                        <ng-container *ngIf="request.titleRequest">
-                            <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:tag'"></mat-icon>
-                                <div class="ml-6 leading-6">{{request.titleRequest}}</div>
-                            </div>
-                        </ng-container>
+                        <div
+                            class="flex flex-col pt-6 space-y-8 border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 bg-gray-100 mt-4"
+                        >
+                            <!-- Role in the company -->
+                            <ng-container *ngIf="request.titleRequest">
+                                <div class="flex sm:items-center">
+                                    <mat-icon
+                                        [svgIcon]="'heroicons_outline:tag'"
+                                    ></mat-icon>
+                                    <div class="ml-6 leading-6">
+                                        {{ request.titleRequest }}
+                                    </div>
+                                </div>
+                            </ng-container>
 
-                        <!-- Department -->
-                        <ng-container *ngIf="request.client">
-                            <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
-                                <span class="mx-2 font-medium">Cliente</span>
-                                <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{request.client}}</div>
-                            </div>
-                        </ng-container>
+                            <!-- Department -->
+                            <ng-container *ngIf="request.client">
+                                <div class="flex sm:items-center">
+                                    <mat-icon
+                                        [svgIcon]="
+                                            'heroicons_outline:office-building'
+                                        "
+                                    ></mat-icon>
+                                    <span class="mx-2 font-medium"
+                                        >Cliente</span
+                                    >
+                                    <span class="mx-2">&bull;</span>
+                                    <div class="ml-2 leading-6">
+                                        {{ request.client }}
+                                    </div>
+                                </div>
+                            </ng-container>
 
-                        <!-- Client -->
-                        <ng-container *ngIf="request.businessType">
-                            <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:clipboard-check'"></mat-icon>
-                                <span class="mx-2 font-medium">Tipo de negocio</span>
-                                <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{request.businessType}}</div>
-                            </div>
-                        </ng-container>
+                            <!-- Client -->
+                            <ng-container *ngIf="request.businessType">
+                                <div class="flex sm:items-center">
+                                    <mat-icon
+                                        [svgIcon]="
+                                            'heroicons_outline:clipboard-check'
+                                        "
+                                    ></mat-icon>
+                                    <span class="mx-2 font-medium"
+                                        >Tipo de negocio</span
+                                    >
+                                    <span class="mx-2">&bull;</span>
+                                    <div class="ml-2 leading-6">
+                                        {{ request.businessType }}
+                                    </div>
+                                </div>
+                            </ng-container>
 
-                        <!-- Emails -->
-                        <ng-container *ngIf="request.responsibleRequest">
-                            <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:user'"></mat-icon>
-                                <div class="min-w-0 ml-6 space-y-1">
-
-                                    <div class="flex items-center leading-6">
-
+                            <!-- Emails -->
+                            <ng-container *ngIf="request.responsibleRequest">
+                                <div class="flex">
+                                    <mat-icon
+                                        [svgIcon]="'heroicons_outline:user'"
+                                    ></mat-icon>
+                                    <div class="min-w-0 ml-6 space-y-1">
                                         <div
-                                            class=""
-                                            *ngIf="request.responsibleRequest">
-                                            <span class="font-medium">Responsable</span>
-                                            <span class="mx-2">&bull;</span>
-                                            <span class="font-medium">{{request.responsibleRequest}}</span>
+                                            class="flex items-center leading-6"
+                                        >
+                                            <div
+                                                class=""
+                                                *ngIf="
+                                                    request.responsibleRequest
+                                                "
+                                            >
+                                                <span class="font-medium"
+                                                    >Responsable</span
+                                                >
+                                                <span class="mx-2">&bull;</span>
+                                                <span class="font-medium">{{
+                                                    request.responsibleRequest
+                                                }}</span>
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
-                            </div>
-                        </ng-container>
+                            </ng-container>
 
-                        <!-- Phone -->
-                        <ng-container *ngIf="request.completionPercentage">
-                            <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:receipt-tax'"></mat-icon>
-                                <div class="min-w-0 ml-6 space-y-1">
+                            <!-- Phone -->
+                            <ng-container *ngIf="request.completionPercentage">
+                                <div class="flex">
+                                    <mat-icon
+                                        [svgIcon]="
+                                            'heroicons_outline:receipt-tax'
+                                        "
+                                    ></mat-icon>
+                                    <div class="min-w-0 ml-6 space-y-1">
+                                        <div
+                                            class="flex items-center leading-6"
+                                        >
+                                            <div
+                                                class="text-md truncate"
+                                                *ngIf="
+                                                    request.completionPercentage
+                                                "
+                                            >
+                                                <span class="font-medium"
+                                                    >Completado</span
+                                                >
+                                                <span class="mx-2">&bull;</span>
+                                            </div>
+                                            <div class="ml-2.5 font-mono">
+                                                {{
+                                                    request.completionPercentage
+                                                }}
+                                                %
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
 
-
-                                            <div class="flex items-center leading-6">
-                                                <div
-                                                    class="text-md truncate"
-                                                    *ngIf="request.completionPercentage">
-                                                    <span class="font-medium">Completado</span>
-                                                    <span class="mx-2">&bull;</span>
-                                                </div>
-                                               <div class="ml-2.5 font-mono">{{request.completionPercentage}} %</div>
-
+                            <!-- Phone -->
+                            <ng-container *ngIf="request.deviationPercentage">
+                                <div class="flex">
+                                    <mat-icon
+                                        [svgIcon]="
+                                            'heroicons_outline:trending-down'
+                                        "
+                                    ></mat-icon>
+                                    <div class="min-w-0 ml-6 space-y-1">
+                                        <div
+                                            class="flex items-center leading-6"
+                                        >
+                                            <div
+                                                class="text-md truncate"
+                                                *ngIf="
+                                                    request.deviationPercentage
+                                                "
+                                            >
+                                                <span class="font-medium"
+                                                    >Desviaci&oacute;n</span
+                                                >
+                                                <span class="mx-2">&bull;</span>
                                             </div>
 
-
-                                </div>
-                            </div>
-                        </ng-container>
-
-                        <!-- Phone -->
-                        <ng-container *ngIf="request.deviationPercentage">
-                            <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:trending-down'"></mat-icon>
-                                <div class="min-w-0 ml-6 space-y-1">
-
-
-                                    <div class="flex items-center leading-6">
-
-                                        <div
-                                            class="text-md truncate"
-                                            *ngIf="request.deviationPercentage">
-                                            <span class="font-medium">Desviaci&oacute;n</span>
-                                            <span class="mx-2">&bull;</span>
-
+                                            <div class="ml-2.5 font-mono">
+                                                {{
+                                                    request.deviationPercentage
+                                                }}
+                                                %
+                                            </div>
                                         </div>
-
-                                        <div class="ml-2.5 font-mono">{{request.deviationPercentage}} %</div>
-
                                     </div>
-
-
                                 </div>
-                            </div>
-                        </ng-container>
+                            </ng-container>
 
-                        <!-- Address -->
-                        <ng-container *ngIf="request.priorityOrder">
-                            <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:sort-ascending'"></mat-icon>
-                                <div class="ml-6 leading-6">{{request.priorityOrder | priorityRequest  }}</div>
-                            </div>
-                        </ng-container>
+                            <!-- Address -->
+                            <ng-container *ngIf="request.priorityOrder">
+                                <div class="flex sm:items-center">
+                                    <mat-icon
+                                        [svgIcon]="
+                                            'heroicons_outline:sort-ascending'
+                                        "
+                                    ></mat-icon>
+                                    <div class="ml-6 leading-6">
+                                        {{
+                                            request.priorityOrder
+                                                | priorityRequest
+                                        }}
+                                    </div>
+                                </div>
+                            </ng-container>
 
-                        <!-- Birthday -->
-                        <ng-container *ngIf="request.datePlanEnd">
-                            <div class="flex sm:items-center">
-                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                <span class="mx-2 font-medium">Fecha de planeada de entrega</span>
-                                <span class="mx-2">&bull;</span>
-                                <div class="ml-2 leading-6">{{request.datePlanEnd | date:'longDate'}}</div>
-                            </div>
-                        </ng-container>
+                            <!-- Birthday -->
+                            <ng-container *ngIf="request.datePlanEnd">
+                                <div class="flex sm:items-center">
+                                    <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                    ></mat-icon>
+                                    <span class="mx-2 font-medium"
+                                        >Fecha de planeada de entrega</span
+                                    >
+                                    <span class="mx-2">&bull;</span>
+                                    <div class="ml-2 leading-6">
+                                        {{
+                                            request.datePlanEnd
+                                                | date: "longDate"
+                                        }}
+                                    </div>
+                                </div>
+                            </ng-container>
 
-                        <ng-container *ngIf="request.descriptionRequest">
-                            <div class="flex">
-                                <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
-                                <div
-                                    class="max-w-none ml-6 prose prose-sm"
-                                    [innerHTML]="request.descriptionRequest"></div>
-                            </div>
-                        </ng-container>
-
-
-
-                    </div>
-                    </ng-template>.
-                    </div>
-
+                            <ng-container *ngIf="request.descriptionRequest">
+                                <div class="flex">
+                                    <mat-icon
+                                        [svgIcon]="
+                                            'heroicons_outline:menu-alt-2'
+                                        "
+                                    ></mat-icon>
+                                    <div
+                                        class="max-w-none ml-6 prose prose-sm"
+                                        [innerHTML]="request.descriptionRequest"
+                                    ></div>
+                                </div>
+                            </ng-container>
+                        </div> </ng-template
+                    >.
                 </div>
-
+            </div>
         </div>
     </ng-container>
 
     <!-- Edit mode -->
     <ng-container *ngIf="editMode">
-
         <!-- Header -->
-        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+        <div
+            class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700"
+        >
             <!-- Background -->
-            <ng-container >
+            <ng-container>
                 <img
                     class="absolute inset-0 object-cover w-full h-full"
-                    src = "https://firebasestorage.googleapis.com/v0/b/focux-f00d8.appspot.com/o/banners%2FNosotros_BG.png?alt=media&token=8559c462-e458-4650-a45b-4befdbbe9603">
+                    src="https://firebasestorage.googleapis.com/v0/b/focux-f00d8.appspot.com/o/banners%2FNosotros_BG.png?alt=media&token=8559c462-e458-4650-a45b-4befdbbe9603"
+                />
             </ng-container>
             <!-- Close button -->
-            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+            <div
+                class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6"
+            >
                 <button
                     mat-icon-button
                     [matTooltip]="'Close'"
-                    [routerLink]="['../../']">
+                    [routerLink]="['../../']"
+                >
                     <mat-icon
                         class="text-white"
-                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        [svgIcon]="'heroicons_outline:x'"
+                    ></mat-icon>
                 </button>
             </div>
         </div>
 
         <!-- Collaborator form -->
-        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+        <div
+            class="relative flex flex-col flex-auto items-center px-6 sm:px-12"
+        >
             <div class="w-full max-w-3xl">
                 <form [formGroup]="collaboratorForm">
-
                     <!-- Avatar -->
                     <div class="flex flex-auto items-end -mt-16">
-                        <div class="relative flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                        <div
+                            class="relative flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card"
+                        >
                             <!-- Upload / Remove avatar -->
-                            <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
-                            <div class="absolute inset-0 flex items-center justify-center z-20">
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-50 z-10"
+                            ></div>
+                            <div
+                                class="absolute inset-0 flex items-center justify-center z-20"
+                            >
                                 <div>
                                     <input
                                         id="avatar-file-input"
@@ -588,24 +877,35 @@
                                         type="file"
                                         [multiple]="false"
                                         [accept]="'image/jpeg, image/png'"
-                                        (change)="uploadAvatar(avatarFileInput.files)"
-                                        #avatarFileInput>
+                                        (change)="
+                                            uploadAvatar(avatarFileInput.files)
+                                        "
+                                        #avatarFileInput
+                                    />
                                     <label
                                         class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover"
                                         for="avatar-file-input"
-                                        matRipple>
+                                        matRipple
+                                    >
                                         <mat-icon
                                             class="text-white"
-                                            [svgIcon]="'heroicons_outline:camera'"></mat-icon>
+                                            [svgIcon]="
+                                                'heroicons_outline:camera'
+                                            "
+                                        ></mat-icon>
                                     </label>
                                 </div>
                                 <div>
                                     <button
                                         mat-icon-button
-                                        (click)="removeAvatar()">
+                                        (click)="removeAvatar()"
+                                    >
                                         <mat-icon
                                             class="text-white"
-                                            [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                            [svgIcon]="
+                                                'heroicons_outline:trash'
+                                            "
+                                        ></mat-icon>
                                     </button>
                                 </div>
                             </div>
@@ -613,57 +913,71 @@
                             <img
                                 class="object-cover w-full h-full"
                                 *ngIf="collaborator?.image"
-                                [src]="collaborator?.image">
+                                [src]="collaborator?.image"
+                            />
                             <div
                                 class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                                *ngIf="!collaborator?.image">
-                                {{collaborator?.name.charAt(0)}}
+                                *ngIf="!collaborator?.image"
+                            >
+                                {{ collaborator?.name.charAt(0) }}
                             </div>
                         </div>
                     </div>
                     <!-- Name -->
                     <div class="row">
                         <div class="mt-8">
-                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-form-field
+                                class="fuse-mat-no-subscript w-full"
+                            >
                                 <mat-label>Nombres</mat-label>
                                 <mat-icon
                                     matPrefix
                                     class="hidden sm:flex icon-size-5"
-                                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                                    [svgIcon]="'heroicons_solid:user-circle'"
+                                ></mat-icon>
                                 <input
                                     matInput
                                     formControlName="name"
                                     [placeholder]="'Nombres'"
-                                    [spellcheck]="false">
+                                    [spellcheck]="false"
+                                />
                             </mat-form-field>
                         </div>
                         <!-- Last Name -->
                         <div class="mt-4">
-                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-form-field
+                                class="fuse-mat-no-subscript w-full"
+                            >
                                 <mat-label>Apellidos</mat-label>
                                 <mat-icon
                                     matPrefix
                                     class="hidden sm:flex icon-size-5"
-                                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                                    [svgIcon]="'heroicons_solid:user-circle'"
+                                ></mat-icon>
                                 <input
                                     matInput
                                     formControlName="lastName"
                                     [placeholder]="'Apellidos'"
-                                    [spellcheck]="false">
+                                    [spellcheck]="false"
+                                />
                             </mat-form-field>
                         </div>
                         <!-- Last Name -->
                         <div class="mt-4" *ngIf="collaborator?.idFile == 0">
-                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-form-field
+                                class="fuse-mat-no-subscript w-full"
+                            >
                                 <mat-label>Ficha</mat-label>
                                 <mat-icon
                                     matPrefix
                                     class="hidden sm:flex icon-size-5"
-                                    [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                                    [svgIcon]="'heroicons_solid:briefcase'"
+                                ></mat-icon>
                                 <input
                                     type="number"
                                     matInput
-                                    formControlName="idFile">
+                                    formControlName="idFile"
+                                />
                             </mat-form-field>
                         </div>
 
@@ -672,18 +986,16 @@
                             <mat-label>Sexo</mat-label>
                         </div>
                         <div class="mt-4">
-                            <mat-radio-group class="fuse-mat-no-subscript w-full"
-                                 formControlName="gender"
+                            <mat-radio-group
+                                class="fuse-mat-no-subscript w-full"
+                                formControlName="gender"
                                 [color]="'primary'"
-                                [value]="'M'">
-                                <mat-radio-button
-                                    class="mx-2"
-                                    [value]="'M'">
+                                [value]="'M'"
+                            >
+                                <mat-radio-button class="mx-2" [value]="'M'">
                                     Masculino
                                 </mat-radio-button>
-                                <mat-radio-button
-                                    class="mx-2"
-                                    [value]="'F'">
+                                <mat-radio-button class="mx-2" [value]="'F'">
                                     Femenino
                                 </mat-radio-button>
                             </mat-radio-group>
@@ -691,33 +1003,77 @@
 
                         <!-- Company -->
                         <div class="mt-8">
-                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-form-field
+                                class="fuse-mat-no-subscript w-full"
+                            >
                                 <mat-label>Nacionalidad</mat-label>
 
                                 <mat-select
                                     matPrefix
-                                    formControlName="nationality">
+                                    formControlName="nationality"
+                                >
                                     <mat-select-trigger>
-                                                    <span class="flex items-center">
-                                                        <span
-                                                            class="sm:flex w-6 h-4 mr-1 overflow-hidden"
-                                                            [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
-                                                            [style.backgroundSize]="'24px 3876px'"
-                                                            [style.backgroundPosition]="getCountryByIso(collaboratorForm.get('nationality')['value'] ? collaboratorForm.get('nationality')['value'] : 've').flagImagePos"></span>
-                                                        <span class="sm:mx-0.5 font-medium text-default">{{getCountryByIso(collaboratorForm.get('nationality')['value'] ? collaboratorForm.get('nationality')['value'] : 've').name}}</span>
-                                                    </span>
+                                        <span class="flex items-center">
+                                            <span
+                                                class="sm:flex w-6 h-4 mr-1 overflow-hidden"
+                                                [style.background]="
+                                                    'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'
+                                                "
+                                                [style.backgroundSize]="
+                                                    '24px 3876px'
+                                                "
+                                                [style.backgroundPosition]="
+                                                    getCountryByIso(
+                                                        collaboratorForm.get(
+                                                            'nationality'
+                                                        )['value']
+                                                            ? collaboratorForm.get(
+                                                                  'nationality'
+                                                              )['value']
+                                                            : 've'
+                                                    ).flagImagePos
+                                                "
+                                            ></span>
+                                            <span
+                                                class="sm:mx-0.5 font-medium text-default"
+                                                >{{
+                                                    getCountryByIso(
+                                                        collaboratorForm.get(
+                                                            "nationality"
+                                                        )["value"]
+                                                            ? collaboratorForm.get(
+                                                                  "nationality"
+                                                              )["value"]
+                                                            : "ve"
+                                                    ).name
+                                                }}</span
+                                            >
+                                        </span>
                                     </mat-select-trigger>
-                                    <ng-container *ngFor="let country of countries; trackBy: trackByFn">
+                                    <ng-container
+                                        *ngFor="
+                                            let country of countries;
+                                            trackBy: trackByFn
+                                        "
+                                    >
                                         <mat-option [value]="country.iso">
-                                                        <span class="flex items-center">
-                                                            <span
-                                                                class="w-6 h-4 overflow-hidden"
-                                                                [style.background]="'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'"
-                                                                [style.backgroundSize]="'24px 3876px'"
-                                                                [style.backgroundPosition]="country.flagImagePos"></span>
-                                                            <span class="ml-2">{{country.name}}</span>
-
-                                                        </span>
+                                            <span class="flex items-center">
+                                                <span
+                                                    class="w-6 h-4 overflow-hidden"
+                                                    [style.background]="
+                                                        'url(\'/assets/images/apps/contacts/flags.png\') no-repeat 0 0'
+                                                    "
+                                                    [style.backgroundSize]="
+                                                        '24px 3876px'
+                                                    "
+                                                    [style.backgroundPosition]="
+                                                        country.flagImagePos
+                                                    "
+                                                ></span>
+                                                <span class="ml-2">{{
+                                                    country.name
+                                                }}</span>
+                                            </span>
                                         </mat-option>
                                     </ng-container>
                                 </mat-select>
@@ -726,110 +1082,136 @@
                     </div>
 
                     <!-- Knowledges -->
-                    <div class="flex space-x-4">
-                        <div class="flex flex-wrap items-center -m-1.5 mt-6">
-                            <mat-label class="w-full font-medium">Conocimiento</mat-label>
-                            <!-- Knowledges -->
-                            <ng-container *ngIf="selectedKnowledges.length > 0">
-                                <ng-container *ngFor="let requestKnowledge of selectedKnowledges">
-                                    <ng-container *ngIf="requestKnowledge.isActive != 0">
-                                        <div class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-                                            <span class="text-md font-medium whitespace-nowrap">{{requestKnowledge.knowledge.name}}</span>
-                                        </div>
-                                    </ng-container>
+                    <div class="mt-8">
+                        <div class="space-y-4">
+                            <ng-container
+                                *ngFor="
+                                    let knowledge of collaboratorForm.get(
+                                        'knowledges'
+                                    )['controls'];
+                                    let i = index;
+                                    let first = first;
+                                    let last = last;
+                                    trackBy: trackByFn
+                                "
+                            >
+                                <ng-container
+                                    *ngIf="knowledge.value.isActive !== 0"
+                                >
+                                    <div class="relative flex">
+                                        <mat-form-field
+                                            class="fuse-mat-no-subscript flex-auto"
+                                        >
+                                            <mat-label *ngIf="first"
+                                                >Conocimiento</mat-label
+                                            >
+                                            <mat-select
+                                                [placeholder]="'Conocimiento'"
+                                                [formControl]="
+                                                    knowledge.get('knowledge')
+                                                "
+                                            >
+                                                <mat-option
+                                                    *ngFor="
+                                                        let knowledgeOption of knowledges
+                                                    "
+                                                    [value]="knowledgeOption.id"
+                                                >
+                                                    {{ knowledgeOption.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field
+                                            class="fuse-mat-no-subscri pt flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4"
+                                        >
+                                            <mat-label *ngIf="first"
+                                                >Nivel</mat-label
+                                            >
+                                            <mat-select
+                                                [placeholder]="'Nivel'"
+                                                [formControl]="
+                                                    knowledge.get('level')
+                                                "
+                                            >
+                                                <mat-option [value]="1">
+                                                    1
+                                                </mat-option>
+                                                <mat-option [value]="2">
+                                                    2
+                                                </mat-option>
+                                                <mat-option [value]="3">
+                                                    3
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <ng-container *ngIf="!(first && last)">
+                                            <div
+                                                class="flex items-center w-10 pl-2"
+                                                [ngClass]="{ 'mt-6': first }"
+                                            >
+                                                <button
+                                                    class="w-8 h-8 min-h-8"
+                                                    mat-icon-button
+                                                    (click)="
+                                                        removeknowledgeField(
+                                                            i,
+                                                            knowledge.get('id')
+                                                                .value
+                                                        )
+                                                    "
+                                                    matTooltip="Remove"
+                                                >
+                                                    <mat-icon
+                                                        class="icon-size-2"
+                                                        [svgIcon]="
+                                                            'heroicons_solid:trash'
+                                                        "
+                                                    ></mat-icon>
+                                                </button>
+                                            </div>
+                                        </ng-container>
+                                    </div>
                                 </ng-container>
                             </ng-container>
-                            <!-- Knowledges panel and its button -->
-                            <div
-                                class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 cursor-pointer text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
-                                (click)="openKnowledgesPanel()"
-                                #knowledgesPanelOrigin>
-
-                                <ng-container *ngIf="selectedKnowledges.length > 0">
-                                    <mat-icon
-                                        class="icon-size-5"
-                                        [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                    <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
-                                </ng-container>
-
-                                <ng-container *ngIf="selectedKnowledges.length === 0">
-                                    <mat-icon
-                                        class="icon-size-5"
-                                        [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                    <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
-                                </ng-container>
-
-                                <!-- Knowledges panel -->
-                                <ng-template #knowledgesPanel>
-                                    <div class="w-60 rounded border shadow-md bg-card">
-                                        <!-- Knowledges panel header -->
-                                        <div class="flex items-center m-3 mr-2">
-                                            <div class="flex items-center">
-                                                <mat-icon
-                                                    class="icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                                                <div class="ml-2">
-                                                    <input
-                                                        class="w-full min-w-0 py-1 border-0"
-                                                        type="text"
-                                                        placeholder="Ingrese habilidad"
-                                                        (input)="filterKnowledges($event)"
-                                                        (keydown)="filterKnowledgesInputKeyDown($event)"
-                                                        [maxLength]="30"
-                                                        #newKnowledgeInput>
-                                                </div>
-                                            </div>
-                                            <button
-                                                class="ml-1"
-                                                mat-icon-button
-                                                (click)="toggleKnowledgesEditMode()">
-                                                <mat-icon
-                                                    *ngIf="!knowledgesEditMode"
-                                                    class="icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                                                <mat-icon
-                                                    *ngIf="knowledgesEditMode"
-                                                    class="icon-size-5"
-                                                    [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                                            </button>
-                                        </div>
-                                        <div
-                                            class="flex flex-col max-h-64 py-2 border-t overflow-y-auto">
-                                            <!-- Knowledges-->
-                                            <ng-container *ngIf="!knowledgesEditMode">
-                                                <ng-container *ngFor="let knowledge of knowledges; trackBy: trackByFn">
-                                                    <div
-                                                        class="flex items-center h-10 min-h-10 px-4 cursor-pointer hover:bg-hover"
-                                                        (click)="toggleCollaboratorKnowledge(knowledge)"
-                                                        matRipple>
-                                                        <mat-checkbox
-                                                            class="flex items-center h-10 min-h-10 pointer-events-none"
-                                                            [checked]="checkerKnowledges(knowledge)"
-                                                            [color]="'primary'"
-                                                            [disableRipple]="true">
-                                                        </mat-checkbox>
-                                                        <div class="ml-1">{{knowledge.name}}</div>
-                                                    </div>
-                                                </ng-container>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </ng-template>
-                            </div>
+                        </div>
+                        <div
+                            class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
+                            (click)="addknowledgeField()"
+                        >
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:plus-circle'"
+                            ></mat-icon>
+                            <span
+                                class="ml-2 font-medium text-secondary group-hover:underline"
+                                >Agregar conocimiento</span
+                            >
                         </div>
                     </div>
 
                     <!-- Company -->
-                   <div class="mt-8">
+                    <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
                             <mat-label>Departamento</mat-label>
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:clipboard-check'"></mat-icon>
-                                <mat-select [placeholder]="'Departamento'" formControlName="department" (selectionChange)="filterPositionsByDepartment()">
-                                    <mat-option *ngFor="let department of departments" [value]="department.id">{{department.name}}</mat-option>
-                                </mat-select>
+                                [svgIcon]="'heroicons_solid:clipboard-check'"
+                            ></mat-icon>
+                            <mat-select
+                                [placeholder]="'Departamento'"
+                                formControlName="department"
+                                (selectionChange)="
+                                    filterPositionsByDepartment()
+                                "
+                            >
+                                <mat-option
+                                    *ngFor="let department of departments"
+                                    [value]="department.id"
+                                    >{{ department.name }}</mat-option
+                                >
+                            </mat-select>
                         </mat-form-field>
                     </div>
 
@@ -840,9 +1222,21 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:users'"></mat-icon>
-                            <mat-select [placeholder]="collaborator?.employeePosition.name" formControlName="employeePosition">
-                                <mat-option *ngFor="let employeePosition of filteredEmployeePositions" [value]="employeePosition.id">{{employeePosition.name}}</mat-option>
+                                [svgIcon]="'heroicons_solid:users'"
+                            ></mat-icon>
+                            <mat-select
+                                [placeholder]="
+                                    collaborator?.employeePosition.name
+                                "
+                                formControlName="employeePosition"
+                            >
+                                <mat-option
+                                    *ngFor="
+                                        let employeePosition of filteredEmployeePositions
+                                    "
+                                    [value]="employeePosition.id"
+                                    >{{ employeePosition.name }}</mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -854,9 +1248,17 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:office-building'"></mat-icon>
-                            <mat-select [placeholder]="collaborator?.client.name" formControlName="client">
-                                <mat-option *ngFor="let client of clients" [value]="client.id">{{client.name}}</mat-option>
+                                [svgIcon]="'heroicons_solid:office-building'"
+                            ></mat-icon>
+                            <mat-select
+                                [placeholder]="collaborator?.client.name"
+                                formControlName="client"
+                            >
+                                <mat-option
+                                    *ngFor="let client of clients"
+                                    [value]="client.id"
+                                    >{{ client.name }}</mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -867,9 +1269,20 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:user'"></mat-icon>
-                            <mat-select [placeholder]="collaborator?.leader" formControlName="leader">
-                                <mat-option *ngFor="let lead of leaders" [value]="lead.id">{{lead.name.split(' ')[0] | titlecase}} {{lead.lastName.split(' ')[0] | titlecase}}  </mat-option>
+                                [svgIcon]="'heroicons_solid:user'"
+                            ></mat-icon>
+                            <mat-select
+                                [placeholder]="collaborator?.leader"
+                                formControlName="leader"
+                            >
+                                <mat-option
+                                    *ngFor="let lead of leaders"
+                                    [value]="lead.id"
+                                    >{{ lead.name.split(" ")[0] | titlecase }}
+                                    {{
+                                        lead.lastName.split(" ")[0] | titlecase
+                                    }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -880,9 +1293,17 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:clipboard-copy'"></mat-icon>
-                            <mat-select [placeholder]="collaborator?.status.name" formControlName="status">
-                                <mat-option *ngFor="let status of statuses" [value]="status.id">{{status.name}}</mat-option>
+                                [svgIcon]="'heroicons_solid:clipboard-copy'"
+                            ></mat-icon>
+                            <mat-select
+                                [placeholder]="collaborator?.status.name"
+                                formControlName="status"
+                            >
+                                <mat-option
+                                    *ngFor="let status of statuses"
+                                    [value]="status.id"
+                                    >{{ status.name }}</mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -894,11 +1315,13 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:mail'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:mail'"
+                            ></mat-icon>
                             <input
                                 matInput
                                 formControlName="mail"
-                                [placeholder]="'Correo'">
+                                [placeholder]="'Correo'"
+                            />
                         </mat-form-field>
                     </div>
 
@@ -907,21 +1330,40 @@
                         <mat-slide-toggle
                             [formControlName]="'isCentralAmerican'"
                             [color]="'primary'"
-                            >
+                        >
                         </mat-slide-toggle>
                     </div>
                     <!-- Phone numbers -->
-                   <div class="mt-8">
+                    <div class="mt-8">
                         <div class="space-y-4">
-                            <ng-container *ngFor="let phoneNumber of collaboratorForm.get('phones')['controls']; let i = index; let first = first; let last = last; trackBy: trackByFn">
-                                <ng-container *ngIf="phoneNumber.value.isActive !== 0">
+                            <ng-container
+                                *ngFor="
+                                    let phoneNumber of collaboratorForm.get(
+                                        'phones'
+                                    )['controls'];
+                                    let i = index;
+                                    let first = first;
+                                    let last = last;
+                                    trackBy: trackByFn
+                                "
+                            >
+                                <ng-container
+                                    *ngIf="phoneNumber.value.isActive !== 0"
+                                >
                                     <div class="relative flex">
-                                        <mat-form-field class="fuse-mat-no-subscript flex-auto">
-                                            <mat-label *ngIf="first">Tel&eacute;fono</mat-label>
+                                        <mat-form-field
+                                            class="fuse-mat-no-subscript flex-auto"
+                                        >
+                                            <mat-label *ngIf="first"
+                                                >Tel&eacute;fono</mat-label
+                                            >
                                             <input
                                                 matInput
-                                                [formControl]="phoneNumber.get('number')"
-                                                [placeholder]="'Phone'">
+                                                [formControl]="
+                                                    phoneNumber.get('number')
+                                                "
+                                                [placeholder]="'Phone'"
+                                            />
                                             <!-- <input
                                                 class="mr-1.5"
                                                 matInput
@@ -957,30 +1399,52 @@
                                                 </ng-container>
                                             </mat-select>-->
                                         </mat-form-field>
-                                        <mat-form-field class="fuse-mat-no-subscript flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4">
-                                            <mat-label *ngIf="first">Label</mat-label>
+                                        <mat-form-field
+                                            class="fuse-mat-no-subscript flex-auto w-full max-w-24 sm:max-w-40 ml-2 sm:ml-4"
+                                        >
+                                            <mat-label *ngIf="first"
+                                                >Label</mat-label
+                                            >
                                             <mat-icon
                                                 matPrefix
                                                 class="hidden sm:flex icon-size-5"
-                                                [svgIcon]="'heroicons_solid:tag'"></mat-icon>
+                                                [svgIcon]="
+                                                    'heroicons_solid:tag'
+                                                "
+                                            ></mat-icon>
                                             <input
                                                 matInput
-                                                [formControl]="phoneNumber.get('type')"
-                                                [placeholder]="'Label'">
+                                                [formControl]="
+                                                    phoneNumber.get('type')
+                                                "
+                                                [placeholder]="'Label'"
+                                            />
                                         </mat-form-field>
 
                                         <ng-container *ngIf="!(first && last)">
                                             <div
                                                 class="flex items-center w-10 pl-2"
-                                                [ngClass]="{'mt-6': first}">
+                                                [ngClass]="{ 'mt-6': first }"
+                                            >
                                                 <button
                                                     class="w-8 h-8 min-h-8"
                                                     mat-icon-button
-                                                    (click)="removePhoneNumberField(i, phoneNumber.get('id').value)"
-                                                    matTooltip="Remove">
+                                                    (click)="
+                                                        removePhoneNumberField(
+                                                            i,
+                                                            phoneNumber.get(
+                                                                'id'
+                                                            ).value
+                                                        )
+                                                    "
+                                                    matTooltip="Remove"
+                                                >
                                                     <mat-icon
                                                         class="icon-size-2"
-                                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                        [svgIcon]="
+                                                            'heroicons_solid:trash'
+                                                        "
+                                                    ></mat-icon>
                                                 </button>
                                             </div>
                                         </ng-container>
@@ -990,11 +1454,16 @@
                         </div>
                         <div
                             class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
-                            (click)="addPhoneNumberField()">
+                            (click)="addPhoneNumberField()"
+                        >
                             <mat-icon
                                 class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                            <span class="ml-2 font-medium text-secondary group-hover:underline">Agregar tel&eacute;fono</span>
+                                [svgIcon]="'heroicons_solid:plus-circle'"
+                            ></mat-icon>
+                            <span
+                                class="ml-2 font-medium text-secondary group-hover:underline"
+                                >Agregar tel&eacute;fono</span
+                            >
                         </div>
                     </div>
                     <!-- Address -->
@@ -1004,11 +1473,13 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:location-marker'"
+                            ></mat-icon>
                             <input
                                 matInput
                                 formControlName="assignedLocation"
-                                [placeholder]="'Direcci&oacute;n de sede'">
+                                [placeholder]="'Direcci&oacute;n de sede'"
+                            />
                         </mat-form-field>
                     </div>
 
@@ -1019,15 +1490,18 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:calendar'"
+                            ></mat-icon>
                             <input
                                 matInput
                                 [matDatepicker]="bornDatepicker"
                                 formControlName="bornDate"
-                                [placeholder]="'Fecha de nacimiento'">
+                                [placeholder]="'Fecha de nacimiento'"
+                            />
                             <mat-datepicker-toggle
                                 matSuffix
-                                [for]="bornDatepicker">
+                                [for]="bornDatepicker"
+                            >
                             </mat-datepicker-toggle>
                             <mat-datepicker #bornDatepicker></mat-datepicker>
                         </mat-form-field>
@@ -1036,21 +1510,29 @@
                     <!-- Birthday -->
                     <div class="mt-8">
                         <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Fecha de Ingreso a la organizaci&oacute;n</mat-label>
+                            <mat-label
+                                >Fecha de Ingreso a la
+                                organizaci&oacute;n</mat-label
+                            >
                             <mat-iconF
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:calendar'"></mat-iconF>
+                                [svgIcon]="'heroicons_solid:calendar'"
+                            ></mat-iconF>
                             <input
                                 matInput
                                 [matDatepicker]="organizationEntryDatepicker"
                                 formControlName="organizationEntryDate"
-                                [placeholder]="'organizationEntryDate'">
+                                [placeholder]="'organizationEntryDate'"
+                            />
                             <mat-datepicker-toggle
                                 matSuffix
-                                [for]="organizationEntryDatepicker">
+                                [for]="organizationEntryDatepicker"
+                            >
                             </mat-datepicker-toggle>
-                            <mat-datepicker #organizationEntryDatepicker></mat-datepicker>
+                            <mat-datepicker
+                                #organizationEntryDatepicker
+                            ></mat-datepicker>
                         </mat-form-field>
                     </div>
 
@@ -1061,17 +1543,22 @@
                             <mat-icon
                                 matPrefix
                                 class="hidden sm:flex icon-size-5"
-                                [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:calendar'"
+                            ></mat-icon>
                             <input
                                 matInput
                                 [matDatepicker]="companyEntryDatepicker"
                                 formControlName="companyEntryDate"
-                                [placeholder]="'companyEntryDate'">
+                                [placeholder]="'companyEntryDate'"
+                            />
                             <mat-datepicker-toggle
                                 matSuffix
-                                [for]="companyEntryDatepicker">
+                                [for]="companyEntryDatepicker"
+                            >
                             </mat-datepicker-toggle>
-                            <mat-datepicker #companyEntryDatepicker></mat-datepicker>
+                            <mat-datepicker
+                                #companyEntryDatepicker
+                            ></mat-datepicker>
                         </mat-form-field>
                     </div>
 
@@ -1094,14 +1581,17 @@
                     </div> -->
 
                     <!-- Actions -->
-                    <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                    <div
+                        class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent"
+                    >
                         <!-- Delete -->
                         <button
                             *ngIf="collaborator"
                             mat-button
                             [color]="'warn'"
                             [matTooltip]="'Desactivar'"
-                            (click)="deleteCollaborator()">
+                            (click)="deleteCollaborator()"
+                        >
                             Desactivar
                         </button>
                         <!-- Cancel -->
@@ -1111,7 +1601,7 @@
                             mat-button
                             [matTooltip]="'Cancelar'"
                             [routerLink]="['../']"
-                            >
+                        >
                             Cancelar
                         </button>
                         <!-- Cancel -->
@@ -1120,7 +1610,8 @@
                             class="ml-auto"
                             mat-button
                             [matTooltip]="'Cancelar'"
-                            (click)="toggleEditMode(false)">
+                            (click)="toggleEditMode(false)"
+                        >
                             Cancelar
                         </button>
                         <!-- Save -->
@@ -1130,11 +1621,15 @@
                             [color]="'primary'"
                             [disabled]="collaboratorForm.invalid"
                             [matTooltip]="'Guardar'"
-                            (click)="!isCreate ? updateCollaborator() : createCollaborator()">
+                            (click)="
+                                !isCreate
+                                    ? updateCollaborator()
+                                    : createCollaborator()
+                            "
+                        >
                             Guardar
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>

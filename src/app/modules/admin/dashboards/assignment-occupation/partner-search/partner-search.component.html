@@ -464,6 +464,7 @@
                                 class="flex flex-col filter-item pt-4 pb-4 border-b"
                                 style="height: auto"
                             >
+                                <!-- Start header client filter -->
                                 <div class="flex items-center justify-between">
                                     <span
                                         [ngClass]="{
@@ -490,6 +491,9 @@
                                         }}</mat-icon
                                     >
                                 </div>
+                                <!-- End header client filter -->
+                                
+                                <!-- Start the options client list -->
                                 <div
                                     *ngIf="selectedFilterClient"
                                     class="flex flex-col mt-3 px-3"
@@ -525,28 +529,14 @@
                                                     >
                                                     </mat-checkbox>
                                                     <span>{{
-                                                        filterClients.at(i)
-                                                            .controls.name.value
+                                                        client.value.name
                                                     }}</span>
                                                 </div>
                                             </ng-container>
                                         </ng-container>
                                     </ng-container>
-                                    <!-- <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Epa</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Beconsult</span>
-                                        </div> -->
                                 </div>
+                                <!-- End the options client list -->
                             </div>
                             <div
                                 class="flex flex-col filter-item border-b pt-4 pb-4"
