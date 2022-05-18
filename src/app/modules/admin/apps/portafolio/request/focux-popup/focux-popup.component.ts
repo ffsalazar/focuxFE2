@@ -51,7 +51,6 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
     }
 
     styleObject(): Object {
-        console.log("heeey")
         if (this.data.title === 'evaluation-template'){
             return {height: 'auto',width: '500px'}
         }else{

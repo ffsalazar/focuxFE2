@@ -25,6 +25,7 @@ import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collabo
 import { FocusPopupRequestComponent} from "./details/focux-popup-request/focus-popup-request.component";
 import {collaboratorsRoutes} from "./collaborators.routing";
 import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
+import {KnowledgeLevelModule} from "../../../../shared/pipes/knowledge-level/knowledge-level.module";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 
@@ -56,7 +57,8 @@ import {MAT_DATE_LOCALE} from '@angular/material/core';
         FuseFindByKeyPipeModule,
         SharedModule,
         PriorityRequestModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        KnowledgeLevelModule,
     ],
     providers   : [
         {

@@ -1087,7 +1087,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
         },
             { width: 680, height: 1880, disableClose: true, panelClass: 'summary-panel' }).subscribe(confirm => {
                 if (confirm) {
-
                     if (this.isEditing) this.isEditing = false;
 
                     if (this.isDetail) this.isDetail = false;

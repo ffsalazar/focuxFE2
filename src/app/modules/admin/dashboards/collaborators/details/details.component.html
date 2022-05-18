@@ -86,7 +86,7 @@
                                 >
                                     <span
                                         class="text-sm font-medium whitespace-nowrap"
-                                        >{{ knowledge.knowledge.name }}</span
+                                        >{{ knowledge.knowledge.name }} / {{ knowledge.level | knowledgeLevel }}</span
                                     >
                                 </div>
                             </ng-container>
@@ -1124,13 +1124,16 @@
                                                 "
                                             >
                                                 <mat-option [value]="1">
-                                                    1
+                                                    Trainee
                                                 </mat-option>
                                                 <mat-option [value]="2">
-                                                    2
+                                                    Junior
                                                 </mat-option>
                                                 <mat-option [value]="3">
-                                                    3
+                                                    Semi-Senior
+                                                </mat-option>
+                                                <mat-option [value]="4">
+                                                    Senior
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>

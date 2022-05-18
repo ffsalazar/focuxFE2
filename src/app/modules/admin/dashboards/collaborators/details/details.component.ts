@@ -235,7 +235,9 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                             );
                         });
 
-                        console.log(knowledgesFormGroups);
+                        console.log(collaborator);
+
+                        
                     } else {
                         // Create a phone number form group
                         knowledgesFormGroups.push(
