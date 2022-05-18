@@ -101,18 +101,6 @@
                                                 [placeholder]="'Responsable'"
                                                 matInput
                                                 formControlName="collaboratorControl"
-                                                [matAutocomplete]="
-                                                    autoCollaborator
-                                                "
-                                                matTooltip="No hay Responsables"
-                                                [matTooltipDisabled]="
-                                                    filteredCollaborators.length >
-                                                    0
-                                                "
-                                                [matTooltipClass]="
-                                                    'matTooltipResponsibleCustom'
-                                                "
-                                                [matTooltipPosition]="'right'"
                                             />
 
                                             <mat-autocomplete
@@ -211,17 +199,7 @@
                                             matInput
                                             formControlName="requestControl"
                                             [matAutocomplete]="auto"
-                                            matTooltip="No hay solicitudes"
-                                            [matTooltipDisabled]="
-                                                filteredRequest.length > 0
-                                            "
-                                            [matTooltipClass]="
-                                                'matTooltipCustom'
-                                            "
-                                            [matTooltipClass]="
-                                                'matTooltipResponsibleCustom'
-                                            "
-                                            [matTooltipPosition]="'left'"
+                                          
                                         />
                                         <mat-autocomplete
                                             #auto="matAutocomplete"
