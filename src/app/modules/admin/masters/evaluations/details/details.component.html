@@ -122,7 +122,15 @@
                                         filteredIndicator.type === 'Descendente'
                                     "
                                     >Valor minimo: </span
-                                >{{ evaluation.minimumPercentage }}
+                                >
+                                <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Ascendente'
+                                    "
+                                    >Porcentaje minimo: </span>
+                                {{ evaluation.minimumPercentage }}
+
+                                
                                 <span
                                     *ngIf="
                                         filteredIndicator.type === 'Ascendente'
@@ -146,8 +154,13 @@
                                     *ngIf="
                                         filteredIndicator.type === 'Descendente'
                                     "
-                                    >Valor maximo: </span
-                                >{{ evaluation.maximumPercentage }}
+                                    >Valor maximo: </span>
+                                    <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Ascendente'
+                                    "
+                                    >Porcentaje maximo: </span>
+                                {{ evaluation.maximumPercentage }}
                                 <span
                                     *ngIf="
                                         filteredIndicator.type === 'Ascendente'
