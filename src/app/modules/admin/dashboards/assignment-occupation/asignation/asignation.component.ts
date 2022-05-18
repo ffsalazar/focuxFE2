@@ -19,7 +19,7 @@ import {
 import {Form, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {map, startWith, takeUntil} from "rxjs/operators";
-import {Observable, pipe, Subject} from "rxjs";
+import {forkJoin, Observable, pipe, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import { DateValidator } from './date-validation';
 import { limitOccupation } from '../partner-search/limit-occupation';
@@ -337,46 +337,22 @@ export class AsignationComponent implements OnInit, OnDestroy {
      */
     saveAssignationOccupation() {
         const assignation = this.formOcupation.getRawValue();
-
-        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-
-            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateInit').value);
-            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateEnd').value);
-            const assignationOccupation: AssignationOccupation = {
-                occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
-                assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
-                assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
-                code: this.request.code,
-                observations: this.collaboratorOccupation.at(i).get('observation').value,
-                isActive: 1,
-                request: {
-                    id: this.request.id,
-                },
-                collaborator: {
-                    id: this.collaboratorOccupation.at(i).get('id').value
-                },
-                requestRole: {
-                    id: this.collaboratorOccupation.at(i).get('roleRequest').value,
+        
+        const confirmation = this._fuseConfirmationService.open({
+            title  : 'Guardar asignación',
+            message: '¿Seguro que quiere guardar la asignación?',
+            icon: {
+                show: true,
+                name: "heroicons_outline:check",
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Guardar asignación',
+                    color: 'primary'
                 }
-            };
-
-            console.log("Assignation: ", assignationOccupation);
-
-            const confirmation = this._fuseConfirmationService.open({
-                    title  : 'Guardar asignación',
-                    message: '¿Seguro que quiere guardar la asignación?',
-                    icon: {
-                        show: true,
-                        name: "heroicons_outline:check",
-                        color: "primary"
-                    },
-                    actions: {
-                        confirm: {
-                            label: 'Guardar asignación',
-                            color: 'primary'
-                        }
-                    }
-                });
+            }
+        });
 
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed()
@@ -385,22 +361,46 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 // If the confirm button pressed...
                 if ( result === 'confirmed' )
                 {
+                    let promise = [];
 
-                    this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
-                        .subscribe(response => {
-                            this.activatedAlert = true;
-                            // Show notification update request
-                            this.showFlashMessage('success', 'Asignación guardada con éxito');
-                            // Set time out for change tab
-                            setTimeout(() => {
-                                this._router.navigate(['dashboards/assignment-occupation/index']);
-                                this._assignmentOccupationService.setTabIndex(0);
-                            }, 2000); 
-                        });
+                    for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+                        const assignationOccupation: AssignationOccupation = {
+                            occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
+                            assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
+                            assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
+                            code: this.request.code,
+                            observations: this.collaboratorOccupation.at(i).get('observation').value,
+                            isActive: 1,
+                            request: {
+                                id: this.request.id,
+                            },
+                            collaborator: {
+                                id: this.collaboratorOccupation.at(i).get('id').value
+                            },
+                            requestRole: {
+                                id: this.collaboratorOccupation.at(i).get('roleRequest').value,
+                            }
+                        };
+            
+                        promise.push(this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation));
+
+                        forkJoin(promise).subscribe(
+                            response => {
+                                this.activatedAlert = true;
+                                // Show notification update request
+                                this.showFlashMessage('success', 'Asignación guardada con éxito');
+                                // Set time out for change tab
+                                setTimeout(() => {
+                                    this._router.navigate(['dashboards/assignment-occupation/index']);
+                                    this._assignmentOccupationService.setTabIndex(0);
+                                }, 2000); 
+                            }
+                        );
+                        
+                    }
 
                 }
             });
-        }
     }
 
     /**

@@ -38,7 +38,7 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.isOpenModal$ = this.modalFocuxService.isOpenModal$.subscribe(res => {
+        this.isOpenModal$ = this.requestService.isOpenModal$.subscribe(res => {
             if ( res !== null ) {
                 this.closeDialog();
             }
