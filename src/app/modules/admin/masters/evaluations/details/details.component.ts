@@ -122,6 +122,7 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
                 this.evaluation = evaluation;
 
                 // Patch values to the form
+                this.filteredIndicator = this.evaluation.indicator;
                 this.evaluationForm.patchValue(evaluation);
                 this.evaluationForm
                     .get('indicator')
@@ -249,10 +250,10 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
     deleteEvaluation(): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title: 'Borrar &Aacute;rea T&eacute;cnica',
+            title: 'Borrar Evaluaci&oacute;n',
             message:
                 '\n' +
-                '¿Estás seguro de que deseas eliminar esta área técnica? ¡Esta acción no se puede deshacer!',
+                '¿Estás seguro de que deseas eliminar esta evaluaci&oacute;n? ¡Esta acción no se puede deshacer!',
             actions: {
                 confirm: {
                     label: 'Borrar',
