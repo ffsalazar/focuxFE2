@@ -313,7 +313,7 @@
                              
                               <ng-container matColumnDef="responsibleRequest">
                                 <th mat-header-cell *matHeaderCellDef> Responsable </th>
-                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest?.name || '-'}} </td>
+                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest?.name || '-'}} {{element.responsibleRequest?.lastName}} </td>
                               </ng-container>
     
                               <ng-container matColumnDef="priorityOrder">
