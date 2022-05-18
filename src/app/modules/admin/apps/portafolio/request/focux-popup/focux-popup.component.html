@@ -6,7 +6,7 @@
         <p *ngSwitchCase="'detail'" class="mt-0 text-xl">Detalle de Solicitud</p>
         <p *ngSwitchCase="'editing'" class="mt-0 text-xl">Editar Solicitud</p>
         <p *ngSwitchCase="'create'" class="mt-0 text-xl">Crear Solicitud</p>
-        <p *ngSwitchCase="'evaluation-template'" class="mt-0 text-xl" style="margin-bottom:20px !important;">Plantillas para la evaluación</p>
+        <p *ngSwitchCase="'evaluation-template'" class="mt-0 text-xl" style="margin-bottom:20px !important; font-size: 28px !important;">Plantillas para la evaluación</p>
     </ng-container>
     <div *ngIf="data.template" mat-dialog-content>
         <div  [ngStyle]="styleObject()">

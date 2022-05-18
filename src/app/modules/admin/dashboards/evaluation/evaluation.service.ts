@@ -26,6 +26,12 @@ export class EvaluationService {
     private _tabIndex: Subject<number> = new Subject<number>();
 	private _collaboratorsSelected: Collaborator[] = [];
 	private _isOpenModal: Subject<boolean | null> = new Subject();
+	private _selectedTemplate = {
+		id: 0,
+		name: ''
+	};
+	private _selectedPeriod: number;
+
 	constructor(
 		private _httpClient: HttpClient,
 		private dialog: MatDialog
@@ -41,6 +47,38 @@ export class EvaluationService {
 	 */
 	get departments$(): Observable<Department[]> {
 		return this._departments.asObservable();
+	}
+
+	/**
+	 * Getter for selectedTemplate
+	 * 
+	 */
+	get template(): any {
+		return this._selectedTemplate;
+	}
+
+	/**
+	 * Setter for selectedTemplate
+	 * 
+	 */
+	set template(template: any) {
+		this._selectedTemplate = template;
+	}
+
+	/**
+	 * Getter for selectedTemplate
+	 * 
+	 */
+	get period(): number {
+		return this._selectedPeriod;
+	}
+
+	/**
+	 * Setter for selectedPeriod
+	 * 
+	 */
+	set period(period: number) {
+		this._selectedPeriod = period;
 	}
 
 	/**

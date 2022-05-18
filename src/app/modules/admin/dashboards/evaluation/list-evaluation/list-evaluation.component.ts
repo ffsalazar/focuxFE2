@@ -168,6 +168,8 @@ export class ListEvaluationComponent implements OnInit {
      */
     changeTab() {
         this._modalFocuxService.closeModal();
+        this._evaluationService.template = this.templates.find(item => item.id === this.filterTemplate.get('teamplateradio').value);
+        this._evaluationService.period = this.filterCollaboratorForm.get('period').value;
         this._evaluationService.setTabIndex(1);
     }
 

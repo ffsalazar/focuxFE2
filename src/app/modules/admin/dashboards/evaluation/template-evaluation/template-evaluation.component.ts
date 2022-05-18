@@ -6,7 +6,7 @@ import { Objetive } from '../../../masters/objetives/objetives.types';
 import { ObjetivesService } from '../../../masters/objetives/objetives.service';
 import { filter, switchMap, takeUntil, map } from 'rxjs/operators';
 import { Indicator } from 'app/modules/admin/masters/indicators/indicators.types';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { collaborators } from 'app/mock-api/dashboards/collaborators/data';
 
 @Component({
@@ -117,9 +117,10 @@ export class TemplateEvaluationComponent implements OnInit {
 		},
 		{
 		id: 2,
-		type: 'Operacion'
+		type: 'Operación'
 		}
 	];
+	templateList = [{id: 1, name: 'Plantilla Trainee'}, {id: 2, name: 'Plantilla Jr'}, {id: 3, name: 'Plantilla S-Sr'},{id: 4, name: 'Plantilla Sr'}];
 
 	USER_DATA = [
 		{ "name": "John Smith", "occupation": "Advisor", "age": 36 },
@@ -129,7 +130,9 @@ export class TemplateEvaluationComponent implements OnInit {
 	];
 
 	panelOpenState = false;
-
+	periodId: number;
+	period: FormControl;
+	templateControl: FormControl;
 
 	// -----------------------------------------------------------------------------------------------------
 	// @ Lifecycle hooks
@@ -142,7 +145,7 @@ export class TemplateEvaluationComponent implements OnInit {
 		private _formBuilder: FormBuilder,
 	) {
 		this.template = this._formBuilder.group({
-		evaluations: this._formBuilder.array([])
+			evaluations: this._formBuilder.array([])
 		});
 	}
 
@@ -158,19 +161,15 @@ export class TemplateEvaluationComponent implements OnInit {
 
 		this._evaluationService.collaboratorSelected$
 			.subscribe(collaboratorSelected => {
-
-				console.log("collaboratorSelected: ", collaboratorSelected);
 				// Set collaborator selected
 				let aux = collaboratorSelected || [];
-				
-				// this.collaboratorsArr = [...aux];
+				// Update select the periods
+				this.period = this._formBuilder.control(this._evaluationService.period);
+				console.log(this._evaluationService.template);
+				this.templateControl = this._formBuilder.control(this._evaluationService.template.id);
+
 				this._setTemplates(aux);
 
-				// // Set the form ocupation
-				// this._setFormOcupation();
-
-				// // Set request selected
-				// this.request = this._assignmentOccupationService.requestSelected;
 
 				// Mark for check
 				this._changeDetectorRef.markForCheck();
@@ -204,11 +203,13 @@ export class TemplateEvaluationComponent implements OnInit {
 	private _setTemplates(selectedCollaborators: any[]) {
 		this.collaboratorsPerformace = [];
 
+		console.log("this._evaluationService.template: ", this._evaluationService.template);
 		selectedCollaborators.forEach(collaborator => {
 			// Create new collaborator performance
 			let collaboratorPerformace: any = {
 				name						: collaborator.name,
 				lastName					: collaborator.lastName,
+				template						: this._evaluationService.template.name,
 				evaluations					: this._formBuilder.group({
 					evaluationsControls		: this._formBuilder.array([])
 				})

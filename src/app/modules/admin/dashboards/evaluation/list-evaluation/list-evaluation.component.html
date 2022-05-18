@@ -55,8 +55,8 @@
         <label id="example-radio-group-label">Selecciona la plantilla a emplear</label>
         <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
         formControlName="teamplateradio">
-            <mat-radio-button class="example-radio-button" *ngFor="let template of templates"
-                [value]="template.name">
+            <mat-radio-button class="example-radio-button" [color]="'primary'" *ngFor="let template of templates"
+                [value]="template.id">
                 {{template.name}}
             </mat-radio-button>
         </mat-radio-group>
