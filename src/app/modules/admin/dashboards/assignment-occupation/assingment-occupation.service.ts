@@ -751,11 +751,7 @@ export class AssingmentOccupationService {
             params = params.append('dateInit', startDate);
             params = params.append('dateEnd', endDate);
         }
-
-        console.log("dateInit: ", dateInit);
-        console.log("dateInit: ", dateEnd);
-        console.log("params: ", params);
-
+        
         return this._httpClient
             .get<any>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby',

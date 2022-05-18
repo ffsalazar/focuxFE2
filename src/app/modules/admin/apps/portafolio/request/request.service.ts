@@ -727,8 +727,7 @@ export class RequestService {
 
     getCollaboratorsAssigned(requestId: number): Observable<Collaborator[]> {
         return this._httpClient
-            .get<Collaborator[]>(
-                'http://localhost:1616/api/v1/followup/requests/assigned/' +
+            .get<Collaborator[]>('http://localhost:1616/api/v1/followup/requests/assigned/' +
                     requestId
             )
             .pipe(
@@ -746,9 +745,7 @@ export class RequestService {
      * @param modalType
      * @returns
      */
-    open(
-        data: DialogData,
-        options: DialogOptions = {
+    open(data: DialogData, options: DialogOptions = {
             width: 800,
             minHeight: 0,
             height: 200,
@@ -756,12 +753,10 @@ export class RequestService {
         },
         modalType: 1 | 2 = 1
     ): Observable<boolean> {
-        const dialogRef: MatDialogRef<FocuxPopupComponent> = this.dialog.open<
-            FocuxPopupComponent,
-            DialogData
-        >(FocuxPopupComponent, {
+        const dialogRef: MatDialogRef<FocuxPopupComponent> = this.dialog.open<FocuxPopupComponent, DialogData> (FocuxPopupComponent, {
             data,
         });
         return dialogRef.afterClosed();
     }
+
 }

@@ -127,67 +127,17 @@ export const appRoutes: Route[] = [
         },
         children: [
             // Dashboards
-            {
-                path: 'dashboards',
-                children: [
-                    {
-                        path: 'project',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/project/project.module'
-                            ).then((m) => m.ProjectModule),
-                    },
-                    {
-                        path: 'analytics',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/analytics/analytics.module'
-                            ).then((m) => m.AnalyticsModule),
-                    },
-                    {
-                        path: 'finance',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/finance/finance.module'
-                            ).then((m) => m.FinanceModule),
-                    },
-                    {
-                        path: 'crypto',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/crypto/crypto.module'
-                            ).then((m) => m.CryptoModule),
-                    },
-                    {
-                        path: 'requestPanel',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/requestPanel/requestPanel.module'
-                            ).then((m) => m.RequestPanelModule),
-                    },
-                    {
-                        path: 'collaborators',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/collaborators/collaborators.module'
-                            ).then((m) => m.CollaboratorsModule),
-                    },
-                    {
-                        path: 'assignment-occupation',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module'
-                            ).then((m) => m.AssignmentOccupationModule),
-                    },
-                    {
-                        path: 'vacations',
-                        loadChildren: () =>
-                            import(
-                                'app/modules/admin/dashboards/vacations/vacations.module'
-                            ).then((m) => m.VacationsModule),
-                    },
-                ],
-            },
+            {path: 'dashboards', children: [
+                {path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.module').then(m => m.ProjectModule)},
+                {path: 'analytics', loadChildren: () => import('app/modules/admin/dashboards/analytics/analytics.module').then(m => m.AnalyticsModule)},
+                {path: 'finance', loadChildren: () => import('app/modules/admin/dashboards/finance/finance.module').then(m => m.FinanceModule)},
+                {path: 'crypto', loadChildren: () => import('app/modules/admin/dashboards/crypto/crypto.module').then(m => m.CryptoModule)},
+                {path: 'requestPanel', loadChildren: () => import('app/modules/admin/dashboards/requestPanel/requestPanel.module').then(m => m.RequestPanelModule)},
+                {path: 'collaborators', loadChildren: () => import('app/modules/admin/dashboards/collaborators/collaborators.module').then(m => m.CollaboratorsModule)},
+                {path: 'assignment-occupation', loadChildren: () => import('app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module').then(m => m.AssignmentOccupationModule)},
+                {path: 'vacations', loadChildren: () => import('app/modules/admin/dashboards/vacations/vacations.module').then(m => m.VacationsModule)},
+                {path: 'evaluation', loadChildren: () => import('app/modules/admin/dashboards/evaluation/evaluation.module').then(m => m.EvaluationModule)}
+                ]},
 
             // Apps
             {

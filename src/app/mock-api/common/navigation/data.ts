@@ -52,7 +52,22 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:cash',
                 link: '/dashboards/vacations',
             },
+            {
+                id      : 'dashboards.finance',
+                title   : 'Evaluación',
+                type    : 'collapsable',
+                icon    : 'heroicons_outline:users',
+                children: [
+                    {
 
+                        id   : 'dashboards.finance',
+                        title: 'Evaluación desempeño',
+                        type : 'basic',
+
+                        link : '/dashboards/evaluation'
+                    }]
+
+            },
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',

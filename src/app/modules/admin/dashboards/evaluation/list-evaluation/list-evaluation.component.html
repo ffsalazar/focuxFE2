@@ -1,0 +1,86 @@
+<div class="content flex flex-auto border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
+    <div class="w-full">
+        <!-- Start filter for collaborators -->
+            <div [formGroup]="filterCollaboratorForm" class="flex flex-col items-end w-full">
+                <div class="flex flex-col items-end w-full">
+                    <mat-form-field class="w-1/4">
+                        <mat-label>Seleccionar Periodo</mat-label>
+                        <mat-select formControlName="period">
+                            <ng-container *ngFor="let period of periods">
+                                <mat-option [value]="period.id">
+                                    {{ period.dateInit }} - {{ period.dateEnd }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-col items-end w-full">
+                    <mat-form-field class="w-1/4">
+                        <mat-label>Seleccionar Departamento</mat-label>
+                        <mat-select formControlName="department">
+                            <ng-container *ngFor="let department of departments$ | async as departments">
+                                <mat-option [value]="department.id">
+                                    {{ department.name }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        <!-- End filter for collaborators -->
+        <app-content-main>
+            <!-- Start panel filter -->
+                <app-panel-filter
+                    panel
+                    [clients]="clients"
+                    [knowledges]="knowledges"
+                    (changeFilter)="handleEventFilter($event)"
+                ></app-panel-filter>
+            <!-- End panel filter -->
+            
+            <!-- Start list collaborators -->
+                <app-list-collaborators
+                    main
+                    [collaborators]="collaborators"
+                    [filterCollaboratorForm]="filterCollaboratorForm"
+                    (handleEventClick)="showModal()"
+                ></app-list-collaborators>
+            <!-- End list collaborators -->
+        </app-content-main>
+    </div>
+</div>
+
+<ng-template #evaluationOptiosModal>
+    <div [formGroup]="filterTemplate">
+        <label id="example-radio-group-label">Selecciona la plantilla a emplear</label>
+        <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+        formControlName="teamplateradio">
+            <mat-radio-button class="example-radio-button" [color]="'primary'" *ngFor="let template of templates"
+                [value]="template.id">
+                {{template.name}}
+            </mat-radio-button>
+        </mat-radio-group>
+        <!-- <div> Selección: {{favoriteSeason}}</div>
+        <mat-form-field appearance="outline" style="width: 50%;margin-right:5px;">
+            <mat-label>Plantilla</mat-label>
+            <mat-select formControlName="template">
+                <ng-container *ngFor="let template of templates">
+                    <mat-option [value]="template.id">
+                        {{ template.name }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field> -->
+
+        <div class="flex justify-end">
+            <button
+                class="px-8 justify-self-end"
+                mat-flat-button [color]="'primary'"
+                [disabled]="filterTemplate.invalid"
+                type="button"
+                (click)="changeTab()">
+                Continuar
+            </button>
+        </div>
+    </div>
+</ng-template>
