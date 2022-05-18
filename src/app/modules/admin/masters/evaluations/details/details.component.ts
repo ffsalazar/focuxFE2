@@ -52,6 +52,7 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
     objetives: Objetive[];
     indicators: Indicator[];
     filteredIndicator: Indicator;
+    filteredTarget: Objetive;
 
     private _tagsPanelOverlayRef: OverlayRef;
     private _knowledgesPanelOverlayRef: OverlayRef;
@@ -123,6 +124,7 @@ export class EvaluationsDetailsComponent implements OnInit, OnDestroy {
 
                 // Patch values to the form
                 this.filteredIndicator = this.evaluation.indicator;
+                this.filteredTarget = this.evaluation.target;
                 this.evaluationForm.patchValue(evaluation);
                 this.evaluationForm
                     .get('indicator')

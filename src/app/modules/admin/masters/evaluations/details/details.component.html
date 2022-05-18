@@ -75,6 +75,101 @@
                             </div>
                         </div>
                     </ng-container>
+
+                    <!-- Objetive -->
+                    <ng-container *ngIf="filteredTarget">
+                        <div class="flex sm:items-center">
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_outline:clipboard-check'"
+                            ></mat-icon>
+                            <div class="ml-6 leading-6">
+                                {{ filteredTarget.name }}
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Indicator -->
+                    <ng-container *ngIf="filteredIndicator">
+                        <div class="flex sm:items-center">
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_outline:clipboard-check'"
+                            ></mat-icon>
+                            <div class="ml-6 leading-6">
+                                {{
+                                    filteredIndicator.name +
+                                        " / " +
+                                        filteredIndicator.type
+                                }}
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Minimum Percentage -->
+                    <ng-container *ngIf="filteredIndicator">
+                        <div class="flex sm:items-center">
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:menu-alt-2'"
+                            ></mat-icon>
+                            <div class="ml-6 leading-6">
+                                <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Descendente'
+                                    "
+                                    >Valor minimo: </span
+                                >
+                                <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Ascendente'
+                                    "
+                                    >Porcentaje minimo: </span>
+                                {{ evaluation.minimumPercentage }}
+
+                                
+                                <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Ascendente'
+                                    "
+                                    >%</span
+                                >
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Maximum Percentage -->
+                    <ng-container *ngIf="filteredIndicator">
+                        <div class="flex sm:items-center">
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:menu-alt-2'"
+                            ></mat-icon>
+                            <div class="ml-6 leading-6">
+                                <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Descendente'
+                                    "
+                                    >Valor maximo: </span>
+                                    <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Ascendente'
+                                    "
+                                    >Porcentaje maximo: </span>
+                                {{ evaluation.maximumPercentage }}
+                                <span
+                                    *ngIf="
+                                        filteredIndicator.type === 'Ascendente'
+                                    "
+                                    >%</span
+                                >
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </div>
