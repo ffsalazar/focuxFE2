@@ -221,6 +221,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     showPauseEdit: boolean = false;
     pauseError: boolean = false;
     isToggle:  boolean = false;
+    editPauseButton:  boolean;
     hasCollab: boolean = false;
     panelOpenState = [];
     panelOpenStateEdit = [];
@@ -1039,9 +1040,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
      *
      */
     showDetail(id: number) {
+
         this.isDetail = true;
         this.getCollaboratorsAssigned(id);
         this.openPopup(id);
+
     }
 
     /**
@@ -1166,6 +1169,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
 
                 if ( this.isDetail ) this.isDetail = false;
 
+                this.dataPause.data = [];
+                this.lengthPauses = 0;
+
                 // Set selected request to null
                 this.selectedRequest = null;
 
@@ -1216,6 +1222,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         this.dataPause.data = request.pauses;
         this.arrayPausesEdit[0] = request.pauses[this.lengthPauses-1];
         this.dataPauseEdit.data = this.arrayPausesEdit;
+        let pauseEditEnd = request.pauses[0];
+        let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
+        if(checkValidDate != "Invalid date"){
+            this.editPauseButton = true;
+        }else{
+            this.editPauseButton = false;
+        }
     }
 
     /**
@@ -1392,6 +1405,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
             }
         });
 
+
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
 
@@ -1440,6 +1454,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                 requestNew.technicalArea = this.technicalArea.find(
                     item => item.id === requestNew.technicalArea
                 );
+
                 if(this.showPauseEdit){
                     requestNew.pauses[0] = this.pauseFormEdit.getRawValue();
                 }
@@ -1455,6 +1470,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
                     if (requestNew.status.id != 12) {
                         this.pauseError = checkValidDate === "Invalid date";
+                    }
+                    if(checkValidDate != "Invalid date"){
+                        requestNew.status.id = 5;
                     }
                 }
 
