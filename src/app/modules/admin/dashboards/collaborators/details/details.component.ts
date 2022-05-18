@@ -386,7 +386,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                 this.request = {
                     id: request.id,
                     titleRequest: request.titleRequest,
-                    responsibleRequest: request.responsibleRequest?.name,
+                    responsibleRequest: request.responsibleRequest?.name + ' ' + request.responsibleRequest?.lastName,
                     descriptionRequest: request.descriptionRequest,
                     datePlanEnd: request.datePlanEnd,
                     client: request.client.name,

@@ -281,7 +281,7 @@
                                                 <mat-select [formControlName]="'brand'">
                                                     <ng-container *ngFor="let vendor of vendors">
                                                         <mat-option [value]="vendor.id">
-                                                            {{vendor.name}}
+                                                            {{vendor.name}} {{vendor.lastName}}
                                                         </mat-option>
                                                     </ng-container>
                                                 </mat-select>
