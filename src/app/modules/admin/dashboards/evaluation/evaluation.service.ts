@@ -9,6 +9,7 @@ import { DialogData } from 'app/modules/admin/apps/portafolio/request/request.ty
 import { DialogOptions } from 'app/modules/admin/apps/portafolio/request/request.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent } from 'app/modules/admin/apps/portafolio/request/focux-popup/focux-popup.component';
+import { RequestService } from '../../apps/portafolio/request/request.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -34,7 +35,8 @@ export class EvaluationService {
 
 	constructor(
 		private _httpClient: HttpClient,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private requestService: RequestService,
 	) { }
 
 	// -----------------------------------------------------------------------------------------------------

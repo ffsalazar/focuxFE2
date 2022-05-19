@@ -31,6 +31,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { MatTableModule } from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
+import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 
 @NgModule({
     declarations: [
@@ -72,6 +73,7 @@ import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/p
         CUSTOM_ELEMENTS_SCHEMA,
     ],
       providers   : [
+          ModalFocuxService,
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ]
 })

@@ -61,11 +61,11 @@ export class ListEvaluationComponent implements OnInit {
     // -----------------------------------------------------------------------------------------------------
 
     constructor(
-        private _formBuilder: FormBuilder,
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _evaluationService: EvaluationService,
-        private _requestService   : RequestService,
-        private _modalFocuxService : ModalFocuxService
+        private _formBuilder        : FormBuilder,
+        private _changeDetectorRef  : ChangeDetectorRef,
+        private _evaluationService  : EvaluationService,
+        private _requestService     : RequestService,
+        private _modalFocuxService  : ModalFocuxService
     )  {
 
         this.collaboratorArrayForm = new FormGroup({

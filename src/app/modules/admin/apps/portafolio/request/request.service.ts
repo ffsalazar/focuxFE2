@@ -27,6 +27,7 @@ import {
 import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent } from './focux-popup/focux-popup.component';
+import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 
 @Injectable({
     providedIn: 'root',
@@ -85,7 +86,7 @@ export class RequestService {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient, private dialog: MatDialog) {}
+    constructor(private _httpClient: HttpClient, private dialog: MatDialog, private modalFocuxService: ModalFocuxService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -571,7 +572,8 @@ export class RequestService {
             ),
             tap((requestNew) => {
                 // Close focuxPopup
-                this._isOpenModal.next(true);
+                //this._isOpenModal.next(true);
+                this.modalFocuxService.closeModal();
             })
         );
     }
@@ -603,7 +605,8 @@ export class RequestService {
                             requests[index] = updatedRequest;
 
                             // Close focuxPopup
-                            this._isOpenModal.next(true);
+                            //this._isOpenModal.next(true);
+                            this.modalFocuxService.closeModal();
 
                             // Update the requests
                             this._requests.next(requests);
@@ -659,7 +662,8 @@ export class RequestService {
                             requests.splice(index, 1);
 
                             // Close focuxPopup
-                            this._isOpenModal.next(false);
+                            //this._isOpenModal.next(false);
+                            this.modalFocuxService.closeModal();
 
                             // Update the requests
                             this._requests.next(requests);
