@@ -101,7 +101,7 @@ export class CollaboratorsMockApi
         // @ Collaborator - POST
         // -----------------------------------------------------------------------------------------------------
         /*this._fuseMockApiService
-            .onPost('http://localhost:1616/api/v1/followup/collaborators/save')
+            .onPost('http://10.1.160.93:1616/api/v1/followup/collaborators/save')
             .reply(() => {
 
                 // Generate a new collaborator

@@ -18,6 +18,7 @@ import localeEs from '@angular/common/locales/es';
 import {GuardAuthGuard} from "./core/guards/guard-auth.guard";
 
 
+
 registerLocaleData(localeEs);
 
 const routerConfig: ExtraOptions = {

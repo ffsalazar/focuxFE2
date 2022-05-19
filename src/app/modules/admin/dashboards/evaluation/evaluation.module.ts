@@ -26,17 +26,17 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCardModule} from '@angular/material/card'
 
+
+
 import { EvaluationRoutingModule } from './evaluation-routing.module';
 import {TranslocoModule} from "@ngneat/transloco";
 import {MatDividerModule} from "@angular/material/divider";
 import {EvaluationComponent} from "./evaluation.component";
 import { ListEvaluationComponent } from './list-evaluation/list-evaluation.component';
 import { TemplateEvaluationComponent } from './template-evaluation/template-evaluation.component';
-import { FocuxPopupComponent } from '../../apps/portafolio/request/focux-popup/focux-popup.component';
-import { RequestService } from '../../masters/portafolio/request/request.service';
 import { PanelFilterModule } from 'app/shared/components/panel-filter/panel-filter.module';
 import { ContentMainModule } from 'app/shared/components/content-main/content-main.module';
-import { ListCollaboratorsComponent } from './list-collaborators/list-collaborators.component';
+import { TemplateStatisticsComponent } from './template-statistics/template-statistics.component';
 
 
 @NgModule({
@@ -44,7 +44,7 @@ import { ListCollaboratorsComponent } from './list-collaborators/list-collaborat
       EvaluationComponent,
       ListEvaluationComponent,
       TemplateEvaluationComponent,
-      ListCollaboratorsComponent
+      TemplateStatisticsComponent
 
   ],
   imports: [
@@ -80,7 +80,8 @@ import { ListCollaboratorsComponent } from './list-collaborators/list-collaborat
       MatRadioModule,
       MatDividerModule,
       MatExpansionModule,
-      MatCardModule
+      MatCardModule,
+      MatDividerModule,
   ]
 })
 export class EvaluationModule { }

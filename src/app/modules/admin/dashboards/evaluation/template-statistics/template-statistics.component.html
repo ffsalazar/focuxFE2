@@ -1,0 +1,100 @@
+
+    <div main class="flex flex-col w-full">
+        <div class="bg-card py-3 mt-8 px-6 rounded shadow flex flex-col w-full" style="height: 100%">
+            <div class="relative">
+            <div class="flex justify-between">
+
+
+                                                <div class="flex flex-row" style="width: 100%;">
+
+                                                <div class="flex justify-between" style="width: 100%;">
+
+
+                                                        <div class="table-responsive">
+
+                                                            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+                                                                <!-- Position Column -->
+                                                                <ng-container matColumnDef="demo-description">
+                                                                    <th mat-header-cell *matHeaderCellDef>  </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                                                                </ng-container>
+
+                                                                <!-- Mes Column -->
+                                                                <ng-container matColumnDef="demo-dato1">
+                                                                    <th mat-header-cell *matHeaderCellDef> Enero </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.dato1}} </td>
+                                                                </ng-container>
+
+                                                                <!-- Mes Column -->
+                                                                <ng-container matColumnDef="demo-dato2">
+                                                                    <th mat-header-cell *matHeaderCellDef> Febrero </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.dato2}} </td>
+                                                                </ng-container>
+
+                                                                <!-- Mes Column -->
+                                                                <ng-container matColumnDef="demo-dato3">
+                                                                    <th mat-header-cell *matHeaderCellDef> Marzo </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.dato3}} </td>
+                                                                </ng-container>
+
+                                                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                                            </table>
+                                                        </div>
+
+                                                </div>
+                                                </div>
+
+
+
+                                <mat-divider [vertical]="true">  </mat-divider>
+
+                                                <div class="flex flex-row" style="width: 100%;">
+
+                                                <div class="flex justify-between" style="width: 100%;">
+
+
+                                                        <div class="table-responsive">
+
+                                                            <table mat-table [dataSource]="Source" class="mat-elevation-z8 demo-table">
+                                                                <!-- Position Column -->
+                                                                <ng-container matColumnDef="demo-description">
+                                                                    <th mat-header-cell *matHeaderCellDef> Evaluador </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                                                                </ng-container>
+
+                                                                <!-- Mes Column -->
+                                                                <ng-container matColumnDef="demo-dato1">
+                                                                    <th mat-header-cell *matHeaderCellDef> Enero </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.dato1}} </td>
+                                                                </ng-container>
+
+                                                                <!-- Mes Column -->
+                                                                <ng-container matColumnDef="demo-dato2">
+                                                                    <th mat-header-cell *matHeaderCellDef> Febrero </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.dato2}} </td>
+                                                                </ng-container>
+
+                                                                <!-- Mes Column -->
+                                                                <ng-container matColumnDef="demo-dato3">
+                                                                    <th mat-header-cell *matHeaderCellDef> Marzo </th>
+                                                                    <td mat-cell *matCellDef="let element"> {{element.dato3}} </td>
+                                                                </ng-container>
+
+                                                                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                                                                <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                                                            </table>
+                                                        </div>
+
+                                                </div>
+                                                </div>
+
+
+
+
+
+            </div>
+            </div>
+
+        </div>
+    </div>

@@ -230,7 +230,7 @@ export class RequestService {
     getCategory(): Observable<Category[]> {
         return this._httpClient
             .get<Category[]>(
-                'http://localhost:1616/api/v1/followup/categories/all'
+                'http://10.1.160.93:1616/api/v1/followup/categories/all'
             )
             .pipe(
                 tap((categories) => {
@@ -246,7 +246,7 @@ export class RequestService {
     getDepartments() {
         return this._httpClient
             .get<Department[]>(
-                'http://localhost:1616/api/v1/followup/departments/all'
+                'http://10.1.160.93:1616/api/v1/followup/departments/all'
             )
             .pipe(
                 tap((departments) => {
@@ -260,7 +260,7 @@ export class RequestService {
     //  */
     // getKnowledges(): Observable<Knowledge[]>
     // {
-    //     return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/categories/all').pipe(
+    //     return this._httpClient.get<Knowledge[]>('http://10.1.160.93:1616/api/v1/followup/categories/all').pipe(
     //         tap((categories) => {
     //             this._categories.next(categories);
     //         })
@@ -274,7 +274,7 @@ export class RequestService {
     getKnowledges(): Observable<Knowledge[]> {
         return this._httpClient
             .get<Knowledge[]>(
-                'http://localhost:1616/api/v1/followup/knowledges/all'
+                'http://10.1.160.93:1616/api/v1/followup/knowledges/all'
             )
             .pipe(
                 tap((knowledges) => {
@@ -292,7 +292,7 @@ export class RequestService {
 
     updateRequestKnowledge(id: number, knowledges) {
         return this._httpClient.put<Knowledge[]>(
-            'http://localhost:1616/api/v1/followup/requests/knowledge/update/' +
+            'http://10.1.160.93:1616/api/v1/followup/requests/knowledge/update/' +
                 id,
             knowledges
         );
@@ -332,7 +332,7 @@ export class RequestService {
     getCollaborators(): Observable<Collaborator[]> {
         return this._httpClient
             .get<Collaborator[]>(
-                'http://localhost:1616/api/v1/followup/collaborators/all'
+                'http://10.1.160.93:1616/api/v1/followup/collaborators/all'
             )
             .pipe(
                 tap((collaborators) => {
@@ -365,7 +365,7 @@ export class RequestService {
     searchRequest(query: string): Observable<Request[]> {
         return this._httpClient
             .get<Request[]>(
-                'http://localhost:1616/api/v1/followup/requests/all',
+                'http://10.1.160.93:1616/api/v1/followup/requests/all',
                 { params: { query } }
             )
             .pipe(
@@ -424,7 +424,7 @@ export class RequestService {
     getRequests(): Observable<Request[]> {
         return this._httpClient
             .get<Request[]>(
-                'http://localhost:1616/api/v1/followup/requests/all'
+                'http://10.1.160.93:1616/api/v1/followup/requests/all'
             )
             .pipe(
                 tap((requests) => {
@@ -445,7 +445,7 @@ export class RequestService {
      */
     getClients(): Observable<Client[]> {
         return this._httpClient
-            .get<Client[]>('http://localhost:1616/api/v1/followup/clients/all')
+            .get<Client[]>('http://10.1.160.93:1616/api/v1/followup/clients/all')
             .pipe(
                 tap((clients) => {
                     clients = clients.filter((item) => item.isActive === 1);
@@ -462,7 +462,7 @@ export class RequestService {
     getComercArea(): Observable<CommercialArea[]> {
         return this._httpClient
             .get<CommercialArea[]>(
-                'http://localhost:1616/api/v1/followup/commercialareas/all'
+                'http://10.1.160.93:1616/api/v1/followup/commercialareas/all'
             )
             .pipe(
                 tap((commercialArea) => {
@@ -481,7 +481,7 @@ export class RequestService {
     getRequestPeriod(): Observable<RequestPeriod[]> {
         return this._httpClient
             .get<RequestPeriod[]>(
-                'http://localhost:1616/api/v1/followup/requestPeriod/all'
+                'http://10.1.160.93:1616/api/v1/followup/requestPeriod/all'
             )
             .pipe(
                 tap((requestPeriod) => {
@@ -500,7 +500,7 @@ export class RequestService {
     getTypeRequest(): Observable<TypeRequest[]> {
         return this._httpClient
             .get<TypeRequest[]>(
-                'http://localhost:1616/api/v1/followup/typerequests/all'
+                'http://10.1.160.93:1616/api/v1/followup/typerequests/all'
             )
             .pipe(
                 tap((typeRequest) => {
@@ -518,7 +518,7 @@ export class RequestService {
      */
     getStatus(): Observable<Status[]> {
         return this._httpClient
-            .get<Status[]>('http://localhost:1616/api/v1/followup/statuses/all')
+            .get<Status[]>('http://10.1.160.93:1616/api/v1/followup/statuses/all')
             .pipe(
                 tap((status) => {
                     status = status.filter(
@@ -537,7 +537,7 @@ export class RequestService {
     getAreaTech(): Observable<TechnicalArea[]> {
         return this._httpClient
             .get<TechnicalArea[]>(
-                'http://localhost:1616/api/v1/followup/technicalareas/all'
+                'http://10.1.160.93:1616/api/v1/followup/technicalareas/all'
             )
             .pipe(
                 tap((technicalArea) => {
@@ -558,7 +558,7 @@ export class RequestService {
             switchMap((requests) =>
                 this._httpClient
                     .post<Request>(
-                        'http://localhost:1616/api/v1/followup/requests/save',
+                        'http://10.1.160.93:1616/api/v1/followup/requests/save',
                         request
                     )
                     .pipe(
@@ -588,7 +588,7 @@ export class RequestService {
             switchMap((requests) =>
                 this._httpClient
                     .put<Request>(
-                        'http://localhost:1616/api/v1/followup/requests/request/' +
+                        'http://10.1.160.93:1616/api/v1/followup/requests/request/' +
                             id,
                         request
                     )
@@ -644,7 +644,7 @@ export class RequestService {
             switchMap((requests) =>
                 this._httpClient
                     .put(
-                        'http://localhost:1616/api/v1/followup/requests/status/' +
+                        'http://10.1.160.93:1616/api/v1/followup/requests/status/' +
                             id,
                         request
                     )
@@ -678,7 +678,7 @@ export class RequestService {
     getBusinessType(): Observable<BusinessType[]> {
         return this._httpClient
             .get<BusinessType[]>(
-                'http://localhost:1616/api/v1/followup/businesstype/all/'
+                'http://10.1.160.93:1616/api/v1/followup/businesstype/all/'
             )
             .pipe(
                 tap((businessType) => {
@@ -696,7 +696,7 @@ export class RequestService {
 
         return this._httpClient
             .get<Client[]>(
-                'http://localhost:1616/api/v1/followup/clients/bussinesstype',
+                'http://10.1.160.93:1616/api/v1/followup/clients/bussinesstype',
                 {
                     params,
                 }
@@ -727,7 +727,8 @@ export class RequestService {
 
     getCollaboratorsAssigned(requestId: number): Observable<Collaborator[]> {
         return this._httpClient
-            .get<Collaborator[]>('http://localhost:1616/api/v1/followup/requests/assigned/' +
+            .get<Collaborator[]>(
+                'http://10.1.160.93:1616/api/v1/followup/requests/assigned/' +
                     requestId
             )
             .pipe(
