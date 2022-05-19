@@ -696,7 +696,7 @@ export class RequestService {
      */
     getClientsByBusinessType(businessTypesId: number[]): Observable<Client[]> {
         let params = new HttpParams();
-        params = params.append('bussinessTypes', businessTypesId.join(','));
+        params = params.append('bussinesstypes', businessTypesId.join(','));
 
         return this._httpClient
             .get<Client[]>(
