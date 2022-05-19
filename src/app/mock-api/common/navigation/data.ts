@@ -17,19 +17,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/dashboards/requestPanel',
             },
             {
-                id: 'masters.portafolio.request',
-                title: 'Portafolio de solicitudes',
-                type: 'basic',
-                icon: 'heroicons_outline:archive',
-                link: '/apps/portafolio/request',
-            },
-            {
                 id: 'dashboards.analytics',
                 title: 'Gestión de colaboradores',
                 type: 'basic',
                 icon: 'heroicons_outline:clipboard-check',
                 link: '/dashboards/collaborators',
             },
+            {
+                id: 'masters.portafolio.request',
+                title: 'Portafolio de solicitudes',
+                type: 'basic',
+                icon: 'heroicons_outline:archive',
+                link: '/apps/portafolio/request',
+            },
+            
             //Vuelve al menú cuando culminemos
             // {
             //     id   : 'dashboards.finance',
