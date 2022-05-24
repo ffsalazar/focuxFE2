@@ -678,9 +678,7 @@
                                                     >Responsable</span
                                                 >
                                                 <span class="mx-2">&bull;</span>
-                                                <span class="font-medium">{{
-                                                    request.responsibleRequest
-                                                }}</span>
+                                                <span class="font-medium">{{request.responsibleRequest.name}} {{request.responsibleRequest.lastName}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -688,7 +686,7 @@
                             </ng-container>
 
                             <!-- Phone -->
-                            <ng-container *ngIf="request.completionPercentage">
+                            <ng-container>
                                 <div class="flex">
                                     <mat-icon
                                         [svgIcon]="
@@ -699,20 +697,13 @@
                                         <div
                                             class="flex items-center leading-6"
                                         >
-                                            <div
-                                                class="text-md truncate"
-                                                *ngIf="
-                                                    request.completionPercentage
-                                                "
-                                            >
-                                                <span class="font-medium"
-                                                    >Completado</span
-                                                >
+                                            <div class="text-md truncate">
+                                                <span class="font-medium">Completado</span>
                                                 <span class="mx-2">&bull;</span>
                                             </div>
                                             <div class="ml-2.5 font-mono">
                                                 {{
-                                                    request.completionPercentage
+                                                    request.completionPercentage ? request.completionPercentage : '-'
                                                 }}
                                                 %
                                             </div>
@@ -722,7 +713,7 @@
                             </ng-container>
 
                             <!-- Phone -->
-                            <ng-container *ngIf="request.deviationPercentage">
+                            <ng-container *ngIf="request.deliveryDateDeviation">
                                 <div class="flex">
                                     <mat-icon
                                         [svgIcon]="
@@ -736,20 +727,19 @@
                                             <div
                                                 class="text-md truncate"
                                                 *ngIf="
-                                                    request.deviationPercentage
+                                                    request.deliveryDateDeviation
                                                 "
                                             >
                                                 <span class="font-medium"
-                                                    >Desviaci&oacute;n</span
+                                                    >Desviaci&oacute;n Entrega</span
                                                 >
                                                 <span class="mx-2">&bull;</span>
                                             </div>
 
                                             <div class="ml-2.5 font-mono">
                                                 {{
-                                                    request.deviationPercentage
+                                                    request.deliveryDateDeviation
                                                 }}
-                                                %
                                             </div>
                                         </div>
                                     </div>

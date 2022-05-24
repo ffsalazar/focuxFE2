@@ -359,10 +359,10 @@
                                 <td mat-cell *matCellDef="let element"> {{ (element.dateRealEnd ? ( element.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY' ) : '-') }} </td>
                             </ng-container>
                             
-                              <ng-container matColumnDef="deviationPercentage">
+                              <ng-container matColumnDef="deliveryDateDeviation">
                                 <th mat-header-cell *matHeaderCellDef> Desviación Entrega </th>
-                                <td mat-cell class="th-center" *matCellDef="let element" [ngStyle]="{'color': element.deviationPercentage > 20 ? '#FC4F4F' : ''}">
-                                    {{element.deviationPercentage ? element.deviationPercentage : '-'}} 
+                                <td mat-cell class="th-center" *matCellDef="let element" [ngStyle]="{'color': element.deliveryDateDeviation > 20 ? '#FC4F4F' : ''}">
+                                    {{element.deliveryDateDeviation ? element.deliveryDateDeviation : '-'}} 
                                 </td>
                               </ng-container>
                             
@@ -1000,9 +1000,9 @@
                                                 <mat-label>Porcentaje desviación</mat-label>
                                                 <input
                                                     matInput type="number"
-                                                    formControlName="deviationPercentage"
-                                                    [readonly]="isDetail"
-                                                    [disabled]="isDetail"
+                                                    formControlName="deliveryDateDeviation"
+                                                    [readonly]="true"
+                                                    [disabled]="true"
                                                 >
                                                 <mat-icon class="icon-size-5" matPrefix
                                                     [svgIcon]="'heroicons_solid:document-report'"></mat-icon>

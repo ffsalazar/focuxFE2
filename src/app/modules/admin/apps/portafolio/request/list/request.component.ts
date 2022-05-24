@@ -146,7 +146,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     // dataSource: Request[]
     displayColCollab: string[] = ['id', 'name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
     displayedColumns: string[] = ['id', 'ramo', 'code', 'client', 'titleRequest',
-        'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage', 'dateEndPause', 'Detalle'];
+        'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deliveryDateDeviation', 'dateEndPause', 'Detalle'];
 
     // Form Controls
     filterGroupForm: FormGroup;
@@ -250,7 +250,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
             step3: this._formBuilder.group({
                 //Periodo de pausa
                 completionPercentage: [''],
-                deviationPercentage: [''],
+                deliveryDateDeviation: [''],
                 internalFeedbackIntelix: [''],
                 requestPeriod: [''],
                 dateInitPause: [''],

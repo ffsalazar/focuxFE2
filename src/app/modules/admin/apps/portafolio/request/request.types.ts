@@ -19,6 +19,7 @@ export interface Request {
     deliverablesCompletedIntelix: String;
     descriptionRequest: string;
     deviationPercentage: number;
+    deliveryDateDeviation: number;
     internalFeedbackIntelix: String;
     isActive: number;
     pendingActivitiesIntelix: String;

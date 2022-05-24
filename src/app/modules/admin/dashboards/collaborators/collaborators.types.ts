@@ -129,8 +129,7 @@ export  interface Request {
     status:string;
     completionPercentage:number;
     deviationPercentage:number;
-
-
+    deliveryDateDeviation:number;
 }
 
 export interface Status
