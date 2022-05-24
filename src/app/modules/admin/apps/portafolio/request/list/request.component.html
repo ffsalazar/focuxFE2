@@ -414,7 +414,7 @@
                     <!-- Selected request form -->
                  
                     <form class="p-2 bg-card shadow rounded overflow-hidden" [formGroup]="horizontalStepperForm">
-                        <mat-horizontal-stepper [linear]="true" #horizontalStepper class="m-auto" [ngClass]="[isDetail ? 'w-3/4' : 'w-full']">
+                        <mat-horizontal-stepper [linear]="!isDetail" #horizontalStepper class="m-auto" [ngClass]="[isDetail ? 'w-3/4' : 'w-full']">
                        
                             <mat-step [formGroupName]="'step1'"
                                 [stepControl]="horizontalStepperForm.get('step1')"
@@ -664,18 +664,18 @@
                                             (click)="openKnowledgesPanel()"
                                             #knowledgesPanelOrigin>
                                     
-                                            <ng-container *ngIf="selectedRequest?.knowledges.length > 0">
+                                            <ng-container *ngIf="selectedRequest?.knowledges.length > 0 && !isDetail">
                                                 <mat-icon
                                                     class="icon-size-5"
                                                     [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
                                                 <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
                                             </ng-container>
                                     
-                                            <ng-container *ngIf="selectedRequest?.knowledges.length === 0">
+                                            <ng-container *ngIf="selectedRequest?.knowledges.length === 0 && !isDetail">
                                                 <mat-icon
                                                     class="icon-size-5"
                                                     [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
+                                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Agregar</span>
                                             </ng-container>
                                     
                                             <!-- Knowledges panel -->
@@ -777,7 +777,9 @@
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Grupo solucionador</mat-label>
                                          <mat-select
-                                            formControlName="solverGroup">
+                                            formControlName="solverGroup"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail">
                                             <ng-container *ngFor="let department of departments">
                                                 <mat-option [value]="department.id">
                                                     {{department.name}}
@@ -1132,7 +1134,7 @@
                                                     [matDatepicker]="updateDatePicker"
                                                     formControlName="updateDate"
                                                     [readonly]="isDetail"
-                                                    [disabled]="isEDetail"
+                                                    [disabled]="isDetail"
                                                 >
 
                                                 
