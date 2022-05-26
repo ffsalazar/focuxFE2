@@ -220,6 +220,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
     showPause: boolean = false;
     showPauseEdit: boolean = false;
     pauseError: boolean = false;
+    toggleAlert: boolean = false;
     isToggle:  boolean = false;
     editPauseButton:  boolean;
     hasCollab: boolean = false;
@@ -1226,8 +1227,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
         let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
         if(checkValidDate != "Invalid date"){
             this.editPauseButton = true;
+            this.toggleAlert = false;
         }else{
             this.editPauseButton = false;
+            this.toggleAlert = true;
         }
     }
 
@@ -1462,13 +1465,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy
                     pauses.dateEndPause = "";
                     requestNew.pauses.unshift(pauses);
                     requestNew.status = this.status.find(
-                        item => item.id === 12
+                        item => item.id === 11
                     );
                 }
                 if(this.isEditing && requestNew.pauses.length > 0) {
                     let pauseEditEnd = requestNew.pauses[0];
                     let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
-                    if (requestNew.status.id != 12) {
+                    if (requestNew.status.id != 11) {
                         this.pauseError = checkValidDate === "Invalid date";
                     }
                     if(checkValidDate != "Invalid date"){
