@@ -174,7 +174,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     // dataSource: Request[]
     displayColCollab: string[] = ['id', 'name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
     displayedColumns: string[] = ['id', 'ramo', 'code', 'client', 'titleRequest',
-        'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage', 'dateEndPause', 'Detalle'];
+        'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deliveryDateDeviation', 'dateEndPause', 'Detalle'];
     displayPauses : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause', 'button'];
     displayPausesEdit : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause', 'button'];
     
