@@ -17,19 +17,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/dashboards/requestPanel',
             },
             {
-                id: 'masters.portafolio.request',
-                title: 'Portafolio de solicitudes',
-                type: 'basic',
-                icon: 'heroicons_outline:archive',
-                link: '/apps/portafolio/request',
-            },
-            {
                 id: 'dashboards.analytics',
                 title: 'Gestión de colaboradores',
                 type: 'basic',
                 icon: 'heroicons_outline:clipboard-check',
                 link: '/dashboards/collaborators',
             },
+            {
+                id: 'masters.portafolio.request',
+                title: 'Portafolio de solicitudes',
+                type: 'basic',
+                icon: 'heroicons_outline:archive',
+                link: '/apps/portafolio/request',
+            },
+            
             //Vuelve al menú cuando culminemos
             // {
             //     id   : 'dashboards.finance',
@@ -52,7 +53,22 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:cash',
                 link: '/dashboards/vacations',
             },
+            {
+                id      : 'dashboards.finance',
+                title   : 'Evaluación',
+                type    : 'collapsable',
+                icon    : 'heroicons_outline:users',
+                children: [
+                    {
 
+                        id   : 'dashboards.finance',
+                        title: 'Evaluación desempeño',
+                        type : 'basic',
+
+                        link : '/dashboards/evaluation'
+                    }]
+
+            },
             /*{
                 id   : 'dashboards.crypto',
                 title: 'Crypto',
@@ -153,10 +169,10 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         link: '/masters/categories',
                     },
                     {
-                        id   : 'masters.portafolio.indicator',
+                        id: 'masters.portafolio.indicator',
                         title: 'Indicadores',
-                        type : 'basic',
-                        link : '/masters/indicators'
+                        type: 'basic',
+                        link: '/masters/indicators',
                     },
                     {
                         id: 'masters.portafolio.objetive',
@@ -164,8 +180,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         type: 'basic',
                         link: '/masters/objetives',
                     },
-                ]
-                        
+                    {
+                        id: 'masters.portafolio.evaluation',
+                        title: 'Evaluaciones',
+                        type: 'basic',
+                        link: '/masters/evaluations',
+                    },
+                ],
             },
             {
                 id: 'masters.collaborator',

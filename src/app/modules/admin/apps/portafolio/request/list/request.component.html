@@ -313,10 +313,10 @@
 
                             <ng-container matColumnDef="responsibleRequest">
                                 <th mat-header-cell *matHeaderCellDef> Responsable </th>
-                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest?.name || '-'}} </td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="priorityOrder">
+                                <td mat-cell *matCellDef="let element"> {{element.responsibleRequest?.name || '-'}} {{element.responsibleRequest?.lastName}} </td>
+                              </ng-container>
+    
+                              <ng-container matColumnDef="priorityOrder">
                                 <th mat-header-cell *matHeaderCellDef> Priodidad </th>
                                 <td mat-cell class="th-center" *matCellDef="let element"> {{element.priorityOrder | priorityRequest}} </td>
                             </ng-container>
@@ -358,20 +358,16 @@
                                 <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
                                 <td mat-cell *matCellDef="let element"> {{ (element.dateRealEnd ? ( element.dateRealEnd | amParse: formats | amDateFormat:'DD/MM/YYYY' ) : '-') }} </td>
                             </ng-container>
-
-                            <ng-container matColumnDef="deviationPercentage">
+                            
+                              <ng-container matColumnDef="deviationPercentage">
                                 <th mat-header-cell *matHeaderCellDef> Desviación Entrega </th>
                                 <td mat-cell class="th-center" *matCellDef="let element" [ngStyle]="{'color': element.deviationPercentage > 20 ? '#FC4F4F' : ''}">
-
-
-
-                                    {{element.deviationPercentage ? element.deviationPercentage : '-'}}
-
+                                    {{element.deviationPercentage ? element.deviationPercentage : '-'}} 
                                 </td>
-                            </ng-container>
-
-
-                            <ng-container matColumnDef="dateEndPause">
+                              </ng-container>
+                            
+                          
+                              <ng-container matColumnDef="dateEndPause">
                                 <th mat-header-cell *matHeaderCellDef> Días Duración </th>
                                 <td mat-cell *matCellDef="let element"> {{ (element.dateEndPause ? (element.dateEndPause | amParse: formats | amDateFormat:'DD/MM/YYYY' ) : '-')}} </td>
                             </ng-container>
@@ -416,8 +412,8 @@
                     <!-- Selected request form -->
 
                     <form class="p-2 bg-card shadow rounded overflow-hidden" [formGroup]="horizontalStepperForm">
-                        <mat-horizontal-stepper [linear]="true" #horizontalStepper class="m-auto" [ngClass]="[isDetail ? 'w-3/4' : 'w-full']">
-
+                        <mat-horizontal-stepper [linear]="!isDetail" #horizontalStepper class="m-auto" [ngClass]="[isDetail ? 'w-3/4' : 'w-full']">
+                       
                             <mat-step [formGroupName]="'step1'"
                                       [stepControl]="horizontalStepperForm.get('step1')"
                                       #horizontalStepperStep1
@@ -665,19 +661,19 @@
                                             class="flex items-center justify-center px-4 m-1.5 rounded-full leading-9 cursor-pointer text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700"
                                             (click)="openKnowledgesPanel()"
                                             #knowledgesPanelOrigin>
-
-                                            <ng-container *ngIf="selectedRequest?.knowledges.length > 0">
+                                    
+                                            <ng-container *ngIf="selectedRequest?.knowledges.length > 0 && !isDetail">
                                                 <mat-icon
                                                     class="icon-size-5"
                                                     [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
                                                 <span class="ml-1.5 text-md font-medium whitespace-nowrap">Editar</span>
                                             </ng-container>
-
-                                            <ng-container *ngIf="selectedRequest?.knowledges.length === 0">
+                                    
+                                            <ng-container *ngIf="selectedRequest?.knowledges.length === 0 && !isDetail">
                                                 <mat-icon
                                                     class="icon-size-5"
                                                     [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-                                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">agregar</span>
+                                                <span class="ml-1.5 text-md font-medium whitespace-nowrap">Agregar</span>
                                             </ng-container>
 
                                             <!-- Knowledges panel -->
@@ -778,8 +774,10 @@
 
                                     <mat-form-field class="w-1/3">
                                         <mat-label>Grupo solucionador</mat-label>
-                                        <mat-select
-                                            formControlName="solverGroup">
+                                         <mat-select
+                                            formControlName="solverGroup"
+                                            [readonly]="isDetail"
+                                            [disabled]="isDetail">
                                             <ng-container *ngFor="let department of departments">
                                                 <mat-option [value]="department.id">
                                                     {{department.name}}

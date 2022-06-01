@@ -101,18 +101,6 @@
                                                 [placeholder]="'Responsable'"
                                                 matInput
                                                 formControlName="collaboratorControl"
-                                                [matAutocomplete]="
-                                                    autoCollaborator
-                                                "
-                                                matTooltip="No hay Responsables"
-                                                [matTooltipDisabled]="
-                                                    filteredCollaborators.length >
-                                                    0
-                                                "
-                                                [matTooltipClass]="
-                                                    'matTooltipResponsibleCustom'
-                                                "
-                                                [matTooltipPosition]="'right'"
                                             />
 
                                             <mat-autocomplete
@@ -211,17 +199,7 @@
                                             matInput
                                             formControlName="requestControl"
                                             [matAutocomplete]="auto"
-                                            matTooltip="No hay solicitudes"
-                                            [matTooltipDisabled]="
-                                                filteredRequest.length > 0
-                                            "
-                                            [matTooltipClass]="
-                                                'matTooltipCustom'
-                                            "
-                                            [matTooltipClass]="
-                                                'matTooltipResponsibleCustom'
-                                            "
-                                            [matTooltipPosition]="'left'"
+                                          
                                         />
                                         <mat-autocomplete
                                             #auto="matAutocomplete"
@@ -265,6 +243,23 @@
                                         >
                                     </mat-form-field>
                                 </div>
+                                <!-- <div class="flex justify-center tems-center w-full" style="margin: auto">
+                                    <fuse-alert class="" style="width: 38%; height: 100px !important;"
+                                        [type]="'warning'"
+                                        [dismissible]="false"
+                                        [dismissed]="true"
+                                        [name]="'alertBox4'"
+                                        [appearance]="'outline'"
+                                        (click)="dismissFuse('alertBox4')"
+                                    >
+                                        <span fuseAlertTitle>{{successSave}}</span>
+                                    </fuse-alert>
+                                </div> -->
+                               <div *ngIf="selectedClient && !hasRequest" class="flex justify-center items-center w-full" style="margin: auto">
+                                    <div class="p-8 sm:p-16 text-4xl font-semibold tracking-tight text-center">
+                                        No tiene solicitudes
+                                    </div>
+                               </div>
                                 <div
                                     class="flex flex-col self-end flex-auto w-full pl-10 overflow-hidden sm:overflow-y-auto"
                                     *ngIf="
@@ -385,6 +380,32 @@
                                                 20-09-2022
                                             </td>
                                         </ng-container>
+                                        <ng-container matColumnDef="options">
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                            >
+                                                
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                            >
+                                                <button
+                                                    class="min-w-10 min-h-7 h-7 mr-2 px-2 leading-6"
+                                                    matTooltip="Siguiente"
+                                                    mat-stroked-button
+                                                    matTooltip="Editar ocupaciones"
+                                                    (click)="setOccupation(element)"
+                                                >
+                                                    <mat-icon
+                                                        class="icon-size-5"
+                                                        [svgIcon]="'heroicons_solid:pencil'"
+                                                    >
+                                                    </mat-icon>
+                                                </button>
+                                            </td>
+                                        </ng-container>
                                         <!-- DateEnd Pause -->
 
                                         <tr
@@ -464,6 +485,7 @@
                                 class="flex flex-col filter-item pt-4 pb-4 border-b"
                                 style="height: auto"
                             >
+                                <!-- Start header client filter -->
                                 <div class="flex items-center justify-between">
                                     <span
                                         [ngClass]="{
@@ -490,6 +512,9 @@
                                         }}</mat-icon
                                     >
                                 </div>
+                                <!-- End header client filter -->
+                                
+                                <!-- Start the options client list -->
                                 <div
                                     *ngIf="selectedFilterClient"
                                     class="flex flex-col mt-3 px-3"
@@ -525,28 +550,14 @@
                                                     >
                                                     </mat-checkbox>
                                                     <span>{{
-                                                        filterClients.at(i)
-                                                            .controls.name.value
+                                                        client.value.name
                                                     }}</span>
                                                 </div>
                                             </ng-container>
                                         </ng-container>
                                     </ng-container>
-                                    <!-- <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Epa</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <mat-checkbox
-                                                [color]="'primary'"
-                                                formControlName="checked">
-                                            </mat-checkbox>
-                                            <span>Beconsult</span>
-                                        </div> -->
                                 </div>
+                                <!-- End the options client list -->
                             </div>
                             <div
                                 class="flex flex-col filter-item border-b pt-4 pb-4"
@@ -933,9 +944,8 @@
                                                     <div class="flex flex-row">
                                                         <div class="mt-2 mr-2">
                                                             <mat-checkbox
-                                                                [color]="
-                                                                    'primary'
-                                                                "
+                                                                [color]="'primary'"
+                                                                (change)="handleEventCheckbox(collaborator)"
                                                                 formControlName="checked"
                                                             >
                                                             </mat-checkbox>
@@ -1082,13 +1092,7 @@
                                                             matTooltip="Siguiente"
                                                             mat-stroked-button
                                                             matTooltip="Editar ocupaciones"
-                                                            (click)="
-                                                                editOccupation(
-                                                                    collaboratorOccupation[
-                                                                        i
-                                                                    ]
-                                                                )
-                                                            "
+                                                            (click)="editOccupation(collaboratorOccupation[i])"
                                                         >
                                                             <mat-icon
                                                                 class="icon-size-5"
@@ -1157,7 +1161,6 @@
             <ngx-spinner></ngx-spinner>
             <app-update-occupation
                 *ngIf="isEditing"
-                [fullName]="collaborator.name + ' ' + collaborator.lastName"
                 [collaboratorAssigment]="assigments"
                 [collaborator]="collaborator"
                 (returnPrevious)="onReturnPrevious($event)"

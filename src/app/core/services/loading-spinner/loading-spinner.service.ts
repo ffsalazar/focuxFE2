@@ -23,7 +23,6 @@ export class LoadingSpinnerService {
 	 * 
 	 */
 	startLoading() {
-		console.log("start loading");
 		this._isLoading.next(true);
 	}
 
@@ -32,11 +31,9 @@ export class LoadingSpinnerService {
 	 * 
 	 */
 	stopLoading() {
-
-		console.log("Stop loading");
 		setTimeout(() => {
 			this._isLoading.next(false);
-		}, 3000)
+		}, 1500)
 	}
 
 

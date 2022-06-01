@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef,  MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { RequestService } from '../request.service';
-
+import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 @Component({
   selector: 'app-focux-popup',
   templateUrl: './focux-popup.component.html',
@@ -26,6 +26,7 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
     constructor(
         private requestService: RequestService,
 		public dialogRef: MatDialogRef<FocuxPopupComponent>,
+        public modalFocuxService: ModalFocuxService,
 		@Inject(MAT_DIALOG_DATA) public data
 	) {
         
@@ -37,7 +38,7 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.isOpenModal$ = this.requestService.isOpenModal$.subscribe(res => {
+        this.isOpenModal$ = this.modalFocuxService.isOpenModal$.subscribe(res => {
             if ( res !== null ) {
                 this.closeDialog();
             }
@@ -49,4 +50,12 @@ export class FocuxPopupComponent implements OnInit, AfterViewInit {
         this.isOpenModal$.unsubscribe();
     }
 
+    styleObject(): Object {
+        if (this.data.title === 'evaluation-template'){
+            return {height: 'auto',width: '500px'}
+        }else{
+            return {height: 'auto',width: '1000px'}
+        }
+       
+    }
 }

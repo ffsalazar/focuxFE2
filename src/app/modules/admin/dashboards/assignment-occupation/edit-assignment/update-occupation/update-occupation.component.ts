@@ -19,9 +19,8 @@ import { limitOccupation } from '../../partner-search/limit-occupation';
 })
 export class UpdateOccupationComponent implements OnInit, OnDestroy {
 
-	@Input() set collaboratorAssigment(collaborator: any) {
-		this.collaboratorOccupations = collaborator;
-		this._setFormOcupation(collaborator);
+	@Input() set collaboratorAssigment(occupations: any) {
+		this._setFormOcupation(occupations);
 	}
 
 	@Input('collaborator') collaborator;
@@ -29,7 +28,6 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 	@Output('deleteAssignment') deleteAssignment: EventEmitter<any> = new EventEmitter();
 
 	rolesRequest$: Observable<RolesRequest[]>;
-
 	collaboratorOccupations: any = null;
 	successSave: string;
     flashMessage: 'success' | 'error' | null = null;
@@ -144,11 +142,12 @@ export class UpdateOccupationComponent implements OnInit, OnDestroy {
 	 * @param collaborator 
 	 */
    	private _setFormOcupation(collaborator: any) {
+
+		console.log("collaborator", collaborator);
 		if ( collaborator ) {
 			this.collaboratorOccupation.clear();
 
 			collaborator.assigments.forEach(item => {
-				console.log("item: ", item);
 				if ( item && item?.isActive ) {
 					let collaboratorOccupation: FormGroup = this._formBuilder.group({
 						id              : [item.id],

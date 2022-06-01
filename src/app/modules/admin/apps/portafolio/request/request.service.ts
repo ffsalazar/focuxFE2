@@ -28,6 +28,7 @@ import {
 import { Client } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FocuxPopupComponent } from './focux-popup/focux-popup.component';
+import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 
 @Injectable({
     providedIn: 'root',
@@ -89,7 +90,7 @@ export class RequestService {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient, private dialog: MatDialog) {}
+    constructor(private _httpClient: HttpClient, private dialog: MatDialog, private modalFocuxService: ModalFocuxService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -586,7 +587,8 @@ export class RequestService {
             ),
             tap((requestNew) => {
                 // Close focuxPopup
-                this._isOpenModal.next(true);
+                //this._isOpenModal.next(true);
+                this.modalFocuxService.closeModal();
             })
         );
     }
@@ -619,7 +621,8 @@ export class RequestService {
                             requests[index] = updatedRequest;
 
                             // Close focuxPopup
-                            this._isOpenModal.next(true);
+                            //this._isOpenModal.next(true);
+                            this.modalFocuxService.closeModal();
 
                             // Update the requests
                             this._requests.next(requests);
@@ -738,7 +741,8 @@ export class RequestService {
                             requests.splice(index, 1);
 
                             // Close focuxPopup
-                            this._isOpenModal.next(false);
+                            //this._isOpenModal.next(false);
+                            this.modalFocuxService.closeModal();
 
                             // Update the requests
                             this._requests.next(requests);
@@ -771,7 +775,7 @@ export class RequestService {
      */
     getClientsByBusinessType(businessTypesId: number[]): Observable<Client[]> {
         let params = new HttpParams();
-        params = params.append('bussinessTypes', businessTypesId.join(','));
+        params = params.append('bussinesstypes', businessTypesId.join(','));
 
         return this._httpClient
             .get<Client[]>(
@@ -806,8 +810,7 @@ export class RequestService {
 
     getCollaboratorsAssigned(requestId: number): Observable<Collaborator[]> {
         return this._httpClient
-            .get<Collaborator[]>(
-                'http://localhost:1616/api/v1/followup/requests/assigned/' +
+            .get<Collaborator[]>('http://localhost:1616/api/v1/followup/requests/assigned/' +
                     requestId
             )
             .pipe(
@@ -825,9 +828,7 @@ export class RequestService {
      * @param modalType
      * @returns
      */
-    open(
-        data: DialogData,
-        options: DialogOptions = {
+    open(data: DialogData, options: DialogOptions = {
             width: 800,
             minHeight: 0,
             height: 200,
@@ -835,12 +836,10 @@ export class RequestService {
         },
         modalType: 1 | 2 = 1
     ): Observable<boolean> {
-        const dialogRef: MatDialogRef<FocuxPopupComponent> = this.dialog.open<
-            FocuxPopupComponent,
-            DialogData
-        >(FocuxPopupComponent, {
+        const dialogRef: MatDialogRef<FocuxPopupComponent> = this.dialog.open<FocuxPopupComponent, DialogData> (FocuxPopupComponent, {
             data,
         });
         return dialogRef.afterClosed();
     }
+
 }

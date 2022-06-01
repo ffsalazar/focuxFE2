@@ -19,7 +19,7 @@ import {
 import {Form, FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AssingmentOccupationService} from "../assingment-occupation.service";
 import {map, startWith, takeUntil} from "rxjs/operators";
-import {Observable, pipe, Subject} from "rxjs";
+import {forkJoin, Observable, pipe, Subject} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import { DateValidator } from './date-validation';
 import { limitOccupation } from '../partner-search/limit-occupation';
@@ -71,15 +71,6 @@ export class AsignationComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         
         this._fuseAlertService.dismiss('alertBox4');
-
-        // this._assignmentOccupationService.collaborators$
-        //     .pipe(takeUntil(this._unsubscribeAll))
-        //         .subscribe(collaborators => {
-        //             this.collaboratorOccupation = collaborators;
-        //             console.log("Entro: ", collaborators);
-        //             this._setCollaboratorsRecomm();
-
-        //         });
 
         this.rolesRequest$ = this._assignmentOccupationService.rolesRequest$
             .pipe(takeUntil(this._unsubscribeAll));
@@ -189,25 +180,28 @@ export class AsignationComponent implements OnInit, OnDestroy {
         for (let i = 0; i < this.collaboratorOccupation.length; i++) {
 
             this.collaboratorOccupation.at(i).statusChanges
-                .subscribe(value => {
-                    if ( value === 'VALID' ){
-                        this.activatedAlert = true;
-                        this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
-                    }
-                })
+                .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe(value => {
+                        if ( value === 'VALID' ){
+                            this.activatedAlert = true;
+                            this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                        }
+                    })
 
             this.collaboratorOccupation.at(i).valueChanges
-                .subscribe(value => {
-                    // if ( value === 'VALID' ){
-                    //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
-                    // }
+                .pipe(takeUntil(this._unsubscribeAll))
 
-                    const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
+                    .subscribe(value => {
+                        // if ( value === 'VALID' ){
+                        //     this.showFlashMessage('success', 'Datos de la asignación cargados con éxito!');
+                        // }
 
-                    if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
-                        this.collaboratorOccupation.at(i).get('occupation').setValue('');
-                    }
-                })
+                        const collaboratorIndex = this.collaboratorsArr.findIndex(item => item.id === value.id);
+
+                        if ( Number(value.occupation) + Number(this.collaboratorsArr[collaboratorIndex].occupationPercentage) > 100 ) {
+                            this.collaboratorOccupation.at(i).get('occupation').setValue('');
+                        }
+                    })
             
         }
     }
@@ -305,35 +299,36 @@ export class AsignationComponent implements OnInit, OnDestroy {
         });
 
         // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) => {
+        confirmation.afterClosed()
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((result) => {
+                // If the confirm button pressed...
+                if ( result === 'confirmed' )
+                {
+                    this.activatedAlert = true;
 
-            // If the confirm button pressed...
-            if ( result === 'confirmed' )
-            {
-                this.activatedAlert = true;
+                    const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
+                    
+                    if ( collaboratorIndex != null ) {
+                        // remove collaborator from collaboratorsArr
+                        this.collaboratorsArr.splice(collaboratorIndex, 1);
+                        // Emit index the collaborator
+                        this._assignmentOccupationService.removeCollaboratorSelected(this._assignmentOccupationService.collaboratorsSelected[collaboratorIndex].id);
+                        // remove collaborator from collaboratorSelected
+                        this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
+                        // remove form group from collaborator occupation
+                        this.collaboratorOccupation.removeAt(i);
+                        // Show notification update request
+                        this.showFlashMessage('success', 'Asignación eliminada con éxito');
+                    }
 
-                const collaboratorIndex = this.collaboratorsArr.findIndex(item => item && (item.id === this.collaboratorOccupation.at(i).get('id').value));
-                
-                if ( collaboratorIndex != null ) {
-                    // remove collaborator from collaboratorsArr
-                    this.collaboratorsArr.splice(collaboratorIndex, 1);
-                    // Emit index the collaborator
-                    this._assignmentOccupationService.removeCollaboratorSelected(this._assignmentOccupationService.collaboratorsSelected[collaboratorIndex].id);
-                    // remove collaborator from collaboratorSelected
-                    this._assignmentOccupationService.collaboratorsSelected.splice(collaboratorIndex, 1);
-                    // remove form group from collaborator occupation
-                    this.collaboratorOccupation.removeAt(i);
-                    // Show notification update request
-                    this.showFlashMessage('success', 'Asignación eliminada con éxito');
+                    // Mark for check
+                    this._changeDetectorRef.markForCheck();
                 }
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            }
-
-            //this._assignmentOccupationService.collaboratorSelectedRemove$.unsubscribe();
-            //this.confirmUpdate$.unsubscribe();
-        });
+                //this._assignmentOccupationService.collaboratorSelectedRemove$.unsubscribe();
+                //this.confirmUpdate$.unsubscribe();
+            });
     }
 
     /**
@@ -342,69 +337,70 @@ export class AsignationComponent implements OnInit, OnDestroy {
      */
     saveAssignationOccupation() {
         const assignation = this.formOcupation.getRawValue();
-
-        for (let i = 0; i < this.collaboratorOccupation.length; i++) {
-
-            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateInit').value);
-            console.log("startDate: ", this.collaboratorOccupation.at(i).get('dateEnd').value);
-            const assignationOccupation: AssignationOccupation = {
-                occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
-                assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
-                assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
-                code: this.request.code,
-                observations: this.collaboratorOccupation.at(i).get('observation').value,
-                isActive: 1,
-                request: {
-                    id: this.request.id,
-                },
-                collaborator: {
-                    id: this.collaboratorOccupation.at(i).get('id').value
-                },
-                requestRole: {
-                    id: this.collaboratorOccupation.at(i).get('roleRequest').value,
+        
+        const confirmation = this._fuseConfirmationService.open({
+            title  : 'Guardar asignación',
+            message: '¿Seguro que quiere guardar la asignación?',
+            icon: {
+                show: true,
+                name: "heroicons_outline:check",
+                color: "primary"
+            },
+            actions: {
+                confirm: {
+                    label: 'Guardar asignación',
+                    color: 'primary'
                 }
-            };
-
-            console.log("Assignation: ", assignationOccupation);
-
-            const confirmation = this._fuseConfirmationService.open({
-                    title  : 'Guardar asignación',
-                    message: '¿Seguro que quiere guardar la asignación?',
-                    icon: {
-                        show: true,
-                        name: "heroicons_outline:check",
-                        color: "primary"
-                    },
-                    actions: {
-                        confirm: {
-                            label: 'Guardar asignación',
-                            color: 'primary'
-                        }
-                    }
-                });
+            }
+        });
 
         // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) => {
-
+        confirmation.afterClosed()
+            .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((result) => {
                 // If the confirm button pressed...
                 if ( result === 'confirmed' )
                 {
+                    let promise = [];
 
-                    this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation)
-                        .subscribe(response => {
-                            this.activatedAlert = true;
-                            // Show notification update request
-                            this.showFlashMessage('success', 'Asignación guardada con éxito');
-                            // Set time out for change tab
-                            setTimeout(() => {
-                                this._router.navigate(['dashboards/assignment-occupation/index']);
-                                this._assignmentOccupationService.setTabIndex(0);
-                            }, 2000); 
-                        });
+                    for (let i = 0; i < this.collaboratorOccupation.length; i++) {
+                        const assignationOccupation: AssignationOccupation = {
+                            occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
+                            assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
+                            assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
+                            code: this.request.code,
+                            observations: this.collaboratorOccupation.at(i).get('observation').value,
+                            isActive: 1,
+                            request: {
+                                id: this.request.id,
+                            },
+                            collaborator: {
+                                id: this.collaboratorOccupation.at(i).get('id').value
+                            },
+                            requestRole: {
+                                id: this.collaboratorOccupation.at(i).get('roleRequest').value,
+                            }
+                        };
+            
+                        promise.push(this._assignmentOccupationService.saveAssignationOccupation(assignationOccupation));
+
+                        forkJoin(promise).subscribe(
+                            response => {
+                                this.activatedAlert = true;
+                                // Show notification update request
+                                this.showFlashMessage('success', 'Asignación guardada con éxito');
+                                // Set time out for change tab
+                                setTimeout(() => {
+                                    this._router.navigate(['dashboards/assignment-occupation/index']);
+                                    this._assignmentOccupationService.setTabIndex(0);
+                                }, 2000); 
+                            }
+                        );
+                        
+                    }
 
                 }
             });
-        }
     }
 
     /**

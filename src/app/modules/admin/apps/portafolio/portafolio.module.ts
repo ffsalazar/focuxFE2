@@ -32,6 +32,7 @@ import { MatTableModule } from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {PriorityRequestModule} from "../../../../shared/pipes/priority-request/priority-request.module";
 import {MatExpansionModule} from "@angular/material/expansion";
+import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 
 @NgModule({
     declarations: [
@@ -74,6 +75,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
         CUSTOM_ELEMENTS_SCHEMA,
     ],
       providers   : [
+          ModalFocuxService,
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ]
 })

@@ -1,0 +1,210 @@
+<div class="content flex flex-auto gap-2 border-t-mt-px max-w-screen-xl mx-auto py-4 px-6 sm:px-8 h-full bg-gray-50">
+    <div class="flex flex-col gap-4 w-full">
+        <div class="flex flex-col items-end w-full mb-2">
+            <div class="flex flex-col items-end w-full">
+                <mat-form-field class="w-1/4">
+                    <mat-label>Seleccionar Periodo</mat-label>
+                    <mat-select [formControl]="period">
+                        <ng-container *ngFor="let period of periods">
+                            <mat-option [value]="period.id">
+                                {{ period.dateInit }} - {{ period.dateEnd }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="flex flex-col items-end w-full">
+                <mat-form-field class="w-1/4">
+                    <mat-label>Seleccionar Plantilla</mat-label>
+                    <mat-select [formControl]="templateControl">
+                        <ng-container *ngFor="let template of templateList">
+                            <mat-option [value]="template.id">
+                                {{ template.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="flex flex-col gap-4">
+            <div class="flex" *ngFor="let collaborator of collaboratorsPerformace; index as i">
+                <mat-accordion style="margin:0;">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header style="height: 90px;">
+                            <mat-panel-title style="width:20%;" class="font-semibold mb-3 items-center">
+                                <div class="flex flex-0 items-center justify-center w-12 h-12 rounded-full overflow-hidden mr-2">
+                                    <ng-container>
+                                        <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                            {{ collaborator.name.charAt(0) | uppercase }}
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <span>{{ collaborator.name + ' ' +  collaborator.lastName }}</span>
+                            </mat-panel-title>
+                            <mat-panel-title  style="width: 20%;" class="font-semibold mb-3 items-center">
+                                {{ collaborator.template }}
+                            </mat-panel-title>
+                            <div style="width: 30%;margin-right:3%;" class="font-semibold mb-3">
+                                <mat-label class="font-semibold mb-3">Total Evaluado </mat-label>
+                                <mat-progress-bar class="rounded-full w-80" [mode]="'determine'" [color]="'primary'" [value]="10">
+                                </mat-progress-bar>
+                            </div>
+                        </mat-expansion-panel-header>
+                        <div class="flex justify-between m-10">
+                            <mat-panel-title>
+                                Mes
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Tipo de Obj
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Tipo de Ind
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Objetivo
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Indicador
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Peso
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Resultado
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Meta
+                            </mat-panel-title>
+                            <mat-panel-title>
+                                Acciones/Observación
+                            </mat-panel-title>
+                            <mat-panel-title>
+                            
+                            </mat-panel-title>
+                        </div>
+                        <!-- <div *ngFor="let template of templates"> -->
+                            <div [formGroup]="collaborator.evaluations">
+                                <div formArrayName="evaluationsControls">
+                                    <div *ngFor="let tmp of collaborator.evaluations.get('evaluationsControls').controls; index as i">
+                                        <div [formGroupName]="i">
+                                            <mat-form-field appearance="outline" style="width: 7%; margin-right:5px;">
+                                                <mat-label>Mes</mat-label>
+                                                    <mat-select formControlName="month">
+                                                        <ng-container *ngFor="let month of months">
+                                                            <mat-option [value]="month.id">
+                                                                {{ month.dateInit }}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                            </mat-form-field>
+                                
+                                            <mat-form-field appearance="outline" style="width: 11%; margin:5px;">
+                                                <mat-label>Tipo Obj</mat-label>
+                                                <mat-select formControlName="typeObjetive">
+                                                    <ng-container *ngFor="let objetive of typeOperators">
+                                                        <mat-option [value]="objetive.id">
+                                                            {{ objetive.type }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 10%; margin:5px;">
+                                                <mat-label>Tipo de Ind</mat-label>
+                                                <mat-select formControlName="typeIndicator">
+                                                    <ng-container *ngFor="let indicator of indicatorsType">
+                                                        <mat-option [value]="indicator.type">
+                                                            {{ indicator.type }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 8%;margin:5px;">
+                                                <mat-label>Objetivo</mat-label>
+                                                <mat-select formControlName="objetive">
+                                                    <ng-container *ngFor="let objetive of objetives$ | async as objetives">
+                                                        <mat-option [value]="objetive.id">
+                                                            {{ objetive.name }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                                                <mat-label>Indicador</mat-label>
+                                                <mat-select formControlName="indicator" >
+                                                    <ng-container *ngFor="let indicator of indicators$ | async as indicators">
+                                                        <mat-option [value]="indicator.id">
+                                                            {{ indicator.name }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 6%;margin:5px;">
+                                                <mat-label>Peso</mat-label>
+                                                <input formControlName="weight" matInput type="number">
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                                                <mat-label>Resultado</mat-label>
+                                                <input formControlName="result" matInput>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 10%;margin:5px;">
+                                                <mat-label>Meta</mat-label>
+                                                <input formControlName="goal" matInput>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" style="width: 18%;margin:5px;margin-right: 8px;">
+                                                <mat-label> Acciones/Observación</mat-label>
+                                                <input formControlName="observation" matInput>
+                                            </mat-form-field>
+                                
+                                            <button (click)="removeEvaluation(collaborator, i)">
+                                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:trash'"
+                                                    style="color:red;width: 15px;height: 15px;"></mat-icon>
+                                            </button>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                <!-- </div> -->
+                                
+                            </div>
+                            </div>
+                            
+                
+                
+                        <mat-action-row>
+                            <button mat-button color="primary" (click)="newEvaluation(collaborator)">
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:plus-circle'"
+                                    style="color:red;width: 15px;height: 15px;"></mat-icon> Nuevo
+                            </button>
+                            <button
+                                class="mr-4"
+                                mat-button
+                                color="primary"
+                                (click)="nextStep()"
+                                mat-flat-button
+                                [color]="'primary'"
+                            >
+                                Guardar
+                            </button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+            
+        </div>
+    <div>
+        <div class="flex justify-end">
+            <button
+                class="px-8 justify-self-end"
+                mat-flat-button [color]="'primary'"
+                type="button"
+            >
+                Continuar
+            </button>
+        </div>
+</div>
+
+
+
+
+
+
