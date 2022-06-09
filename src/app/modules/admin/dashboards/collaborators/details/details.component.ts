@@ -396,7 +396,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
                     priorityOrder: request.priorityOrder,
                     status: request.status.name,
                     completionPercentage: request.completionPercentage,
-                    deviationPercentage: request.deviationPercentage,
+                    deliveryDateDeviation: request.deliveryDateDeviation,
+                    deviationPercentage: request.deviationPercentage
                 };
 
                 this._collaboratorsService

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+    import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,7 +11,7 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
 import { InventoryService } from 'app/modules/admin/apps/ecommerce/inventory/inventory.service';
 import { MatHorizontalStepper, MatStepper } from '@angular/material/stepper';
 import { RequestService } from '../request.service';
-import { CommercialArea, Department, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType, Collaborator } from '../request.types';
+import { Pause, CommercialArea, Department, Request, Status, Category, RequestPeriod, TypeRequest, TechnicalArea, BusinessType, Collaborator } from '../request.types';
 import { Client, Knowledge } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { MatDialog } from '@angular/material/dialog';
 import { FuseAlertService } from '@fuse/components/alert';
@@ -22,6 +22,7 @@ import { DateValidator } from './validation-date';
 import { MatSelect } from '@angular/material/select';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+    import * as moment from "moment";
 //import { MatInput } from '@angular/material';
 import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.service';
 
@@ -34,13 +35,13 @@ import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.ser
             th, td{
                 text-align: center !important;
             }
-           
+
            .mat-form-field.mat-form-field-appearance-fill
             .mat-form-field-wrapper
             .mat-form-field-flex {
                 padding-right: 2px !important;
             }
-            
+
             .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix{
                 padding-right: 4px !important;
             }
@@ -57,15 +58,33 @@ import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.ser
                 border-radius: 5px;
                 padding: 5px 10px;
             }
+            .mat-column-comments {
+                flex: none;
+                width: 60%;
+            }
+            .pausecomment {
+                text-align: justify;
+                text-justify: inter-word;
+            }
 
             #txtcuadro {
-                height:80px;
+                 height:80px;
+                 transition:all 1s;
+                 -webkit-transition:all 1s;
+                 resize: none;
+             }
+
+            #txtcuadro:focus {
+                height:400px;
+            }
+            #txtcuadroe {
+                height:10px;
                 transition:all 1s;
                 -webkit-transition:all 1s;
                 resize: none;
             }
 
-            #txtcuadro:focus {
+            #txtcuadroe:focus {
                 height:400px;
             }
 
@@ -84,6 +103,7 @@ import { ModalFocuxService } from 'app/core/services/modal-focux/modal-focux.ser
                     grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
                 }
             }
+
 
 
         `
@@ -120,10 +140,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     tags: InventoryTag[];
     tagsEditMode: boolean = false;
     horizontalStepperForm;
+    pauseForm: FormGroup;
+    pauseFormEdit: FormGroup;
 
     requestOriginal: Request[] = [];
     showListRequest = true;
     dataSource = new MatTableDataSource<Request[]>();
+
     knowledgesEditMode: boolean = false;
     categories: Category[];
     clients: Client[];
@@ -131,6 +154,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     commercialArea: CommercialArea[];
     status: Status[];
     requestp: RequestPeriod[];
+    requestpause: Pause[];
     typeRequest: TypeRequest[];
     technicalArea: TechnicalArea[];
     businessType: BusinessType[];
@@ -141,12 +165,19 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     isDetail: boolean = false;
     alert: boolean = false;
     successSave: String = "";
+    editAlertMsj: String = "Se debe dar una fecha de fin a la Pausa";
+    editAlert: boolean = false;
     dataCollab = new MatTableDataSource<any>();
+    dataPause = new MatTableDataSource<any>();
+    dataPauseEdit = new MatTableDataSource<any>();
 
     // dataSource: Request[]
     displayColCollab: string[] = ['id', 'name', 'roleName', 'occupationPercentage', 'startDate', 'endDate'];
     displayedColumns: string[] = ['id', 'ramo', 'code', 'client', 'titleRequest',
-        'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deviationPercentage', 'dateEndPause', 'Detalle'];
+        'responsibleRequest', 'priorityOrder', 'status', 'completionPercentage', 'dateRealEnd', 'deliveryDateDeviation', 'dateEndPause', 'Detalle'];
+    displayPauses : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause', 'button'];
+    displayPausesEdit : string[] = ['id', 'comments', 'dateInitPause', 'dateEndPause', 'button'];
+    
 
     // Form Controls
     filterGroupForm: FormGroup;
@@ -187,8 +218,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     allCompleteStatus: boolean = false;
     activatedAlert: boolean = false;
     hasPause: boolean = false;
-    isToggle: boolean = false;
+    showPause: boolean = false;
+    showPauseEdit: boolean = false;
+    pauseError: boolean = false;
+    toggleAlert: boolean = false;
+    isToggle:  boolean = false;
+    editPauseButton:  boolean;
     hasCollab: boolean = false;
+    panelOpenState = [];
+    panelOpenStateEdit = [];
+    lengthPauses: number;
+    arrayPausesEdit = [];
+    pausesEditSource: Pause[];
+    pauseEditRaw: any;
+
+
 
     /*
     /**
@@ -249,13 +293,12 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
             }),
             step3: this._formBuilder.group({
                 //Periodo de pausa
-                completionPercentage: [''],
-                deviationPercentage: [''],
-                internalFeedbackIntelix: [''],
-                requestPeriod: [''],
-                dateInitPause: [''],
-                dateEndPause: [''],
-                totalPauseDays: [''],
+                completionPercentage        : [''],
+                deviationPercentage         : [''],
+                internalFeedbackIntelix     : [''],
+                requestPeriod               : [''],
+                totalPauseDays : [''],
+                pauses                      : [[]],
             }),
             step4: this._formBuilder.group({
                 //Avances y updates de Intelix
@@ -274,6 +317,24 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
             commercialAreaControl: [],
             statusControl: [],
             customerBranchControl: [],
+        });
+        this.pauseForm = this._formBuilder.group({
+            id : [null],
+            createdOn : [''],
+            totalPausedDays : [1],
+            dateInitPause: [''],
+            comments: [''],
+            dateEndPause: [''],
+            createdBy: [1],
+        });
+        this.pauseFormEdit = this._formBuilder.group({
+            id : [null],
+            createdOn : [''],
+            totalPausedDays : [1],
+            dateInitPause: [''],
+            comments: [''],
+            dateEndPause: [''],
+            createdBy: [1],
         });
 
         this.request$ = this._requestService.requests$;
@@ -634,9 +695,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     //     return filteredCollection.filter(option => option.toLowerCase().includes(filteredValue));
     // }
 
+
     /**
      * Get clients by bussinessType
-     * 
+     *
      */
     private _getClientsByBusinessType() {
         // Get clients by bussinessTypes
@@ -664,10 +726,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Filter
-     * 
-     * @param filter 
-     * @param collection 
-     * @returns 
+     *
+     * @param filter
+     * @param collection
+     * @returns
      */
     filter(filter: string, collection: any[]): any[] {
         this.lastFilter = filter;
@@ -682,10 +744,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Sort Array
-     * 
-     * @param x 
-     * @param y 
-     * @returns 
+     *
+     * @param x
+     * @param y
+     * @returns
      */
     sortArray(x: any, y: any) {
         if (x.name < y.name) { return -1; }
@@ -875,7 +937,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
         let newKnowledge: any = {
             knowledge: knowledge,
             isActive: 1
-        }
+        };
 
         // Add the knowledge
         this.selectedRequest.knowledges.unshift(newKnowledge);
@@ -966,9 +1028,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      */
     showDetail(id: number) {
+
         this.isDetail = true;
         this.getCollaboratorsAssigned(id);
         this.openPopup(id);
+
     }
 
     /**
@@ -1094,6 +1158,11 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
                     // Set selected request to null
                     this.selectedRequest = null;
 
+                    this.dataPause.data = [];
+                    this.lengthPauses = 0;
+
+                    // Set selected request to null
+                    this.selectedRequest = null;
                     // Set form wizzard
                     this._stepper.reset();
 
@@ -1105,7 +1174,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Create request
-     * 
+     *
      */
     createRequest(): void {
 
@@ -1123,8 +1192,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Get collaborators assigned
-     * 
-     * @param requestId 
+     *
+     * @param requestId
      */
     getCollaboratorsAssigned(requestId: number) {
         this._requestService.getCollaboratorsAssigned(requestId)
@@ -1135,6 +1204,21 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.dataCollab.data = collaborators;
             });
     }
+    getPausesAssigned(request: any) {
+        this.lengthPauses = request.pauses.length;
+        this.dataPause.data = request.pauses;
+        this.arrayPausesEdit[0] = request.pauses[this.lengthPauses-1];
+        this.dataPauseEdit.data = this.arrayPausesEdit;
+        let pauseEditEnd = request.pauses[0];
+        let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
+        if(checkValidDate != "Invalid date"){
+            this.editPauseButton = true;
+            this.toggleAlert = false;
+        }else{
+            this.editPauseButton = false;
+            this.toggleAlert = true;
+        }
+    }
 
     /**
      * Update the selected request using the form data
@@ -1142,6 +1226,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     updateSelectedRequest(requestId: number) {
         this.hasPause = false;
+        this.editAlert = false;
         this.isEditing = true;
         this.openPopup(requestId);
         this.getCollaboratorsAssigned(requestId);
@@ -1219,8 +1304,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Show the nofication and close modal
-     * 
-     * @param message 
+     *
+     * @param message
      */
     showNotificationAndCloseModal(message: string) {
         // Clear Wizzard
@@ -1245,7 +1330,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      *  Create the new request
-     * 
+     *
      * @param request
      */
     createNewRequest(request: any) {
@@ -1271,16 +1356,17 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Update the request
-     * 
-     * @param request 
+     *
+     * @param request
      */
-    updateRequest(request: any) {
+    updateRequest(request: any, pauses: Pause) {
         this._requestService.updateRequest(request.id, request)
             .subscribe((request) => {
                 this.activatedAlert = true;
                 // Show Notification and close modal
                 this.showNotificationAndCloseModal('Solicitud actualizada con éxito!');
             });
+        //this.createPause(pauses);
     }
 
     /**
@@ -1305,6 +1391,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
+
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
 
@@ -1323,6 +1410,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
                     ...wizzard.step4,
                     isActive: 1
                 };
+                const pauses = this.pauseForm.getRawValue();
+                this.pauseError = false;
+                this.editAlert = false;
 
                 requestNew.client = this.clients.find(
                     item => item.id === requestNew.client
@@ -1350,18 +1440,51 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
                     item => item.id === requestNew.technicalArea
                 );
 
+                if(this.showPauseEdit){
+                    requestNew.pauses[0] = this.pauseFormEdit.getRawValue();
+                }
+                if (!((pauses.dateInitPause === "" || pauses.comments ===  "") || (pauses.dateInitPause === null || pauses.comments ===  null))) {
+                    pauses.dateEndPause = "";
+                    requestNew.pauses.unshift(pauses);
+                    requestNew.status = this.status.find(
+                        item => item.id === 11
+                    );
+                }
+                if(this.isEditing && requestNew.pauses.length > 0) {
+                    let pauseEditEnd = requestNew.pauses[0];
+                    let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
+                    if (requestNew.status.id != 11) {
+                        this.pauseError = checkValidDate === "Invalid date";
+                    }
+                    if(checkValidDate != "Invalid date"){
+                        requestNew.status.id = 5;
+                    }
+                }
+
+
+                //Reset Pause Form
+                this.pauseForm.get('comments').reset();
+                this.pauseForm.get('dateInitPause').reset();
+                this.pauseForm.get('dateEndPause').reset();
+
+                this.showPauseEdit = false;
+
                 // requestNew.responsibleRequest = {
                 //     id: 1
                 // };
 
-                if (!this.isEditing) {
-                    requestNew.responsibleRequest = null;
-                    // Create the request on the server
-                    this.createNewRequest(requestNew);
-                } else {
-                    requestNew.responsibleRequest = this.collaborators.find(item => item.id === 1);
-                    // Update the request on the server
-                    this.updateRequest(requestNew);
+                if(this.pauseError === true) {
+                    this.editAlert = true;
+                }else {
+                    if (!this.isEditing) {
+                        requestNew.responsibleRequest = null;
+                        // Create the request on the server
+                        this.createNewRequest(requestNew);
+                    } else {
+                        requestNew.responsibleRequest = this.collaborators.find(item => item.id === 1);
+                        // Update the request on the server
+                        this.updateRequest(requestNew, pauses);
+                    }
                 }
 
 
@@ -1381,9 +1504,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Option clicked
-     * 
-     * @param event 
-     * @param selectedItem 
+     *
+     * @param event
+     * @param selectedItem
      */
     optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
         event.stopPropagation();
@@ -1392,8 +1515,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Handle change the checkbox
-     * 
-     * @param option 
+     *
+     * @param option
      */
     handleChangeCheckbox(option: string) {
         // Select action option
@@ -1415,9 +1538,9 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Toggle Selection
-     * 
-     * @param selectedFilter 
-     * @param collection 
+     *
+     * @param selectedFilter
+     * @param collection
      */
     toggleSelection(selectedFilter: any, selectedCollection: BusinessType[] | Client[], option: string) {
         // change status the selected
@@ -1432,8 +1555,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Restarting list
-     * 
-     * @param control 
+     *
+     * @param control
      */
     restartingList(control: FormControl) {
         control.setValue('', { emitEvent: false });
@@ -1444,8 +1567,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Update selected item
-     * 
-     * @param selectedItem 
+     *
+     * @param selectedItem
      */
     updateSelectedItem(selectedItem: any) {
         if (this.selectedItem) {
@@ -1457,8 +1580,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Select only one item
-     * 
-     * @param selectedItem 
+     *
+     * @param selectedItem
      */
     selectOnlyItem(selectedItem: any, collection: any) {
         selectedItem.selected = true;
@@ -1473,10 +1596,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Check item
-     * 
-     * @param item 
-     * @param collection 
-     * @returns 
+     *
+     * @param item
+     * @param collection
+     * @returns
      */
     checkItem(item: any, collection: any) {
         return collection.find(element => element.name === item.name) === undefined ? false : true;
@@ -1484,8 +1607,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Set all as selected
-     * 
-     * @param completed 
+     *
+     * @param completed
      */
     setAll(completed: boolean, collection: any, option: string) {
 
@@ -1517,7 +1640,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Some complete
-     * 
+     *
      * @returns
      */
     someComplete(collection: any, allComplete: boolean): boolean {
@@ -1526,8 +1649,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * Update all complete
-     * 
-     * @param option 
+     *
+     * @param option
      */
     updateAllComplete(option: string) {
 
@@ -1558,6 +1681,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     setPause() {
         this.hasPause = !this.hasPause;
+        this.showPauseEdit = false;
+        this.pauseForm.get('comments').reset();
+        this.pauseForm.get('dateInitPause').reset();
+        this.pauseForm.get('dateEndPause').reset();
     }
 
     /**
@@ -1567,6 +1694,10 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
     isShowCollab() {
         this.hasCollab = !this.hasCollab;
     }
+    isShowPause() {
+        this.showPause = !this.showPause;
+
+    }
 
     /**
      * Set pause
@@ -1574,6 +1705,34 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     test() {
         console.log("heree")
+    }
+    createPause(pauses: Pause): void
+    {
+        const newPause = pauses;
+        // Create the pause
+        this._requestService.createPause(newPause).subscribe((newPause) => {
+        });
+    }
+    // eslint-disable-next-line @typescript-eslint/member-ordering
+
+
+
+
+    editPause(pause : any): void
+    {
+        if (this.hasPause == false){
+            this.showPauseEdit = !this.showPauseEdit;
+
+
+            this.pauseFormEdit.setValue(pause);
+            this.pauseForm.get('comments').reset();
+            this.pauseForm.get('dateInitPause').reset();
+            this.pauseForm.get('dateEndPause').reset();
+
+
+        }
+
+
     }
 
 }

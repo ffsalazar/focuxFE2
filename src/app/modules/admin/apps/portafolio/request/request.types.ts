@@ -10,15 +10,14 @@ export interface Request {
     commentsIntelix: String;
     commercialArea: CommercialArea;
     completionPercentage: number;
-    dateEndPause: Date;
     dateInit: Date;
-    dateInitPause: Date;
     datePlanEnd: Date;
     dateRealEnd: Date;
     dateRequest: Date;
     deliverablesCompletedIntelix: String;
     descriptionRequest: string;
     deviationPercentage: number;
+    deliveryDateDeviation: number;
     internalFeedbackIntelix: String;
     isActive: number;
     pendingActivitiesIntelix: String;
@@ -29,10 +28,10 @@ export interface Request {
     status: Status;
     technicalArea: TechnicalArea;
     titleRequest: string;
-    totalPauseDays: number;
     typeRequest: TypeRequest;
     updateDate: Date;
     knowledges: any;
+    pauses: Pause[];
 }
 
 export interface Category {
@@ -169,7 +168,16 @@ export interface Knowledge {
     name: string;
     isActive: number;
 }
-
+export interface Pause
+{
+    id: number;
+    comments: string;
+    dateEndPause: Date;
+    dateInitPause: Date;
+    createdBy: string;
+    createdOn: string;
+    totalPauseDays: number;
+}
 export interface ResponsibleRequest {
     id: number;
     idFile: number;
