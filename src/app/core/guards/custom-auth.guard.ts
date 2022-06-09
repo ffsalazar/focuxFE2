@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {AuthService} from "../auth/auth.service";
+import {AuthService} from '../auth/auth.service';
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
-export class GuardAuthGuard implements CanActivate{
+export class CustomAuthGuard implements CanActivate{
 
     constructor(private _authService: AuthService,
                 private _router: Router) {
@@ -33,12 +33,21 @@ export class GuardAuthGuard implements CanActivate{
     }
 
     private _isAuthenticated(redirectURL: string): Observable<boolean> {
-       if (!this._authService.authenticated && this._authService.roles.length === 0) {
+            const isAuthenticated: boolean = (localStorage.getItem('isAuthenticated') === 'true');
+            const roles: {authority: string}[] = JSON.parse(localStorage.getItem('authorities')) as {authority: string}[];
+
+            console.log("isAuthenticated: ", isAuthenticated);
+            console.log("roles: ", roles);
+            
+       if (!isAuthenticated && roles?.length === 0) {
            this._router.navigate(['sign-in'], {queryParams: {redirectURL}}).then();
            console.log("Not authenticated");
-           return of(false);
+
+           return of(true);
        } else {
-           console.log("Authenticated");
+           
+        console.log("Authenticated");
+
            return of(true);
        }
     }
