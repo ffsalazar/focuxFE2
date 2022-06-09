@@ -279,9 +279,7 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
      * Filter knowledges
      */
     get filterKnowledges(): FormArray {
-        return this.filterCollaboratorsGroup.get(
-            'filterKnowledges'
-        ) as FormArray;
+        return this.filterCollaboratorsGroup.get('filterKnowledges') as FormArray;
     }
 
     /**
@@ -319,6 +317,8 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
         );
         const knowledgesId = filteredKnowledges.map((item) => item.id);
         
+        console.log("request: ", this.request);
+
         this._assignmentOccupationService
             .getFilterCollaborator(
                 clientsId,
@@ -341,7 +341,6 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     getCollaboratorsAssigned(requestId: number) {
         this._requestService.getCollaboratorsAssigned(requestId)
             .subscribe((collaborators) => {
-                console.log("collaborators: ", collaborators);
                 collaborators.forEach((item) => {
                     item.name = item.name + ' ' + item.lastName;
                 });
@@ -703,6 +702,26 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Update filter values
+     * 
+     * @param value
+     * @param filterArray
+     */
+    private updateFilterValues(value: any, values: any[], filterArray: FormArray) {
+        const valueFind = values.findIndex(item => item.id === value.id);
+                    
+        if ( valueFind > -1 ) {
+            filterArray.at(valueFind).setValue({
+                id: value.id,
+                name: value.name,
+                checked: true,
+            }, {onlySelf: true});
+
+            filterArray.at(valueFind).updateValueAndValidity();
+        }
+    }
+
+    /**
      * _getCollaboratorsByRequest
      *
      */
@@ -716,15 +735,26 @@ export class PartnerSearchComponent implements OnInit, OnDestroy {
                     // Get collaborators assigned to request
                     this.getCollaboratorsAssigned(this.request.id);
                     
+                    const clients = this.filterClients.getRawValue();
+
+                    this.selectedFilterClient = true;
+
+                    this.updateFilterValues(this.request.client, clients, this.filterClients);
+
+                    if ( this.request.knowledges.length > 0 ) {
+                        // Loop for each knwoledge
+                        
+                        const knowledges = this.filterKnowledges.getRawValue();
+
+                        this.request.knowledges.forEach(({knowledge}) => {
+                            this.updateFilterValues(knowledge, knowledges, this.filterKnowledges);
+                        });
+
+                        this.selectedFilterKnowledge = true;
+                    }
+
                     // Get collaborators by filter
                     this.getCollaboratorsByFilter();
-
-                    // this._assignmentOccupationService.getAllColaboratorOccupation(request.id)
-                    //     .subscribe(collaborators => {
-                    //         // Mark for check
-                    //         this._changeDetectorRef.markForCheck();
-                    //     });
-                    
                     
                 }
                 // Get recommended
