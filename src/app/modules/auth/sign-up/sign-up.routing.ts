@@ -3,11 +3,11 @@ import { AuthSignUpComponent } from 'app/modules/auth/sign-up/sign-up.component'
 
 export const authSignupRoutes: Route[] = [
     {
-        path     : '',
-        component: AuthSignUpComponent
+        path: '',
+        component: AuthSignUpComponent,
     },
     {
-        path     : 'modern-reversed',
-        component: AuthSignUpComponent
-    }
+        path: 'modern-reversed',
+        component: AuthSignUpComponent,
+    },
 ];

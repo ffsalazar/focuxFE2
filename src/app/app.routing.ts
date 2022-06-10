@@ -1,17 +1,18 @@
 import { Route } from '@angular/router';
-import { AuthGuard } from 'app/core/auth/guards/auth.guard';
-import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
-import { GuardAuthGuard } from './core/guards/guard-auth.guard';
-import {CustomAuthGuard} from './core/guards/custom-auth.guard';
+import { CustomAuthGuard } from './core/guards/custom-auth.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: 'dashboards/project' },
+    {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboards/project',
+    },
 
     // Redirect signed in user to the '/dashboards/project'
     //
@@ -27,8 +28,6 @@ export const appRoutes: Route[] = [
     // Auth routes for guests
     {
         path: '',
-        canActivate: [NoAuthGuard],
-        canActivateChild: [NoAuthGuard],
         component: LayoutComponent,
         data: {
             layout: 'empty',
@@ -79,7 +78,7 @@ export const appRoutes: Route[] = [
         canActivateChild: [CustomAuthGuard],
         component: LayoutComponent,
         data: {
-            layout: 'empty'
+            layout: 'empty',
         },
         children: [
             {
@@ -119,30 +118,89 @@ export const appRoutes: Route[] = [
 
     // Admin routes
     {
-        path       : '',
-        canActivate: [CustomAuthGuard],
-        canActivateChild: [CustomAuthGuard],
-        component  : LayoutComponent,
-        resolve    : {
+        path: '',
+        component: LayoutComponent,
+        resolve: {
             initialData: InitialDataResolver,
         },
         children: [
             // Dashboards
-            {path: 'dashboards', children: [
-                {path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.module').then(m => m.ProjectModule)},
-                {path: 'analytics', loadChildren: () => import('app/modules/admin/dashboards/analytics/analytics.module').then(m => m.AnalyticsModule)},
-                {path: 'finance', loadChildren: () => import('app/modules/admin/dashboards/finance/finance.module').then(m => m.FinanceModule)},
-                {path: 'crypto', loadChildren: () => import('app/modules/admin/dashboards/crypto/crypto.module').then(m => m.CryptoModule)},
-                {path: 'requestPanel', loadChildren: () => import('app/modules/admin/dashboards/requestPanel/requestPanel.module').then(m => m.RequestPanelModule)},
-                {path: 'collaborators', loadChildren: () => import('app/modules/admin/dashboards/collaborators/collaborators.module').then(m => m.CollaboratorsModule)},
-                {path: 'assignment-occupation', loadChildren: () => import('app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module').then(m => m.AssignmentOccupationModule)},
-                {path: 'vacations', loadChildren: () => import('app/modules/admin/dashboards/vacations/vacations.module').then(m => m.VacationsModule)},
-                {path: 'evaluation', loadChildren: () => import('app/modules/admin/dashboards/evaluation/evaluation.module').then(m => m.EvaluationModule)}
-                ]},
+            {
+                path: 'dashboards',
+                canActivate: [CustomAuthGuard],
+                canActivateChild: [CustomAuthGuard],
+                children: [
+                    {
+                        path: 'project',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/project/project.module'
+                            ).then((m) => m.ProjectModule),
+                    },
+                    {
+                        path: 'analytics',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/analytics/analytics.module'
+                            ).then((m) => m.AnalyticsModule),
+                    },
+                    {
+                        path: 'finance',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/finance/finance.module'
+                            ).then((m) => m.FinanceModule),
+                    },
+                    {
+                        path: 'crypto',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/crypto/crypto.module'
+                            ).then((m) => m.CryptoModule),
+                    },
+                    {
+                        path: 'requestPanel',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/requestPanel/requestPanel.module'
+                            ).then((m) => m.RequestPanelModule),
+                    },
+                    {
+                        path: 'collaborators',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/collaborators/collaborators.module'
+                            ).then((m) => m.CollaboratorsModule),
+                    },
+                    {
+                        path: 'assignment-occupation',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module'
+                            ).then((m) => m.AssignmentOccupationModule),
+                    },
+                    {
+                        path: 'vacations',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/vacations/vacations.module'
+                            ).then((m) => m.VacationsModule),
+                    },
+                    {
+                        path: 'evaluation',
+                        loadChildren: () =>
+                            import(
+                                'app/modules/admin/dashboards/evaluation/evaluation.module'
+                            ).then((m) => m.EvaluationModule),
+                    },
+                ],
+            },
 
             // Apps
             {
                 path: 'apps',
+                canActivate: [CustomAuthGuard],
+                canActivateChild: [CustomAuthGuard],
                 children: [
                     {
                         path: 'academy',
@@ -241,6 +299,8 @@ export const appRoutes: Route[] = [
             // Masters
             {
                 path: 'masters',
+                canActivate: [CustomAuthGuard],
+                canActivateChild: [CustomAuthGuard],
                 children: [
                     {
                         path: 'clients',
@@ -347,6 +407,8 @@ export const appRoutes: Route[] = [
             // Pages
             {
                 path: 'pages',
+                canActivate: [CustomAuthGuard],
+                canActivateChild: [CustomAuthGuard],
                 children: [
                     // Activities
                     {
@@ -489,6 +551,8 @@ export const appRoutes: Route[] = [
             // User Interface
             {
                 path: 'ui',
+                canActivate: [CustomAuthGuard],
+                canActivateChild: [CustomAuthGuard],
                 children: [
                     // Material Components
                     {
@@ -640,6 +704,8 @@ export const appRoutes: Route[] = [
             // Documentation
             {
                 path: 'docs',
+                canActivate: [CustomAuthGuard],
+                canActivateChild: [CustomAuthGuard],
                 children: [
                     // Changelog
                     {

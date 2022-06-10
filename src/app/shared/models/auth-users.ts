@@ -1,4 +1,5 @@
 export interface AuthUsers {
-    authorities: {authority: string}[];
+    authorization: { authority: string }[];
+    token: string;
     username: string;
 }
