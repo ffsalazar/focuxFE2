@@ -592,26 +592,29 @@ export class AssingmentOccupationService {
                     this._loadingSpinnerService.stopLoading();
 
                     let collaboratorFiltered: any[] = [];
-
+                  
+                    
                     function compareOcupation(a: any, b: any) {
-                        if (a.occupationPercentage < b.occupationPercentage)
-                            return -1;
-                        if (a.occupationPercentage > b.occupationPercentage)
-                            return 1;
-                        return 0;
-                    }
-                    function compare(a: Collaborator, b: Collaborator) {
+                        if (a.occupationPercentage < b.occupationPercentage) return -1;
+                        if (a.occupationPercentage > b.occupationPercentage) return 1;
+                        
+                        if (a.client.name < b.client.name) return -1;
+                        if (a.client.name > b.client.name) return 1;
+                        
                         if (a.name < b.name) return -1;
                         if (a.name > b.name) return 1;
-                        // Their names are equal
+                       
                         if (a.lastName < b.lastName) return -1;
                         if (a.lastName > b.lastName) return 1;
 
+                  
                         return 0;
                     }
+                    
 
-                    let collaboratorsTmp = collaborators.sort(compare);
-                    collaboratorsTmp.sort(compareOcupation);
+                    let collaboratorsTmp = collaborators.sort(compareOcupation);
+
+                    // collaboratorsTmp.sort(compareOcupation);
                     collaboratorFiltered = collaboratorsTmp.filter(
                         (item) => item.isActive === 1
                     );

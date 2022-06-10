@@ -903,10 +903,10 @@
                                                         i === 0 ||
                                                         collaboratorOccupation[
                                                             i
-                                                        ]?.name.charAt(0) !==
+                                                        ]?.client.name !==
                                                             collaboratorOccupation[
                                                                 i - 1
-                                                            ]?.name.charAt(0)
+                                                            ]?.client.name
                                                     "
                                                 >
                                                     <div
@@ -915,7 +915,7 @@
                                                         {{
                                                             collaboratorOccupation[
                                                                 i
-                                                            ]?.name.charAt(0)
+                                                            ]?.client.name
                                                         }}
                                                     </div>
                                                 </ng-container>
