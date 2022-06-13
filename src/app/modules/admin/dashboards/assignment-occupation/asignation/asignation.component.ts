@@ -421,37 +421,23 @@ export class AsignationComponent implements OnInit, OnDestroy {
                 if (result === 'confirmed') {
                     let promise = [];
 
-                    for (
-                        let i = 0;
-                        i < this.collaboratorOccupation.length;
-                        i++
+                    for (let i = 0; i < this.collaboratorOccupation.length; i++
                     ) {
                         const assignationOccupation: AssignationOccupation = {
-                            occupationPercentage: this.collaboratorOccupation
-                                .at(i)
-                                .get('occupation').value,
-                            assignmentStartDate: this.collaboratorOccupation
-                                .at(i)
-                                .get('dateInit').value,
-                            assignmentEndDate: this.collaboratorOccupation
-                                .at(i)
-                                .get('dateEnd').value,
+                            occupationPercentage: this.collaboratorOccupation.at(i).get('occupation').value,
+                            assignmentStartDate: this.collaboratorOccupation.at(i).get('dateInit').value,
+                            assignmentEndDate: this.collaboratorOccupation.at(i).get('dateEnd').value,
                             code: this.request.code,
-                            observations: this.collaboratorOccupation
-                                .at(i)
-                                .get('observation').value,
+                            observations: this.collaboratorOccupation.at(i).get('observation').value,
                             isActive: 1,
                             request: {
                                 id: this.request.id,
                             },
                             collaborator: {
-                                id: this.collaboratorOccupation.at(i).get('id')
-                                    .value,
+                                id: this.collaboratorOccupation.at(i).get('id').value,
                             },
                             requestRole: {
-                                id: this.collaboratorOccupation
-                                    .at(i)
-                                    .get('roleRequest').value,
+                                id: this.collaboratorOccupation.at(i).get('roleRequest').value,
                             },
                         };
 
@@ -473,9 +459,7 @@ export class AsignationComponent implements OnInit, OnDestroy {
                                 this._router.navigate([
                                     'dashboards/assignment-occupation/index',
                                 ]);
-                                this._assignmentOccupationService.setTabIndex(
-                                    0
-                                );
+                                this._assignmentOccupationService.setTabIndex(0);
                             }, 2000);
                         });
 
