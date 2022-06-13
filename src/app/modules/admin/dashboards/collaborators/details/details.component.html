@@ -943,7 +943,7 @@
                             </mat-form-field>
                         </div>
                         <!-- Last Name -->
-                        <div class="mt-4" *ngIf="collaborator?.idFile == 0">
+                        <div class="mt-4" *ngIf="collaborator?.idFile == 0 || collaborator === null">
                             <mat-form-field
                                 class="fuse-mat-no-subscript w-full"
                             >
