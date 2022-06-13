@@ -46,7 +46,7 @@ export class CustomAuthGuard implements CanActivate {
     }
 
     private _isAuthenticated(redirectURL: string): Observable<boolean> {
-        if (this._authService.check()) {
+        if (this._authService.isLogged()) {
             return of(true);
         } else {
             this._router

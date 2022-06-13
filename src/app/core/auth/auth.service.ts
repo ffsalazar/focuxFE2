@@ -11,7 +11,6 @@ import { RegisterUserResponse } from '../../shared/models/register-user-response
 @Injectable()
 export class AuthService {
     private _authenticated: boolean = false;
-    //private _roles: string[] = [];
 
     /**
      * Constructor
@@ -58,6 +57,7 @@ export class AuthService {
         }
         return roleList;
     }
+
     set roles(roles: string[]) {
         localStorage.setItem('roles', roles.toString());
     }
@@ -101,7 +101,6 @@ export class AuthService {
             )
             .pipe(
                 switchMap((response) => {
-                    console.log(response);
                     return of(response);
                 })
             );
@@ -137,12 +136,7 @@ export class AuthService {
             )
             .pipe(
                 switchMap((response: AuthUsers) => {
-                    console.log(response);
-                    // // Store the access token in the local storage
-                    // this.accessToken = response.accessToken;
-                    //
-                    // Set the authenticated flag to true
-                    this._authenticated = true;
+                    this.authenticated = true;
 
                     //Set roles
                     this.roles = response.authorization.map(
@@ -151,9 +145,6 @@ export class AuthService {
 
                     this.username = response.username;
                     this.accessToken = response.token;
-
-                    // Store the user on the user service
-                    // this._userService.user = response.user;
 
                     // Return a new observable with the response
                     return of(response);
@@ -180,7 +171,7 @@ export class AuthService {
                     this.accessToken = response.accessToken;
 
                     // Set the authenticated flag to true
-                    this._authenticated = true;
+                    this.authenticated = true;
 
                     // Store the user on the user service
                     this._userService.user = response.user;
@@ -201,7 +192,7 @@ export class AuthService {
         localStorage.removeItem('username');
 
         // Set the authenticated flag to false
-        this._authenticated = false;
+        this.authenticated = false;
 
         // Return the observable
         return of(true);
@@ -250,9 +241,9 @@ export class AuthService {
     /**
      * Check the authentication status
      */
-    check(): boolean {
+    isLogged(): boolean {
         // Check if the user is logged in
-        if (this._authenticated) {
+        if (this.authenticated) {
             return true;
         }
 

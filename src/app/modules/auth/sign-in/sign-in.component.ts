@@ -43,7 +43,6 @@ export class AuthSignInComponent implements OnInit {
         this.signInForm = this._formBuilder.group({
             username: ['', [Validators.required]],
             password: ['', Validators.required],
-            // rememberMe: ['']
         });
     }
 
@@ -66,7 +65,6 @@ export class AuthSignInComponent implements OnInit {
         // Hide the alert
         this.showAlert = false;
 
-        console.log('Hare la peticion');
         // Sign in
         this._authService.signIn(this.signInForm.value).subscribe(
             () => {
