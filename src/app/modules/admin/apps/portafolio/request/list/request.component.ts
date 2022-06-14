@@ -1374,7 +1374,6 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      */
     confirmSaveRequest(): void {
-        // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             title: 'Guardar solicitud',
             message: '¿Seguro que desea guardar la solicitud?',
@@ -1392,10 +1391,8 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
 
-        // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
 
-            // If the confirm button pressed...
             if (result === 'confirmed') {
                 this.step1.removeControl('customerBranch');
 
@@ -1445,11 +1442,13 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
                 if (!((pauses.dateInitPause === "" || pauses.comments ===  "") || (pauses.dateInitPause === null || pauses.comments ===  null))) {
                     pauses.dateEndPause = "";
+
                     requestNew.pauses.unshift(pauses);
                     requestNew.status = this.status.find(
                         item => item.id === 11
                     );
                 }
+                       
                 if(this.isEditing && requestNew.pauses.length > 0) {
                     let pauseEditEnd = requestNew.pauses[0];
                     let checkValidDate = moment(pauseEditEnd.dateEndPause).format('L').split('/').join('-');
@@ -1457,36 +1456,33 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.pauseError = checkValidDate === "Invalid date";
                     }
                     if(checkValidDate != "Invalid date"){
-                        requestNew.status.id = 5;
+                        requestNew.status.id = 8; 
+                    }
+                    let lastPause = requestNew.pauses.filter(res => res?.id != null);
+                    if(lastPause[0]?.dateEndPause == null && requestNew.pauses.length > 1 ){
+                        this.pauseError = true;
                     }
                 }
 
-
-                //Reset Pause Form
                 this.pauseForm.get('comments').reset();
                 this.pauseForm.get('dateInitPause').reset();
                 this.pauseForm.get('dateEndPause').reset();
 
                 this.showPauseEdit = false;
 
-                // requestNew.responsibleRequest = {
-                //     id: 1
-                // };
-
                 if(this.pauseError === true) {
                     this.editAlert = true;
+                    requestNew.pauses.shift();
                 }else {
                     if (!this.isEditing) {
                         requestNew.responsibleRequest = null;
-                        // Create the request on the server
                         this.createNewRequest(requestNew);
                     } else {
                         requestNew.responsibleRequest = this.collaborators.find(item => item.id === 1);
-                        // Update the request on the server
                         this.updateRequest(requestNew, pauses);
                     }
                 }
-
+                
 
             }
         });
@@ -1508,6 +1504,7 @@ export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param event
      * @param selectedItem
      */
+    
     optionClicked(event: Event, selectedItem: BusinessType | Client, selectedCollection: BusinessType[] | Client[], option: string) {
         event.stopPropagation();
         this.toggleSelection(selectedItem, selectedCollection, option);
