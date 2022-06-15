@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Indicator } from 'app/modules/admin/masters/indicators/indicators.types';
@@ -46,9 +46,13 @@ export class IndicatorsService {
      * Get indicators
      */
     getIndicators(): Observable<Indicator[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Indicator[]>(
-                'http://localhost:1616/api/v1/followup/indicator/all'
+                'http://localhost:1616/api/v1/followup/indicator/all', {headers}
             )
             .pipe(
                 tap((indicators) => {
@@ -77,11 +81,16 @@ export class IndicatorsService {
      * @param query
      */
     searchIndicator(query: string): Observable<Indicator[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Indicator[]>(
                 'http://localhost:1616/api/v1/followup/indicator/all',
                 {
                     params: { query },
+                    headers
                 }
             )
             .pipe(
@@ -137,9 +146,6 @@ export class IndicatorsService {
 
                 const indicator =
                     indicators.find((item) => item.id === id) || null;
-                const indicator_test = indicators.find(
-                    (item) => item.id === id
-                );
 
                 // Update the indicator
                 this._indicator.next(indicator);
@@ -170,13 +176,17 @@ export class IndicatorsService {
             isActive: 1,
         };
 
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.indicators$.pipe(
             take(1),
             switchMap((indicators) =>
                 this._httpClient
                     .post<Indicator>(
                         'http://localhost:1616/api/v1/followup/indicator/save',
-                        newIndicator
+                        newIndicator, {headers}
                     )
                     .pipe(
                         map((newIndicator) => {
@@ -201,6 +211,10 @@ export class IndicatorsService {
      * @param indicator
      */
     updateIndicator(id: number, indicator: Indicator): Observable<Indicator> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.indicators$.pipe(
             take(1),
             switchMap((indicators) =>
@@ -208,7 +222,7 @@ export class IndicatorsService {
                     .put<Indicator>(
                         'http://localhost:1616/api/v1/followup/indicator/indicator/' +
                             indicator.id,
-                        indicator
+                        indicator, {headers}
                     )
                     .pipe(
                         map((updatedIndicator) => {
@@ -258,6 +272,10 @@ export class IndicatorsService {
      * @param id
      */
     deleteIndicator(indicator: Indicator): Observable<Indicator> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.indicators$.pipe(
             take(1),
             switchMap((indicators) =>
@@ -265,7 +283,7 @@ export class IndicatorsService {
                     .put(
                         'http://localhost:1616/api/v1/followup/indicator/status/' +
                             indicator.id,
-                        indicator
+                        indicator, {headers}
                     )
                     .pipe(
                         map((updatedIndicator: Indicator) => {
@@ -304,13 +322,17 @@ export class IndicatorsService {
      * @param avatar
      */
     uploadAvatar(id: number, avatar: File): Observable<Indicator> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.indicators$.pipe(
             take(1),
             switchMap((indicators) =>
                 this._httpClient
                     .post<Indicator>('api/dashboards/indicator/avatar', {
                         id,
-                    })
+                    }, {headers})
                     .pipe(
                         map((updatedIndicator) => {
                             // Find the index of the updated indicator

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { EmployeePosition, Department } from 'app/modules/admin/masters/employeePosition/employeePosition.types';
@@ -57,7 +57,11 @@ export class EmployeePositionsService
      */
     getEmployeePositions(): Observable<EmployeePosition[]>
     {
-        return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeePosition/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeePosition/all', {headers}).pipe(
             tap((employeePositions) => {
 
 
@@ -89,8 +93,12 @@ export class EmployeePositionsService
      */
     searchEmployeePosition(query: string): Observable<EmployeePosition[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<EmployeePosition[]>('http://localhost:1616/api/v1/followup/employeePosition/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((employeePositions) => {
                 let employeePositionFiltered : any[]=[];
@@ -146,9 +154,7 @@ export class EmployeePositionsService
                 // Find the employeePosition¿
 
                 const employeePosition = employeePositions.find(item => item.id === id) || null;
-                const employeePosition_test = employeePositions.find(item => item.id === id);
 
-                console.log(employeePosition_test);
                 // Update the employeePosition
                 this._employeePosition.next(employeePosition);
 
@@ -187,9 +193,13 @@ export class EmployeePositionsService
             "description": "Nueva descripcion cargo",
             "isActive": 1
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.employeePositions$.pipe(
             take(1),
-            switchMap(employeePositions => this._httpClient.post<EmployeePosition>('http://localhost:1616/api/v1/followup/employeePosition/save', newEmployeePosition).pipe(
+            switchMap(employeePositions => this._httpClient.post<EmployeePosition>('http://localhost:1616/api/v1/followup/employeePosition/save', newEmployeePosition, {headers}).pipe(
                 map((newEmployeePosition) => {
                     // Update the employeePositions with the new employeePosition
                     this._employeePositions.next([newEmployeePosition, ...employeePositions]);
@@ -209,11 +219,14 @@ export class EmployeePositionsService
      */
     updateEmployeePosition(id: number, employeePosition: EmployeePosition): Observable<EmployeePosition>
     {
-       console.log(JSON.stringify(employeePosition));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.employeePositions$.pipe(
             take(1),
             switchMap(employeePositions => this._httpClient.put<EmployeePosition>('http://localhost:1616/api/v1/followup/employeePosition/employeePosition/' + employeePosition.id,
-                employeePosition
+                employeePosition, {headers}
             ).pipe(
                 map((updatedEmployeePosition) => {
 
@@ -264,9 +277,13 @@ export class EmployeePositionsService
      */
     deleteEmployeePosition(employeePosition: EmployeePosition): Observable<EmployeePosition>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.employeePositions$.pipe(
             take(1),
-            switchMap(employeePositions => this._httpClient.put('http://localhost:1616/api/v1/followup/employeePosition/status/' + employeePosition.id, employeePosition).pipe(
+            switchMap(employeePositions => this._httpClient.put('http://localhost:1616/api/v1/followup/employeePosition/status/' + employeePosition.id, employeePosition, {headers}).pipe(
                 map((updatedEmployeePosition: EmployeePosition) => {
 
                     // Find the index of the deleted employeePosition
@@ -309,12 +326,16 @@ export class EmployeePositionsService
      */
     uploadAvatar(id: number, avatar: File): Observable<EmployeePosition>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.employeePositions$.pipe(
             take(1),
             switchMap(employeePositions => this._httpClient.post<EmployeePosition>('api/dashboards/employeePosition/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedEmployeePosition) => {
 
                     // Find the index of the updated employeePosition
@@ -347,7 +368,11 @@ export class EmployeePositionsService
 
     getDepartments(): Observable<Department[]>
     {
-        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all', {headers}).pipe(
             tap((departments) => {
                 console.log(departments)
                 this._departments.next(departments);

@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { TypeStatu } from 'app/modules/admin/masters/typeStatus/typeStatus.types';
-import {Collaborator} from "../../dashboards/collaborators/collaborators.types";
-import {BusinessType} from "../businessType/businessTypes.types";
 
 @Injectable({
     providedIn: 'root'
@@ -53,7 +51,11 @@ export class TypeStatusService
      */
     getTypeStatus(): Observable<TypeStatu[]>
     {
-        return this._httpClient.get<TypeStatu[]>('http://localhost:1616/api/v1/followup/typestatuses/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<TypeStatu[]>('http://localhost:1616/api/v1/followup/typestatuses/all', {headers}).pipe(
             tap((typeStatus) => {
 
 
@@ -85,8 +87,12 @@ export class TypeStatusService
      */
     searchTypeStatu(query: string): Observable<TypeStatu[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<TypeStatu[]>('http://localhost:1616/api/v1/followup/typestatuses/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((typeStatus) => {
                 let typeStatuFiltered : any[]=[];
@@ -139,9 +145,7 @@ export class TypeStatusService
                 // Find the typeStatu¿
 
                 const typeStatu = typeStatus.find(item => item.id === id) || null;
-                const typeStatu_test = typeStatus.find(item => item.id === id);
 
-                console.log(typeStatu_test);
                 // Update the typeStatu
                 this._typeStatu.next(typeStatu);
 
@@ -176,9 +180,13 @@ export class TypeStatusService
             "isActive": 1
         }
         ;
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeStatus$.pipe(
             take(1),
-            switchMap(typeStatus => this._httpClient.post<TypeStatu>('http://localhost:1616/api/v1/followup/typestatuses/save', newTypeStatu).pipe(
+            switchMap(typeStatus => this._httpClient.post<TypeStatu>('http://localhost:1616/api/v1/followup/typestatuses/save', newTypeStatu, {headers}).pipe(
                 map((newTypeStatu) => {
                     // Update the typeStatus with the new typeStatu
                     this._typeStatus.next([newTypeStatu, ...typeStatus]);
@@ -198,11 +206,14 @@ export class TypeStatusService
      */
     updateTypeStatu(id: number, typeStatu: TypeStatu): Observable<TypeStatu>
     {
-       console.log(JSON.stringify(typeStatu));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeStatus$.pipe(
             take(1),
             switchMap(typeStatus => this._httpClient.put<TypeStatu>('http://localhost:1616/api/v1/followup/typestatuses/typestatus/' + typeStatu.id,
-                typeStatu
+                typeStatu, {headers}
             ).pipe(
                 map((updatedTypeStatu) => {
 
@@ -251,9 +262,13 @@ export class TypeStatusService
      */
     deleteTypeStatu(typeStatu: TypeStatu): Observable<TypeStatu>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeStatus$.pipe(
             take(1),
-            switchMap(typeStatus => this._httpClient.put('http://localhost:1616/api/v1/followup/typestatuses/status/' + typeStatu.id, typeStatu).pipe(
+            switchMap(typeStatus => this._httpClient.put('http://localhost:1616/api/v1/followup/typestatuses/status/' + typeStatu.id, typeStatu, {headers}).pipe(
                 map((updatedTypeStatu: TypeStatu) => {
 
                     // Find the index of the deleted typeStatu
@@ -287,12 +302,16 @@ export class TypeStatusService
      */
     uploadAvatar(id: number, avatar: File): Observable<TypeStatu>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeStatus$.pipe(
             take(1),
             switchMap(typeStatus => this._httpClient.post<TypeStatu>('api/dashboards/typestatuses/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedTypeStatu) => {
 
                     // Find the index of the updated typeStatu

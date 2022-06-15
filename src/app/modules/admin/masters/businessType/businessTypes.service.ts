@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { BusinessType } from 'app/modules/admin/masters/businessType/businessTypes.types';
@@ -51,7 +51,11 @@ export class BusinessTypesService
      */
     getBusinessTypes(): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all', {headers}).pipe(
             tap((businessTypes) => {
 
 
@@ -83,7 +87,11 @@ export class BusinessTypesService
      */
     searchBusinessType(query: string): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all', {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businesstype/all', {headers,
             params: {query}
         }).pipe(
             tap((businessTypes) => {
@@ -137,9 +145,7 @@ export class BusinessTypesService
                 // Find the businessType¿
 
                 const businessType = businessTypes.find(item => item.id === id) || null;
-                const businessType_test = businessTypes.find(item => item.id === id);
 
-                console.log(businessType_test);
                 // Update the businessType
                 this._businessType.next(businessType);
 
@@ -173,9 +179,14 @@ export class BusinessTypesService
             "description": "Descripcion de tipo de negocio",
             "isActive": 1
         };
+
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.post<BusinessType>('http://localhost:1616/api/v1/followup/businesstype/save', newBusinessType).pipe(
+            switchMap(businessTypes => this._httpClient.post<BusinessType>('http://localhost:1616/api/v1/followup/businesstype/save', newBusinessType, {headers}).pipe(
                 map((newBusinessType) => {
                     // Update the businessTypes with the new businessType
                     this._businessTypes.next([newBusinessType, ...businessTypes]);
@@ -195,11 +206,14 @@ export class BusinessTypesService
      */
     updateBusinessType(id: number, businessType: BusinessType): Observable<BusinessType>
     {
-       console.log(JSON.stringify(businessType));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.businessTypes$.pipe(
             take(1),
             switchMap(businessTypes => this._httpClient.put<BusinessType>('http://localhost:1616/api/v1/followup/businesstype/businesstype/' + businessType.id,
-                businessType
+                businessType, {headers}
             ).pipe(
                 map((updatedBusinessType) => {
 
@@ -247,9 +261,13 @@ export class BusinessTypesService
      */
     deleteBusinessType(businessType: BusinessType): Observable<BusinessType>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.businessTypes$.pipe(
             take(1),
-            switchMap(businessTypes => this._httpClient.put('http://localhost:1616/api/v1/followup/businesstype/status/' + businessType.id, businessType).pipe(
+            switchMap(businessTypes => this._httpClient.put('http://localhost:1616/api/v1/followup/businesstype/status/' + businessType.id, businessType, {headers}).pipe(
                 map((updatedBusinessType: BusinessType) => {
 
                     // Find the index of the deleted businessType
@@ -293,12 +311,16 @@ export class BusinessTypesService
      */
     uploadAvatar(id: number, avatar: File): Observable<BusinessType>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.businessTypes$.pipe(
             take(1),
             switchMap(businessTypes => this._httpClient.post<BusinessType>('api/dashboards/businesstype/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedBusinessType) => {
 
                     // Find the index of the updated businessType

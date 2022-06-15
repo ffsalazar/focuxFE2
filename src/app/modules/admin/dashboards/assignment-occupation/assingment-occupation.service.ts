@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as moment from 'moment';
 import data from './data/data.json';
@@ -46,7 +46,7 @@ export class AssingmentOccupationService {
         new BehaviorSubject(null);
     private _rolesRequest: BehaviorSubject<RolesRequest[] | null> =
         new BehaviorSubject(null);
-        
+
     collaborators: any;
 
     selectedFiltered: any = {
@@ -228,9 +228,13 @@ export class AssingmentOccupationService {
      *
      */
     getCollaborators(): Observable<Collaborator[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Collaborator[]>(
-                'http://localhost:1616/api/v1/followup/collaborators/all'
+                'http://localhost:1616/api/v1/followup/collaborators/all', {headers}
             )
             .pipe(
                 tap((collaborators) => {
@@ -260,8 +264,12 @@ export class AssingmentOccupationService {
      *
      */
     getClients(): Observable<Client[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
-            .get<Client[]>('http://localhost:1616/api/v1/followup/clients/all')
+            .get<Client[]>('http://localhost:1616/api/v1/followup/clients/all', {headers})
             .pipe(
                 tap((clients) => {
                     clients = clients.filter((item) => item.isActive === 1);
@@ -275,9 +283,13 @@ export class AssingmentOccupationService {
      *
      */
     getKnowledges(): Observable<Knowledge[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Knowledge[]>(
-                'http://localhost:1616/api/v1/followup/knowledges/all'
+                'http://localhost:1616/api/v1/followup/knowledges/all', {headers}
             )
             .pipe(
                 switchMap((knowledges) => knowledges),
@@ -308,9 +320,13 @@ export class AssingmentOccupationService {
      *
      */
     getRolesRequest(): Observable<RolesRequest[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<RolesRequest[]>(
-                'http://localhost:1616/api/v1/followup/requestrole/all'
+                'http://localhost:1616/api/v1/followup/requestrole/all', {headers}
             )
             .pipe(
                 switchMap((rolesRequest) => rolesRequest.sort(this._sortArray)),
@@ -329,10 +345,15 @@ export class AssingmentOccupationService {
      * @returns
      */
     getCollaboratorsByClient(clientId: number): Observable<Collaborator[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<Collaborator[]>(
             'http://localhost:1616/api/v1/followup/filtercollaborator/allby/projectleads/',
             {
                 params: { clientId },
+                headers
             }
         );
     }
@@ -375,11 +396,16 @@ export class AssingmentOccupationService {
             };
         }
 
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<any[]>(
             'http://localhost:1616/api/v1/followup/requests/responsible/' +
                 responsibleId,
             {
                 params,
+                headers
             }
         );
     }
@@ -399,11 +425,15 @@ export class AssingmentOccupationService {
                 statusId,
             };
         }
-
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<any[]>(
             'http://localhost:1616/api/v1/followup/requests/client/' + clientId,
             {
                 params,
+                headers
             }
         );
     }
@@ -416,11 +446,14 @@ export class AssingmentOccupationService {
     getRecommended(requestId: number): Observable<Collaborator[]> {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
-
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Collaborator[]>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allconditions/' +
-                    requestId
+                    requestId, {headers}
             )
             .pipe(
                 tap((recommended) => {
@@ -441,11 +474,14 @@ export class AssingmentOccupationService {
     ): Observable<Collaborator[]> {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
-
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Collaborator[]>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/allclients/' +
-                    requestId
+                    requestId, {headers}
             )
             .pipe(
                 tap((recommended) => {
@@ -466,11 +502,14 @@ export class AssingmentOccupationService {
     ): Observable<Collaborator[]> {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
-
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Collaborator[]>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/knowledgeclient/' +
-                    requestId
+                    requestId, {headers}
             )
             .pipe(
                 tap((recommended) => {
@@ -492,11 +531,14 @@ export class AssingmentOccupationService {
     ): Observable<Collaborator[]> {
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
-
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Collaborator[]>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby/request/free/' +
-                    requestId
+                    requestId, {headers}
             )
             .pipe(
                 tap((recommended) => {
@@ -513,9 +555,13 @@ export class AssingmentOccupationService {
      *
      */
     getStatus(): Observable<Status[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Status[]>(
-                'http://localhost:1616/api/v1/followup/statuses/all/'
+                'http://localhost:1616/api/v1/followup/statuses/all/', {headers}
             )
             .pipe(
                 tap((status) => {
@@ -545,10 +591,14 @@ export class AssingmentOccupationService {
     saveAssignationOccupation(
         assignationOcupation: AssignationOccupation
     ): Observable<any> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .post<any>(
                 'http://localhost:1616/api/v1/followup/occupationassignments/save',
-                assignationOcupation
+                assignationOcupation, {headers}
             )
             .pipe(
                 tap((occupation) => {
@@ -582,9 +632,12 @@ export class AssingmentOccupationService {
 
         /** spinner starts on init */
         this._loadingSpinnerService.startLoading();
-        
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<any>('http://localhost:1616/api/v1/followup/collaborators/all/occupationpercentage', {
-            params
+            params, headers
         })
             .pipe(
                 tap((collaborators) => {
@@ -628,9 +681,13 @@ export class AssingmentOccupationService {
      * @returns
      */
     getOccupationsByCollaborator(collaboratorId: number): Observable<any> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<any>(
             'http://localhost:1616/api/v1/followup/collaborators/assigments/' +
-                collaboratorId
+                collaboratorId, {headers}
         );
     }
 
@@ -645,11 +702,16 @@ export class AssingmentOccupationService {
         collaboratorId: number,
         occupations
     ): Observable<any> {
+
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .put<any>(
                 'http://localhost:1616/api/v1/followup/occupationassignments/updateall/' +
                     collaboratorId,
-                occupations
+                occupations, {headers}
             )
             .pipe(
                 tap((occupation) => {
@@ -666,10 +728,14 @@ export class AssingmentOccupationService {
      * @returns
      */
     deleteOccupation(occupationId: number, occupation) {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.put<any>(
             'http://localhost:1616/api/v1/followup/occupationassignments/status/' +
                 occupationId,
-            occupation
+            occupation, {headers}
         );
     }
 
@@ -751,12 +817,16 @@ export class AssingmentOccupationService {
             params = params.append('dateInit', startDate);
             params = params.append('dateEnd', endDate);
         }
-        
+
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<any>(
                 'http://localhost:1616/api/v1/followup/filtercollaborator/allby',
                 {
-                    params
+                    params, headers
                 }
             )
             .pipe(

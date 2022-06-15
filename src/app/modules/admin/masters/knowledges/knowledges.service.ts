@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Knowledge } from 'app/modules/admin/masters/knowledges/knowledges.types';
@@ -51,7 +51,11 @@ export class KnowledgesService
      */
     getKnowledges(): Observable<Knowledge[]>
     {
-        return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all', {headers}).pipe(
             tap((knowledges) => {
 
 
@@ -83,8 +87,12 @@ export class KnowledgesService
      */
     searchKnowledge(query: string): Observable<Knowledge[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<Knowledge[]>('http://localhost:1616/api/v1/followup/knowledges/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((knowledges) => {
                 let knowledgeFiltered : any[]=[];
@@ -137,9 +145,7 @@ export class KnowledgesService
                 // Find the knowledge¿
 
                 const knowledge = knowledges.find(item => item.id === id) || null;
-                const knowledge_test = knowledges.find(item => item.id === id);
 
-                console.log(knowledge_test);
                 // Update the knowledge
                 this._knowledge.next(knowledge);
 
@@ -173,9 +179,13 @@ export class KnowledgesService
             "description": "Nuevo descripcion Conocimiento",
             "isActive": 1
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.knowledges$.pipe(
             take(1),
-            switchMap(knowledges => this._httpClient.post<Knowledge>('http://localhost:1616/api/v1/followup/knowledges/save', newKnowledge).pipe(
+            switchMap(knowledges => this._httpClient.post<Knowledge>('http://localhost:1616/api/v1/followup/knowledges/save', newKnowledge, {headers}).pipe(
                 map((newKnowledge) => {
                     // Update the knowledges with the new knowledge
                     this._knowledges.next([newKnowledge, ...knowledges]);
@@ -195,11 +205,14 @@ export class KnowledgesService
      */
     updateKnowledge(id: number, knowledge: Knowledge): Observable<Knowledge>
     {
-       console.log(JSON.stringify(knowledge));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.knowledges$.pipe(
             take(1),
             switchMap(knowledges => this._httpClient.put<Knowledge>('http://localhost:1616/api/v1/followup/knowledges/knowledge/' + knowledge.id,
-                knowledge
+                knowledge, {headers}
             ).pipe(
                 map((updatedKnowledge) => {
 
@@ -247,9 +260,13 @@ export class KnowledgesService
      */
     deleteKnowledge(knowledge: Knowledge): Observable<Knowledge>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.knowledges$.pipe(
             take(1),
-            switchMap(knowledges => this._httpClient.put('http://localhost:1616/api/v1/followup/knowledges/status/' + knowledge.id, knowledge).pipe(
+            switchMap(knowledges => this._httpClient.put('http://localhost:1616/api/v1/followup/knowledges/status/' + knowledge.id, knowledge, {headers}).pipe(
                 map((updatedKnowledge: Knowledge) => {
 
                     // Find the index of the deleted knowledge
@@ -293,12 +310,16 @@ export class KnowledgesService
      */
     uploadAvatar(id: number, avatar: File): Observable<Knowledge>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.knowledges$.pipe(
             take(1),
             switchMap(knowledges => this._httpClient.post<Knowledge>('api/dashboards/knowledges/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedKnowledge) => {
 
                     // Find the index of the updated knowledge

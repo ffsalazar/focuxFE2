@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { TechnicalArea } from 'app/modules/admin/masters/technicalAreas/technicalAreas.types';
@@ -51,7 +51,11 @@ export class TechnicalAreasService
      */
     getTechnicalAreas(): Observable<TechnicalArea[]>
     {
-        return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all', {headers}).pipe(
             tap((technicalAreas) => {
 
 
@@ -83,8 +87,12 @@ export class TechnicalAreasService
      */
     searchTechnicalArea(query: string): Observable<TechnicalArea[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<TechnicalArea[]>('http://localhost:1616/api/v1/followup/technicalareas/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((technicalAreas) => {
                 let technicalAreaFiltered : any[]=[];
@@ -137,9 +145,7 @@ export class TechnicalAreasService
                 // Find the technicalArea¿
 
                 const technicalArea = technicalAreas.find(item => item.id === id) || null;
-                const technicalArea_test = technicalAreas.find(item => item.id === id);
 
-                console.log(technicalArea_test);
                 // Update the technicalArea
                 this._technicalArea.next(technicalArea);
 
@@ -174,9 +180,13 @@ export class TechnicalAreasService
             "isActive": 1
         }
         ;
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.technicalAreas$.pipe(
             take(1),
-            switchMap(technicalAreas => this._httpClient.post<TechnicalArea>('http://localhost:1616/api/v1/followup/technicalareas/save', newTechnicalArea).pipe(
+            switchMap(technicalAreas => this._httpClient.post<TechnicalArea>('http://localhost:1616/api/v1/followup/technicalareas/save', newTechnicalArea, {headers}).pipe(
                 map((newTechnicalArea) => {
                     // Update the technicalAreas with the new technicalArea
                     this._technicalAreas.next([newTechnicalArea, ...technicalAreas]);
@@ -196,11 +206,14 @@ export class TechnicalAreasService
      */
     updateTechnicalArea(id: number, technicalArea: TechnicalArea): Observable<TechnicalArea>
     {
-       console.log(JSON.stringify(technicalArea));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.technicalAreas$.pipe(
             take(1),
             switchMap(technicalAreas => this._httpClient.put<TechnicalArea>('http://localhost:1616/api/v1/followup/technicalareas/technicalarea/' + technicalArea.id,
-                technicalArea
+                technicalArea, {headers}
             ).pipe(
                 map((updatedTechnicalArea) => {
 
@@ -248,9 +261,13 @@ export class TechnicalAreasService
      */
     deleteTechnicalArea(technicalArea: TechnicalArea): Observable<TechnicalArea>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.technicalAreas$.pipe(
             take(1),
-            switchMap(technicalAreas => this._httpClient.put('http://localhost:1616/api/v1/followup/technicalareas/status/' + technicalArea.id, technicalArea).pipe(
+            switchMap(technicalAreas => this._httpClient.put('http://localhost:1616/api/v1/followup/technicalareas/status/' + technicalArea.id, technicalArea, {headers}).pipe(
                 map((updatedTechnicalArea: TechnicalArea) => {
 
                     // Find the index of the deleted technicalArea
@@ -292,12 +309,16 @@ export class TechnicalAreasService
      */
     uploadAvatar(id: number, avatar: File): Observable<TechnicalArea>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.technicalAreas$.pipe(
             take(1),
             switchMap(technicalAreas => this._httpClient.post<TechnicalArea>('api/dashboards/technicalareas/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedTechnicalArea) => {
 
                     // Find the index of the updated technicalArea

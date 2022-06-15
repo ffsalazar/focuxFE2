@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { CommercialArea } from 'app/modules/admin/masters/commercialAreas/commercialAreas.types';
@@ -51,7 +51,11 @@ export class CommercialAreasService
      */
     getCommercialAreas(): Observable<CommercialArea[]>
     {
-        return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all', {headers}).pipe(
             tap((commercialAreas) => {
 
 
@@ -83,8 +87,12 @@ export class CommercialAreasService
      */
     searchCommercialArea(query: string): Observable<CommercialArea[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<CommercialArea[]>('http://localhost:1616/api/v1/followup/commercialareas/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((commercialAreas) => {
                 let commercialAreaFiltered : any[]=[];
@@ -137,9 +145,7 @@ export class CommercialAreasService
                 // Find the commercialArea¿
 
                 const commercialArea = commercialAreas.find(item => item.id === id) || null;
-                const commercialArea_test = commercialAreas.find(item => item.id === id);
 
-                console.log(commercialArea_test);
                 // Update the commercialArea
                 this._commercialArea.next(commercialArea);
 
@@ -172,11 +178,14 @@ export class CommercialAreasService
             "name": "Nueva área comercial",
             "description": "Nueva descripcion",
             "isActive": 1
-        }
-        ;
+        };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.commercialAreas$.pipe(
             take(1),
-            switchMap(commercialAreas => this._httpClient.post<CommercialArea>('http://localhost:1616/api/v1/followup/commercialareas/save', newCommercialArea).pipe(
+            switchMap(commercialAreas => this._httpClient.post<CommercialArea>('http://localhost:1616/api/v1/followup/commercialareas/save', newCommercialArea, {headers}).pipe(
                 map((newCommercialArea) => {
                     // Update the commercialAreas with the new commercialArea
                     this._commercialAreas.next([newCommercialArea, ...commercialAreas]);
@@ -196,11 +205,14 @@ export class CommercialAreasService
      */
     updateCommercialArea(id: number, commercialArea: CommercialArea): Observable<CommercialArea>
     {
-
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.commercialAreas$.pipe(
             take(1),
             switchMap(commercialAreas => this._httpClient.put<CommercialArea>('http://localhost:1616/api/v1/followup/commercialareas/commercialarea/' + commercialArea.id,
-                commercialArea
+                commercialArea, {headers}
             ).pipe(
                 map((updatedCommercialArea) => {
 
@@ -249,9 +261,13 @@ export class CommercialAreasService
      */
     deleteCommercialArea(commercialArea: CommercialArea): Observable<CommercialArea>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.commercialAreas$.pipe(
             take(1),
-            switchMap(commercialAreas => this._httpClient.put('http://localhost:1616/api/v1/followup/commercialareas/status/' + commercialArea.id, commercialArea).pipe(
+            switchMap(commercialAreas => this._httpClient.put('http://localhost:1616/api/v1/followup/commercialareas/status/' + commercialArea.id, commercialArea, {headers}).pipe(
                 map((updatedCommercialArea: CommercialArea) => {
 
                     // Find the index of the deleted commercialArea
@@ -284,12 +300,16 @@ export class CommercialAreasService
      */
     uploadAvatar(id: number, avatar: File): Observable<CommercialArea>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.commercialAreas$.pipe(
             take(1),
             switchMap(commercialAreas => this._httpClient.post<CommercialArea>('api/dashboards/commercialareas/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedCommercialArea) => {
 
                     // Find the index of the updated commercialArea
@@ -319,7 +339,5 @@ export class CommercialAreasService
             ))
         );
     }
-
-
 
 }

@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { RequestRole } from 'app/modules/admin/masters/requestRole/requestRole.types';
-import {Collaborator} from '../../dashboards/collaborators/collaborators.types';
-import {BusinessType} from '../businessType/businessTypes.types';
-
 @Injectable({
     providedIn: 'root'
 })
@@ -53,7 +50,11 @@ export class RequestRoleService
      */
     getRequestRoles(): Observable<RequestRole[]>
     {
-        return this._httpClient.get<RequestRole[]>('http://localhost:1616/api/v1/followup/requestrole/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<RequestRole[]>('http://localhost:1616/api/v1/followup/requestrole/all', {headers}).pipe(
             tap((requestRoles) => {
 
 
@@ -85,8 +86,12 @@ export class RequestRoleService
      */
     searchRequestRole(query: string): Observable<RequestRole[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<RequestRole[]>('http://localhost:1616/api/v1/followup/requestrole/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((requestRoles) => {
                 let requestRolesFiltered: any[]=[];
@@ -175,11 +180,14 @@ export class RequestRoleService
             "name": "Nuevo tipo de request",
             "description": "Nueva descripcion",
             "isActive": 1
-        }
-        ;
+        };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.requestRoles$.pipe(
             take(1),
-            switchMap(requestRoles => this._httpClient.post<RequestRole>('http://localhost:1616/api/v1/followup/requestrole/save', newRequestRole).pipe(
+            switchMap(requestRoles => this._httpClient.post<RequestRole>('http://localhost:1616/api/v1/followup/requestrole/save', newRequestRole, {headers}).pipe(
                 map((newRequestRole) => {
                     // Update the requestRoles with the new requestRole
                     this._requestRoles.next([newRequestRole, ...requestRoles]);
@@ -199,11 +207,14 @@ export class RequestRoleService
      */
     updateRequestRole(id: number, requestRole: RequestRole): Observable<RequestRole>
     {
-       console.log(JSON.stringify(requestRole));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.requestRoles$.pipe(
             take(1),
             switchMap(requestRoles => this._httpClient.put<RequestRole>('http://localhost:1616/api/v1/followup/requestrole/requestrole/' + requestRole.id,
-                requestRole
+                requestRole, {headers}
             ).pipe(
                 map((updatedRequestRole) => {
 
@@ -252,9 +263,13 @@ export class RequestRoleService
      */
     deleteRequestRole(requestRole: RequestRole): Observable<RequestRole>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.requestRoles$.pipe(
             take(1),
-            switchMap(requestRoles => this._httpClient.put('http://localhost:1616/api/v1/followup/requestrole/status/' + requestRole.id, requestRole).pipe(
+            switchMap(requestRoles => this._httpClient.put('http://localhost:1616/api/v1/followup/requestrole/status/' + requestRole.id, requestRole, {headers}).pipe(
                 map((updatedRequestRole: RequestRole) => {
 
                     // Find the index of the deleted requestRole
@@ -288,12 +303,16 @@ export class RequestRoleService
      */
     uploadAvatar(id: number, avatar: File): Observable<RequestRole>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.requestRoles$.pipe(
             take(1),
             switchMap(requestRoles => this._httpClient.post<RequestRole>('api/dashboards/requestrole/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedRequestRole) => {
 
                     // Find the index of the updated requestRole

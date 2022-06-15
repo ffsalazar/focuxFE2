@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import {
@@ -56,8 +56,12 @@ export class StatusesService {
      * Get statuses
      */
     getStatuses(): Observable<Status[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
-            .get<Status[]>('http://localhost:1616/api/v1/followup/statuses/all')
+            .get<Status[]>('http://localhost:1616/api/v1/followup/statuses/all', {headers})
             .pipe(
                 tap((statuses) => {
                     let statusFiltered: any[] = [];
@@ -85,11 +89,16 @@ export class StatusesService {
      * @param query
      */
     searchStatus(query: string): Observable<Status[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Status[]>(
                 'http://localhost:1616/api/v1/followup/statuses/all',
                 {
                     params: { query },
+                    headers
                 }
             )
             .pipe(
@@ -143,9 +152,7 @@ export class StatusesService {
                 // Find the status¿
 
                 const status = statuses.find((item) => item.id === id) || null;
-                const status_test = statuses.find((item) => item.id === id);
 
-                console.log(status_test);
                 // Update the status
                 this._status.next(status);
 
@@ -174,13 +181,17 @@ export class StatusesService {
             description: 'Nueva descripcion',
             isActive: 1,
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.statuses$.pipe(
             take(1),
             switchMap((statuses) =>
                 this._httpClient
                     .post<Status>(
                         'http://localhost:1616/api/v1/followup/statuses/save',
-                        newStatus
+                        newStatus, {headers}
                     )
                     .pipe(
                         map((newStatus) => {
@@ -202,7 +213,10 @@ export class StatusesService {
      * @param status
      */
     updateStatus(id: number, status: Status): Observable<Status> {
-        console.log(JSON.stringify(status));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.statuses$.pipe(
             take(1),
             switchMap((statuses) =>
@@ -210,7 +224,7 @@ export class StatusesService {
                     .put<Status>(
                         'http://localhost:1616/api/v1/followup/statuses/statuses/' +
                             status.id,
-                        status
+                        status, {headers}
                     )
                     .pipe(
                         map((updatedStatus) => {
@@ -260,6 +274,10 @@ export class StatusesService {
      * @param id
      */
     deleteStatus(status: Status): Observable<Status> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.statuses$.pipe(
             take(1),
             switchMap((statuses) =>
@@ -267,7 +285,7 @@ export class StatusesService {
                     .put(
                         'http://localhost:1616/api/v1/followup/statuses/status/' +
                             status.id,
-                        status
+                        status, {headers}
                     )
                     .pipe(
                         map((updatedStatus: Status) => {
@@ -307,13 +325,17 @@ export class StatusesService {
      * @param avatar
      */
     uploadAvatar(id: number, avatar: File): Observable<Status> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.statuses$.pipe(
             take(1),
             switchMap((statuses) =>
                 this._httpClient
                     .post<Status>('api/dashboards/statuses/avatar', {
                         id,
-                    })
+                    }, {headers})
                     .pipe(
                         map((updatedStatus) => {
                             // Find the index of the updated status
@@ -349,9 +371,13 @@ export class StatusesService {
     }
 
     getTypeStatuses(): Observable<TypeStatus[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<TypeStatus[]>(
-                'http://localhost:1616/api/v1/followup/typestatuses/all'
+                'http://localhost:1616/api/v1/followup/typestatuses/all', {headers}
             )
             .pipe(
                 tap((typeStatus) => {

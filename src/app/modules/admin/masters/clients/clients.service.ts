@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Client, BusinessType } from 'app/modules/admin/masters/clients/clients.types';
@@ -57,7 +57,11 @@ export class ClientsService
      */
     getClients(): Observable<Client[]>
     {
-        return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all', {headers}).pipe(
             tap((clients) => {
                 let clientFiltered : any[]=[];
 
@@ -88,8 +92,12 @@ export class ClientsService
 
     searchClient(query: string): Observable<Client[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<Client[]>('http://localhost:1616/api/v1/followup/clients/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((clients) => {
                 let clientFiltered : any[]=[];
@@ -141,9 +149,6 @@ export class ClientsService
                 // Find the client¿
 
                 const client = clients.find(item => item.id === id) || null;
-                const client_test = clients.find(item => item.id === id);
-
-                console.log(client_test);
                 // Update the client
                 this._client.next(client);
 
@@ -182,9 +187,13 @@ export class ClientsService
             "description": "Nuevo Cliente descripcion",
             "isActive": 1
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.clients$.pipe(
             take(1),
-            switchMap(clients => this._httpClient.post<Client>('http://localhost:1616/api/v1/followup/clients/save', newClient).pipe(
+            switchMap(clients => this._httpClient.post<Client>('http://localhost:1616/api/v1/followup/clients/save', newClient, {headers}).pipe(
                 map((newClient) => {
                     // Update the clients with the new client
                     this._clients.next([newClient, ...clients]);
@@ -204,11 +213,14 @@ export class ClientsService
      */
     updateClient(id: number, client: Client): Observable<Client>
     {
-       console.log(JSON.stringify(client));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.clients$.pipe(
             take(1),
             switchMap(clients => this._httpClient.put<Client>('http://localhost:1616/api/v1/followup/clients/client/' + client.id,
-                client
+                client, {headers}
             ).pipe(
                 map((updatedClient) => {
 
@@ -256,9 +268,13 @@ export class ClientsService
      */
     deleteClient(client: Client): Observable<Client>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.clients$.pipe(
             take(1),
-            switchMap(clients => this._httpClient.put('http://localhost:1616/api/v1/followup/clients/status/' + client.id, client).pipe(
+            switchMap(clients => this._httpClient.put('http://localhost:1616/api/v1/followup/clients/status/' + client.id, client, {headers}).pipe(
                 map((updatedClient: Client) => {
 
                     // Find the index of the deleted client
@@ -291,12 +307,16 @@ export class ClientsService
      */
     uploadAvatar(id: number, avatar: File): Observable<Client>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.clients$.pipe(
             take(1),
             switchMap(clients => this._httpClient.post<Client>('api/dashboards/clients/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedClient) => {
 
                     // Find the index of the updated client
@@ -329,7 +349,11 @@ export class ClientsService
 
     getBusinessTypes(): Observable<BusinessType[]>
     {
-        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<BusinessType[]>('http://localhost:1616/api/v1/followup/businessType/all', {headers}).pipe(
             tap((businessTypes) => {
                 let businessTypeFiltered : any[]=[];
 

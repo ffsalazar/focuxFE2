@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Objetive } from './objetives.types';
@@ -46,8 +46,12 @@ export class ObjetivesService {
      * Get objetives
      */
     getObjetives(): Observable<Objetive[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
-            .get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all')
+            .get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all', {headers})
             .pipe(
                 tap((objetives) => {
                     const objetiveFiltered: any[] = [];
@@ -75,11 +79,16 @@ export class ObjetivesService {
      * @param query
      */
     searchObjetive(query: string): Observable<Objetive[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Objetive[]>(
                 'http://localhost:1616/api/v1/followup/target/all',
                 {
                     params: { query },
+                    headers
                 }
             )
             .pipe(
@@ -134,9 +143,6 @@ export class ObjetivesService {
 
                 const objetive =
                     objetives.find((item) => item.id === id) || null;
-                const objetive_test = objetives.find((item) => item.id === id);
-
-                console.log(objetive_test);
                 // Update the objetive
                 this._objetive.next(objetive);
 
@@ -165,13 +171,17 @@ export class ObjetivesService {
             type: 'Nuevo tipo de objetivo',
             isActive: 1,
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.objetives$.pipe(
             take(1),
             switchMap((objetives) =>
                 this._httpClient
                     .post<Objetive>(
                         'http://localhost:1616/api/v1/followup/target/save',
-                        newObjetive
+                        newObjetive, {headers}
                     )
                     .pipe(
                         map((newObjetive) => {
@@ -193,7 +203,10 @@ export class ObjetivesService {
      * @param objetive
      */
     updateObjetive(id: number, objetive: Objetive): Observable<Objetive> {
-        console.log(JSON.stringify(objetive));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.objetives$.pipe(
             take(1),
             switchMap((objetives) =>
@@ -201,7 +214,7 @@ export class ObjetivesService {
                     .put<Objetive>(
                         'http://localhost:1616/api/v1/followup/target/target/' +
                             objetive.id,
-                        objetive
+                        objetive, {headers}
                     )
                     .pipe(
                         map((updatedObjetive) => {
@@ -250,6 +263,10 @@ export class ObjetivesService {
      * @param id
      */
     deleteObjetive(objetive: Objetive): Observable<Objetive> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.objetives$.pipe(
             take(1),
             switchMap((objetives) =>
@@ -257,7 +274,7 @@ export class ObjetivesService {
                     .put(
                         'http://localhost:1616/api/v1/followup/target/status/' +
                             objetive.id,
-                        objetive
+                        objetive, {headers}
                     )
                     .pipe(
                         map((updatedObjetive: Objetive) => {

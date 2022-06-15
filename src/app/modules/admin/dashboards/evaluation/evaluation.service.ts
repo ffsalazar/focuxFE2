@@ -1,14 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, from, Subject } from 'rxjs';
-import { map, switchMap, filter, toArray, tap, } from 'rxjs/operators';
+import { switchMap, filter, toArray, tap, } from 'rxjs/operators';
 import { Client, Collaborator, Department, Knowledge } from './evaluation.types';
 import { Objetive } from '../../masters/objetives/objetives.types';
 import { Indicator } from '../../masters/indicators/indicators.types';
-import { DialogData } from 'app/modules/admin/apps/portafolio/request/request.types';
-import { DialogOptions } from 'app/modules/admin/apps/portafolio/request/request.types';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { FocuxPopupComponent } from 'app/modules/admin/apps/portafolio/request/focux-popup/focux-popup.component';
+import { MatDialog } from '@angular/material/dialog';
 import { RequestService } from '../../apps/portafolio/request/request.service';
 
 @Injectable({
@@ -45,7 +42,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for departments
-	 * 
+	 *
 	 */
 	get departments$(): Observable<Department[]> {
 		return this._departments.asObservable();
@@ -53,7 +50,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for selectedTemplate
-	 * 
+	 *
 	 */
 	get template(): any {
 		return this._selectedTemplate;
@@ -61,7 +58,7 @@ export class EvaluationService {
 
 	/**
 	 * Setter for selectedTemplate
-	 * 
+	 *
 	 */
 	set template(template: any) {
 		this._selectedTemplate = template;
@@ -69,7 +66,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for selectedTemplate
-	 * 
+	 *
 	 */
 	get period(): number {
 		return this._selectedPeriod;
@@ -77,7 +74,7 @@ export class EvaluationService {
 
 	/**
 	 * Setter for selectedPeriod
-	 * 
+	 *
 	 */
 	set period(period: number) {
 		this._selectedPeriod = period;
@@ -85,7 +82,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for collaborators
-	 * 
+	 *
 	 */
 	get collaborators$(): Observable<Collaborator[]> {
 		return this._collaborators.asObservable();
@@ -93,7 +90,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for objetives
-	 * 
+	 *
 	 */
 	get objetives$(): Observable<Objetive[]> {
 		return this._objetives.asObservable();
@@ -102,7 +99,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for indicators
-	 * 
+	 *
 	 */
 	get indicators$(): Observable<Indicator[]> {
 		return this._indicators.asObservable();
@@ -110,7 +107,7 @@ export class EvaluationService {
 
 	/**
 	 * Getter for clients
-	 * 
+	 *
 	 */
 	get clients$(): Observable<Client[]> {
         return this._clients.asObservable();
@@ -125,15 +122,15 @@ export class EvaluationService {
 
 	/**
 	 * Setter for _collaboratorsSelected
-	 * 
+	 *
 	 */
 	set collaboratorsSelected(collaborators: Collaborator[]) {
 		this._collaboratorsSelected = collaborators;
 	}
-	
+
 	/**
 	 * Getter for _collaboratorsSelected
-	 * 
+	 *
 	 */
 	get collaboratorsSelected() {
 		return this._collaboratorsSelected;
@@ -153,7 +150,7 @@ export class EvaluationService {
 	 get tabIndex$(): Observable<number> {
         return this._tabIndex.asObservable();
     }
-	
+
 
 	get isOpenModal$(): Observable<Boolean> {
         return this._isOpenModal.asObservable();
@@ -165,7 +162,7 @@ export class EvaluationService {
 
 	/**
 	 * Compare
-	 * 
+	 *
 	 */
 	private _compare(a: Department, b: Department) {
 		if (a.name < b.name) return -1;
@@ -178,8 +175,12 @@ export class EvaluationService {
      *
      */
 	 getClients(): Observable<Client[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
-            .get<Client[]>('http://localhost:1616/api/v1/followup/clients/all')
+            .get<Client[]>('http://localhost:1616/api/v1/followup/clients/all', {headers})
             .pipe(
                 tap((clients) => {
                     clients = clients.filter((item) => item.isActive === 1);
@@ -193,9 +194,13 @@ export class EvaluationService {
      *
      */
     getKnowledges(): Observable<Knowledge[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Knowledge[]>(
-                'http://localhost:1616/api/v1/followup/knowledges/all'
+                'http://localhost:1616/api/v1/followup/knowledges/all', {headers}
             )
             .pipe(
                 switchMap((knowledges) => knowledges),
@@ -209,10 +214,14 @@ export class EvaluationService {
 
 	/**
 	 * Get departments
-	 * 
+	 *
 	 */
 	getDepartments(): Observable<Department[]> {
-		return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all')
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+		return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all', {headers})
 			.pipe(
 				switchMap((departments: Department[]) => from(departments.sort(this._compare))),
 				filter(departmet => departmet.isActive !== 0),
@@ -226,11 +235,15 @@ export class EvaluationService {
 
 	/**
 	 * Get collaborators
-	 * 
-	 * @returns 
+	 *
+	 * @returns
 	 */
 	getCollaborators(): Observable<Collaborator[]> {
-		return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all')
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+		return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/collaborators/all', {headers})
 			.pipe(
 				switchMap((collaborators: Collaborator[]) => from(collaborators)),
 				filter(collaborator => collaborator.isActive !== 0),
@@ -244,8 +257,8 @@ export class EvaluationService {
 
 	/**
 	 * Get collaborators evaluated
-	 * 
-	 * @returns 
+	 *
+	 * @returns
 	 */
 	 getCollaboratorsEvaluated(period: number = 1, departmentId: number = 1): Observable<Collaborator[]> {
 
@@ -254,8 +267,12 @@ export class EvaluationService {
 		params = params.append('year', 2022);
 		params = params.append('period', period);
 
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
 		return this._httpClient.get<Collaborator[]>('http://localhost:1616/api/v1/followup/evaluationperformance/collaboratorsevaluated', {
-			params
+			params, headers
 		}).pipe(
 			switchMap((collaborators: Collaborator[]) => from(collaborators)),
 			filter(collaborator => collaborator.isActive !== 0),
@@ -269,22 +286,26 @@ export class EvaluationService {
 
 	/**
 	 * Get Indicators
-	 * 
-	 * @returns 
+	 *
+	 * @returns
 	 */
 	 getIndicators(): Observable<Indicator[]>
 	 {
-		return this._httpClient.get<Indicator[]>('http://localhost:1616/api/v1/followup/indicator/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+		return this._httpClient.get<Indicator[]>('http://localhost:1616/api/v1/followup/indicator/all', {headers}).pipe(
 			tap((indicators) => {
-	
-	
+
+
 				 let indicatorFiltered : any[]=[];
-	
+
 				 function compare(a: Indicator, b: Indicator) {
 					 if (a.name < b.name) return -1;
 					 if (a.name > b.name) return 1;
-	
-	
+
+
 					 return 0;
 				 }
 				 indicators.sort(compare);
@@ -295,19 +316,23 @@ export class EvaluationService {
 				 });
 
 				this._indicators.next(indicatorFiltered);
-	
+
 			 })
 		 );
 	 }
 
 	/**
 	 * Get objetives
-	 * 
-	 * @returns 
+	 *
+	 * @returns
 	 */
 	getObjectives(): Observable<Objetive[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
 		return this._httpClient
-			.get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all')
+			.get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all', {headers})
 			.pipe(
 				tap((objetives) => {
 					this._objetives.next(objetives);
@@ -323,7 +348,7 @@ export class EvaluationService {
         // Update collaborators selected
         this._collaboratorSelected.next(this.collaboratorsSelected);
     }
-	
+
 	/**
      * Set tab index
      *
@@ -336,15 +361,15 @@ export class EvaluationService {
 	/**
      * Close modal
      *
-     * 
+     *
      */
 	 closeModal() {
 		// Close focuxPopup
 		this._isOpenModal.next(false);
     }
 
-	 
-	
+
+
 }
 
 

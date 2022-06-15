@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, InventoryTag, InventoryVendor } from 'app/modules/admin/apps/ecommerce/inventory/inventory.types';
@@ -94,7 +94,11 @@ export class RequestService
      */
     getBrands(): Observable<InventoryBrand[]>
     {
-        return this._httpClient.get<InventoryBrand[]>('api/apps/ecommerce/inventory/brands').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<InventoryBrand[]>('api/apps/ecommerce/inventory/brands', {headers}).pipe(
             tap((brands) => {
                 this._brands.next(brands);
             })
@@ -106,7 +110,11 @@ export class RequestService
      */
     getCategories(): Observable<InventoryCategory[]>
     {
-        return this._httpClient.get<InventoryCategory[]>('api/apps/ecommerce/inventory/categories').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<InventoryCategory[]>('api/apps/ecommerce/inventory/categories', {headers}).pipe(
             tap((categories) => {
                 this._categories.next(categories);
             })
@@ -126,6 +134,10 @@ export class RequestService
     getProducts(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<{ pagination: InventoryPagination; products: InventoryProduct[] }>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<{ pagination: InventoryPagination; products: InventoryProduct[] }>('api/apps/ecommerce/inventory/products', {
             params: {
                 page: '' + page,
@@ -133,7 +145,7 @@ export class RequestService
                 sort,
                 order,
                 search
-            }
+            }, headers
         }).pipe(
             tap((response) => {
                 this._pagination.next(response.pagination);
@@ -177,9 +189,13 @@ export class RequestService
      */
     createProduct(): Observable<InventoryProduct>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.products$.pipe(
             take(1),
-            switchMap(products => this._httpClient.post<InventoryProduct>('api/apps/ecommerce/inventory/product', {}).pipe(
+            switchMap(products => this._httpClient.post<InventoryProduct>('api/apps/ecommerce/inventory/product', {}, {headers}).pipe(
                 map((newProduct) => {
 
                     // Update the products with the new product
@@ -200,12 +216,16 @@ export class RequestService
      */
     updateProduct(id: string, product: InventoryProduct): Observable<InventoryProduct>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.products$.pipe(
             take(1),
             switchMap(products => this._httpClient.patch<InventoryProduct>('api/apps/ecommerce/inventory/product', {
                 id,
                 product
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedProduct) => {
 
                     // Find the index of the updated product
@@ -243,9 +263,13 @@ export class RequestService
      */
     deleteProduct(id: string): Observable<boolean>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.products$.pipe(
             take(1),
-            switchMap(products => this._httpClient.delete('api/apps/ecommerce/inventory/product', {params: {id}}).pipe(
+            switchMap(products => this._httpClient.delete('api/apps/ecommerce/inventory/product', {headers, params: {id}}).pipe(
                 map((isDeleted: boolean) => {
 
                     // Find the index of the deleted product
@@ -269,7 +293,11 @@ export class RequestService
      */
     getTags(): Observable<InventoryTag[]>
     {
-        return this._httpClient.get<InventoryTag[]>('api/apps/ecommerce/inventory/tags').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<InventoryTag[]>('api/apps/ecommerce/inventory/tags', {headers}).pipe(
             tap((tags) => {
                 this._tags.next(tags);
             })
@@ -283,9 +311,13 @@ export class RequestService
      */
     createTag(tag: InventoryTag): Observable<InventoryTag>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.tags$.pipe(
             take(1),
-            switchMap(tags => this._httpClient.post<InventoryTag>('api/apps/ecommerce/inventory/tag', {tag}).pipe(
+            switchMap(tags => this._httpClient.post<InventoryTag>('api/apps/ecommerce/inventory/tag', {tag}, {headers}).pipe(
                 map((newTag) => {
 
                     // Update the tags with the new tag
@@ -306,12 +338,16 @@ export class RequestService
      */
     updateTag(id: string, tag: InventoryTag): Observable<InventoryTag>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.tags$.pipe(
             take(1),
             switchMap(tags => this._httpClient.patch<InventoryTag>('api/apps/ecommerce/inventory/tag', {
                 id,
                 tag
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedTag) => {
 
                     // Find the index of the updated tag
@@ -337,9 +373,13 @@ export class RequestService
      */
     deleteTag(id: string): Observable<boolean>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.tags$.pipe(
             take(1),
-            switchMap(tags => this._httpClient.delete('api/apps/ecommerce/inventory/tag', {params: {id}}).pipe(
+            switchMap(tags => this._httpClient.delete('api/apps/ecommerce/inventory/tag', {headers ,params: {id}}).pipe(
                 map((isDeleted: boolean) => {
 
                     // Find the index of the deleted tag
@@ -384,58 +424,15 @@ export class RequestService
      */
     getVendors(): Observable<InventoryVendor[]>
     {
-        return this._httpClient.get<InventoryVendor[]>('api/apps/ecommerce/inventory/vendors').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<InventoryVendor[]>('api/apps/ecommerce/inventory/vendors', {headers}).pipe(
             tap((vendors) => {
                 this._vendors.next(vendors);
             })
         );
     }
 
-    /**
-     * Update the avatar of the given contact
-     *
-     * @param id
-     * @param avatar
-     */
-    /*uploadAvatar(id: string, avatar: File): Observable<Contact>
-    {
-        return this.contacts$.pipe(
-            take(1),
-            switchMap(contacts => this._httpClient.post<Contact>('api/apps/contacts/avatar', {
-                id,
-                avatar
-            }, {
-                headers: {
-                    'Content-Type': avatar.type
-                }
-            }).pipe(
-                map((updatedContact) => {
-
-                    // Find the index of the updated contact
-                    const index = contacts.findIndex(item => item.id === id);
-
-                    // Update the contact
-                    contacts[index] = updatedContact;
-
-                    // Update the contacts
-                    this._contacts.next(contacts);
-
-                    // Return the updated contact
-                    return updatedContact;
-                }),
-                switchMap(updatedContact => this.contact$.pipe(
-                    take(1),
-                    filter(item => item && item.id === id),
-                    tap(() => {
-
-                        // Update the contact if it's selected
-                        this._contact.next(updatedContact);
-
-                        // Return the updated contact
-                        return updatedContact;
-                    })
-                ))
-            ))
-        );
-    }*/
 }

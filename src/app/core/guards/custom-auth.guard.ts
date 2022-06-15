@@ -29,6 +29,15 @@ export class CustomAuthGuard implements CanActivate {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
+
+        /*if(route.data.roles && !this._authService.verifyRoles(route.data.roles)){
+            console.log("🚀 ~ file: custom-auth.guard.ts ~ line 34 ~ CustomAuthGuard ~ this._authService.verifyRoles(route.data.roles)", this._authService.verifyRoles(route.data.roles))
+            this._router.navigateByUrl('404-not-found');
+        }
+        else{
+            const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
+            return this._isAuthenticated(redirectUrl);
+        }*/
         const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
         return this._isAuthenticated(redirectUrl);
     }
@@ -41,6 +50,14 @@ export class CustomAuthGuard implements CanActivate {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
+
+        /*if(childRoute.data.roles && !this._authService.verifyRoles(childRoute.data.roles)){
+            this._router.navigateByUrl('404-not-found');
+        }
+        else{
+            const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
+            return this._isAuthenticated(redirectUrl);
+        }*/
         const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
         return this._isAuthenticated(redirectUrl);
     }

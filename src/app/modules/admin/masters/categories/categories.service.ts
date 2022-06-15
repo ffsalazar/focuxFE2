@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Category } from 'app/modules/admin/masters/categories/categories.types';
@@ -51,7 +51,12 @@ export class CategoriesService
      */
     getCategories(): Observable<Category[]>
     {
-        return this._httpClient.get<Category[]>('http://localhost:1616/api/v1/followup/categories/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+
+        return this._httpClient.get<Category[]>('http://localhost:1616/api/v1/followup/categories/all', { headers }).pipe(
             tap((categories) => {
 
 
@@ -72,7 +77,8 @@ export class CategoriesService
                 });
                 this._categories.next(categoryFiltered);
 
-            })
+            }),
+
         );
     }
 
@@ -83,8 +89,13 @@ export class CategoriesService
      */
     searchCategory(query: string): Observable<Category[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<Category[]>('http://localhost:1616/api/v1/followup/categories/all', {
-            params: {query}
+            params: {query},
+            headers
         }).pipe(
             tap((categories) => {
                 let categoryFiltered: any[]=[];
@@ -137,9 +148,7 @@ export class CategoriesService
                 // Find the category¿
 
                 const category = categories.find(item => item.id === id) || null;
-                const category_test = categories.find(item => item.id === id);
 
-                console.log(category_test);
                 // Update the category
                 this._category.next(category);
 
@@ -174,9 +183,13 @@ export class CategoriesService
             "isActive": 1
         }
         ;
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.categories$.pipe(
             take(1),
-            switchMap(categories => this._httpClient.post<Category>('http://localhost:1616/api/v1/followup/categories/save', newCategory).pipe(
+            switchMap(categories => this._httpClient.post<Category>('http://localhost:1616/api/v1/followup/categories/save', newCategory, {headers}).pipe(
                 map((newCategory) => {
                     // Update the categories with the new category
                     this._categories.next([newCategory, ...categories]);
@@ -196,11 +209,14 @@ export class CategoriesService
      */
     updateCategory(id: number, category: Category): Observable<Category>
     {
-       console.log(JSON.stringify(category));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.categories$.pipe(
             take(1),
             switchMap(categories => this._httpClient.put<Category>('http://localhost:1616/api/v1/followup/categories/category/' + category.id,
-                category
+                category, {headers}
             ).pipe(
                 map((updatedCategory) => {
 
@@ -248,9 +264,13 @@ export class CategoriesService
      */
     deleteCategory(category: Category): Observable<Category>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.categories$.pipe(
             take(1),
-            switchMap(categories => this._httpClient.put('http://localhost:1616/api/v1/followup/categories/status/' + category.id, category).pipe(
+            switchMap(categories => this._httpClient.put('http://localhost:1616/api/v1/followup/categories/status/' + category.id, category, {headers}).pipe(
                 map((updatedCategory: Category) => {
 
                     // Find the index of the deleted category
@@ -292,12 +312,16 @@ export class CategoriesService
      */
     uploadAvatar(id: number, avatar: File): Observable<Category>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.categories$.pipe(
             take(1),
             switchMap(categories => this._httpClient.post<Category>('api/dashboards/categories/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedCategory) => {
 
                     // Find the index of the updated category

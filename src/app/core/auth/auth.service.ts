@@ -239,6 +239,26 @@ export class AuthService {
     }
 
     /**
+     * Verify Role
+     *
+     * @param userRoles
+     */
+    verifyRoles(allowedRoles: string[]): boolean{
+        let accessGranted: boolean = false;
+        let start: number = 0;
+        const end: number = allowedRoles.length != null ? allowedRoles.length : 0;
+        while(start < end && !accessGranted){
+            if(this.roles.includes(allowedRoles[start])){
+                accessGranted = true;
+            }
+            else{
+                start++;
+            }
+        }
+        return accessGranted;
+    }
+
+    /**
      * Check the authentication status
      */
     isLogged(): boolean {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Evaluation } from './evaluations.types';
@@ -95,9 +95,13 @@ export class EvaluationsService {
      * Get evaluations
      */
     getEvaluations(): Observable<Evaluation[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Evaluation[]>(
-                'http://localhost:1616/api/v1/followup/evaluation/all'
+                'http://localhost:1616/api/v1/followup/evaluation/all', {headers}
             )
             .pipe(
                 tap((evaluations) => {
@@ -118,8 +122,12 @@ export class EvaluationsService {
      * Get objetives
      */
     getObjetives(): Observable<Objetive[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
-            .get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all')
+            .get<Objetive[]>('http://localhost:1616/api/v1/followup/target/all', {headers})
             .pipe(
                 tap((objetives) => {
                     const objetiveFiltered: any[] = [];
@@ -145,9 +153,13 @@ export class EvaluationsService {
      * Get indicators
      */
     getIndicators(): Observable<Indicator[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Indicator[]>(
-                'http://localhost:1616/api/v1/followup/indicator/all'
+                'http://localhost:1616/api/v1/followup/indicator/all', {headers}
             )
             .pipe(
                 tap((indicators) => {
@@ -176,11 +188,16 @@ export class EvaluationsService {
      * @param query
      */
     searchEvaluation(query: string): Observable<Evaluation[]> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient
             .get<Evaluation[]>(
                 'http://localhost:1616/api/v1/followup/evaluation/all',
                 {
                     params: { query },
+                    headers
                 }
             )
             .pipe(
@@ -255,13 +272,17 @@ export class EvaluationsService {
             name: 'Nuevo evaluacion',
             code: 'TEST',
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.evaluations$.pipe(
             take(1),
             switchMap((evaluations) =>
                 this._httpClient
                     .post<Evaluation>(
                         'http://localhost:1616/api/v1/followup/evaluation/save',
-                        newEvaluation
+                        newEvaluation, {headers}
                     )
                     .pipe(
                         map((newEvaluation) => {
@@ -289,6 +310,10 @@ export class EvaluationsService {
         id: number,
         evaluation: Evaluation
     ): Observable<Evaluation> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.evaluations$.pipe(
             take(1),
             switchMap((evaluations) =>
@@ -296,7 +321,7 @@ export class EvaluationsService {
                     .put<Evaluation>(
                         'http://localhost:1616/api/v1/followup/evaluation/evaluation/' +
                             evaluation.id,
-                        evaluation
+                        evaluation, {headers}
                     )
                     .pipe(
                         map((updatedEvaluation) => {
@@ -340,6 +365,10 @@ export class EvaluationsService {
      * @param id
      */
     deleteEvaluation(evaluation: Evaluation): Observable<Evaluation> {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.evaluations$.pipe(
             take(1),
             switchMap((evaluations) =>
@@ -347,7 +376,7 @@ export class EvaluationsService {
                     .put(
                         'http://localhost:1616/api/v1/followup/evaluation/status/' +
                             evaluation.id,
-                        evaluation
+                        evaluation, {headers}
                     )
                     .pipe(
                         map((updatedEvaluation: Evaluation) => {

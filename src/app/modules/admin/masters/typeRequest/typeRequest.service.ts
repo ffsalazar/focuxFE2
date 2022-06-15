@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { TypeRequest } from 'app/modules/admin/masters/typeRequest/typeRequest.types';
-import {Collaborator} from '../../dashboards/collaborators/collaborators.types';
-import {BusinessType} from '../businessType/businessTypes.types';
 
 @Injectable({
     providedIn: 'root'
@@ -53,7 +51,11 @@ export class TypeRequestService
      */
     getTypeRequests(): Observable<TypeRequest[]>
     {
-        return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all', {headers}).pipe(
             tap((typeRequests) => {
 
 
@@ -85,8 +87,12 @@ export class TypeRequestService
      */
     searchTypeRequest(query: string): Observable<TypeRequest[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<TypeRequest[]>('http://localhost:1616/api/v1/followup/typerequests/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((typeRequests) => {
                 let typeRequestsFiltered: any[]=[];
@@ -177,9 +183,13 @@ export class TypeRequestService
             "isActive": 1
         }
         ;
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeRequests$.pipe(
             take(1),
-            switchMap(typeRequests => this._httpClient.post<TypeRequest>('http://localhost:1616/api/v1/followup/typerequests/save', newTypeRequest).pipe(
+            switchMap(typeRequests => this._httpClient.post<TypeRequest>('http://localhost:1616/api/v1/followup/typerequests/save', newTypeRequest, {headers}).pipe(
                 map((newTypeRequest) => {
                     // Update the typeRequests with the new typeRequest
                     this._typeRequests.next([newTypeRequest, ...typeRequests]);
@@ -199,11 +209,14 @@ export class TypeRequestService
      */
     updateTypeRequest(id: number, typeRequest: TypeRequest): Observable<TypeRequest>
     {
-       console.log(JSON.stringify(typeRequest));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeRequests$.pipe(
             take(1),
             switchMap(typeRequests => this._httpClient.put<TypeRequest>('http://localhost:1616/api/v1/followup/typerequests/typerequest/' + typeRequest.id,
-                typeRequest
+                typeRequest, {headers}
             ).pipe(
                 map((updatedTypeRequest) => {
 
@@ -252,9 +265,13 @@ export class TypeRequestService
      */
     deleteTypeRequest(typeRequest: TypeRequest): Observable<TypeRequest>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeRequests$.pipe(
             take(1),
-            switchMap(typeRequests => this._httpClient.put('http://localhost:1616/api/v1/followup/typerequests/status/' + typeRequest.id, typeRequest).pipe(
+            switchMap(typeRequests => this._httpClient.put('http://localhost:1616/api/v1/followup/typerequests/status/' + typeRequest.id, typeRequest, {headers}).pipe(
                 map((updatedTypeRequest: TypeRequest) => {
 
                     // Find the index of the deleted typeRequest
@@ -288,12 +305,16 @@ export class TypeRequestService
      */
     uploadAvatar(id: number, avatar: File): Observable<TypeRequest>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.typeRequests$.pipe(
             take(1),
             switchMap(typeRequests => this._httpClient.post<TypeRequest>('api/dashboards/typerequests/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedTypeRequest) => {
 
                     // Find the index of the updated typeRequest

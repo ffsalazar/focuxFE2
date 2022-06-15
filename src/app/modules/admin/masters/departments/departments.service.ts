@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Department } from 'app/modules/admin/masters/departments/departments.types';
@@ -51,7 +51,11 @@ export class DepartmentsService
      */
     getDepartments(): Observable<Department[]>
     {
-        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all').pipe(
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
+        return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all', {headers}).pipe(
             tap((departments) => {
 
 
@@ -83,8 +87,12 @@ export class DepartmentsService
      */
     searchDepartment(query: string): Observable<Department[]>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this._httpClient.get<Department[]>('http://localhost:1616/api/v1/followup/departments/all', {
-            params: {query}
+            params: {query}, headers
         }).pipe(
             tap((departments) => {
                 let departmentFiltered : any[]=[];
@@ -137,8 +145,6 @@ export class DepartmentsService
                 // Find the department¿
 
                 const department = departments.find(item => item.id === id) || null;
-                const department_test = departments.find(item => item.id === id);
-
 
                 // Update the department
                 this._department.next(department);
@@ -173,9 +179,13 @@ export class DepartmentsService
             "description": "Nuevo Departmente descripcion",
             "isActive": 1
         };
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.departments$.pipe(
             take(1),
-            switchMap(departments => this._httpClient.post<Department>('http://localhost:1616/api/v1/followup/departments/save', newDepartment).pipe(
+            switchMap(departments => this._httpClient.post<Department>('http://localhost:1616/api/v1/followup/departments/save', newDepartment, {headers}).pipe(
                 map((newDepartment) => {
                     // Update the departments with the new department
                     this._departments.next([newDepartment, ...departments]);
@@ -195,11 +205,14 @@ export class DepartmentsService
      */
     updateDepartment(id: number, department: Department): Observable<Department>
     {
-       console.log(JSON.stringify(department));
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.departments$.pipe(
             take(1),
             switchMap(departments => this._httpClient.put<Department>('http://localhost:1616/api/v1/followup/departments/department/' + department.id,
-                department
+                department, {headers}
             ).pipe(
                 map((updatedDepartment) => {
 
@@ -247,9 +260,13 @@ export class DepartmentsService
      */
     deleteDepartment(department: Department): Observable<Department>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.departments$.pipe(
             take(1),
-            switchMap(departments => this._httpClient.put('http://localhost:1616/api/v1/followup/departments/status/' + department.id, department).pipe(
+            switchMap(departments => this._httpClient.put('http://localhost:1616/api/v1/followup/departments/status/' + department.id, department, {headers}).pipe(
                 map((updatedDepartment: Department) => {
 
                     // Find the index of the deleted department
@@ -282,12 +299,16 @@ export class DepartmentsService
      */
     uploadAvatar(id: number, avatar: File): Observable<Department>
     {
+        const headers = new HttpHeaders({
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            'Content-Type': 'application/json',
+        });
         return this.departments$.pipe(
             take(1),
             switchMap(departments => this._httpClient.post<Department>('api/dashboards/departments/avatar', {
                 id
 
-            }).pipe(
+            }, {headers}).pipe(
                 map((updatedDepartment) => {
 
                     // Find the index of the updated department
