@@ -31,15 +31,17 @@ export class CustomAuthGuard implements CanActivate {
         | UrlTree {
 
         if(route.data.roles && !this._authService.verifyRoles(route.data.roles)){
-            console.log("🚀 ~ file: custom-auth.guard.ts ~ line 34 ~ CustomAuthGuard ~ this._authService.verifyRoles(route.data.roles)", this._authService.verifyRoles(route.data.roles))
-            this._router.navigateByUrl('404-not-found');
+            if(this._authService.roles.includes('ROLE_BASIC')){
+                this._router.navigateByUrl('dashboards/collaborators');
+            }
+            else{
+                this._router.navigateByUrl('404-not-found');
+            }
         }
         else{
             const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
             return this._isAuthenticated(redirectUrl);
         }
-        /*const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
-        return this._isAuthenticated(redirectUrl);*/
     }
 
     canActivateChild(
@@ -52,14 +54,18 @@ export class CustomAuthGuard implements CanActivate {
         | UrlTree {
 
         if(childRoute.data.roles && !this._authService.verifyRoles(childRoute.data.roles)){
-            this._router.navigateByUrl('404-not-found');
+            if(this._authService.roles.includes('ROLE_BASIC') || this._authService.roles.includes('ROLE_MIDDLE')){
+                console.log('hola')
+                this._router.navigateByUrl('dashboards/collaborators');
+            }
+            else{
+                this._router.navigateByUrl('404-not-found');
+            }
         }
         else{
             const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
             return this._isAuthenticated(redirectUrl);
         }
-        /*const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
-        return this._isAuthenticated(redirectUrl);*/
     }
 
     private _isAuthenticated(redirectURL: string): Observable<boolean> {
