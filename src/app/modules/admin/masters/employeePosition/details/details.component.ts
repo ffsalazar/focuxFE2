@@ -10,6 +10,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { EmployeePosition, Department} from 'app/modules/admin/masters/employeePosition/employeePosition.types';
 import { EmployeePositionListComponent } from 'app/modules/admin/masters/employeePosition/list/list.component';
 import { EmployeePositionsService } from 'app/modules/admin/masters/employeePosition/employeePosition.service';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
     selector       : 'employeePositions-details',
@@ -48,7 +49,8 @@ export class EmployeePositionDetailsComponent implements OnInit, OnDestroy
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _authService: AuthService
     )
     {
     }
@@ -162,6 +164,12 @@ export class EmployeePositionDetailsComponent implements OnInit, OnDestroy
         return this._employeePositionsListComponent.matDrawer.close();
     }
 
+     /**
+     * Check if the role is ROLE_BASIC
+     */
+    canEdit(): boolean{
+        return !this._authService.roles.includes('ROLE_BASIC');
+    }
     /**
      * Toggle edit mode
      *

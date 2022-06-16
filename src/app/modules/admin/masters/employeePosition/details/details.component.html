@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <!-- Actions -->
-                    <div class="flex items-center ml-auto mb-1">
+                    <div *ngIf="canEdit()" class="flex items-center ml-auto mb-1">
                         <button
                             mat-stroked-button
                             (click)="toggleEditMode(true)">

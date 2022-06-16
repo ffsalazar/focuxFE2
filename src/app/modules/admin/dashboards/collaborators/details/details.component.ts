@@ -39,6 +39,7 @@ import {
 } from 'app/modules/admin/dashboards/collaborators/collaborators.types';
 import { CollaboratorsListComponent } from 'app/modules/admin/dashboards/collaborators/list/list.component';
 import { CollaboratorsService } from 'app/modules/admin/dashboards/collaborators/collaborators.service';
+import { AuthService } from 'app/core/auth/auth.service';
 @Component({
     selector: 'collaborators-details',
     templateUrl: './details.component.html',
@@ -96,7 +97,8 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _authService: AuthService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -237,7 +239,7 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
 
                         console.log(collaborator);
 
-                        
+
                     } else {
                         // Create a phone number form group
                         knowledgesFormGroups.push(
@@ -443,6 +445,13 @@ export class CollaboratorsDetailsComponent implements OnInit, OnDestroy {
      */
     closeDrawer(): Promise<MatDrawerToggleResult> {
         return this._collaboratorsListComponent.matDrawer.close();
+    }
+
+    /**
+     * Check if the role is ROLE_BASIC
+     */
+    canEdit(): boolean{
+        return !this._authService.roles.includes('ROLE_BASIC');
     }
 
     /**

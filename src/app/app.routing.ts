@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
 import { CustomAuthGuard } from './core/guards/custom-auth.guard';
-import {VIEWABLE_CONTENT} from './core/auth/roles.types';
+import {ACCESS_ROLES} from './core/auth/roles.types';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -133,7 +133,7 @@ export const appRoutes: Route[] = [
                 children: [
                     {
                         path: 'project',
-                        //data: {roles: VIEWABLE_CONTENT.projects},
+                        data: {roles: ACCESS_ROLES.projects},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/project/project.module'
@@ -141,7 +141,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'analytics',
-                        //data: {roles: VIEWABLE_CONTENT.analytics},
+                        data: {roles: ACCESS_ROLES.analytics},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/analytics/analytics.module'
@@ -149,7 +149,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'finance',
-                        //data: {roles: VIEWABLE_CONTENT.finance},
+                        data: {roles: ACCESS_ROLES.finance},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/finance/finance.module'
@@ -157,7 +157,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'crypto',
-                        //data: {roles: VIEWABLE_CONTENT.crypto},
+                        data: {roles: ACCESS_ROLES.crypto},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/crypto/crypto.module'
@@ -165,7 +165,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'requestPanel',
-                        //data: {roles: VIEWABLE_CONTENT.requestPanel},
+                        data: {roles: ACCESS_ROLES.requestPanel},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/requestPanel/requestPanel.module'
@@ -173,7 +173,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'collaborators',
-                        //data: {roles: VIEWABLE_CONTENT.collaborators},
+                        data: {roles: ACCESS_ROLES.collaborators},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/collaborators/collaborators.module'
@@ -181,7 +181,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'assignment-occupation',
-                        //data: {roles: VIEWABLE_CONTENT.assignment},
+                        data: {roles: ACCESS_ROLES.assignment},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/assignment-occupation/assignment-occupation.module'
@@ -189,7 +189,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'vacations',
-                        //data: {roles: VIEWABLE_CONTENT.vacations},
+                        data: {roles: ACCESS_ROLES.vacations},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/vacations/vacations.module'
@@ -197,7 +197,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'evaluation',
-                        //data: {roles: VIEWABLE_CONTENT.evaluation},
+                        data: {roles: ACCESS_ROLES.evaluation},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/dashboards/evaluation/evaluation.module'
@@ -214,6 +214,7 @@ export const appRoutes: Route[] = [
                 children: [
                     {
                         path: 'academy',
+                        data: {roles: ACCESS_ROLES.academy},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/academy/academy.module'
@@ -221,6 +222,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'calendar',
+                        data: {roles: ACCESS_ROLES.calendar},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/calendar/calendar.module'
@@ -228,6 +230,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'chat',
+                        data: {roles: ACCESS_ROLES.chat},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/chat/chat.module'
@@ -235,6 +238,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'contacts',
+                        data: {roles: ACCESS_ROLES.contacts},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/contacts/contacts.module'
@@ -242,6 +246,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'ecommerce',
+                        data: {roles: ACCESS_ROLES.ecommerce},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/ecommerce/ecommerce.module'
@@ -249,6 +254,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'file-manager',
+                        data: {roles: ACCESS_ROLES.file},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/file-manager/file-manager.module'
@@ -256,6 +262,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'help-center',
+                        data: {roles: ACCESS_ROLES.help},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/help-center/help-center.module'
@@ -263,6 +270,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'mailbox',
+                        data: {roles: ACCESS_ROLES.mail},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/mailbox/mailbox.module'
@@ -270,6 +278,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'notes',
+                        data: {roles: ACCESS_ROLES.notes},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/notes/notes.module'
@@ -277,6 +286,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'scrumboard',
+                        data: {roles: ACCESS_ROLES.scrumboard},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/scrumboard/scrumboard.module'
@@ -284,6 +294,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'tasks',
+                        data: {roles: ACCESS_ROLES.tasks},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/tasks/tasks.module'
@@ -291,6 +302,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'portafolio',
+                        data: {roles: ACCESS_ROLES.portafolio},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/apps/portafolio/portafolio.module'
@@ -298,6 +310,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'clients',
+                        data: {roles: ACCESS_ROLES.clients},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/clients/clients.module'
@@ -314,7 +327,7 @@ export const appRoutes: Route[] = [
                 children: [
                     {
                         path: 'clients',
-                        //data: {roles: VIEWABLE_CONTENT.clients},
+                        data: {roles: ACCESS_ROLES.clients},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/clients/clients.module'
@@ -322,7 +335,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'employeePosition',
-                        //data: {roles: VIEWABLE_CONTENT.employeePosition},
+                        data: {roles: ACCESS_ROLES.employeePosition},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/employeePosition/employeePosition.module'
@@ -330,7 +343,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'departments',
-                        //data: {roles: VIEWABLE_CONTENT.departments},
+                        data: {roles: ACCESS_ROLES.departments},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/departments/departments.module'
@@ -338,7 +351,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'knowledges',
-                        //data: {roles: VIEWABLE_CONTENT.knowledges},
+                        data: {roles: ACCESS_ROLES.knowledges},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/knowledges/knowledges.module'
@@ -346,16 +359,16 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'businessTypes',
-                        //data: {roles: VIEWABLE_CONTENT.businessTypes},
+                        data: {roles: ACCESS_ROLES.businessTypes},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/businessType/businessTypes.module'
                             ).then((m) => m.BusinessTypesModule),
                     },
-                    //{path: 'typesStatus', loadChildren: () => import('app/modules/admin/masters/typeStatus/typeStatus.module').then(m => m.TypeStatusModule)},
+
                     {
                         path: 'typesRequest',
-                        //data: {roles: VIEWABLE_CONTENT.typesRequest},
+                        data: {roles: ACCESS_ROLES.typesRequest},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/typeRequest/typeRequest.module'
@@ -363,7 +376,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'requestRole',
-                        //data: {roles: VIEWABLE_CONTENT.requestRole},
+                        data: {roles: ACCESS_ROLES.requestRole},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/requestRole/requestRole.module'
@@ -371,7 +384,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'categories',
-                        //data: {roles: VIEWABLE_CONTENT.categories},
+                        data: {roles: ACCESS_ROLES.categories},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/categories/categories.module'
@@ -379,7 +392,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'technicalAreas',
-                        //data: {roles: VIEWABLE_CONTENT.technicalAreas},
+                        data: {roles: ACCESS_ROLES.technicalAreas},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/technicalAreas/technicalAreas.module'
@@ -387,7 +400,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'commercialAreas',
-                        //data: {roles: VIEWABLE_CONTENT.commercialAreas},
+                        data: {roles: ACCESS_ROLES.commercialAreas},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/commercialAreas/commercialAreas.module'
@@ -395,7 +408,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'statuses',
-                        //data: {roles: VIEWABLE_CONTENT.statuses},
+                        data: {roles: ACCESS_ROLES.statuses},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/statuses/statuses.module'
@@ -403,7 +416,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'indicators',
-                        //data: {roles: VIEWABLE_CONTENT.indicators},
+                        data: {roles: ACCESS_ROLES.indicators},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/indicators/indicators.module'
@@ -411,7 +424,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'objetives',
-                        //data: {roles: VIEWABLE_CONTENT.objetives},
+                        data: {roles: ACCESS_ROLES.objetives},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/objetives/objetives.module'
@@ -419,7 +432,7 @@ export const appRoutes: Route[] = [
                     },
                     {
                         path: 'evaluations',
-                        //data: {roles: VIEWABLE_CONTENT.evaluations},
+                        data: {roles: ACCESS_ROLES.evaluations},
                         loadChildren: () =>
                             import(
                                 'app/modules/admin/masters/evaluations/evaluations.module'

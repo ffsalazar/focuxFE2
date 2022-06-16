@@ -4,7 +4,7 @@ export const ROLES = {
     basic: 'ROLE_BASIC'
 };
 
-export const VIEWABLE_CONTENT = {
+export const ACCESS_ROLES = {
     // Dashboard
     projects: [ROLES.good],
     analytics: [ROLES.good],
@@ -15,6 +15,22 @@ export const VIEWABLE_CONTENT = {
     collaborators: [ROLES.good, ROLES.miduule, ROLES.basic],
     assignment: [ROLES.good, ROLES.miduule],
     evaluation: [ROLES.good],
+
+    // Apps
+    academy: [ROLES.good],
+    calendar: [ROLES.good],
+    chat: [ROLES.good],
+    contacts: [ROLES.good],
+    ecommerce: [ROLES.good],
+    file: [ROLES.good],
+    help: [ROLES.good],
+    mail: [ROLES.good],
+    notes: [ROLES.good],
+    scrumboard: [ROLES.good],
+    tasks: [ROLES.good],
+    portafolio: [ROLES.good],
+
+
 
     // Collaborator
     employeePosition: [ROLES.good, ROLES.miduule, ROLES.basic],

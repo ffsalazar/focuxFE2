@@ -10,6 +10,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Knowledge} from 'app/modules/admin/masters/knowledges/knowledges.types';
 import { KnowledgesListComponent } from 'app/modules/admin/masters/knowledges/list/list.component';
 import { KnowledgesService } from 'app/modules/admin/masters/knowledges/knowledges.service';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
     selector       : 'knowledges-details',
@@ -46,7 +47,8 @@ export class KnowledgesDetailsComponent implements OnInit, OnDestroy
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _authService: AuthService
     )
     {
     }
@@ -147,6 +149,13 @@ export class KnowledgesDetailsComponent implements OnInit, OnDestroy
     closeDrawer(): Promise<MatDrawerToggleResult>
     {
         return this._knowledgesListComponent.matDrawer.close();
+    }
+
+    /**
+     * Check if the role is ROLE_BASIC
+     */
+    canEdit(): boolean{
+        return !this._authService.roles.includes('ROLE_BASIC');
     }
 
     /**

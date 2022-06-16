@@ -10,6 +10,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Department} from 'app/modules/admin/masters/departments/departments.types';
 import { DepartmentsListComponent } from 'app/modules/admin/masters/departments/list/list.component';
 import { DepartmentsService } from 'app/modules/admin/masters/departments/departments.service';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
     selector       : 'departments-details',
@@ -46,7 +47,8 @@ export class DepartmentsDetailsComponent implements OnInit, OnDestroy
         private _renderer2: Renderer2,
         private _router: Router,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _authService: AuthService
     )
     {
     }
@@ -144,6 +146,13 @@ export class DepartmentsDetailsComponent implements OnInit, OnDestroy
     closeDrawer(): Promise<MatDrawerToggleResult>
     {
         return this._departmentsListComponent.matDrawer.close();
+    }
+
+    /**
+     * Check if the role is ROLE_BASIC
+     */
+    canEdit(): boolean{
+        return !this._authService.roles.includes('ROLE_BASIC');
     }
 
     /**
